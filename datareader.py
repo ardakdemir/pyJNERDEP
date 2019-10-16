@@ -20,7 +20,7 @@ class DataReader():
     def get_bert_input(self,batch_size = 1, morp = False):
         indexes = np.random.permutation([i for i in range(self.data_len)])
         indexes = indexes[:batch_size]
-        sents, labels = self.get_sents([0], feats = morp)
+        sents, labels = self.get_sents(indexes, feats = morp)
         bert_inputs = []
         for sent, label in zip(sents, labels):
             my_tokens = [x[0] for x in sent]
@@ -73,7 +73,7 @@ torch.tensor([seq_ids],dtype=torch.long), bert2tok, lab])
         return l2ind, word2ix, vocab_size
 
     def get_dataset(self):
-        dataset = open(self.file_path).readlines()
+        dataset = open(self.file_path,encoding='utf-8').readlines()
         new_dataset = []
         sent = []
         label_counts = Counter()

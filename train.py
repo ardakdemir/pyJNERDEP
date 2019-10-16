@@ -33,7 +33,7 @@ def ner_train(data_path):
     vocab_size = datareader.vocab_size
     l2ind = datareader.l2ind
     num_cat = len(l2ind)
-    model = BertNER(lstm_hidden = 10, vocab_size=vocab_size, l2ind = l2ind, num_cat = num_cat)
+    model = BertNER(lstm_hidden = 100, vocab_size=vocab_size, l2ind = l2ind, num_cat = num_cat)
     optimizer = optim.SGD(model.parameters(), lr=0.001)
     EPOCH = 1
     B_S =  1
