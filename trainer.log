@@ -1,0 +1,161 @@
+DEBUG - Starting new HTTPS connection (1): s3.amazonaws.com:443
+DEBUG - https://s3.amazonaws.com:443 "HEAD /models.huggingface.co/bert/bert-base-uncased-vocab.txt HTTP/1.1" 200 0
+INFO - loading file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt from cache at /Users/ardaakdemir/.cache/torch/pytorch_transformers/26bc1ad6c0ac742e9b52263248f6d0f00068293b33709fae12320c0e35ccfbbb.542ce4285a40d23a559526243235df47c5f75c197f04f37d1a0c124c32c9a084
+INFO - Data is read from ../datasets/turkish-ner-train.tsv
+DEBUG - Starting new HTTPS connection (1): s3.amazonaws.com:443
+DEBUG - https://s3.amazonaws.com:443 "HEAD /models.huggingface.co/bert/bert-base-uncased-vocab.txt HTTP/1.1" 200 0
+INFO - loading file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt from cache at /Users/ardaakdemir/.cache/torch/pytorch_transformers/26bc1ad6c0ac742e9b52263248f6d0f00068293b33709fae12320c0e35ccfbbb.542ce4285a40d23a559526243235df47c5f75c197f04f37d1a0c124c32c9a084
+DEBUG - Starting new HTTPS connection (1): s3.amazonaws.com:443
+DEBUG - https://s3.amazonaws.com:443 "HEAD /models.huggingface.co/bert/bert-base-uncased-config.json HTTP/1.1" 200 0
+INFO - loading configuration file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-config.json from cache at /Users/ardaakdemir/.cache/torch/pytorch_transformers/4dad0251492946e18ac39290fcfe91b89d370fee250efe9521476438fe8ca185.bf3b9ea126d8c0001ee8a1e8b92229871d06d36d8808208cc2449280da87785c
+INFO - Model config {
+  "attention_probs_dropout_prob": 0.1,
+  "finetuning_task": null,
+  "hidden_act": "gelu",
+  "hidden_dropout_prob": 0.1,
+  "hidden_size": 768,
+  "initializer_range": 0.02,
+  "intermediate_size": 3072,
+  "layer_norm_eps": 1e-12,
+  "max_position_embeddings": 512,
+  "num_attention_heads": 12,
+  "num_hidden_layers": 12,
+  "num_labels": 2,
+  "output_attentions": false,
+  "output_hidden_states": true,
+  "pruned_heads": {},
+  "torchscript": false,
+  "type_vocab_size": 2,
+  "vocab_size": 30522
+}
+
+DEBUG - Starting new HTTPS connection (1): s3.amazonaws.com:443
+DEBUG - https://s3.amazonaws.com:443 "HEAD /models.huggingface.co/bert/bert-base-uncased-pytorch_model.bin HTTP/1.1" 200 0
+INFO - loading weights file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-pytorch_model.bin from cache at /Users/ardaakdemir/.cache/torch/pytorch_transformers/aa1ef1aede4482d0dbcd4d52baad8ae300e60902e88fcb0bebdec09afd232066.36ca03ab34a1a5d5fa7bc3d03d55c4fa650fed07220e2eeebc06ce58d0e9a157
+INFO - Loss 21.57079315185547
+INFO - Loss 17.86785888671875
+INFO - Loss 15.258712768554688
+INFO - Loss 14.197540283203125
+INFO - Loss 13.397537231445312
+INFO - Loss 12.536230087280273
+INFO - Loss 11.905977249145508
+INFO - Loss 11.318933486938477
+INFO - Loss 10.721237182617188
+INFO - Loss 10.15908432006836
+INFO - Loss 9.71160888671875
+INFO - Loss 9.335311889648438
+INFO - Loss 9.045852661132812
+INFO - Loss 8.62570571899414
+INFO - Loss 8.273441314697266
+INFO - Loss 7.915027618408203
+INFO - Loss 7.646858215332031
+INFO - Loss 7.346614837646484
+INFO - Loss 7.090167999267578
+INFO - Loss 6.840007781982422
+INFO - Loss 6.594249725341797
+INFO - Loss 6.373958587646484
+INFO - Loss 6.183353424072266
+INFO - Loss 5.938533782958984
+INFO - Loss 5.733024597167969
+INFO - Loss 5.540042877197266
+INFO - Loss 5.390785217285156
+INFO - Loss 5.220951080322266
+INFO - Loss 5.079368591308594
+INFO - Loss 4.946083068847656
+INFO - Loss 4.820774078369141
+INFO - Loss 4.697357177734375
+INFO - Loss 4.5825958251953125
+INFO - Loss 4.484386444091797
+INFO - Loss 4.40484619140625
+INFO - Loss 4.314277648925781
+INFO - Loss 4.209419250488281
+INFO - Loss 4.120914459228516
+INFO - Loss 4.0456390380859375
+INFO - Loss 3.9426841735839844
+INFO - Loss 3.8579330444335938
+INFO - Loss 3.77587890625
+INFO - Loss 3.7018394470214844
+INFO - Loss 3.6333770751953125
+INFO - Loss 3.5683441162109375
+INFO - Loss 3.5074615478515625
+INFO - Loss 3.448169708251953
+INFO - Loss 3.3912010192871094
+INFO - Loss 3.3350982666015625
+INFO - Loss 3.280223846435547
+INFO - Loss 3.225757598876953
+INFO - Loss 3.172229766845703
+INFO - Loss 3.119586944580078
+INFO - Loss 3.068553924560547
+INFO - Loss 3.019306182861328
+INFO - Loss 2.972301483154297
+INFO - Loss 2.9278297424316406
+INFO - Loss 2.886077880859375
+INFO - Loss 2.8467788696289062
+INFO - Loss 2.8094940185546875
+INFO - Loss 2.773754119873047
+INFO - Loss 2.739147186279297
+INFO - Loss 2.705352783203125
+INFO - Loss 2.671875
+INFO - Loss 2.6380653381347656
+INFO - Loss 2.602977752685547
+INFO - Loss 2.5654449462890625
+INFO - Loss 2.5256195068359375
+INFO - Loss 2.487102508544922
+INFO - Loss 2.4521026611328125
+INFO - Loss 2.418365478515625
+INFO - Loss 2.381084442138672
+INFO - Loss 2.3358726501464844
+INFO - Loss 2.301586151123047
+INFO - Loss 2.269989013671875
+INFO - Loss 2.2376708984375
+INFO - Loss 2.2062416076660156
+INFO - Loss 2.177032470703125
+INFO - Loss 2.1494827270507812
+INFO - Loss 2.123443603515625
+INFO - Loss 2.0988082885742188
+INFO - Loss 2.0753822326660156
+INFO - Loss 2.0529823303222656
+INFO - Loss 2.031543731689453
+INFO - Loss 2.0107803344726562
+INFO - Loss 1.9907150268554688
+INFO - Loss 1.971160888671875
+INFO - Loss 1.9520645141601562
+INFO - Loss 1.9332962036132812
+INFO - Loss 1.9147872924804688
+INFO - Loss 1.89642333984375
+INFO - Loss 1.8781967163085938
+INFO - Loss 1.8601226806640625
+INFO - Loss 1.8423690795898438
+INFO - Loss 1.8250503540039062
+INFO - Loss 1.8082656860351562
+INFO - Loss 1.7920913696289062
+INFO - Loss 1.77642822265625
+INFO - Loss 1.7613372802734375
+INFO - Loss 1.7466812133789062
+INFO - Loss 1.7324600219726562
+INFO - Loss 1.7185211181640625
+INFO - Loss 1.7047958374023438
+INFO - Loss 1.691131591796875
+INFO - Loss 1.6774826049804688
+INFO - Loss 1.6638259887695312
+INFO - Loss 1.6503372192382812
+INFO - Loss 1.6372528076171875
+INFO - Loss 1.6247177124023438
+INFO - Loss 1.6126327514648438
+INFO - Loss 1.6009750366210938
+INFO - Loss 1.5895767211914062
+INFO - Loss 1.5784835815429688
+INFO - Loss 1.56756591796875
+INFO - Loss 1.5568618774414062
+INFO - Loss 1.54632568359375
+INFO - Loss 1.5359725952148438
+INFO - Loss 1.5257415771484375
+INFO - Loss 1.5156707763671875
+INFO - Loss 1.5057296752929688
+INFO - Loss 1.4958953857421875
+INFO - Loss 1.4861602783203125
+INFO - Loss 1.4765090942382812
+INFO - Loss 1.4669342041015625
+INFO - Loss 1.4573211669921875
+INFO - Loss 1.4476776123046875
+INFO - Loss 1.4379348754882812
