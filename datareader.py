@@ -20,7 +20,7 @@ class DataReader():
     def get_bert_input(self,batch_size = 1, morp = False):
         indexes = np.random.permutation([i for i in range(self.data_len)])
         indexes = indexes[:batch_size]
-        sents, labels = self.get_sents(indexes, feats = morp)
+        sents, labels = self.get_sents([0], feats = morp)
         bert_inputs = []
         for sent, label in zip(sents, labels):
             my_tokens = [x[0] for x in sent]

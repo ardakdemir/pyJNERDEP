@@ -40,7 +40,7 @@ def ner_train(data_path):
     L = len(datareader.dataset)
     for i in range(EPOCH):
         l = 0
-        c,t,p_tot = 0,0,0
+        c,t,p_tot = 0,1,1
         train_loss = 0
         for l in tqdm(range(L)):
             data = datareader.get_bert_input()
@@ -62,7 +62,11 @@ def ner_train(data_path):
                 if len(labels)==1:
                     continue
                 decoded_path, score = model(my_tokens, bert_tokens, ids,seq_ids, bert2tok)
-                evaluator.f_1(decoded_path, labels.numpy())
+                c_,p_,tot = evaluator.f_1(decoded_path, labels.numpy())
+                c+=c_
+                p_tot+=p_
+                t+=tot
+                logging.info("Precision : {}  Recall {} Total labels: {} Total predictions : {}".format((c+1)/p_tot,(c+1)/t ,t,p_tot))
 if __name__ == "__main__":
     data_path = '../datasets/turkish-ner-train.tsv'
     ner_train(data_path)

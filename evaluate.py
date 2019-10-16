@@ -29,4 +29,5 @@ class Evaluate():
             rec = c/t
         if p_tot > 0:
             pre = c/p_tot
-        print("Precision : ", pre , "  Recall : ", rec)
+        #print("Precision : ", pre , "  Recall : ", rec)
+        return c, p_tot, t
