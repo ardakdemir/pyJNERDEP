@@ -14,13 +14,18 @@ class DataReader():
         self.l2ind, self.word2ind, self.vocab_size = self.get_vocabs()
         self.num_cats = len(self.l2ind)
         self.bert_tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
+        self.val_index = 0
 
 
-
-    def get_bert_input(self,batch_size = 1, morp = False):
-        indexes = np.random.permutation([i for i in range(self.data_len)])
-        indexes = indexes[:batch_size]
-        sents, labels = self.get_sents([0], feats = morp)
+    def get_bert_input(self,batch_size = 1, morp = False,for_eval=False):
+        if  for_eval:
+            indexes = [i for i in range(self.val_index,self.val_index+batch_size)]
+            self.val_index += batch_size
+        else:
+            indexes = np.random.permutation([i for i in range(self.data_len)])
+            indexes = indexes[:batch_size]
+            
+        sents, labels = self.get_sents(indexes, feats = morp)
         bert_inputs = []
         for sent, label in zip(sents, labels):
             my_tokens = [x[0] for x in sent]

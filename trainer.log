@@ -1,6 +1,9 @@
 DEBUG - Starting new HTTPS connection (1): s3.amazonaws.com:443
 DEBUG - https://s3.amazonaws.com:443 "HEAD /models.huggingface.co/bert/bert-base-uncased-vocab.txt HTTP/1.1" 200 0
 INFO - loading file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt from cache at /Users/ardaakdemir/.cache/torch/pytorch_transformers/26bc1ad6c0ac742e9b52263248f6d0f00068293b33709fae12320c0e35ccfbbb.542ce4285a40d23a559526243235df47c5f75c197f04f37d1a0c124c32c9a084
+DEBUG - Starting new HTTPS connection (1): s3.amazonaws.com:443
+DEBUG - https://s3.amazonaws.com:443 "HEAD /models.huggingface.co/bert/bert-base-uncased-vocab.txt HTTP/1.1" 200 0
+INFO - loading file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt from cache at /Users/ardaakdemir/.cache/torch/pytorch_transformers/26bc1ad6c0ac742e9b52263248f6d0f00068293b33709fae12320c0e35ccfbbb.542ce4285a40d23a559526243235df47c5f75c197f04f37d1a0c124c32c9a084
 INFO - Data is read from ../datasets/turkish-ner-train.tsv
 DEBUG - Starting new HTTPS connection (1): s3.amazonaws.com:443
 DEBUG - https://s3.amazonaws.com:443 "HEAD /models.huggingface.co/bert/bert-base-uncased-vocab.txt HTTP/1.1" 200 0
@@ -32,67 +35,24 @@ INFO - Model config {
 DEBUG - Starting new HTTPS connection (1): s3.amazonaws.com:443
 DEBUG - https://s3.amazonaws.com:443 "HEAD /models.huggingface.co/bert/bert-base-uncased-pytorch_model.bin HTTP/1.1" 200 0
 INFO - loading weights file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-pytorch_model.bin from cache at /Users/ardaakdemir/.cache/torch/pytorch_transformers/aa1ef1aede4482d0dbcd4d52baad8ae300e60902e88fcb0bebdec09afd232066.36ca03ab34a1a5d5fa7bc3d03d55c4fa650fed07220e2eeebc06ce58d0e9a157
-INFO - Loss 25.818634033203125
-INFO - Loss 16.92034912109375
-INFO - Loss 15.113260269165039
-INFO - Loss 14.291257858276367
-INFO - Loss 13.644466400146484
-INFO - Loss 13.096479415893555
-INFO - Loss 12.586631774902344
-INFO - Loss 12.090564727783203
-INFO - Loss 11.600051879882812
-INFO - Loss 11.11507797241211
-INFO - Precision : 1.0  Recall 0.16666666666666666 Total labels: 6 Total predictions : 1
-INFO - Loss 10.63885498046875
-INFO - Loss 10.17327880859375
-INFO - Loss 9.719322204589844
-INFO - Loss 9.277206420898438
-INFO - Loss 8.845252990722656
-INFO - Loss 8.419849395751953
-INFO - Loss 8.00478744506836
-INFO - Loss 7.608283996582031
-INFO - Loss 7.2283477783203125
-INFO - Loss 6.865589141845703
-INFO - Precision : 1.0  Recall 0.45454545454545453 Total labels: 11 Total predictions : 5
-INFO - Loss 6.525379180908203
-INFO - Loss 6.209537506103516
-INFO - Loss 5.927978515625
-INFO - Loss 5.715496063232422
-INFO - Loss 5.669029235839844
-INFO - Loss 5.754020690917969
-INFO - Loss 5.6724090576171875
-INFO - Loss 4.939994812011719
-INFO - Loss 4.480922698974609
-INFO - Loss 4.256965637207031
-INFO - Precision : 1.0  Recall 0.5625 Total labels: 16 Total predictions : 9
-INFO - Loss 4.053653717041016
-INFO - Loss 3.863574981689453
-INFO - Loss 3.6846656799316406
-INFO - Loss 3.516265869140625
-INFO - Loss 3.3579254150390625
-INFO - Loss 3.2091293334960938
-INFO - Loss 3.0694122314453125
-INFO - Loss 2.938323974609375
-INFO - Loss 2.8153762817382812
-INFO - Loss 2.7000465393066406
-INFO - Precision : 1.0  Recall 0.6190476190476191 Total labels: 21 Total predictions : 13
-INFO - Loss 2.5918350219726562
-INFO - Loss 2.4901504516601562
-INFO - Loss 2.394611358642578
-INFO - Loss 2.304676055908203
-INFO - Loss 2.2199058532714844
-INFO - Loss 2.139904022216797
-INFO - Loss 2.0642623901367188
-INFO - Loss 1.9926605224609375
-INFO - Loss 1.9247474670410156
-INFO - Loss 1.8603630065917969
-INFO - Precision : 1.0  Recall 0.6923076923076923 Total labels: 26 Total predictions : 18
-INFO - Loss 1.799285888671875
-INFO - Loss 1.7414741516113281
-INFO - Loss 1.6867294311523438
-INFO - Loss 1.6350326538085938
-INFO - Loss 1.5861282348632812
-INFO - Loss 1.53985595703125
-INFO - Loss 1.4959640502929688
-INFO - Loss 1.4542999267578125
-INFO - Loss 1.4146881103515625
+INFO - Model loaded best_model.pth
+INFO - AVERAGE TRAIN LOSS : 5.188275125291613 after 9 examples 
+INFO - Precision : 1.0  Recall 0.07692307692307693 Total labels: 13 Total predictions : 1
+INFO - AVERAGE TRAIN LOSS : 4.249633136548494 after 19 examples 
+INFO - Precision : 1.0  Recall 0.041666666666666664 Total labels: 24 Total predictions : 1
+INFO - AVERAGE TRAIN LOSS : 5.946564477065514 after 29 examples 
+INFO - Precision : 1.0  Recall 0.03125 Total labels: 32 Total predictions : 1
+INFO - AVERAGE TRAIN LOSS : 5.102780635540302 after 39 examples 
+INFO - Precision : 1.0  Recall 0.019230769230769232 Total labels: 52 Total predictions : 1
+INFO - AVERAGE TRAIN LOSS : 4.782358334988964 after 49 examples 
+INFO - Precision : 1.0  Recall 0.014492753623188406 Total labels: 69 Total predictions : 1
+INFO - AVERAGE TRAIN LOSS : 4.767101004972297 after 59 examples 
+INFO - Precision : 1.0  Recall 0.012987012987012988 Total labels: 77 Total predictions : 1
+INFO - AVERAGE TRAIN LOSS : 4.965394434721573 after 69 examples 
+INFO - Precision : 1.0  Recall 0.012987012987012988 Total labels: 77 Total predictions : 1
+INFO - AVERAGE TRAIN LOSS : 5.055798482291306 after 79 examples 
+INFO - Precision : 1.0  Recall 0.012048192771084338 Total labels: 83 Total predictions : 1
+INFO - AVERAGE TRAIN LOSS : 4.82688210251626 after 89 examples 
+INFO - Precision : 1.0  Recall 0.011363636363636364 Total labels: 88 Total predictions : 1
+INFO - AVERAGE TRAIN LOSS : 5.12371845197196 after 99 examples 
+INFO - Precision : 1.0  Recall 0.010309278350515464 Total labels: 97 Total predictions : 1
