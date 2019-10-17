@@ -75,10 +75,10 @@ def ner_train(data_path, val_path, save_path, load = True):
                 d = d.to(device)
             ids, enc_ids, seq_ids, bert2tok, labels = data[0]
             #print(my_tokens)
-            ids.to(device)
-            seq_ids.to(device)
-            bert2tok.to(device)
-            labels.to(device)
+            ids = ids.to(device)
+            seq_ids = seq_ids.to(device)
+            bert2tok = bert2tok.to(device)
+            labels = labels.to(device)
             if l==0:
                 logging.info(" Device var mi :%s" %bert2tok.device)
             #print(labels)
