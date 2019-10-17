@@ -116,7 +116,7 @@ def ner_train(data_path, val_path, save_path, load = True, gpu = True):
                     with torch.no_grad():
                         decoded_path, score = model(ids,seq_ids, bert2tok)
                         c_,p_,tot = evaluator.f_1(decoded_path, labels.numpy())
-                    logging.info("preds:  {}  true :  {} ".format(decoded_path,labels.numpy()))
+                    logging.info("preds:  {}  true :  {} ".format(decoded_path,labels.to("cpu").numpy()))
                     c+=c_
                     p_tot+=p_
                     t+=tot
