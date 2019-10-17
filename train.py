@@ -104,10 +104,10 @@ def ner_train(data_path, val_path, save_path, load = True):
                 for x in range(10):
                     my_tokens, bert_tokens, valdata = datareader.get_bert_input(for_eval=False)
                     ids, enc_ids, seq_ids, bert2tok, labels = valdata[0]
-                    ids.to(device)
-                    seq_ids.to(device)
-                    bert2tok.to(device)
-                    labels.to(device)
+                    ids = ids.to(device)
+                    seq_ids = seq_ids.to(device)
+                    bert2tok = bert2tok.to(device)
+                    labels =  labels.to(device)
                     if len(labels)==1:
                         continue
                     with torch.no_grad():
