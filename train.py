@@ -75,8 +75,12 @@ def ner_train(data_path, val_path, save_path, load = True):
                 d.to(device)
             ids, enc_ids, seq_ids, bert2tok, labels = data[0]
             #print(my_tokens)
-            #logging.info(" Device var mi : " %bert2tok.device)
-
+            ids.to(device)
+            seq_ids.to(device)
+            bert2tok.to(device)
+            labels.to(device)
+            if l==0:
+                logging.info(" Device var mi :%s" %bert2tok.device)
             #print(labels)
             if len(labels)==1:
                 continue
@@ -96,9 +100,11 @@ def ner_train(data_path, val_path, save_path, load = True):
                 model.eval()
                 for x in range(10):
                     my_tokens, bert_tokens, valdata = datareader.get_bert_input(for_eval=False)
-                    for d in data[0]:
-                        d.to(device)
                     ids, enc_ids, seq_ids, bert2tok, labels = valdata[0]
+                    ids.to(device)
+                    seq_ids.to(device)
+                    bert2tok.to(device)
+                    labels.to(device)
                     if len(labels)==1:
                         continue
                     with torch.no_grad():
