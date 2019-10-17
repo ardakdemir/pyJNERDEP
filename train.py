@@ -40,7 +40,6 @@ def ner_train(data_path, val_path, save_path, load = True):
     logging.info("Training on : %s"%device)
     model.to(device)
     os.system('nvidia-smi')
-
     if os.path.isfile(save_path) and load:
         logging.info("Model loaded %s"%save_path)
         model.load_state_dict(torch.load(save_path))
