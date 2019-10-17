@@ -42,7 +42,7 @@ def ner_train(data_path, val_path, save_path, load = True, gpu = True):
     device = torch.device("cpu")
     if gpu:
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    model = BertNER(lstm_hidden = 10, vocab_size=vocab_size, l2ind = l2ind, num_cat = num_cat, device = device)
+    model = BertNER(lstm_hidden = 100, vocab_size=vocab_size, l2ind = l2ind, num_cat = num_cat, device = device)
     logging.info("Training on : %s"%device)
     #model = model.to(device)
     model.to(device)
@@ -130,7 +130,8 @@ def ner_train(data_path, val_path, save_path, load = True, gpu = True):
 if __name__ == "__main__":
     args = sys.argv
     gpu =args[1]
-    save_path = "../best_model.pth"
+    load = args[2]
+    save_path = "../best_model_lstm100.pth"
     data_path = '../datasets/turkish-ner-train.tsv'
     val_path = '../datasets/turkish-ner-dev.tsv'
-    ner_train(data_path, val_path, save_path, load = False, gpu = int(gpu))
+    ner_train(data_path, val_path, save_path, load = int(load), gpu = int(gpu))
