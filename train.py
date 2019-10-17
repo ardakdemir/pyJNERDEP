@@ -67,7 +67,7 @@ def ner_train(data_path, val_path, save_path, load = True, gpu = True):
     L = len(datareader.dataset)
     model.train()
     os.system('nvidia-smi')
-    for i in range(EPOCHS):
+    for i in range(EPOCH):
         l = 0
         c,t,p_tot = 0,1,1
         train_loss = 0
@@ -105,7 +105,7 @@ def ner_train(data_path, val_path, save_path, load = True, gpu = True):
                 logging.info("AVERAGE TRAIN LOSS : {} after {} examples took {} seconds".format( train_loss/l,l , d))
                 model.eval()
                 for x in range(10):
-                    my_tokens, bert_tokens, valdata = datareader.get_bert_input(for_eval=False)
+                    my_tokens, bert_tokens, valdata = valreader.get_bert_input(for_eval=True)
                     ids, enc_ids, seq_ids, bert2tok, labels = valdata[0]
                     ids = ids.to(device)
                     seq_ids = seq_ids.to(device)

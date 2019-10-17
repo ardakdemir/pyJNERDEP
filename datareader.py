@@ -19,8 +19,9 @@ class DataReader():
 
     def get_bert_input(self,batch_size = 1, morp = False,for_eval=False):
         if  for_eval:
-            indexes = [i for i in range(self.val_index,self.val_index+batch_size)]
+            indexes = [i%self.data_len for i in range(self.val_index,self.val_index+batch_size)]
             self.val_index += batch_size
+            self.val_index %=self.data_len
         else:
             indexes = np.random.permutation([i for i in range(self.data_len)])
             indexes = indexes[:batch_size]
