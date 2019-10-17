@@ -28,15 +28,15 @@ import time
 
 def ner_train(data_path, val_path, save_path, load = True):
     evaluator = Evaluate("NER")
-    logging.basicConfig(level=logging.DEBUG, filename='trainer.log', filemode='w', format='%(levelname)s - %(message)s')
+    logging.basicConfig(level=logging.DEBUG, filename='../trainer.log', filemode='w', format='%(levelname)s - %(message)s')
     datareader = DataReader(data_path, "NER")
     valreader = DataReader(val_path,"NER")
     logging.info("Data is read from %s"%data_path)
     vocab_size = datareader.vocab_size
     l2ind = datareader.l2ind
     num_cat = len(l2ind)
-    model = BertNER(lstm_hidden = 10, vocab_size=vocab_size, l2ind = l2ind, num_cat = num_cat)
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    model = BertNER(lstm_hidden = 10, vocab_size=vocab_size, l2ind = l2ind, num_cat = num_cat, device = device)
     logging.info("Training on : %s"%device)
     #model = model.to(device)
     model.to(device)

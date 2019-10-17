@@ -22,12 +22,13 @@ from datareader import DataReader
 
 
 class BertNER(nn.Module):
-    def __init__(self,l2ind,vocab_size, lstm_hidden=100,channel_size=400,num_cat=5):
+    def __init__(self,l2ind,vocab_size, lstm_hidden=100,channel_size=400,num_cat=5,device='cpu'):
         super(BertNER,self).__init__()
         self.num_cat = num_cat
         self.l2ind = l2ind
         self.START_TAG = "SOS"
         self.END_TAG = "EOS"
+        self.device = device
         self.bert_tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
         self.bert_model = BertModel.from_pretrained('bert-base-uncased',output_hidden_states=True)
         self.w_dim = self.bert_model.encoder.layer[11].output.dense.out_features
@@ -35,7 +36,7 @@ class BertNER(nn.Module):
         self.word_embeds = nn.Embedding(self.vocab_size, self.w_dim)
         self.bilstm  = nn.LSTM(self.w_dim,lstm_hidden,bidirectional=True,num_layers=1,batch_first=True)
         self.fc = nn.Linear(lstm_hidden*2,self.num_cat)
-        self.transitions = nn.Parameter(torch.randn(self.num_cat, self.num_cat,dtype=torch.float))
+        self.transitions = nn.Parameter(torch.randn(self.num_cat, self.num_cat,dtype=torch.float,device=device))
         self.transitions.data[self.l2ind[self.START_TAG],:] = torch.tensor([-10000]).expand(1,self.num_cat)
         self.transitions.data[:,self.l2ind[self.END_TAG]] = torch.tensor([-10000]).expand(1,self.num_cat)
 
