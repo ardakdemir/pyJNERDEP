@@ -22,9 +22,9 @@ class DataReader():
             indexes = [i for i in range(self.val_index,self.val_index+batch_size)]
             self.val_index += batch_size
         else:
-            indexes = np.random.permutation([i for i in range(self.data_len)])
+            indexes = np.random.permutation([i for i in range(10)])
             indexes = indexes[:batch_size]
-            
+
         sents, labels = self.get_sents(indexes, feats = morp)
         bert_inputs = []
         for sent, label in zip(sents, labels):
