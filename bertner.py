@@ -160,7 +160,7 @@ class BertNER(nn.Module):
         return scores
 
     def _gold_score(self,scores,tags):
-        path_score = torch.zeros(1)
+        path_score = torch.zeros(1,device = self.device)
         prev_tag = self.l2ind[self.START_TAG]
         end_tag = self.l2ind[self.END_TAG]
         for score,tag in zip(scores,tags):

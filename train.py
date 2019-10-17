@@ -88,6 +88,7 @@ def ner_train(data_path, val_path, save_path, load = True):
             optimizer.zero_grad()
             bert_optimizer.zero_grad()
             loss = model._bert_crf_neg_loss(ids, seq_ids,labels, bert2tok)
+            loss.to(device)
             loss.backward()
             #logging.info("Loss {}".format(loss.item()))
             #logging.info(model.fc.weight.grad)
