@@ -33,6 +33,8 @@ def ner_train(data_path, val_path, save_path, load = True, gpu = True):
     logging.info("GPU : {}".format(gpu))
     datareader = DataReader(data_path, "NER")
     valreader = DataReader(val_path,"NER")
+    valreader.l2ind = datareader.l2ind
+    valreader.word2ind  = datareader.word2ind
     logging.info("Data is read from %s"%data_path)
     vocab_size = datareader.vocab_size
     l2ind = datareader.l2ind
@@ -131,4 +133,4 @@ if __name__ == "__main__":
     save_path = "../best_model.pth"
     data_path = '../datasets/turkish-ner-train.tsv'
     val_path = '../datasets/turkish-ner-dev.tsv'
-    ner_train(data_path, val_path, save_path, load = False,gpu = int(gpu))
+    ner_train(data_path, val_path, save_path, load = False, gpu = int(gpu))

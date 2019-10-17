@@ -6,7 +6,7 @@ import numpy as np
 from pytorch_transformers import BertTokenizer
 class DataReader():
 
-    def __init__(self,file_path,task_name,*kwargs):
+    def __init__(self,file_path, task_name, *kwargs):
         self.file_path = file_path
         self.task_name = task_name
         self.dataset, self.label_counts = self.get_dataset()
@@ -17,7 +17,7 @@ class DataReader():
         self.val_index = 0
 
 
-    def get_bert_input(self,batch_size = 1, morp = False,for_eval=False):
+    def get_bert_input(self,batch_size = 1, morp = False,for_eval = False):
         if  for_eval:
             indexes = [i%self.data_len for i in range(self.val_index,self.val_index+batch_size)]
             self.val_index += batch_size
