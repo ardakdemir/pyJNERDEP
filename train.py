@@ -26,7 +26,7 @@ from evaluate import Evaluate
 import logging
 import time
 
-def ner_train(data_path, val_path, save_path):
+def ner_train(data_path, val_path, save_path, load = True):
     evaluator = Evaluate("NER")
     logging.basicConfig(level=logging.DEBUG, filename='trainer.log', filemode='w', format='%(levelname)s - %(message)s')
     datareader = DataReader(data_path, "NER")
@@ -39,7 +39,9 @@ def ner_train(data_path, val_path, save_path):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     logging.info("Training on : %s"%device)
     model.to(device)
-    if os.path.isfile(save_path):
+    os.system('nvidia-smi')
+
+    if os.path.isfile(save_path) and load:
         logging.info("Model loaded %s"%save_path)
         model.load_state_dict(torch.load(save_path))
 
@@ -94,8 +96,10 @@ def ner_train(data_path, val_path, save_path):
                 logging.info("AVERAGE TRAIN LOSS : {} after {} examples took {} seconds".format( train_loss/l,l , d))
                 model.eval()
                 for x in range(10):
-                    valdata = datareader.get_bert_input(for_eval=False)
-                    my_tokens, bert_tokens, ids, enc_ids, seq_ids, bert2tok, labels = valdata[0]
+                    my_tokens, bert_tokens, valdata = datareader.get_bert_input(for_eval=False)
+                    for d in data[0]:
+                        d.to(device)
+                    ids, enc_ids, seq_ids, bert2tok, labels = valdata[0]
                     if len(labels)==1:
                         continue
                     with torch.no_grad():
@@ -115,4 +119,4 @@ if __name__ == "__main__":
     save_path = "../best_model.pth"
     data_path = '../datasets/turkish-ner-train.tsv'
     val_path = '../datasets/turkish-ner-dev.tsv'
-    ner_train(data_path, val_path, save_path)
+    ner_train(data_path, val_path, save_path, load = False)
