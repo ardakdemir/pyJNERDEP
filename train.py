@@ -36,12 +36,11 @@ def ner_train(data_path, val_path, save_path, load = True):
     l2ind = datareader.l2ind
     num_cat = len(l2ind)
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    device = torhc.device("cpu")
+    device = torch.device("cpu")
     model = BertNER(lstm_hidden = 10, vocab_size=vocab_size, l2ind = l2ind, num_cat = num_cat, device = device)
     logging.info("Training on : %s"%device)
     #model = model.to(device)
     model.to(device)
-    os.system('nvidia-smi')
     if os.path.isfile(save_path) and load:
         logging.info("Model loaded %s"%save_path)
         model.load_state_dict(torch.load(save_path))
@@ -64,6 +63,7 @@ def ner_train(data_path, val_path, save_path, load = True):
     best_model = 0
     L = len(datareader.dataset)
     model.train()
+    os.system('nvidia-smi')
     for i in range(L):
         l = 0
         c,t,p_tot = 0,1,1
@@ -79,8 +79,8 @@ def ner_train(data_path, val_path, save_path, load = True):
             #print(my_tokens)
             ids = ids.to(device)
             seq_ids = seq_ids.to(device)
-            bert2tok = bert2tok.to("cuda:0")
-            labels = labels.to("cuda:0")
+            bert2tok = bert2tok.to(device)
+            labels = labels.to(device)
             if l==0:
                 logging.info(" Device var mi :%s" %bert2tok.device)
             #print(labels)

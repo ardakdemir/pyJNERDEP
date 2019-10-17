@@ -87,7 +87,7 @@ class BertNER(nn.Module):
                 tag_score = tag_score.max().view(1)
                 layer_parent.append(parent.item())
                 new_layer_scores.append(tag_score)
-            layer_scores = torch.tensor(new_layer_scores).view(1,-1)
+            layer_scores = torch.tensor(new_layer_scores,device=self.device).view(1,-1)
             parents.append(layer_parent)
         layer_scores += self.transitions[self.l2ind[self.END_TAG]].view(1,-1)
         ##backtrack
@@ -188,7 +188,7 @@ class BertNER(nn.Module):
         return forward_score - gold_score
 
 
-    def forward(selfids, seq_ids, bert2tok):
+    def forward(self, ids, seq_ids, bert2tok):
         scores = self._get_bert_score(ids, seq_ids, bert2tok)
         #tag_scores = F.log_softmax(scores, dim=1)
         decoded_path, path_score = self._viterbi_decode(scores)
