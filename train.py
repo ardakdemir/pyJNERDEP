@@ -72,7 +72,7 @@ def ner_train(data_path, val_path, save_path, load = True):
             #data = torch.tensor(data)
             #data.to(device)
             for d in data[0]:
-                d.to(device)
+                d = d.to(device)
             ids, enc_ids, seq_ids, bert2tok, labels = data[0]
             #print(my_tokens)
             ids.to(device)
