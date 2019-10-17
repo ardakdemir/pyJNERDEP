@@ -67,12 +67,12 @@ def ner_train(data_path, val_path, save_path, load = True, gpu = True):
     L = len(datareader.dataset)
     model.train()
     os.system('nvidia-smi')
-    for i in range(L):
+    for i in range(EPOCHS):
         l = 0
         c,t,p_tot = 0,1,1
         train_loss = 0
         s = time.time()
-        for l in tqdm(range(100)):
+        for l in tqdm(range(L)):
             my_tokens, bert_tokens, data = datareader.get_bert_input()
             #data = torch.tensor(data)
             #data.to(device)
