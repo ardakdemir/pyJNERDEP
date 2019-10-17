@@ -113,7 +113,7 @@ class BertNER(nn.Module):
         return max_score + torch.log(torch.sum(torch.exp(scores-max_score)))
 
     def _forward_score(self,scores):
-        forward_score = torch.tensor([-10000 for i in range(len(self.l2ind))],dtype=torch.float)
+        forward_score = torch.tensor([-10000 for i in range(len(self.l2ind))],dtype=torch.float,device=self.device)
         forward_score[self.l2ind[self.START_TAG]] = 0
         #forward_score = a
         for time_step in scores :
