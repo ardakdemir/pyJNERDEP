@@ -18,12 +18,13 @@ from pdb import set_trace
 import unidecode
 from pytorch_transformers import *
 
+
 from datareader import DataReader
 from bertner import BertNER
 from evaluate import Evaluate
 
 import logging
-
+import time
 
 def ner_train(data_path, val_path, save_path):
     evaluator = Evaluate("NER")
@@ -34,46 +35,72 @@ def ner_train(data_path, val_path, save_path):
     vocab_size = datareader.vocab_size
     l2ind = datareader.l2ind
     num_cat = len(l2ind)
-    model = BertNER(lstm_hidden = 100, vocab_size=vocab_size, l2ind = l2ind, num_cat = num_cat)
-
+    model = BertNER(lstm_hidden = 10, vocab_size=vocab_size, l2ind = l2ind, num_cat = num_cat)
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    logging.info("Training on : %s"%device)
+    model.to(device)
     if os.path.isfile(save_path):
         logging.info("Model loaded %s"%save_path)
         model.load_state_dict(torch.load(save_path))
 
-    optimizer = optim.SGD(model.parameters(), lr=0.01, weight_decay=1e-4)
+    optimizer = optim.SGD([{"params": model.fc.parameters()},{"params": model.bilstm.parameters()}], lr=0.001, weight_decay = 1e-5)
+    param_optimizer = list(model.bert_model.named_parameters())
+    no_decay = ['bias', 'gamma', 'beta']
+    optimizer_grouped_parameters = [
+    {'params': [p for n, p in param_optimizer if not any(nd in n for nd in no_decay)],
+     'weight_decay_rate': 0.01},
+    {'params': [p for n, p in param_optimizer if any(nd in n for nd in no_decay)],
+     'weight_decay_rate': 0.0}
+     ]
+    bert_optimizer =AdamW(optimizer_grouped_parameters,
+                     lr=2e-5,
+                     )
     EPOCH =5
     B_S =  1
     best_loss = -1
     best_model = 0
     L = len(datareader.dataset)
+    model.train()
     for i in range(L):
         l = 0
         c,t,p_tot = 0,1,1
         train_loss = 0
+        s = time.time()
         for l in tqdm(range(100)):
-            data = datareader.get_bert_input()
-            my_tokens, bert_tokens, ids, enc_ids, seq_ids, bert2tok, labels = data[0]
+            my_tokens, bert_tokens, data = datareader.get_bert_input()
+            #data = torch.tensor(data)
+            #data.to(device)
+            for d in data[0]:
+                d.to(device)
+            ids, enc_ids, seq_ids, bert2tok, labels = data[0]
             #print(my_tokens)
+            #logging.info(" Device var mi : " %bert2tok.device)
+
             #print(labels)
             if len(labels)==1:
                 continue
             optimizer.zero_grad()
-            loss = model._bert_crf_neg_loss(my_tokens, bert_tokens, ids, seq_ids,labels, bert2tok)
+            bert_optimizer.zero_grad()
+            loss = model._bert_crf_neg_loss(ids, seq_ids,labels, bert2tok)
             loss.backward()
             #logging.info("Loss {}".format(loss.item()))
             #logging.info(model.fc.weight.grad)
             optimizer.step()
+            bert_optimizer.step()
             train_loss+= loss.item()
             if l%100 == 99:
-                logging.info("AVERAGE TRAIN LOSS : {} after {} examples ".format( train_loss/l,l))
+                e = time.time()
+                d = round(e-s,3)
+                logging.info("AVERAGE TRAIN LOSS : {} after {} examples took {} seconds".format( train_loss/l,l , d))
                 model.eval()
                 for x in range(10):
                     valdata = datareader.get_bert_input(for_eval=False)
                     my_tokens, bert_tokens, ids, enc_ids, seq_ids, bert2tok, labels = valdata[0]
                     if len(labels)==1:
                         continue
-                    decoded_path, score = model(my_tokens, bert_tokens, ids,seq_ids, bert2tok)
-                    c_,p_,tot = evaluator.f_1(decoded_path, labels.numpy())
+                    with torch.no_grad():
+                        decoded_path, score = model(my_tokens, bert_tokens, ids,seq_ids, bert2tok)
+                        c_,p_,tot = evaluator.f_1(decoded_path, labels.numpy())
                     logging.info("preds:  {}  true :  {} ".format(decoded_path,labels.numpy()))
                     c+=c_
                     p_tot+=p_

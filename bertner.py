@@ -126,14 +126,14 @@ class BertNER(nn.Module):
         terminal_score = forward_score + self.transitions[self.l2ind[self.END_TAG]]
         return self._log_sum_exp(terminal_score)
 
-    def _get_bert_score(self,my_tokens, bert_tokens, ids, seq_ids, bert2tok):
+    def _get_bert_score(self, ids, seq_ids, bert2tok):
         bert_output = self.bert_model(ids,seq_ids)
         bert_hiddens = self._get_bert_hiddens(bert_output[2], bert2tok)
         #print(bert_hiddens.view(1,-1,self.w_dim).shape)
-        bert_hiddens = bert_hiddens.view(1,len(my_tokens),-1)
+        bert_hiddens = bert_hiddens.view(1,-1,self.w_dim)
         out,hidden = self.bilstm(bert_hiddens) #out gives the h_t from last layer for each t
         #print("lstm: ", out.shape)
-        scores = self.fc(out.view(len(my_tokens),-1))
+        scores = self.fc(out.view(bert_hiddens.shape[1],-1))
         return scores
 
     def _get_bert_hiddens(self, all_hiddens, bert2token, layers=[-2,-3,-4]):
@@ -177,8 +177,8 @@ class BertNER(nn.Module):
         #print("Gold:",gold_score, " Forw : ", forward_score, "Diff : ", forward_score - gold_score)
         return forward_score - gold_score
 
-    def _bert_crf_neg_loss(self,my_tokens, bert_tokens, ids, seq_ids,true_tags, bert2tok):
-        scores = self._get_bert_score(my_tokens, bert_tokens, ids, seq_ids,  bert2tok)
+    def _bert_crf_neg_loss(self, ids, seq_ids,true_tags, bert2tok):
+        scores = self._get_bert_score(ids, seq_ids,  bert2tok)
         #print(scores.shape)
         gold_score = self._gold_score(scores,true_tags)
         assert scores.shape[0]==true_tags.shape[0]

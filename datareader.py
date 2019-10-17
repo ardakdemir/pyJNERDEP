@@ -37,9 +37,9 @@ class DataReader():
             seq_ids = [1 for i in range(len(bert_tokens))]
             bert2tok, final_len = self.bert2token(my_tokens, bert_tokens)
             lab = self.prepare_label(label,self.l2ind)
-            bert_inputs.append([my_tokens, bert_tokens, torch.tensor([ids],dtype=torch.long), torch.tensor(enc_ids,dtype=torch.long),\
-torch.tensor([seq_ids],dtype=torch.long), bert2tok, lab])
-        return bert_inputs
+            bert_inputs.append([ torch.tensor([ids],dtype=torch.long), torch.tensor(enc_ids,dtype=torch.long),\
+torch.tensor([seq_ids],dtype=torch.long), torch.tensor(bert2tok), lab])
+        return my_tokens, bert_tokens, bert_inputs
 
 
     def bert2token(self, my_tokens, bert_tokens):
