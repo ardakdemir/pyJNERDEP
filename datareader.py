@@ -15,8 +15,15 @@ class DataReader():
         self.num_cats = len(self.l2ind)
         self.bert_tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
         self.val_index = 0
-
-
+    
+    def get_orthgraphic_feat(token):
+        if token.isupper():
+            return 2
+        if token.istitle():
+            return 1 
+        if token.islower():
+            return 0
+        return 0
     def get_bert_input(self,batch_size = 1, morp = False,for_eval = False):
         if  for_eval:
             indexes = [i%self.data_len for i in range(self.val_index,self.val_index+batch_size)]
@@ -30,6 +37,7 @@ class DataReader():
         bert_inputs = []
         for sent, label in zip(sents, labels):
             my_tokens = [x[0] for x in sent]
+            orthogs = [get_orthgraphic_feat(tok) for tok in my_tokens]
             sentence = " ".join(my_tokens)
             marked_sent = "[CLS]" + sentence + "[SEP]"
             bert_tokens = self.bert_tokenizer.tokenize(marked_sent)
@@ -39,7 +47,7 @@ class DataReader():
             bert2tok, final_len = self.bert2token(my_tokens, bert_tokens)
             lab = self.prepare_label(label,self.l2ind)
             bert_inputs.append([ torch.tensor([ids],dtype=torch.long), torch.tensor(enc_ids,dtype=torch.long),\
-torch.tensor([seq_ids],dtype=torch.long), torch.tensor(bert2tok), lab])
+torch.tensor([seq_ids],dtype=torch.long), torch.tensor(bert2tok), lab, torch.tensor(orthogs)])
         return my_tokens, bert_tokens, bert_inputs
 
 

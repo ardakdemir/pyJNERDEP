@@ -29,7 +29,7 @@ import time
 
 def ner_train(data_path, val_path, save_path, load = True, gpu = True):
     evaluator = Evaluate("NER")
-    logging.basicConfig(level=logging.DEBUG, filename='../trainer.log', filemode='w', format='%(levelname)s - %(message)s')
+    logging.basicConfig(level=logging.DEBUG, filename='../trainer2.log', filemode='w', format='%(levelname)s - %(message)s')
     logging.info("GPU : {}".format(gpu))
     datareader = DataReader(data_path, "NER")
     valreader = DataReader(val_path,"NER")
@@ -50,7 +50,8 @@ def ner_train(data_path, val_path, save_path, load = True, gpu = True):
         logging.info("Model loaded %s"%save_path)
         model.load_state_dict(torch.load(save_path))
 
-    optimizer = optim.SGD([{"params": model.fc.parameters()},{"params": model.bilstm.parameters()}], lr=0.001, weight_decay = 1e-5)
+    optimizer = optim.SGD([{"params": model.fc.parameters()},{"params": model.bilstm.parameters()},\
+          {"params": model.cap_embed.parameters()}], lr=0.001, weight_decay = 1e-5)
     param_optimizer = list(model.bert_model.named_parameters())
     no_decay = ['bias', 'gamma', 'beta']
     optimizer_grouped_parameters = [
@@ -80,20 +81,27 @@ def ner_train(data_path, val_path, save_path, load = True, gpu = True):
             #data.to(device)
             for d in data[0]:
                 d = d.to(device)
-            ids, enc_ids, seq_ids, bert2tok, labels = data[0]
+            ids, enc_ids, seq_ids, bert2tok, labels, ortho = data[0]
             #print(my_tokens)
             ids = ids.to(device)
             seq_ids = seq_ids.to(device)
             bert2tok = bert2tok.to(device)
             labels = labels.to(device)
+            ortho = ortho.to(device)
             if l==0:
                 logging.info(" Device var mi :%s" %bert2tok.device)
+                with torch.no_grad():
+                    embs = model.cap_embed(ortho).view(-1,self.cap_dim).to("cpu").numpy()
+                    logging.info(embs)
+                    for tok, ortho in zip(my_tokens,ortho):    
+                        logging.info("Word : {}  ortho : {} ".format(tok, ortho.item()))
+
             #print(labels)
             if len(labels)==1:
                 continue
             optimizer.zero_grad()
             bert_optimizer.zero_grad()
-            loss = model._bert_crf_neg_loss(ids, seq_ids,labels, bert2tok)
+            loss = model._bert_crf_neg_loss(ids, seq_ids,labels, bert3tok, ortho)
             loss.to(device)
             loss.backward()
             #logging.info("Loss {}".format(loss.item()))
@@ -108,14 +116,15 @@ def ner_train(data_path, val_path, save_path, load = True, gpu = True):
                 model.eval()
                 for x in range(10):
                     my_tokens, bert_tokens, valdata = valreader.get_bert_input(for_eval=True)
-                    ids, enc_ids, seq_ids, bert2tok, labels = valdata[0]
+                    ids, enc_ids, seq_ids, bert2tok, labels, ortho = valdata[0]
                     ids = ids.to(device)
                     seq_ids = seq_ids.to(device)
                     bert2tok = bert2tok.to(device)
+                    ortho = ortho.to(device)
                     if len(labels)==1:
                         continue
                     with torch.no_grad():
-                        decoded_path, score = model(ids,seq_ids, bert2tok)
+                        decoded_path, score = model(ids,seq_ids, bert2tok, ortho)
                         c_,p_,tot = evaluator.f_1(decoded_path,labels.numpy())
                     logging.info("preds:  {}  true :  {} ".format(decoded_path,labels.numpy()))
                     c+=c_

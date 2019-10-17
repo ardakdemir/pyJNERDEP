@@ -29,11 +29,15 @@ class BertNER(nn.Module):
         self.START_TAG = "SOS"
         self.END_TAG = "EOS"
         self.device = device
+        self.cap_types = 3
+        self.cap_dim = 10
         self.bert_tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
         self.bert_model = BertModel.from_pretrained('bert-base-uncased',output_hidden_states=True)
+        self.cap_embed = nn.Embedding(self.cap_types,self.cap_dim)
         self.w_dim = self.bert_model.encoder.layer[11].output.dense.out_features
         self.vocab_size = vocab_size
         self.word_embeds = nn.Embedding(self.vocab_size, self.w_dim)
+        
         self.bilstm  = nn.LSTM(self.w_dim,lstm_hidden,bidirectional=True,num_layers=1,batch_first=True)
         self.fc = nn.Linear(lstm_hidden*2,self.num_cat)
         self.transitions = nn.Parameter(torch.randn(self.num_cat, self.num_cat,dtype=torch.float,device=device))
@@ -127,12 +131,14 @@ class BertNER(nn.Module):
         terminal_score = forward_score + self.transitions[self.l2ind[self.END_TAG]]
         return self._log_sum_exp(terminal_score)
 
-    def _get_bert_score(self, ids, seq_ids, bert2tok):
+    def _get_bert_score(self, ids, seq_ids, bert2tok, ortho):
         bert_output = self.bert_model(ids,seq_ids)
         bert_hiddens = self._get_bert_hiddens(bert_output[2], bert2tok)
         #print(bert_hiddens.view(1,-1,self.w_dim).shape)
+        cap_embed = self.cap_embed(ortho).view(1,-1,self.cap_dim)
         bert_hiddens = bert_hiddens.view(1,-1,self.w_dim)
-        out,hidden = self.bilstm(bert_hiddens) #out gives the h_t from last layer for each t
+
+        out,hidden = self.bilstm(torch.cat([bert_hiddens, cap_embed],2)) #out gives the h_t from last layer for each t
         #print("lstm: ", out.shape)
         scores = self.fc(out.view(bert_hiddens.shape[1],-1))
         return scores
@@ -178,9 +184,9 @@ class BertNER(nn.Module):
         #print("Gold:",gold_score, " Forw : ", forward_score, "Diff : ", forward_score - gold_score)
         return forward_score - gold_score
 
-    def _bert_crf_neg_loss(self, ids, seq_ids,true_tags, bert2tok):
-        scores = self._get_bert_score(ids, seq_ids,  bert2tok)
-        #print(scores.shape)
+    def _bert_crf_neg_loss(self, ids, seq_ids,true_tags, bert2tok, ortho):
+        scores = self._get_bert_score(ids, seq_ids,  bert2tok, ortho)
+        print(scores.shape)
         gold_score = self._gold_score(scores,true_tags)
         assert scores.shape[0]==true_tags.shape[0]
         forward_score = self._forward_score(scores)
@@ -188,8 +194,8 @@ class BertNER(nn.Module):
         return forward_score - gold_score
 
 
-    def forward(self, ids, seq_ids, bert2tok):
-        scores = self._get_bert_score(ids, seq_ids, bert2tok)
+    def forward(self, ids, seq_ids, bert2tok, ortho):
+        scores = self._get_bert_score(ids, seq_ids, bert2tok, ortho)
         #tag_scores = F.log_softmax(scores, dim=1)
         decoded_path, path_score = self._viterbi_decode(scores)
         return decoded_path, path_score
