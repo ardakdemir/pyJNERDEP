@@ -188,8 +188,8 @@ class BertNER(nn.Module):
         return forward_score - gold_score
 
 
-    def forward(self,my_tokens, bert_tokens, ids, seq_ids, bert2tok):
-        scores = self._get_bert_score(my_tokens, bert_tokens, ids, seq_ids, bert2tok)
+    def forward(selfids, seq_ids, bert2tok):
+        scores = self._get_bert_score(ids, seq_ids, bert2tok)
         #tag_scores = F.log_softmax(scores, dim=1)
         decoded_path, path_score = self._viterbi_decode(scores)
         return decoded_path, path_score

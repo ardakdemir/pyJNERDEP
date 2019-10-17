@@ -36,6 +36,7 @@ def ner_train(data_path, val_path, save_path, load = True):
     l2ind = datareader.l2ind
     num_cat = len(l2ind)
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    device = torhc.device("cpu")
     model = BertNER(lstm_hidden = 10, vocab_size=vocab_size, l2ind = l2ind, num_cat = num_cat, device = device)
     logging.info("Training on : %s"%device)
     #model = model.to(device)
@@ -110,7 +111,7 @@ def ner_train(data_path, val_path, save_path, load = True):
                     if len(labels)==1:
                         continue
                     with torch.no_grad():
-                        decoded_path, score = model(my_tokens, bert_tokens, ids,seq_ids, bert2tok)
+                        decoded_path, score = model(ids,seq_ids, bert2tok)
                         c_,p_,tot = evaluator.f_1(decoded_path, labels.numpy())
                     logging.info("preds:  {}  true :  {} ".format(decoded_path,labels.numpy()))
                     c+=c_
