@@ -23,20 +23,23 @@ from datareader import DataReader
 from bertner import BertNER
 from evaluate import Evaluate
 
+import sys
 import logging
 import time
 
-def ner_train(data_path, val_path, save_path, load = True):
+def ner_train(data_path, val_path, save_path, load = True, gpu = True):
     evaluator = Evaluate("NER")
     logging.basicConfig(level=logging.DEBUG, filename='../trainer.log', filemode='w', format='%(levelname)s - %(message)s')
+    logging.info("GPU : {}".format(gpu))
     datareader = DataReader(data_path, "NER")
     valreader = DataReader(val_path,"NER")
     logging.info("Data is read from %s"%data_path)
     vocab_size = datareader.vocab_size
     l2ind = datareader.l2ind
     num_cat = len(l2ind)
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     device = torch.device("cpu")
+    if gpu:
+        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model = BertNER(lstm_hidden = 10, vocab_size=vocab_size, l2ind = l2ind, num_cat = num_cat, device = device)
     logging.info("Training on : %s"%device)
     #model = model.to(device)
@@ -124,7 +127,9 @@ def ner_train(data_path, val_path, save_path, load = True):
             best_loss = train_loss
 
 if __name__ == "__main__":
+    args = sys.argv
+    gpu =args[1]
     save_path = "../best_model.pth"
     data_path = '../datasets/turkish-ner-train.tsv'
     val_path = '../datasets/turkish-ner-dev.tsv'
-    ner_train(data_path, val_path, save_path, load = False)
+    ner_train(data_path, val_path, save_path, load = False,gpu = int(gpu))
