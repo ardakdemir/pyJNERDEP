@@ -10,6 +10,7 @@ from tqdm import tqdm
 import torchvision
 from torch.utils.data import Dataset, DataLoader
 from torchvision import datasets, models, transforms
+from parser.parsereader import *
 import matplotlib.pyplot as plt
 import time
 import os
@@ -60,8 +61,7 @@ def ner_train(data_path, val_path, save_path, load = True, gpu = True):
      'weight_decay_rate': 0.0}
      ]
     bert_optimizer =AdamW(optimizer_grouped_parameters,
-                     lr=2e-5,
-                     )
+                     lr=2e-5)
     EPOCH =5
     B_S =  1
     best_loss = -1

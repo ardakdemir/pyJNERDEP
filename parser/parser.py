@@ -1,0 +1,81 @@
+from __future__ import print_function
+from __future__ import division
+import torch
+from skimage import io, transform
+import torch.nn as nn
+import torch.optim as optim
+import torch.nn.functional as F
+import numpy as np
+from tqdm import tqdm
+import torchvision
+from torch.utils.data import Dataset, DataLoader
+from torchvision import datasets, models, transforms
+import matplotlib.pyplot as plt
+import time
+import os
+import copy
+from pdb import set_trace
+import unidecode
+from pytorch_transformers import *
+from .parsereader import *
+import sys
+import logging
+import time
+
+PAD = "[PAD]"
+PAD_IND = 0
+ROOT = "[ROOT]"
+ROOT_IND = 1
+
+## not sure if root is needed at this stage
+VOCAB_PREF = {PAD : PAD_IND, ROOT : ROOT_IND}
+
+class Parser(nn.Module):
+    def __init__(self):
+        super(Parser,self).__init__()
+        self.bert_model = BertModel.from_pretrained('bert-base-uncased',output_hidden_states=True)
+    def forward(self,ids, seq_ids, bert2toks):
+        bert_output = self.bert_model(ids,seq_ids)
+        out = self._get_bert_batch_hidden(bert_output[2],bert2toks)
+        return out
+    def _get_bert_batch_hidden(self, hiddens , bert2toks, layers=[-2,-3,-4]):
+        meanss = torch.mean(torch.stack([hiddens[i] for i in layers]),0)
+        batch_my_hiddens = []
+        for means,bert2tok in zip(meanss,bert2toks):
+            my_token_hids = []
+            my_hiddens = []
+            for i,b2t in enumerate(bert2tok):
+                if i>0 and b2t!=bert2tok[i-1]:
+                    my_hiddens.append(torch.mean(torch.cat(my_token_hids),0).view(1,-1))
+                    my_token_hids = [means[i+1].view(1,-1)] ## we skip the CLS token
+                else:
+                    my_token_hids.append(means[i+1].view(1,-1))
+            my_hiddens.append(torch.mean(torch.cat(my_token_hids),0).view(1,-1))
+            batch_my_hiddens.append(torch.cat(my_hiddens))
+        return torch.stack(batch_my_hiddens)
+class Vocab:
+
+    def __init__(self,w2ind):
+        self.w2ind =  w2ind
+        self.ind2w = [x for x in w2ind.keys()]
+
+    def map(self,units):
+        return [self.w2ind[x] for x in units]
+
+    def unmap(self,idx):
+        return [self.ind2w[i] for i in idx]
+
+if __name__=="__main__":
+    parser = Parser()
+    depdataset = DepDataset("../../datasets/tr_imst-ud-train.conllu", batch_size = 300)
+    tokens, tok_inds, pos, dep_inds, dep_rels, bert_batch_after_padding,\
+        bert_batch_ids, bert_seq_ids, bert2toks = depdataset[0]
+    # print(pos.shape)
+    # print(bert2toks[0][-1])
+    # print(bert_batch_ids.shape)
+    # print(bert_seq_ids.shape)
+    pred = parser(bert_batch_ids, bert_seq_ids, bert2toks)
+    #mean = parser._get_bert_batch_hidden(pred)
+    print(pred.shape)
+    print(tok_inds.shape)
+    # print(pred[0].shape)
