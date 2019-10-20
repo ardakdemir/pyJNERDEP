@@ -18,7 +18,7 @@ import copy
 from pdb import set_trace
 import unidecode
 from pytorch_transformers import *
-
+from torch import autograd
 
 from datareader import DataReader
 from bertner import BertNER
@@ -40,8 +40,6 @@ def ner_train(data_path, val_path, save_path, load = True, gpu = True):
     vocab_size = datareader.vocab_size
     l2ind = datareader.l2ind
     num_cat = len(l2ind)
-    print("TAG set : ",len(l2ind))
-    print("START_TAG: ",l2ind["SOS"])
     device = torch.device("cpu")
     if gpu:
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -53,7 +51,10 @@ def ner_train(data_path, val_path, save_path, load = True, gpu = True):
         logging.info("Model loaded %s"%save_path)
         model.load_state_dict(torch.load(save_path))
 
-    optimizer = optim.SGD([{"params": model.fc.parameters()},{"params": model.bilstm.parameters()}], lr=0.001, weight_decay = 1e-5)
+    optimizer = optim.SGD([{"params": model.fc.parameters()},\
+        {"params": model.bilstm.parameters()},\
+        {"params":model.crf.parameters()}],\
+        lr=0.001, weight_decay = 1e-5)
     param_optimizer = list(model.bert_model.named_parameters())
     no_decay = ['bias', 'gamma', 'beta']
     optimizer_grouped_parameters = [
@@ -64,8 +65,8 @@ def ner_train(data_path, val_path, save_path, load = True, gpu = True):
      ]
     bert_optimizer =AdamW(optimizer_grouped_parameters,
                      lr=2e-5)
-    EPOCH =5
-    B_S =  1
+    EPOCH = 5
+    B_S = 1
     best_loss = -1
     best_model = 0
     L = len(datareader.dataset)
@@ -76,8 +77,25 @@ def ner_train(data_path, val_path, save_path, load = True, gpu = True):
         c,t,p_tot = 0,1,1
         train_loss = 0
         s = time.time()
-        for l in tqdm(range(L)):
-            my_tokens, bert_tokens, data = datareader.get_bert_input()
+        for l in tqdm(range(len(datareader.batched_dataset))):
+            optimizer.zero_grad()
+            bert_optimizer.zero_grad()
+            #my_tokens, bert_tokens, data = datareader.get_bert_input()
+            tokens, lens, tok_inds, ner_inds,\
+                bert_batch_after_padding, bert_batch_ids,  bert_seq_ids, bert2toks = datareader[l]
+            feats = model._get_feats(bert_batch_ids,bert_seq_ids,bert2toks)
+            crf_scores = model.crf(feats)
+            loss = model.crf_loss(crf_scores,ner_inds,lens)
+            #print(bert_out[2][0].shape)
+            loss.to(device)
+            loss.backward()
+                #print(model.crf.emission.weight.grad)
+            optimizer.step()
+            bert_optimizer.step()
+            train_loss+= loss.item()
+            if  l%100 == 10:
+                print("Train loss average : {}".format(train_loss/l))
+            continue
             #data = torch.tensor(data)
             #data.to(device)
             for d in data[0]:

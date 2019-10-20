@@ -8,7 +8,7 @@ from torch.nn.utils.rnn import pack_padded_sequence
 import torch
 from torch.utils.data import Dataset, DataLoader
 from torchvision import datasets, models, transforms
-
+from torch import autograd
 
 class CRF(nn.Module):
     """
@@ -32,8 +32,8 @@ class CRF(nn.Module):
         :param feats: output of word RNN/BLSTM, a tensor of dimensions (batch_size, timesteps, hidden_dim)
         :return: CRF scores, a tensor of dimensions (batch_size, timesteps, tagset_size, tagset_size)
         """
-        self.batch_size = feats.size(0)
-        self.timesteps = feats.size(1)
+        self.batch_size = feats.size()[0]
+        self.timesteps = feats.size()[1]
 
         emission_scores = self.emission(feats)  # (batch_size, timesteps, tagset_size)
         emission_scores = emission_scores.unsqueeze(2).expand(self.batch_size, self.timesteps, self.tagset_size,
@@ -45,9 +45,11 @@ class CRF(nn.Module):
 
 
 class CRFLoss(nn.Module):
-    def __init__(self,tag_set):
+    def __init__(self,tag_set,START_TAG = "[SOS]", END_TAG   = "[EOS]"):
         super(CRFLoss, self).__init__()
         self.tag2ind = tag_set
+        self.START_TAG = START_TAG
+        self.END_TAG = END_TAG
     def _log_sum_exp(self,tensor, dim):
         """
         Calculates the log-sum-exponent of a tensor's dimension in a numerically stable way.
@@ -69,18 +71,25 @@ class CRFLoss(nn.Module):
         """
 
         ## this calculation assumes that the first target, i.e target[0]
-        ## is START_TAG !! and final target is END_TAG
-        ## be careful!!
-        batch_size = scores.size(0)
+        ## no it does not!
+        targets = targets.unsqueeze(2)
+        batch_size = scores.size()[0]
+        print(scores[0].shape)
+        #scores_ =  scores.view(scores.size()[0],scores.size()[1],-1)
+        score_before_sum = torch.gather(scores.view(scores.size()[0],scores.size()[1],-1), 2 , targets).squeeze(2)
 
-        gold_score = torch.gather(scores.view(scores.size()[0],scores.size()[1],-1)\
-            , 2 , targets.unsqueeze(2))
-        gold_score = pack_padded_sequence(gold_score,lengths,batch_first = True)[0].sum()
+        score_before_sums = pack_padded_sequence(score_before_sum,lengths, batch_first = True)
+        #print(score_before_sum[0])
+        gold_score = score_before_sums[0].sum()
         ## forward score : initialize from start tag
-        forward_scores = scores[:,0,self.tag2ind[self.START_TAG],:]
-        for i in range(scores.size()[1]):
+        forward_scores = torch.zeros(batch_size, len(self.tag2ind))
+        forward_scores[:batch_size] = scores[:,0,self.tag2ind[self.START_TAG],:]
+        for i in range(1, scores.size()[1]):
             batch_size_t = sum([1 if lengths[x]>i else 0 for x in range(lengths.size()[0])])
             forward_scores[:batch_size_t] =\
                 self._log_sum_exp(scores[:batch_size_t,i,:,:]\
                     +forward_scores[:batch_size_t].unsqueeze(2),dim=1)
-        return (forward_scores[:,self.tag2ind[self.END_TAG]].sum() - gold_score)/batch_size
+        all_scores = forward_scores[:,self.tag2ind[self.END_TAG]].sum()
+        loss = all_scores - gold_score
+        loss = loss/batch_size
+        return loss

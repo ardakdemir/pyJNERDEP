@@ -27,18 +27,17 @@ class BertNER(nn.Module):
         super(BertNER,self).__init__()
         self.num_cat = num_cat
         self.l2ind = l2ind
-        self.START_TAG = "SOS"
-        self.END_TAG = "EOS"
-        print(self.l2ind[self.START_TAG])
+        self.START_TAG = "[SOS]"
+        self.END_TAG = "[EOS]"
         self.device = device
         self.bert_tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
         self.bert_model = BertModel.from_pretrained('bert-base-uncased',output_hidden_states=True)
         self.w_dim = self.bert_model.encoder.layer[11].output.dense.out_features
         self.vocab_size = vocab_size
         self.word_embeds = nn.Embedding(self.vocab_size, self.w_dim)
-        self.bilstm  = nn.LSTM(self.w_dim,lstm_hidden,bidirectional=True, num_layers=1, batch_first=True)
-        self.fc = nn.Linear(lstm_hidden*2,self.num_cat)
-        self.crf = CRF(lstm_hidden*2,self.num_cat)
+        self.bilstm  = nn.LSTM(self.w_dim,lstm_hidden, bidirectional=True, num_layers=1, batch_first=True)
+        self.fc = nn.Linear(lstm_hidden*2, self.num_cat)
+        self.crf = CRF(lstm_hidden*2, self.num_cat)
         assert self.START_TAG in l2ind, "Add the start and end  tags!!"
         self.crf_loss = CRFLoss(l2ind)
         self.transitions = nn.Parameter(torch.randn(self.num_cat, self.num_cat,dtype=torch.float,device=device))
@@ -171,6 +170,27 @@ class BertNER(nn.Module):
             prev_tag = tag
         path_score += self.transitions[self.l2ind[self.END_TAG],prev_tag]
         return path_score
+    def _get_bert_batch_hidden(self, hiddens , bert2toks, layers=[-2,-3,-4]):
+        meanss = torch.mean(torch.stack([hiddens[i] for i in layers]),0)
+        batch_my_hiddens = []
+        for means,bert2tok in zip(meanss,bert2toks):
+            my_token_hids = []
+            my_hiddens = []
+            for i,b2t in enumerate(bert2tok):
+                if i>0 and b2t!=bert2tok[i-1]:
+                    my_hiddens.append(torch.mean(torch.cat(my_token_hids),0).view(1,-1))
+                    my_token_hids = [means[i+1].view(1,-1)] ## we skip the CLS token
+                else:
+                    my_token_hids.append(means[i+1].view(1,-1))
+            my_hiddens.append(torch.mean(torch.cat(my_token_hids),0).view(1,-1))
+            batch_my_hiddens.append(torch.cat(my_hiddens))
+        return torch.stack(batch_my_hiddens)
+
+    def _get_feats(self,batch_bert_ids, batch_seq_ids, bert2toks):
+        bert_out = self.bert_model(batch_bert_ids,batch_seq_ids)
+        bert_hiddens = self._get_bert_batch_hidden(bert_out[2],bert2toks)
+        lstm_out,_ = self.bilstm(bert_hiddens)
+        return lstm_out
 
 
     def _crf_neg_loss(self,sent,true_tags):

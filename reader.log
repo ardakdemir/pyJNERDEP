@@ -37,4 +37,3 @@ DEBUG - Starting new HTTPS connection (1): s3.amazonaws.com:443
 DEBUG - https://s3.amazonaws.com:443 "HEAD /models.huggingface.co/bert/bert-base-uncased-pytorch_model.bin HTTP/1.1" 200 0
 INFO - loading weights file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-pytorch_model.bin from cache at /Users/ardaakdemir/.cache/torch/pytorch_transformers/aa1ef1aede4482d0dbcd4d52baad8ae300e60902e88fcb0bebdec09afd232066.36ca03ab34a1a5d5fa7bc3d03d55c4fa650fed07220e2eeebc06ce58d0e9a157
 INFO - Training on : cpu
-INFO -  Device var mi :cpu
