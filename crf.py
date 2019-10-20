@@ -15,7 +15,7 @@ class CRF(nn.Module):
     Conditional Random Field.
     """
 
-    def __init__(self, hidden_dim, tagset_size):
+    def __init__(self, hidden_dim, tagset_size,device):
         """
         :param hidden_dim: size of word RNN/BLSTM's output
         :param tagset_size: number of tags
@@ -23,7 +23,7 @@ class CRF(nn.Module):
         super(CRF, self).__init__()
         self.tagset_size = tagset_size
         self.emission = nn.Linear(hidden_dim, self.tagset_size)
-        self.transition = nn.Parameter(torch.Tensor(self.tagset_size, self.tagset_size))
+        self.transition = nn.Parameter(torch.randn(self.tagset_size, self.tagset_size))
         self.transition.data.zero_()
 
     def forward(self, feats):
@@ -45,8 +45,9 @@ class CRF(nn.Module):
 
 
 class CRFLoss(nn.Module):
-    def __init__(self,tag_set,START_TAG = "[SOS]", END_TAG   = "[EOS]"):
+    def __init__(self,tag_set,START_TAG = "[SOS]", END_TAG   = "[EOS]",device='cpu'):
         super(CRFLoss, self).__init__()
+        self.device = device
         self.tag2ind = tag_set
         self.START_TAG = START_TAG
         self.END_TAG = END_TAG
@@ -74,7 +75,6 @@ class CRFLoss(nn.Module):
         ## no it does not!
         targets = targets.unsqueeze(2)
         batch_size = scores.size()[0]
-        print(scores[0].shape)
         #scores_ =  scores.view(scores.size()[0],scores.size()[1],-1)
         score_before_sum = torch.gather(scores.view(scores.size()[0],scores.size()[1],-1), 2 , targets).squeeze(2)
 
@@ -82,7 +82,7 @@ class CRFLoss(nn.Module):
         #print(score_before_sum[0])
         gold_score = score_before_sums[0].sum()
         ## forward score : initialize from start tag
-        forward_scores = torch.zeros(batch_size, len(self.tag2ind))
+        forward_scores = torch.zeros(batch_size, len(self.tag2ind)).to(self.device)
         forward_scores[:batch_size] = scores[:,0,self.tag2ind[self.START_TAG],:]
         for i in range(1, scores.size()[1]):
             batch_size_t = sum([1 if lengths[x]>i else 0 for x in range(lengths.size()[0])])

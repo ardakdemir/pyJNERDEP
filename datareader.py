@@ -97,7 +97,6 @@ torch.tensor([seq_ids],dtype=torch.long), torch.tensor(bert2tok), lab])
                 row = line.rstrip().split()
                 sent.append(row)
                 label_counts.update([row[-1]])
-        print("Burayi unutmaaaa")
         if len(sent)>0:
             sent.append([END_TAG, END_TAG , END_TAG ])
             new_dataset.append(sent)
@@ -221,11 +220,12 @@ torch.tensor([seq_ids],dtype=torch.long), torch.tensor(bert2tok), lab])
         bert_batch_after_padding, bert_lens = \
             pad_trunc_batch(bert_batch_before_padding, max_len = max_bert_len, bert = True)
         #print(bert_batch_after_padding)
+        bert2tokens_padded, _ = pad_trunc_batch(bert2toks,max_len = max_bert_len, bert = True, b2t=True)
         bert_batch_ids = torch.LongTensor([self.bert_tokenizer.convert_tokens_to_ids(sent) for \
             sent in bert_batch_after_padding])
         bert_seq_ids = torch.LongTensor([[1 for i in range(len(bert_batch_after_padding[0]))]\
             for j in range(len(bert_batch_after_padding))])
-        return tokens, torch.tensor(lens), tok_inds, ner_inds,bert_batch_after_padding, bert_batch_ids,  bert_seq_ids, bert2toks
+        return tokens, torch.tensor(lens), tok_inds, ner_inds,bert_batch_after_padding, bert_batch_ids,  bert_seq_ids, torch.tensor(bert2tokens_padded,dtype=torch.long)
 if __name__ == "__main__":
     data_path = '../datasets/turkish-ner-train.tsv'
     reader = DataReader(data_path,"NER")

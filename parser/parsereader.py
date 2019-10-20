@@ -8,7 +8,6 @@ from .parser import Parser, Vocab, PAD, PAD_IND, VOCAB_PREF, ROOT, ROOT_IND
 from torch.utils.data import Dataset, DataLoader
 import logging
 import time
-logging.basicConfig(level=logging.DEBUG, filename='reader.log', filemode='w', format='%(levelname)s - %(message)s')
 
 def bert2token(my_tokens, bert_tokens, bert_ind = 1):
     inds = []
@@ -30,27 +29,35 @@ def bert2token(my_tokens, bert_tokens, bert_ind = 1):
 
     return inds, ind+1
 
-def pad_trunc_batch(batch, max_len, pad = PAD, pad_ind = PAD_IND, bert = False):
+def pad_trunc_batch(batch, max_len, pad = PAD, pad_ind = PAD_IND, bert = False,b2t=False):
     padded_batch = []
     sent_lens = []
     for sent in batch:
         sent_lens.append(len(sent))
         if len(sent)>=max_len:
             if bert:
-                padded_batch.append(sent + ["[SEP]"])
+                if b2t:
+                    padded_batch.append(sent)
+                else:
+                    padded_batch.append(sent + ["[SEP]"])
             else:
                 padded_batch.append(sent)
         else:
             l = len(sent)
-            index_len = len(sent[0])
+            if not bert:
+                index_len = len(sent[0])
             padded_sent = sent
             for i in range(max_len-l):
                 if bert:
-                    padded_sent = padded_sent + [PAD]
+                    if b2t:
+                        padded_sent.append(padded_sent[-1])
+                    else:
+                        padded_sent = padded_sent + [PAD]
                 else:
                     padded_sent.append([PAD for x in range(index_len)]) ## PAD ALL FIELDS WITH [PAD]
             if bert:
-                padded_sent = padded_sent + ["[SEP]"]
+                if not b2t:
+                    padded_sent = padded_sent + ["[SEP]"]
             padded_batch.append(padded_sent)
     return padded_batch, sent_lens
 

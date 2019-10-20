@@ -37,13 +37,12 @@ class BertNER(nn.Module):
         self.word_embeds = nn.Embedding(self.vocab_size, self.w_dim)
         self.bilstm  = nn.LSTM(self.w_dim,lstm_hidden, bidirectional=True, num_layers=1, batch_first=True)
         self.fc = nn.Linear(lstm_hidden*2, self.num_cat)
-        self.crf = CRF(lstm_hidden*2, self.num_cat)
+        self.crf = CRF(lstm_hidden*2, self.num_cat,self.device)
         assert self.START_TAG in l2ind, "Add the start and end  tags!!"
-        self.crf_loss = CRFLoss(l2ind)
+        self.crf_loss = CRFLoss(l2ind,device =self.device)
         self.transitions = nn.Parameter(torch.randn(self.num_cat, self.num_cat,dtype=torch.float,device=device))
         self.transitions.data[self.l2ind[self.START_TAG],:] = torch.tensor([-10000]).expand(1,self.num_cat)
         self.transitions.data[:,self.l2ind[self.END_TAG]] = torch.tensor([-10000]).expand(1,self.num_cat)
-
     def _viterbi_decode2(self,feats):
         feats = feats[:self.l2ind[self.START_TAG]]
         parents = [[self.l2ind[START_TAG] for x in range(feats.size()[1])]]
