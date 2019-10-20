@@ -8,6 +8,7 @@ import torch.nn.functional as F
 import numpy as np
 from tqdm import tqdm
 import torchvision
+from torch.nn.utils.rnn import pack_padded_sequence
 from torch.utils.data import Dataset, DataLoader
 from torchvision import datasets, models, transforms
 import matplotlib.pyplot as plt
@@ -30,10 +31,16 @@ ROOT_IND = 1
 ## not sure if root is needed at this stage
 VOCAB_PREF = {PAD : PAD_IND, ROOT : ROOT_IND}
 
+
 class Parser(nn.Module):
-    def __init__(self):
+    def __init__(self,tag_size):
         super(Parser,self).__init__()
         self.bert_model = BertModel.from_pretrained('bert-base-uncased',output_hidden_states=True)
+        self.w_dim = self.bert_model.encoder.layer[11].output.dense.out_features
+        self.lstm_hidden = 100
+        self.num_cat = tag_size
+        self.crf = CRF(self.lstm_hidden*2,tag_size)
+        self.bilstm  = nn.LSTM(self.w_dim,self.lstm_hidden, bidirectional=True, num_layers=1, batch_first=True)
     def forward(self,ids, seq_ids, bert2toks):
         bert_output = self.bert_model(ids,seq_ids)
         out = self._get_bert_batch_hidden(bert_output[2],bert2toks)
@@ -66,16 +73,17 @@ class Vocab:
         return [self.ind2w[i] for i in idx]
 
 if __name__=="__main__":
-    parser = Parser()
+
     depdataset = DepDataset("../../datasets/tr_imst-ud-train.conllu", batch_size = 300)
-    tokens, tok_inds, pos, dep_inds, dep_rels, bert_batch_after_padding,\
+    tokens, sent_lens, tok_inds, pos, dep_inds, dep_rels, bert_batch_after_padding,\
         bert_batch_ids, bert_seq_ids, bert2toks = depdataset[0]
-    # print(pos.shape)
-    # print(bert2toks[0][-1])
-    # print(bert_batch_ids.shape)
-    # print(bert_seq_ids.shape)
-    pred = parser(bert_batch_ids, bert_seq_ids, bert2toks)
-    #mean = parser._get_bert_batch_hidden(pred)
-    print(pred.shape)
-    print(tok_inds.shape)
-    # print(pred[0].shape)
+    voc = depdataset.dep_vocab.w2ind
+    print(len(voc))
+    parser = Parser(len(voc)+2)
+    packed_sequence = pack_padded_sequence(pred, sent_lens, batch_first=True)
+    lstm_out,hidden = parser.bilstm(pred)
+    scores = parser.crf(lstm_out)
+    viterbi_loss = CRFLoss(voc)
+    #feats = parser.fc(lstm_out)
+    print(loss)
+    print(dep_rels)

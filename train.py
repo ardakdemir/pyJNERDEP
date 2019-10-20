@@ -10,7 +10,7 @@ from tqdm import tqdm
 import torchvision
 from torch.utils.data import Dataset, DataLoader
 from torchvision import datasets, models, transforms
-from parser.parsereader import *
+from parser.parsereader import bert2token, pad_trunc_batch
 import matplotlib.pyplot as plt
 import time
 import os
@@ -40,6 +40,8 @@ def ner_train(data_path, val_path, save_path, load = True, gpu = True):
     vocab_size = datareader.vocab_size
     l2ind = datareader.l2ind
     num_cat = len(l2ind)
+    print("TAG set : ",len(l2ind))
+    print("START_TAG: ",l2ind["SOS"])
     device = torch.device("cpu")
     if gpu:
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")

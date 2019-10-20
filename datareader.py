@@ -44,6 +44,7 @@ class DataReader():
         self.dataset, self.label_counts = self.get_dataset()
         self.data_len = len(self.dataset)
         self.l2ind, self.word2ind, self.vocab_size = self.get_vocabs()
+        self.batched_dataset, self.sentence_lens = group_into_batch(self.dataset,batch_size = 300)
         self.num_cats = len(self.l2ind)
         self.bert_tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
         self.val_index = 0
@@ -89,6 +90,7 @@ torch.tensor([seq_ids],dtype=torch.long), torch.tensor(bert2tok), lab])
                 if word[0] not in word2ix:
                     word2ix[word[0]]=len(word2ix)
         vocab_size = len(word2ix)
+        print(l2ind)
         return l2ind, word2ix, vocab_size
 
     def get_dataset(self):
@@ -174,11 +176,67 @@ torch.tensor([seq_ids],dtype=torch.long), torch.tensor(bert2tok), lab])
             else:
                 return 0
         return 0
+    def __getitem__(self,idx):
+        """
+            Indexing for the DepDataset
+            converts all the input into tensor before passing
+
+            input is of form :
+                word_ids  (Batch_size, Sentence_lengths)
+        """
+        if torch.is_tensor(idx):
+            idx = idx.tolist()
+        ## batch contains multiple sentences
+        ## as list of lists --> [word pos dep_ind dep_rel]
+        batch = self.batched_dataset[idx]
+        lens = self.sent_lens[idx]
+        ## create the bert tokens and pad each sentence to match the longest
+        ## bert tokenization
+        ## requires additional padding for bert
+        tok_inds = []
+        pos = []
+        dep_rels = []
+        dep_inds = []
+        tokens = []
+        for x in batch:
+            t, p, d_i, d_r = zip(*x) ##unzip the batch
+            tokens.append(t)
+            pos.append(self.pos_vocab.map(p))
+            dep_rels.append(self.dep_vocab.map(d_r))
+            dep_inds.append([-1 if d=="[PAD]" else int(d) for d in d_i])
+            tok_inds.append(self.tok_vocab.map(t))
+        assert len(tok_inds)== len(pos) == len(dep_rels) == len(dep_inds)
+        tok_inds = torch.LongTensor(tok_inds)
+        dep_inds = torch.LongTensor(dep_inds)
+        dep_rels = torch.LongTensor(dep_rels)
+        pos = torch.LongTensor(pos)
+        bert_batch_before_padding = []
+        bert_lens = []
+        max_bert_len = 0
+        bert2toks = []
+
+        for sent, l in zip(batch,lens):
+            my_tokens = [x[0] for x in sent]
+            sentence = " ".join(my_tokens)
+            bert_tokens = self.bert_tokenizer.tokenize(sentence)
+            bert_lens.append(len(bert_tokens))
+            bert_tokens = ["[CLS]"] + bert_tokens
+            max_bert_len = max(max_bert_len,len(bert_tokens))
+            ## bert_ind = 0 since we did not put [CLS] yet
+            b2tok, ind = bert2token(my_tokens, bert_tokens, bert_ind = 1)
+            assert ind == len(my_tokens), "Bert ids do not match token size"
+            bert_batch_before_padding.append(bert_tokens)
+            bert2toks.append(b2tok)
+        bert_batch_after_padding, bert_lens = \
+            pad_trunc_batch(bert_batch_before_padding, max_len = max_bert_len, bert = True)
+        #print(bert_batch_after_padding)
+        bert_batch_ids = torch.LongTensor([self.bert_tokenizer.convert_tokens_to_ids(sent) for \
+            sent in bert_batch_after_padding])
+        bert_seq_ids = torch.LongTensor([[1 for i in range(len(bert_batch_after_padding[0]))]\
+            for j in range(len(bert_batch_after_padding))])
+        return tokens, tok_inds, pos, dep_inds, dep_rels,bert_batch_after_padding, bert_batch_ids,  bert_seq_ids, bert2toks
 if __name__ == "__main__":
     data_path = '../datasets/turkish-ner-train.tsv'
     reader = DataReader(data_path,"NER")
     print(sum(map(len,reader.dataset))/reader.data_len)
     batched_dataset, sentence_lens = group_into_batch(reader.dataset,batch_size = 300)
-    print(len(batched_dataset[3][-1]))
-    print(batched_dataset[3][-1])
-    print(sentence_lens[10])

@@ -4,7 +4,7 @@ import pandas as pd
 import torch
 import numpy as np
 from pytorch_transformers import BertTokenizer
-from .parser import Parser, Vocab, PAD, PAD_IND, VOCAB_PREF
+from .parser import Parser, Vocab, PAD, PAD_IND, VOCAB_PREF, ROOT, ROOT_IND
 from torch.utils.data import Dataset, DataLoader
 import logging
 import time
@@ -99,9 +99,9 @@ def read_conllu(file_name, cols = ['word','upos','head','deprel']):
     file = open(file_name, encoding='utf-8').read().rstrip().split("\n")
     dataset = []
     sentence = []
-    tok2ind = VOCAB_PREF
-    pos2ind = VOCAB_PREF
-    dep2ind = VOCAB_PREF
+    tok2ind = {PAD : PAD_IND, ROOT : ROOT_IND}
+    pos2ind = {PAD : PAD_IND, ROOT : ROOT_IND}
+    dep2ind = {PAD : PAD_IND, ROOT : ROOT_IND}
     total_word_size = 0
     for line in file:
         if line.startswith("#"):
@@ -129,8 +129,11 @@ def read_conllu(file_name, cols = ['word','upos','head','deprel']):
     assert all([len(d)>=len(d_) for d,d_ in zip(dataset,dataset[1:])]),\
         "Dataset is not sorted properly"
     tok_vocab = Vocab(tok2ind)
+
     dep_vocab = Vocab(dep2ind)
     pos_vocab = Vocab(pos2ind)
+    print("vocab size : ",len(dep2ind))
+    print(dep2ind.keys())
     return dataset, tok_vocab, dep_vocab, pos_vocab, total_word_size
 
 
@@ -247,14 +250,16 @@ class DepDataset(Dataset):
             sent in bert_batch_after_padding])
         bert_seq_ids = torch.LongTensor([[1 for i in range(len(bert_batch_after_padding[0]))]\
             for j in range(len(bert_batch_after_padding))])
-        return tokens, tok_inds, pos, dep_inds, dep_rels,bert_batch_after_padding, bert_batch_ids,  bert_seq_ids, bert2toks
+        return tokens, torch.tensor(lens), tok_inds, pos, dep_inds, dep_rels,\
+            bert_batch_after_padding, bert_batch_ids,  bert_seq_ids, bert2toks
 
 if __name__=="__main__":
     depdataset = DepDataset("../../datasets/tr_imst-ud-train.conllu", batch_size = 300)
     print(depdataset.average_length)
     i = 0
     b = time.time()
-    tokens, tok_inds, pos, dep_inds, dep_rels, bert_batch_after_padding, bert_batch_ids, bert_seq_ids, bert2toks = depdataset[i]
+    tokens, sent_lens, tok_inds, pos, dep_inds, dep_rels,\
+        bert_batch_after_padding, bert_batch_ids, bert_seq_ids, bert2toks = depdataset[i]
     e = time.time()
     print(" {} seconds for reading a batch ".format(e-b))
     for t, p, di, dr, b in zip(tokens, pos, dep_inds, dep_rels, bert_batch_ids):

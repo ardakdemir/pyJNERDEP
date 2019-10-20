@@ -14,6 +14,7 @@ import time
 import os
 import copy
 from pdb import set_trace
+from crf import CRF, CRFLoss
 import unidecode
 from pytorch_transformers import *
 
@@ -22,25 +23,27 @@ from datareader import DataReader
 
 
 class BertNER(nn.Module):
-    def __init__(self,l2ind,vocab_size, lstm_hidden=100,channel_size=400,num_cat=5,device='cpu'):
+    def __init__(self,l2ind,vocab_size, lstm_hidden=100,channel_size=400,num_cat=5, device='cpu'):
         super(BertNER,self).__init__()
         self.num_cat = num_cat
         self.l2ind = l2ind
         self.START_TAG = "SOS"
         self.END_TAG = "EOS"
+        print(self.l2ind[self.START_TAG])
         self.device = device
         self.bert_tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
         self.bert_model = BertModel.from_pretrained('bert-base-uncased',output_hidden_states=True)
         self.w_dim = self.bert_model.encoder.layer[11].output.dense.out_features
         self.vocab_size = vocab_size
         self.word_embeds = nn.Embedding(self.vocab_size, self.w_dim)
-        self.bilstm  = nn.LSTM(self.w_dim,lstm_hidden,bidirectional=True,num_layers=1,batch_first=True)
+        self.bilstm  = nn.LSTM(self.w_dim,lstm_hidden,bidirectional=True, num_layers=1, batch_first=True)
         self.fc = nn.Linear(lstm_hidden*2,self.num_cat)
+        self.crf = CRF(lstm_hidden*2,self.num_cat)
+        assert self.START_TAG in l2ind, "Add the start and end  tags!!"
+        self.crf_loss = CRFLoss(l2ind)
         self.transitions = nn.Parameter(torch.randn(self.num_cat, self.num_cat,dtype=torch.float,device=device))
         self.transitions.data[self.l2ind[self.START_TAG],:] = torch.tensor([-10000]).expand(1,self.num_cat)
         self.transitions.data[:,self.l2ind[self.END_TAG]] = torch.tensor([-10000]).expand(1,self.num_cat)
-
-
 
     def _viterbi_decode2(self,feats):
         feats = feats[:self.l2ind[self.START_TAG]]
@@ -186,7 +189,6 @@ class BertNER(nn.Module):
         forward_score = self._forward_score(scores)
         #print("Gold:",gold_score, " Forw : ", forward_score, "Diff : ", forward_score - gold_score)
         return forward_score - gold_score
-
 
     def forward(self, ids, seq_ids, bert2tok):
         scores = self._get_bert_score(ids, seq_ids, bert2tok)
