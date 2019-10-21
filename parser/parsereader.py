@@ -8,7 +8,7 @@ from parser import Parser, Vocab, PAD, PAD_IND, VOCAB_PREF, ROOT, ROOT_IND
 from torch.utils.data import Dataset, DataLoader
 import logging
 import time
-
+import random
 def bert2token(my_tokens, bert_tokens, bert_ind = 1):
     inds = []
     token_sum =""
@@ -24,7 +24,7 @@ def bert2token(my_tokens, bert_tokens, bert_ind = 1):
                 token_sum+=token
             inds.append(ind)
             bert_ind+=1
-        assert len(token_sum)==len(my_token), print(my_tokens)
+        assert len(token_sum)==len(my_token), logging.info(my_tokens)
         token_sum=""
 
     return inds, ind+1
@@ -212,6 +212,10 @@ class DepDataset(Dataset):
             idx = idx.tolist()
         ## batch contains multiple sentences
         ## as list of lists --> [word pos dep_ind dep_rel]
+        x = [i for i in range(len(self.dataset))]
+        random.shuffle(x)
+        idx = x[idx]
+        #print(idx)
         batch = self.dataset[idx]
         lens = self.sent_lens[idx]
         ## create the bert tokens and pad each sentence to match the longest
@@ -239,7 +243,6 @@ class DepDataset(Dataset):
         max_bert_len = 0
         bert2toks = []
         masks = torch.ones(tok_inds.shape,dtype=torch.bool)
-        print(masks.shape)
         i = 0
         for sent, l in zip(batch,lens):
             my_tokens = [x[0] for x in sent]
@@ -257,8 +260,6 @@ class DepDataset(Dataset):
             i+=1
         bert_batch_after_padding, bert_lens = \
             pad_trunc_batch(bert_batch_before_padding, max_len = max_bert_len, bert = True)
-        print(masks[1])
-        print(lens[1])
         #print(bert_batch_after_padding)
         bert2tokens_padded, _ = pad_trunc_batch(bert2toks,max_len = max_bert_len, bert = True, b2t=True)
         bert2toks = torch.LongTensor(bert2tokens_padded)

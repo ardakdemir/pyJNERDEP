@@ -64,7 +64,7 @@ class Parser(nn.Module):
         heads_ = heads.masked_fill(masks,-1)
         deprel_loss = self.dep_rel_crit(head_scores,dep_rels)
         depind_loss = self.dep_ind_crit(unlabeled_scores.squeeze(3)[:,1:].transpose(1,2),heads_[:,1:])
-        return deprel_loss+depind_loss
+        return deprel_loss + depind_loss
     
 
     def _get_bert_batch_hidden(self, hiddens , bert2toks, layers=[-2,-3,-4]):
