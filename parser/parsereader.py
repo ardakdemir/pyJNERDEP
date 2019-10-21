@@ -4,7 +4,7 @@ import pandas as pd
 import torch
 import numpy as np
 from pytorch_transformers import BertTokenizer
-from .parser import Parser, Vocab, PAD, PAD_IND, VOCAB_PREF, ROOT, ROOT_IND
+from parser import Parser, Vocab, PAD, PAD_IND, VOCAB_PREF, ROOT, ROOT_IND
 from torch.utils.data import Dataset, DataLoader
 import logging
 import time
@@ -103,17 +103,19 @@ def read_conllu(file_name, cols = ['word','upos','head','deprel']):
         Reads a conllu file and generates the vocabularies
     """
     assert file_name.endswith("conllu"), "File must a .conllu type"
-    file = open(file_name, encoding='utf-8').read().rstrip().split("\n")
+    file = open(file_name, encoding = "utf-8").read().rstrip().split("\n")
     dataset = []
     sentence = []
     tok2ind = {PAD : PAD_IND, ROOT : ROOT_IND}
     pos2ind = {PAD : PAD_IND, ROOT : ROOT_IND}
     dep2ind = {PAD : PAD_IND, ROOT : ROOT_IND}
     total_word_size = 0
+    root = [[ROOT for _ in range(len(cols))]]
     for line in file:
         if line.startswith("#"):
             continue
         elif line=="":
+            sentence = root + sentence
             dataset.append(sentence)
             sentence = []
         else:
@@ -129,6 +131,7 @@ def read_conllu(file_name, cols = ['word','upos','head','deprel']):
             if line[7] not in dep2ind:
                 dep2ind[line[7]] = len(dep2ind)
     if len(sentence):
+        sentence = root + sentence
         dataset.append(sentence)
     ##
     dataset.sort(key = lambda x : len(x))
@@ -139,8 +142,6 @@ def read_conllu(file_name, cols = ['word','upos','head','deprel']):
 
     dep_vocab = Vocab(dep2ind)
     pos_vocab = Vocab(pos2ind)
-    print("vocab size : ",len(dep2ind))
-    print(dep2ind.keys())
     return dataset, tok_vocab, dep_vocab, pos_vocab, total_word_size
 
 
@@ -226,7 +227,7 @@ class DepDataset(Dataset):
             tokens.append(t)
             pos.append(self.pos_vocab.map(p))
             dep_rels.append(self.dep_vocab.map(d_r))
-            dep_inds.append([-1 if d=="[PAD]" else int(d) for d in d_i])
+            dep_inds.append([-1 if d=="[PAD]" or d=="[ROOT]" else int(d) for d in d_i])
             tok_inds.append(self.tok_vocab.map(t))
         assert len(tok_inds)== len(pos) == len(dep_rels) == len(dep_inds)
         tok_inds = torch.LongTensor(tok_inds)
@@ -253,6 +254,8 @@ class DepDataset(Dataset):
         bert_batch_after_padding, bert_lens = \
             pad_trunc_batch(bert_batch_before_padding, max_len = max_bert_len, bert = True)
         #print(bert_batch_after_padding)
+        bert2tokens_padded, _ = pad_trunc_batch(bert2toks,max_len = max_bert_len, bert = True, b2t=True)
+        bert2toks = torch.LongTensor(bert2tokens_padded)
         bert_batch_ids = torch.LongTensor([self.bert_tokenizer.convert_tokens_to_ids(sent) for \
             sent in bert_batch_after_padding])
         bert_seq_ids = torch.LongTensor([[1 for i in range(len(bert_batch_after_padding[0]))]\

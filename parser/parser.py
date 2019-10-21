@@ -8,9 +8,11 @@ import torch.nn.functional as F
 import numpy as np
 from tqdm import tqdm
 import torchvision
+from torch import nn
 from torch.nn.utils.rnn import pack_padded_sequence
 from torch.utils.data import Dataset, DataLoader
 from torchvision import datasets, models, transforms
+from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 import matplotlib.pyplot as plt
 import time
 import os
@@ -18,7 +20,8 @@ import copy
 from pdb import set_trace
 import unidecode
 from pytorch_transformers import *
-from .parsereader import *
+from parsereader import *
+from biaffine import *
 import sys
 import logging
 import time
@@ -38,13 +41,22 @@ class Parser(nn.Module):
         self.bert_model = BertModel.from_pretrained('bert-base-uncased',output_hidden_states=True)
         self.w_dim = self.bert_model.encoder.layer[11].output.dense.out_features
         self.lstm_hidden = 100
+        self.biaffine_hidden = 30
         self.num_cat = tag_size
-        self.crf = CRF(self.lstm_hidden*2,tag_size)
         self.bilstm  = nn.LSTM(self.w_dim,self.lstm_hidden, bidirectional=True, num_layers=1, batch_first=True)
-    def forward(self,ids, seq_ids, bert2toks):
+        self.unlabeled = DeepBiaffineScorer(2*self.lstm_hidden,2*self.lstm_hidden,self.biaffine_hidden,1,pairwise=True)
+        self.dep_rel = DeepBiaffineScorer(2*self.lstm_hidden,2*self.lstm_hidden, self.biaffine_hidden, self.num_cat,pairwise=True)
+        self.crit = nn.CrossEntropyLoss(ignore_index=-1, reduction= 'sum')## ignore paddings
+    def forward(self, ids,heads, dep_rels, seq_ids, sent_lens, bert2toks):
         bert_output = self.bert_model(ids,seq_ids)
-        out = self._get_bert_batch_hidden(bert_output[2],bert2toks)
-        return out
+        bert_out = self._get_bert_batch_hidden(bert_output[2],bert2toks)
+        packed_sequence = pack_padded_sequence(bert_out,sent_lens, batch_first=True)
+        lstm_out, hidden = self.bilstm(packed_sequence)
+        unpacked, _ = pad_packed_sequence(lstm_out,batch_first=True)
+        unlabeled_scores = self.unlabeled(unpacked,unpacked)
+        deprel_scores  = self.dep_rel(unpacked,unpacked)
+
+        return unlabeled_scores, deprel_scores
     def _get_bert_batch_hidden(self, hiddens , bert2toks, layers=[-2,-3,-4]):
         meanss = torch.mean(torch.stack([hiddens[i] for i in layers]),0)
         batch_my_hiddens = []
@@ -79,11 +91,8 @@ if __name__=="__main__":
         bert_batch_ids, bert_seq_ids, bert2toks = depdataset[0]
     voc = depdataset.dep_vocab.w2ind
     print(len(voc))
-    parser = Parser(len(voc)+2)
-    packed_sequence = pack_padded_sequence(pred, sent_lens, batch_first=True)
-    lstm_out,hidden = parser.bilstm(pred)
-    scores = parser.crf(lstm_out)
-    viterbi_loss = CRFLoss(voc)
+    #scores = parser.crf(lstm_out)
+    #viterbi_loss = CRFLoss(voc)
     #feats = parser.fc(lstm_out)
-    print(loss)
-    print(dep_rels)
+    #print(loss)
+    #print(dep_rels)
