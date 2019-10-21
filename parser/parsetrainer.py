@@ -32,19 +32,15 @@ def main():
     voc = depdataset.dep_vocab.w2ind
     sent = depdataset.dataset[0][1]
     parser = Parser(len(voc))
-
-    tokens, sent_lens, tok_inds, pos, dep_inds, dep_rels, bert_batch_after_padding,\
+    optimizer = optim.SGD(parser.parameters(), lr=0.001) 
+    tokens, sent_lens, masks, tok_inds, pos, dep_inds, dep_rels, bert_batch_after_padding,\
         bert_batch_ids, bert_seq_ids, bert2toks = depdataset[0]
-    logging.info(bert_seq_ids)
-    logging.info(bert2toks.size())
-    logging.info(len(bert2toks[0]))
-    unlabeled_scores, deprel_scores = parser(bert_batch_ids, dep_inds, dep_rels, bert_seq_ids,sent_lens, bert2toks)
+    loss = parser(bert_batch_ids, masks, dep_inds, dep_rels, bert_seq_ids,sent_lens, bert2toks)
+    loss.backward()
+
+    print(loss.item()) 
     print("Size of the words ")
-    print(len(tokens[0]))
-    print(unlabeled_scores.shape)
-    print(deprel_scores[0])
-    print(dep_inds[0])
-    print(tok_inds.shape)
+    optimizer.step()
 if __name__ == "__main__":
 
     main()

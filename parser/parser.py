@@ -40,23 +40,33 @@ class Parser(nn.Module):
         super(Parser,self).__init__()
         self.bert_model = BertModel.from_pretrained('bert-base-uncased',output_hidden_states=True)
         self.w_dim = self.bert_model.encoder.layer[11].output.dense.out_features
-        self.lstm_hidden = 100
+        self.lstm_hidden = 10
         self.biaffine_hidden = 30
         self.num_cat = tag_size
         self.bilstm  = nn.LSTM(self.w_dim,self.lstm_hidden, bidirectional=True, num_layers=1, batch_first=True)
         self.unlabeled = DeepBiaffineScorer(2*self.lstm_hidden,2*self.lstm_hidden,self.biaffine_hidden,1,pairwise=True)
         self.dep_rel = DeepBiaffineScorer(2*self.lstm_hidden,2*self.lstm_hidden, self.biaffine_hidden, self.num_cat,pairwise=True)
-        self.crit = nn.CrossEntropyLoss(ignore_index=-1, reduction= 'sum')## ignore paddings
-    def forward(self, ids,heads, dep_rels, seq_ids, sent_lens, bert2toks):
+        self.dep_rel_crit = nn.CrossEntropyLoss(ignore_index=0, reduction= 'sum')## ignore paddings
+        self.dep_ind_crit = nn.CrossEntropyLoss(ignore_index=-1, reduction = 'sum')## ignore paddings at -1 including root
+
+    def forward(self, ids, masks, heads, dep_rels, seq_ids, sent_lens, bert2toks):
+        batch_size = masks.size()[0]
+        word_size = masks.size()[1]
         bert_output = self.bert_model(ids,seq_ids)
         bert_out = self._get_bert_batch_hidden(bert_output[2],bert2toks)
         packed_sequence = pack_padded_sequence(bert_out,sent_lens, batch_first=True)
         lstm_out, hidden = self.bilstm(packed_sequence)
         unpacked, _ = pad_packed_sequence(lstm_out,batch_first=True)
+        
         unlabeled_scores = self.unlabeled(unpacked,unpacked)
-        deprel_scores  = self.dep_rel(unpacked,unpacked)
+        deprel_scores  = self.dep_rel(unpacked,unpacked) 
+        head_scores = torch.gather(deprel_scores,2,heads.unsqueeze(2).unsqueeze(3).expand(-1,-1,1,self.num_cat)).view(batch_size, self.num_cat,word_size)
+        heads_ = heads.masked_fill(masks,-1)
+        deprel_loss = self.dep_rel_crit(head_scores,dep_rels)
+        depind_loss = self.dep_ind_crit(unlabeled_scores.squeeze(3)[:,1:].transpose(1,2),heads_[:,1:])
+        return deprel_loss+depind_loss
+    
 
-        return unlabeled_scores, deprel_scores
     def _get_bert_batch_hidden(self, hiddens , bert2toks, layers=[-2,-3,-4]):
         meanss = torch.mean(torch.stack([hiddens[i] for i in layers]),0)
         batch_my_hiddens = []

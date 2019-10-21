@@ -227,7 +227,7 @@ class DepDataset(Dataset):
             tokens.append(t)
             pos.append(self.pos_vocab.map(p))
             dep_rels.append(self.dep_vocab.map(d_r))
-            dep_inds.append([-1 if d=="[PAD]" or d=="[ROOT]" else int(d) for d in d_i])
+            dep_inds.append([0 if d=="[PAD]" or d=="[ROOT]" else int(d) for d in d_i])
             tok_inds.append(self.tok_vocab.map(t))
         assert len(tok_inds)== len(pos) == len(dep_rels) == len(dep_inds)
         tok_inds = torch.LongTensor(tok_inds)
@@ -238,9 +238,12 @@ class DepDataset(Dataset):
         bert_lens = []
         max_bert_len = 0
         bert2toks = []
-
+        masks = torch.ones(tok_inds.shape,dtype=torch.bool)
+        print(masks.shape)
+        i = 0
         for sent, l in zip(batch,lens):
             my_tokens = [x[0] for x in sent]
+            masks[i,:l] = torch.tensor([0]*l,dtype=torch.bool)    
             sentence = " ".join(my_tokens)
             bert_tokens = self.bert_tokenizer.tokenize(sentence)
             bert_lens.append(len(bert_tokens))
@@ -251,8 +254,11 @@ class DepDataset(Dataset):
             assert ind == len(my_tokens), "Bert ids do not match token size"
             bert_batch_before_padding.append(bert_tokens)
             bert2toks.append(b2tok)
+            i+=1
         bert_batch_after_padding, bert_lens = \
             pad_trunc_batch(bert_batch_before_padding, max_len = max_bert_len, bert = True)
+        print(masks[1])
+        print(lens[1])
         #print(bert_batch_after_padding)
         bert2tokens_padded, _ = pad_trunc_batch(bert2toks,max_len = max_bert_len, bert = True, b2t=True)
         bert2toks = torch.LongTensor(bert2tokens_padded)
@@ -260,7 +266,7 @@ class DepDataset(Dataset):
             sent in bert_batch_after_padding])
         bert_seq_ids = torch.LongTensor([[1 for i in range(len(bert_batch_after_padding[0]))]\
             for j in range(len(bert_batch_after_padding))])
-        return tokens, torch.tensor(lens), tok_inds, pos, dep_inds, dep_rels,\
+        return tokens, torch.tensor(lens),masks, tok_inds, pos, dep_inds, dep_rels,\
             bert_batch_after_padding, bert_batch_ids,  bert_seq_ids, bert2toks
 
 if __name__=="__main__":
