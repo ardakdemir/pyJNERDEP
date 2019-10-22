@@ -6,6 +6,7 @@ import numpy as np
 from pytorch_transformers import BertTokenizer
 from parser import Parser, Vocab, PAD, PAD_IND, VOCAB_PREF, ROOT, ROOT_IND
 from torch.utils.data import Dataset, DataLoader
+from utils import sort_dataset, unsort_dataset
 import logging
 import time
 import random
@@ -68,8 +69,6 @@ def group_into_batch(dataset, batch_size):
 
         Do not naively batch by number of sentences!!
     """
-    dataset.sort(key = lambda x: len(x))
-    dataset.reverse()
     batched_dataset = []
     sentence_lens = []
     current_len = 0
@@ -134,15 +133,16 @@ def read_conllu(file_name, cols = ['word','upos','head','deprel']):
         sentence = root + sentence
         dataset.append(sentence)
     ##
-    dataset.sort(key = lambda x : len(x))
-    dataset.reverse()
+    dataset, orig_idx = sort_dataset(dataset)
     assert all([len(d)>=len(d_) for d,d_ in zip(dataset,dataset[1:])]),\
         "Dataset is not sorted properly"
     tok_vocab = Vocab(tok2ind)
 
     dep_vocab = Vocab(dep2ind)
     pos_vocab = Vocab(pos2ind)
-    return dataset, tok_vocab, dep_vocab, pos_vocab, total_word_size
+    vocabs = {"tok_vocab": tok_vocab, "dep_vocab": dep_vocab, "pos_vocab": pos_vocab}
+    return dataset, orig_idx, vocabs,  total_word_size
+
 
 
 def count_words_in_batches(dataset):
@@ -166,7 +166,7 @@ class DepDataset(Dataset):
         self.batch_size = batch_size
         if for_eval and not vocabs:
             raise AssertionError("Evaluation mode requires vocab")
-        self.dataset, self.tok_vocab, self.dep_vocab, self.pos_vocab\
+        self.dataset, self.orig_idx, self.vocabs\
         ,self.total_word_size = read_conllu(self.file_name)
         self.average_length = self.total_word_size/len(self.dataset)
         print("Dataset size before batching {} and number of words : {}".format(len(self.dataset),self.total_word_size))
@@ -174,12 +174,12 @@ class DepDataset(Dataset):
         print("{} batches created for {}.".format(len(self.dataset), self.file_name))
         print("{} words inside the batches".format(sum([sum(l) for l in self.sent_lens])))
         if for_eval :
-            self.tok_vocab, self.dep_vocab, self.pos_vocab = vocabs
+            self.vocabs = vocabs
         self.bert_tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
         self.data_len = len(self.dataset)
         self.index = 0
-        self.num_rels = len(self.dep_vocab.w2ind)
-        self.num_pos  = len(self.pos_vocab.w2ind)
+        self.num_rels = len(self.vocabs['dep_vocab'].w2ind)
+        self.num_pos  = len(self.vocabs['pos_vocab'].w2ind)
 
     def __len__(self):
         return len(self.dataset)
@@ -212,9 +212,9 @@ class DepDataset(Dataset):
             idx = idx.tolist()
         ## batch contains multiple sentences
         ## as list of lists --> [word pos dep_ind dep_rel]
-        x = [i for i in range(len(self.dataset))]
-        random.shuffle(x)
-        idx = x[idx]
+        #x = [i for i in range(len(self.dataset))]
+        #random.shuffle(x)
+        #idx = x[idx]
         #print(idx)
         batch = self.dataset[idx]
         lens = self.sent_lens[idx]
@@ -229,10 +229,10 @@ class DepDataset(Dataset):
         for x in batch:
             t, p, d_i, d_r = zip(*x) ##unzip the batch
             tokens.append(t)
-            pos.append(self.pos_vocab.map(p))
-            dep_rels.append(self.dep_vocab.map(d_r))
+            pos.append(self.vocabs['pos_vocab'].map(p))
+            dep_rels.append(self.vocabs['dep_vocab'].map(d_r))
             dep_inds.append([0 if d=="[PAD]" or d=="[ROOT]" else int(d) for d in d_i])
-            tok_inds.append(self.tok_vocab.map(t))
+            tok_inds.append(self.vocabs['tok_vocab'].map(t))
         assert len(tok_inds)== len(pos) == len(dep_rels) == len(dep_inds)
         tok_inds = torch.LongTensor(tok_inds)
         dep_inds = torch.LongTensor(dep_inds)
