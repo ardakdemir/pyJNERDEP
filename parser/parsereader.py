@@ -4,7 +4,7 @@ import pandas as pd
 import torch
 import numpy as np
 from pytorch_transformers import BertTokenizer
-from parser import Parser, Vocab, PAD, PAD_IND, VOCAB_PREF, ROOT, ROOT_IND
+from parser import Parser, Vocab, PAD, PAD_IND, VOCAB_PREF, ROOT, ROOT_IND, UNK, UNK_IND
 from torch.utils.data import Dataset, DataLoader
 from utils import sort_dataset, unsort_dataset
 import logging
@@ -105,7 +105,7 @@ def read_conllu(file_name, cols = ['word','upos','head','deprel']):
     file = open(file_name, encoding = "utf-8").read().rstrip().split("\n")
     dataset = []
     sentence = []
-    tok2ind = {PAD : PAD_IND, ROOT : ROOT_IND}
+    tok2ind = {PAD : PAD_IND, ROOT : ROOT_IND,UNK:UNK_IND}
     pos2ind = {PAD : PAD_IND, ROOT : ROOT_IND}
     dep2ind = {PAD : PAD_IND, ROOT : ROOT_IND}
     total_word_size = 0
@@ -133,9 +133,12 @@ def read_conllu(file_name, cols = ['word','upos','head','deprel']):
         sentence = root + sentence
         dataset.append(sentence)
     ##
-    dataset, orig_idx = sort_dataset(dataset)
-    assert all([len(d)>=len(d_) for d,d_ in zip(dataset,dataset[1:])]),\
-        "Dataset is not sorted properly"
+    sort = True
+    logging.info("Sorting dataset is set to {}".format(sort))
+    dataset, orig_idx = sort_dataset(dataset, sort = sort)
+    if sort :
+        assert all([len(d)>=len(d_) for d,d_ in zip(dataset,dataset[1:])]),\
+            "Dataset is not sorted properly"
     tok_vocab = Vocab(tok2ind)
 
     dep_vocab = Vocab(dep2ind)

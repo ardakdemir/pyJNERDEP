@@ -59,8 +59,11 @@ def get_conll_file_for_eval(conll_u,out_file="cropped"):
         else:
             out.write(line)
     out.close()
-def sort_dataset(dataset,desc=True):
+def sort_dataset(dataset,desc=True, sort = True):
+    
     idx = [i for i in range(len(dataset))]
+    if not sort:
+        return dataset, idx
     zipped = list(zip(dataset,idx))
     zipped.sort(key = lambda x : len(x[0]))
     if desc:
