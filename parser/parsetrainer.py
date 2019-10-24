@@ -72,14 +72,16 @@ class DepTrainer:
     
         
         if train: 
-            loss, deprel, depind = self.parser(bert_batch_ids, masks, dep_inds, dep_rels, bert_seq_ids,sent_lens, bert2toks) 
+            _, loss, deprel, depind = self.parser(bert_batch_ids, masks, dep_inds, dep_rels, bert_seq_ids,sent_lens, bert2toks) 
             return loss/torch.sum(sent_lens), deprel/torch.sum(sent_lens), depind/torch.sum(sent_lens)
         
         else:
             self.parser.eval()
-            preds, deprel_preds, true_scores, headtrues, deprel_scores = self.parser.predict(bert_batch_ids, masks, dep_inds, dep_rels, bert_seq_ids, sent_lens, bert2toks)
-            return preds,deprel_preds, true_scores, headtrues,deprel_scores
-
+            #preds, deprel_preds, true_scores, headtrues, deprel_scores = self.parser.predict(bert_batch_ids, masks, dep_inds, dep_rels, bert_seq_ids, sent_lens, bert2toks)
+            #preds  = self.parser.predict(bert_batch_ids, masks, dep_inds, dep_rels, bert_seq_ids, sent_lens, bert2toks)
+            preds ,_,_,_= self.parser(bert_batch_ids, masks, dep_inds, dep_rels, bert_seq_ids, sent_lens, bert2toks)
+            #return preds, deprel_preds, true_scores, headtrues, deprel_scores
+            return preds
 
 
     def update(self,batch,eval=False): 
@@ -112,30 +114,8 @@ class DepTrainer:
             batch = dataset[x]
             sent_lens = batch[1]
             tokens = batch[0]
-            preds, deprel_preds, true_scores, headstruth, deprel_scores = self.forward(batch,train=False)
-            if x==0:
-                heads, dep_rels , output = self.parser.decode(preds[0], preds[1], sent_lens,verbose=True)
-            else:
-                heads, dep_rels , output = self.parser.decode(preds[0], preds[1], sent_lens,verbose=False)
-
-            if x == 0:
-                s=0
-                if s == 0:            
-                    s+=1
-                    logging.info(dataset.vocabs['dep_vocab'].w2ind)
-                    logging.info("Heads true shape {}".format(headstruth.shape))
-                    logging.info("True scores shape{}".format(true_scores.shape))
-                    logging.info("Ilk head 5 mi nedir")
-                    logging.info("Benim headlerin uzunlugu")
-                    logging.info(len(heads[0]))
-                    logging.info(deprel_scores.shape)
-                    #for i in range(deprel_scores.shape[1]):
-                    #    logging.info(" ".join([str(x.detach().cpu().numpy()) for x in deprel_scores[0,i,0,:]]))
-                    logging.info("Compare true heads with my heads")
-                    logging.info(headstruth[0])
-                    logging.info(heads[0])
-                    logging.info("Tekrardan alinanlar nedir")
-                    logging.info(output[0])
+            preds = self.forward(batch,train=False)
+            heads, dep_rels , output = self.parser.decode(preds[0], preds[1], sent_lens,verbose=True)
             for outs,sent,l in zip(output,tokens,sent_lens):
                 new_sent = []
                 assert len(sent[1:l]) == len(outs), "Sizes do not match"
@@ -153,7 +133,8 @@ class DepTrainer:
         
         return p, r, f1
 
-def main(args= None):
+def main(args = None):
+    
     print("Working on : {}".format(device))
     
     file_name = "../../../datasets/tr_imst-ud-train.conllu"
@@ -171,20 +152,17 @@ def main(args= None):
         train_loss = 0
         ex = 0
         dep_loss = 0 
-        for j in tqdm(range(L), unit="batch"):
+        for j in tqdm(range(L), unit="batch",desc = "Training"):
             batch = depdataset[j]
             loss, deprel, depind = ParseTrainer.update(batch)
             train_loss += loss
             dep_loss += deprel
-            #print(loss.item())
-            #print(parser.dep_rel.W1.weight.grad)
-            #print(parser.unlabeled.scorer.W_bilin.weight.grad)
-            ex += sum(batch[1].numpy())
+            ex += len(batch[1])
             if j%10 == 1:
                 logging.info("Average Train Loss  {} after {} sentences ".format(train_loss/(j+1),ex))
                 logging.info("Dep rel losses {}".format(dep_loss/(j+1)))
         logging.info("Final train loss of epoch {} :  {}".format(i+1,train_loss/L))
-        p, r, f1 = ParseTrainer.evaluate(depdataset)
+        p, r, f1 = ParseTrainer.evaluate(dep_valid)
 if __name__ == "__main__":
 
     main()

@@ -67,37 +67,34 @@ class Parser(nn.Module):
         trees = []
         dep_rels = []
         dep_tokens = []
+        dep_tokens2 = []
+        
         s = 0
+        
         for l, rel, edge in zip(sent_lens, label_preds, edge_preds):
+            logging.info("Rel shape {}".format(rel.shape))
             head_seq = list(chuliu_edmonds_one_root(edge[:l,:l]))
-            #dep_rel = [rel[i+1][h] for i, h in enumerate(head_seq)]
+            logging.info("Head seg uzunlugu nedir {} sent_len :  {}".format(len(head_seq),l))
+
+            dep_rel = [rel[i+1][h] for i, h in enumerate(head_seq[1:l])]
+            dep_tokens2.append(self.vocabs['dep_vocab'].unmap(dep_rel))
             #print(head_seq.shape)
             trees.append(head_seq+[0 for i in range(sent_lens[0]-l)])
-            #dep_rels.append(dep_rel)
-        trees = torch.tensor(trees,dtype=torch.long).to(device)       
-        deprel_scores = torch.gather(label_preds,2,trees.unsqueeze(2).unsqueeze(3).\
-            expand(-1,-1,1,self.num_cat)).squeeze(2).transpose(1,2)
+            dep_rels.append(dep_rel)
+        #trees = torch.tensor(trees,dtype=torch.long).to(device)       
+        #deprel_scores = torch.gather(label_preds,2,trees.unsqueeze(2).unsqueeze(3).\
+        #    expand(-1,-1,1,self.num_cat)).squeeze(2).transpose(1,2)
             #.view(len(sent_lens), self.num_cat,sent_lens[0])
-        if verbose and s==0:
-            s+=1
-        #    logging.info("deprel nasil birsey")
-        #    logging.info(deprel_scores.shape)
-            #logging.info(trees.detach().cpu().numpy())
-        #    for i in range(sent_lens[0]):
-        #        logging.info("Decoderin icindeki olasiliklar nedir {}".format(label_preds.shape))
-        #        logging.info(" ".join([str(x.detach().cpu().numpy()) for x in deprel_scores[0,:,i].view(self.num_cat)]))   
-        #        logging.info(" ".join([str(x.detach().cpu().numpy()) for x in label_preds[0,0,i,:].view(self.num_cat)]))
-        deprel_preds = torch.argmax(deprel_scores,dim=1)
-        #print(deprel_preds.shape)
-        #print(deprel_preds[0,:])
-        trees = trees.detach().cpu().numpy()
-        for d,l in zip(deprel_preds, sent_lens):
-            x = d[1:l].detach().cpu().numpy()
-            #print(self.vocabs['dep_vocab'].unmap(x))
-            dep_tokens.append(self.vocabs['dep_vocab'].unmap(x))
-            dep_rels.append(x)
+        #deprel_preds = torch.argmax(deprel_scores,dim=1)
+        #trees = trees.detach().cpu().numpy()
+        #for d,l in zip(deprel_preds, sent_lens):
+        #    x = d[1:l].detach().cpu().numpy()
+        #    #print(self.vocabs['dep_vocab'].unmap(x))
+        #    dep_tokens.append(self.vocabs['dep_vocab'].unmap(x))
+        #    dep_rels.append(x)
+        
         outputs = []
-        for l, t, d in zip(sent_lens,trees, dep_tokens):
+        for l, t, d in zip(sent_lens,trees, dep_tokens2):
             outputs.append([[str(t_), d_] for t_,d_ in zip(t[1:l],d)])
         return trees, dep_rels, outputs
     
@@ -116,6 +113,7 @@ class Parser(nn.Module):
         
         unlabeled_scores = self.unlabeled(unpacked,unpacked).squeeze(3)
         deprel_scores  = self.dep_rel(unpacked,unpacked) 
+        
         mask = torch.zeros(deprel_scores.size(),dtype=torch.long).to(device)
         mask[:,:,:,:2] = 1 
         mask = mask.bool()
@@ -124,23 +122,40 @@ class Parser(nn.Module):
         preds = []
         preds.append(F.log_softmax(unlabeled_scores,2).detach().cpu().numpy())
         preds.append(deprel_save)
-        head_preds = torch.argmax(unlabeled_scores,dim=2) 
-        deprel_scores = torch.gather(deprel_scores,2,heads.unsqueeze(2).unsqueeze(3).\
-            expand(-1,-1,1,self.num_cat)).squeeze(2).transpose(1,2)
+        #head_preds = torch.argmax(unlabeled_scores,dim=2) 
+        #deprel_scores = torch.gather(deprel_scores,2,heads.unsqueeze(2).unsqueeze(3).\
+        #    expand(-1,-1,1,self.num_cat)).squeeze(2).transpose(1,2)
             #.view(batch_size, self.num_cat,word_size)
-        deprel_preds = torch.argmax(deprel_scores,dim=1)
-        return preds, deprel_preds,deprel_scores, heads, deprel_save
+        #deprel_preds = torch.argmax(deprel_scores,dim=1)
+        #return preds, deprel_preds,deprel_scores, heads, deprel_save
+        return  preds
     
     def forward(self, ids, masks, heads, dep_rels, seq_ids, sent_lens, bert2toks):
         batch_size = masks.size()[0]
         word_size = masks.size()[1]
+        
         bert_output = self.bert_model(ids,seq_ids)
         bert_out = self._get_bert_batch_hidden(bert_output[2],bert2toks)
         packed_sequence = pack_padded_sequence(bert_out,sent_lens, batch_first=True)
+        
         lstm_out, hidden = self.bilstm(packed_sequence)
         unpacked, _ = pad_packed_sequence(lstm_out,batch_first=True)
+        
         unlabeled_scores = self.unlabeled(unpacked,unpacked).squeeze(3)
         deprel_scores  = self.dep_rel(unpacked,unpacked) 
+        
+        with torch.no_grad():
+            #set [PAD] [ROOT] predictions to -infinity
+            mask = torch.zeros(deprel_scores.size(),dtype=torch.long).to(device)
+            mask[:,:,:,:2] = 1 
+            mask = mask.bool()
+            deprel_save = deprel_scores.clone()
+            deprel_save = deprel_save.masked_fill(mask,-float('inf'))
+            preds = []
+            preds.append(F.log_softmax(unlabeled_scores,2).detach().cpu().numpy())
+            preds.append(torch.argmax(deprel_save,dim = 3).detach().cpu().numpy())
+            #preds.append(deprel_save)
+        
         diag = torch.eye(heads.size()[1]).to(device)
         diag = diag.bool()
         ## set self-edge scores to negative infinity
@@ -149,10 +164,12 @@ class Parser(nn.Module):
             unsqueeze(3).expand(-1,-1,1,self.num_cat)).squeeze(2).transpose(1,2)
             #.view(batch_size, self.num_cat,word_size)
         heads_ = heads.masked_fill(masks,-1)
+        
         deprel_loss = self.dep_rel_crit(head_scores,dep_rels)
         depind_loss = self.dep_ind_crit(unlabeled_scores[:,1:].transpose(1,2),heads_[:,1:])
         loss = deprel_loss + depind_loss
-        return loss, deprel_loss, depind_loss
+        
+        return preds, loss, deprel_loss, depind_loss
     
 
     def _get_bert_batch_hidden(self, hiddens , bert2toks, layers=[-2,-3,-4]):
