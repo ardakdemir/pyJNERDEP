@@ -16,10 +16,12 @@ import copy
 from pdb import set_trace
 from crf import CRF, CRFLoss
 import unidecode
+import logging
 from pytorch_transformers import *
 
-from datareader import DataReader
+from datareader import DataReader, START_TAG, END_TAG, PAD_IND
 
+logging.basicConfig(level=logging.DEBUG, filename='trainer_batch.log', filemode='w', format='%(levelname)s - %(message)s')
 
 
 class BertNER(nn.Module):
@@ -43,10 +45,36 @@ class BertNER(nn.Module):
         self.transitions = nn.Parameter(torch.randn(self.num_cat, self.num_cat,dtype=torch.float,device=device))
         self.transitions.data[self.l2ind[self.START_TAG],:] = torch.tensor([-10000]).expand(1,self.num_cat)
         self.transitions.data[:,self.l2ind[self.END_TAG]] = torch.tensor([-10000]).expand(1,self.num_cat)
+    
+    def _viterbi_decode3(self,feats):
+        start_ind = self.l2ind[self.START_TAG]
+        end_ind = self.l2ind[self.END_TAG]
+        logging.info("START TAG INDEXI NEDIRR {} {}".format(start_ind,end_ind))
+        feats = feats[:,:start_ind,:start_ind]
+        logging.info("Viterbi 3teki feats nasil {}".format(feats.shape))
+        parents = [[start_ind for x in range(feats.size()[1])]]
+        layer_scores = feats[0,:,start_ind] 
+        for feat in feats[1,:,:]:
+            layer_scores =feat[:,:start_ind,:start_ind] + layer_scores.unsqueeze(1).expand(1,layer_scores.shape[1],layer_scores.shape[2])
+            layer_scores, parent = torch.max(layer_scores,dim=1)
+        print("Shape of the transition to end tag {}".format(self.crf.transitions[self.l2ind[END_TAG],:]))
+        layer_scores = layer_scores + self.crf.transitions[self.l2ind[END_TAG],:] 
+        path = [torch.argmax(layer_scores)]
+        path_score = torch.max(layer_scores)
+        parent = path[0]
+        parents.reverse()
+        for p in parents:
+            path.append(p[parent])
+            parent = p[parent]
+        path.reverse()
+        logging.info("Path : {}".format(path))
+        return path, path_score
+    
+    
     def _viterbi_decode2(self,feats):
         feats = feats[:self.l2ind[self.START_TAG]]
         parents = [[self.l2ind[START_TAG] for x in range(feats.size()[1])]]
-        layer_scores = feats[0,:] + self.transitions[:self.l2ind[self.START_TAG],l2ind[self.START_TAG]]
+        layer_scores = feats[0,:] + self.transitions[:self.l2ind[self.START_TAG],self.l2ind[self.START_TAG]]
         for t in range(1,feats.size()[0]):
             time_step = feats[t].view(1,-1)
             new_layer_scores = []
@@ -108,6 +136,8 @@ class BertNER(nn.Module):
         # return the argmax as a python int
         _, idx = torch.max(vec, 1)
         return idx.item()
+    
+    
     def _log_sum_exp(self,scores):
         max_score = scores[0, self.argmax(scores)]
         max_broad = max_score.view(1,-1).expand(1,len(scores))
@@ -169,6 +199,8 @@ class BertNER(nn.Module):
             prev_tag = tag
         path_score += self.transitions[self.l2ind[self.END_TAG],prev_tag]
         return path_score
+    
+    
     def _get_bert_batch_hidden(self, hiddens , bert2toks, layers=[-2,-3,-4]):
         meanss = torch.mean(torch.stack([hiddens[i] for i in layers]),0)
         batch_my_hiddens = []

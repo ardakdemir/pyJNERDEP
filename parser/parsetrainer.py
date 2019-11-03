@@ -18,8 +18,10 @@ import copy
 from pdb import set_trace
 import unidecode
 from pytorch_transformers import *
-from parsereader import *
-from parser import *
+
+from parser.parsereader import *
+from parser.parser import *
+
 from utils import score, conll_writer
 import sys
 import logging
@@ -69,17 +71,17 @@ class DepTrainer:
         bert2toks = bert2toks.to(device)
         bert_batch_ids = bert_batch_ids.to(device)
         bert_seq_ids = bert_seq_ids.to(device)
-    
+        pos = pos.to(device)
         
         if train: 
-            _, loss, deprel, depind = self.parser(bert_batch_ids, masks, dep_inds, dep_rels, bert_seq_ids,sent_lens, bert2toks) 
+            _, loss, deprel, depind = self.parser(bert_batch_ids, masks, dep_inds, dep_rels, pos, bert_seq_ids,sent_lens, bert2toks) 
             return loss/torch.sum(sent_lens), deprel/torch.sum(sent_lens), depind/torch.sum(sent_lens)
         
         else:
             self.parser.eval()
             #preds, deprel_preds, true_scores, headtrues, deprel_scores = self.parser.predict(bert_batch_ids, masks, dep_inds, dep_rels, bert_seq_ids, sent_lens, bert2toks)
             #preds  = self.parser.predict(bert_batch_ids, masks, dep_inds, dep_rels, bert_seq_ids, sent_lens, bert2toks)
-            preds ,_,_,_= self.parser(bert_batch_ids, masks, dep_inds, dep_rels, bert_seq_ids, sent_lens, bert2toks)
+            preds ,_,_,_= self.parser(bert_batch_ids, masks, dep_inds, dep_rels, pos, bert_seq_ids, sent_lens, bert2toks)
             #return preds, deprel_preds, true_scores, headtrues, deprel_scores
             return preds
 
@@ -139,7 +141,7 @@ def main(args = None):
     
     file_name = "../../../datasets/tr_imst-ud-train.conllu"
     val_name = "../../../datasets/tr_imst-ud-dev.conllu"
-    args = {"pos_dim" : 20}
+    args = {"pos_dim" : 50}
     depdataset = DepDataset(file_name,batch_size = 300)
     dep_valid = DepDataset(val_name,batch_size = 300 , vocabs=depdataset.vocabs, for_eval=True)
     

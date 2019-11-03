@@ -20,9 +20,12 @@ import copy
 from pdb import set_trace
 import unidecode
 from pytorch_transformers import *
-from parsereader import *
-from biaffine import *
-from decoder import *
+
+
+from parser.parsereader import *
+from parser.biaffine import *
+from parser.decoder import *
+
 import sys
 import logging
 import time
@@ -43,19 +46,19 @@ class Parser(nn.Module):
     def __init__(self, args, tag_size, vocabs):
         super(Parser,self).__init__()
         
-        self.lstm_hidden = 10
-        self.biaffine_hidden = 30
+        self.lstm_hidden = 20
+        self.biaffine_hidden = 20
         self.vocabs = vocabs
         self.num_cat = tag_size
         
         self.args = args 
-        
+        self.pos_dim = self.args['pos_dim']
         self.pos_embed = nn.Embedding(len(vocabs['pos_vocab']), self.args['pos_dim'], padding_idx=0)
         
 
         self.bert_model = BertModel.from_pretrained('bert-base-uncased',output_hidden_states=True)
-        self.w_dim = self.bert_model.encoder.layer[11].output.dense.out_features
-        self.bilstm  = nn.LSTM(self.w_dim,self.lstm_hidden, bidirectional=True, num_layers=1, batch_first=True)
+        self.lstm_input_dim = self.bert_model.encoder.layer[11].output.dense.out_features+self.pos_dim
+        self.bilstm  = nn.LSTM(self.lstm_input_dim,self.lstm_hidden, bidirectional=True, num_layers=1, batch_first=True)
         
         
         self.unlabeled = DeepBiaffineScorer(2*self.lstm_hidden,2*self.lstm_hidden,self.biaffine_hidden,1,pairwise=True)
@@ -72,10 +75,7 @@ class Parser(nn.Module):
         s = 0
         
         for l, rel, edge in zip(sent_lens, label_preds, edge_preds):
-            logging.info("Rel shape {}".format(rel.shape))
             head_seq = list(chuliu_edmonds_one_root(edge[:l,:l]))
-            logging.info("Head seg uzunlugu nedir {} sent_len :  {}".format(len(head_seq),l))
-
             dep_rel = [rel[i+1][h] for i, h in enumerate(head_seq[1:l])]
             dep_tokens2.append(self.vocabs['dep_vocab'].unmap(dep_rel))
             #print(head_seq.shape)
@@ -130,14 +130,18 @@ class Parser(nn.Module):
         #return preds, deprel_preds,deprel_scores, heads, deprel_save
         return  preds
     
-    def forward(self, ids, masks, heads, dep_rels, seq_ids, sent_lens, bert2toks):
+    def forward(self, ids, masks, heads, dep_rels, pos_ids, seq_ids, sent_lens, bert2toks):
         batch_size = masks.size()[0]
         word_size = masks.size()[1]
-        
+        pos_embeds = self.pos_embed(pos_ids)
         bert_output = self.bert_model(ids,seq_ids)
         bert_out = self._get_bert_batch_hidden(bert_output[2],bert2toks)
-        packed_sequence = pack_padded_sequence(bert_out,sent_lens, batch_first=True)
         
+        ## pos tag information added 
+        ## may consider multi-learning this one as well!!
+        x = torch.cat([bert_out,pos_embeds],dim=2)
+        #packed_sequence = pack_padded_sequence(bert_out,sent_lens, batch_first=True) 
+        packed_sequence = pack_padded_sequence(x,sent_lens, batch_first=True)
         lstm_out, hidden = self.bilstm(packed_sequence)
         unpacked, _ = pad_packed_sequence(lstm_out,batch_first=True)
         

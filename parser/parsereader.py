@@ -4,12 +4,16 @@ import pandas as pd
 import torch
 import numpy as np
 from pytorch_transformers import BertTokenizer
-from parser import Parser, Vocab, PAD, PAD_IND, VOCAB_PREF, ROOT, ROOT_IND, UNK, UNK_IND
 from torch.utils.data import Dataset, DataLoader
-from utils import sort_dataset, unsort_dataset
+
+
+from parser.parser import Parser, Vocab, PAD, PAD_IND, VOCAB_PREF, ROOT, ROOT_IND, UNK, UNK_IND
+from parser.utils import sort_dataset, unsort_dataset
+
 import logging
 import time
 import random
+
 def bert2token(my_tokens, bert_tokens, bert_ind = 1):
     inds = []
     token_sum =""
@@ -64,7 +68,7 @@ def pad_trunc_batch(batch, max_len, pad = PAD, pad_ind = PAD_IND, bert = False,b
 
 def group_into_batch(dataset, batch_size):
     """
-        Batch size is given word length so that some batches do not contain
+        Batch size is given in word length so that some batches do not contain
         too many examples!!!
 
         Do not naively batch by number of sentences!!

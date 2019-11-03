@@ -1,4 +1,4 @@
-import conll_ud_eval as ud_eval
+import parser.conll_ud_eval as ud_eval
 
 dep_dict = {'id': 0, 'word': 1, 'lemma': 2, 'upos': 3, 'xpos': 4, 'feats': 5, 'head': 6, 'deprel': 7, 'deps': 8, 'misc': 9}
 ner_dict = {"token": 0 , "morp": 1 , "ner_tag":2}

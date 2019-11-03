@@ -3,16 +3,21 @@ import glob
 import pandas as pd
 import torch
 import numpy as np
+import logging
 from pytorch_transformers import BertTokenizer
 from parser.parsereader import group_into_batch, bert2token, pad_trunc_batch
 from parser.parser import Vocab
-
+from parser.utils import sort_dataset, unsort_dataset
 PAD = "[PAD]"
 PAD_IND = 0
 START_TAG = "[SOS]"
 END_TAG   = "[EOS]"
 START_IND = 1
 END_IND = 2
+
+logging.basicConfig(level=logging.DEBUG, filename='trainer_batch.log', filemode='w', format='%(levelname)s - %(message)s')
+
+
 def pad_trunc(sent,max_len, pad_len, pad_ind):
     if len(sent)>max_len:
         return sent[:max_len]
@@ -32,7 +37,8 @@ class DataReader():
         self.file_path = file_path
         self.task_name = task_name
         self.batch_size = batch_size
-        self.dataset, self.label_counts = self.get_dataset()
+        self.dataset, self.orig_idx , self.label_counts = self.get_dataset()
+        print("Dataset size : {}".format(len(self.dataset)))
         self.data_len = len(self.dataset)
         self.l2ind, self.word2ind, self.vocab_size = self.get_vocabs()
         self.label_voc = Vocab(self.l2ind)
@@ -42,7 +48,8 @@ class DataReader():
         self.bert_tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
         self.val_index = 0
 
-
+    def get_ind2sent(self,sent):
+        return " ".join([self.word2ind[w] for w in sent])
 
     def get_bert_input(self,batch_size = 1, morp = False, for_eval = False):
         if  for_eval:
@@ -100,7 +107,11 @@ torch.tensor([seq_ids],dtype=torch.long), torch.tensor(bert2tok), lab])
         if len(sent)>0:
             sent.append([END_TAG, END_TAG , END_TAG ])
             new_dataset.append(sent)
-        return new_dataset, label_counts
+        
+        logging.info("Data is sorted according to sentence lengths")
+        new_dataset, orig_idx = sort_dataset(new_dataset, sort = True)
+        
+        return new_dataset, orig_idx, label_counts
 
     def get_next_data(sent_inds, data_len=-1,feats = True, padding=False):
         sents, labels = self.get_sents(sent_inds, feats = feats)
@@ -135,7 +146,7 @@ torch.tensor([seq_ids],dtype=torch.long), torch.tensor(bert2tok), lab])
                 label.append(y[label_index])
             sents.append(sent)
             labels.append(label)
-        return sents,labels
+        return sents, labels
 
     ## compatible with getSent and for word embeddings
     def prepare_sent(self, sent, word2ix):
@@ -225,7 +236,8 @@ torch.tensor([seq_ids],dtype=torch.long), torch.tensor(bert2tok), lab])
             sent in bert_batch_after_padding])
         bert_seq_ids = torch.LongTensor([[1 for i in range(len(bert_batch_after_padding[0]))]\
             for j in range(len(bert_batch_after_padding))])
-        return tokens, torch.tensor(lens), tok_inds, ner_inds,bert_batch_after_padding, bert_batch_ids,  bert_seq_ids, torch.tensor(bert2tokens_padded,dtype=torch.long)
+        data = torch.tensor(lens), tok_inds, ner_inds, bert_batch_ids,  bert_seq_ids, torch.tensor(bert2tokens_padded,dtype=torch.long) 
+        return tokens, bert_batch_after_padding, data 
 if __name__ == "__main__":
     data_path = '../datasets/turkish-ner-train.tsv'
     reader = DataReader(data_path,"NER")
