@@ -19,9 +19,8 @@ import unidecode
 import logging
 from pytorch_transformers import *
 
-from datareader import DataReader, START_TAG, END_TAG, PAD_IND
+from datareader import DataReader, START_TAG, END_TAG, PAD_IND, START_IND, END_IND
 
-logging.basicConfig(level=logging.DEBUG, filename='trainer_batch.log', filemode='w', format='%(levelname)s - %(message)s')
 
 
 class BertNER(nn.Module):
@@ -43,32 +42,35 @@ class BertNER(nn.Module):
         assert self.START_TAG in l2ind, "Add the start and end  tags!!"
         self.crf_loss = CRFLoss(l2ind,device =self.device)
         self.transitions = nn.Parameter(torch.randn(self.num_cat, self.num_cat,dtype=torch.float,device=device))
-        self.transitions.data[self.l2ind[self.START_TAG],:] = torch.tensor([-10000]).expand(1,self.num_cat)
-        self.transitions.data[:,self.l2ind[self.END_TAG]] = torch.tensor([-10000]).expand(1,self.num_cat)
+        #self.crf.transition[self.l2ind[self.START_TAG],:] = torch.tensor([-10000]).expand(1,self.num_cat)
+        #self.crf.transition[:,self.l2ind[self.END_TAG]] = torch.tensor([-10000]).expand(1,self.num_cat)
     
-    def _viterbi_decode3(self,feats):
+    def _viterbi_decode3(self,feats,sent_len):
+        logging.info("Decodera gelen uzunluk : {}".format(feats.shape))
         start_ind = self.l2ind[self.START_TAG]
         end_ind = self.l2ind[self.END_TAG]
-        logging.info("START TAG INDEXI NEDIRR {} {}".format(start_ind,end_ind))
-        feats = feats[:,:start_ind,:start_ind]
-        logging.info("Viterbi 3teki feats nasil {}".format(feats.shape))
+        logging.info("End ind ve start ind neddir burada : {} {}".format(end_ind,start_ind))
+        #feats = feats[:,end_ind+1:,end_ind+1:]
         parents = [[start_ind for x in range(feats.size()[1])]]
         layer_scores = feats[0,:,start_ind] 
-        for feat in feats[1,:,:]:
-            layer_scores =feat[:,:start_ind,:start_ind] + layer_scores.unsqueeze(1).expand(1,layer_scores.shape[1],layer_scores.shape[2])
+        for feat in feats[1:sent_len,:,:]:
+            #layer_scores =feat[:,:start_ind,:start_ind] + layer_scores.unsqueeze(1).expand(1,layer_scores.shape[1],layer_scores.shape[2])
+            layer_scores =feat + layer_scores.unsqueeze(0).expand(layer_scores.shape[0],layer_scores.shape[0])
             layer_scores, parent = torch.max(layer_scores,dim=1)
-        print("Shape of the transition to end tag {}".format(self.crf.transitions[self.l2ind[END_TAG],:]))
-        layer_scores = layer_scores + self.crf.transitions[self.l2ind[END_TAG],:] 
-        path = [torch.argmax(layer_scores)]
-        path_score = torch.max(layer_scores)
+            parents.append(parent)
+        #layer_scores = layer_scores + self.crf.transitions[self.l2ind[END_TAG],:] 
+        
+        path = [end_ind]
+        path_score = layer_scores[end_ind]
         parent = path[0]
-        parents.reverse()
-        for p in parents:
-            path.append(p[parent])
-            parent = p[parent]
+        logging.info("SON TAG TAHMININIZ NEDIR : {}".format(layer_scores))
+        #parents.reverse()
+        for p in range(len(parents)-1,0,-1):
+            path.append(parents[p][parent].item())
+            parent = parents[p][parent]
         path.reverse()
-        logging.info("Path : {}".format(path))
-        return path, path_score
+        logging.info("Decoderdan cikan uzunluk : {}".format(len(path)))
+        return path, path_score.item()
     
     
     def _viterbi_decode2(self,feats):

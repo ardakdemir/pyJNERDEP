@@ -15,7 +15,6 @@ END_TAG   = "[EOS]"
 START_IND = 1
 END_IND = 2
 
-logging.basicConfig(level=logging.DEBUG, filename='trainer_batch.log', filemode='w', format='%(levelname)s - %(message)s')
 
 
 def pad_trunc(sent,max_len, pad_len, pad_ind):
@@ -108,7 +107,6 @@ torch.tensor([seq_ids],dtype=torch.long), torch.tensor(bert2tok), lab])
             sent.append([END_TAG, END_TAG , END_TAG ])
             new_dataset.append(sent)
         
-        logging.info("Data is sorted according to sentence lengths")
         new_dataset, orig_idx = sort_dataset(new_dataset, sort = True)
         
         return new_dataset, orig_idx, label_counts
@@ -174,7 +172,7 @@ torch.tensor([seq_ids],dtype=torch.long), torch.tensor(bert2tok), lab])
         tagset_size = self.num_cats
         targets_1d = []
         for current_tag in targets:
-            targets_1d.append(current_tag+ prev_tag*(tagset_size))
+            targets_1d.append(current_tag*(tagset_size)+ prev_tag)
             prev_tag = current_tag
         return targets_1d
 

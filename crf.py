@@ -9,7 +9,10 @@ import torch
 from torch.utils.data import Dataset, DataLoader
 from torchvision import datasets, models, transforms
 from torch import autograd
+import logging
 
+
+from datareader import DataReader, START_TAG, END_TAG, PAD_IND, END_IND, START_IND
 class CRF(nn.Module):
     """
     Conditional Random Field.
@@ -25,7 +28,8 @@ class CRF(nn.Module):
         self.emission = nn.Linear(hidden_dim, self.tagset_size)
         self.transition = nn.Parameter(torch.randn(self.tagset_size, self.tagset_size))
         self.transition.data.zero_()
-
+        self.transition.data[START_IND,:] = torch.tensor(-10000)
+        self.transition.data[:,END_IND]  = torch.tensor(-10000)
     def forward(self, feats):
         """
         Forward propagation.
@@ -51,6 +55,7 @@ class CRFLoss(nn.Module):
         self.tag2ind = tag_set
         self.START_TAG = START_TAG
         self.END_TAG = END_TAG
+        logging.info("CRF indexes : {} {} ".format(self.tag2ind[self.START_TAG],self.tag2ind[self.END_TAG]))
     def _log_sum_exp(self,tensor, dim):
         """
         Calculates the log-sum-exponent of a tensor's dimension in a numerically stable way.
@@ -81,15 +86,27 @@ class CRFLoss(nn.Module):
         score_before_sums = pack_padded_sequence(score_before_sum,lengths, batch_first = True)
         #print(score_before_sum[0])
         gold_score = score_before_sums[0].sum()
+        
+        
         ## forward score : initialize from start tag
         forward_scores = torch.zeros(batch_size, len(self.tag2ind)).to(self.device)
-        forward_scores[:batch_size] = scores[:,0,self.tag2ind[self.START_TAG],:]
+        forward_scores[:batch_size] = scores[:,0,:,self.tag2ind[self.START_TAG]]
+        
+        ## burada  hangisi  dogru emin   degilim index1-> index2 or  opposite?
+        ## i think  opposite  is correct
+        #forward_scores[:batch_size] = scores[:,0,:,self.tag2ind[self.START_TAG]]
+        
+        
+        ## forward score unsqueeze 2ydi 1 yaptim cunku ilk index next tag olarak 
+        ## kurguluyorum
         for i in range(1, scores.size()[1]):
             batch_size_t = sum([1 if lengths[x]>i else 0 for x in range(lengths.size()[0])])
             forward_scores[:batch_size_t] =\
                 self._log_sum_exp(scores[:batch_size_t,i,:,:]\
-                    +forward_scores[:batch_size_t].unsqueeze(2),dim=1)
+                    +forward_scores[:batch_size_t].unsqueeze(1),dim=2)
         all_scores = forward_scores[:,self.tag2ind[self.END_TAG]].sum()
+        logging.info("All scores : {}  gold_score : {} ".format(all_scores,gold_score))
         loss = all_scores - gold_score
         loss = loss/batch_size
+        
         return loss

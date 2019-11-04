@@ -30,7 +30,9 @@ import time
 
 def ner_train(data_path, val_path, save_path, load = True, gpu = True):
     evaluator = Evaluate("NER")
-    logging.basicConfig(level=logging.DEBUG, encoding= 'utf-8', filename='trainer_batch.log', filemode='w', format='%(levelname)s - %(message)s')
+    logging.basicConfig(level=logging.DEBUG,handlers= [logging.FileHandler('trainread.log','w','utf-8')], format='%(levelname)s - %(message)s')
+
+
     logging.info("GPU : {}".format(gpu))
     
     datareader = DataReader(data_path, "NER")
@@ -87,23 +89,20 @@ def ner_train(data_path, val_path, save_path, load = True, gpu = True):
             optimizer.zero_grad()
             bert_optimizer.zero_grad()
             #my_tokens, bert_tokens, data = datareader.get_bert_input()
-            tokens, bert_batch_after_padding, data = datareader[l]
-            logging.info(tokens[0])
+            tokens, bert_batch_after_padding, data = datareader[0]
 
             inputs = []
             for d in data:
                 inputs.append(d.to(device))
             lens, tok_inds, ner_inds,\
                  bert_batch_ids,  bert_seq_ids, bert2toks = inputs
-            sent_1 = tok_inds[0].detach().cpu().numpy()
-            logging.info(" ".join(datareader.word_voc.unmap(sent_1)))
+            #sent_1 = tok_inds[-1].detach().cpu().numpy()
             #lens = lens.to(device)
             #ner_inds = ner_inds.to(device)
             #bert_batch_ids = bert_batch_ids.to(device)
             #bert_seq_ids = bert_seq_ids.to(device)
             #bert2toks = bert2toks.to(device)
             feats = model._get_feats(bert_batch_ids,bert_seq_ids,bert2toks)
-            logging.info("Feat shape {} ".format(feats.shape))
             crf_scores = model.crf(feats)
             loss = model.crf_loss(crf_scores,ner_inds,lens)
             #print(bert_out[2][0].shape)
@@ -124,22 +123,31 @@ def ner_train(data_path, val_path, save_path, load = True, gpu = True):
                 d = round(e-s,3)
                 logging.info("AVERAGE TRAIN LOSS : {} after {} examples took {} seconds".format( train_loss/l,l , d))
                 model.eval()
-                for x in range(10):
-                    tokens, bert_batch_after_padding, data = valreader[x]
+                for x in range(1):
+                    tokens, bert_batch_after_padding, data = datareader[x]
                     inputs = []
                     for d in data:
                         inputs.append(d.to(device))
                     lens, tok_inds, ner_inds,\
                          bert_batch_ids,  bert_seq_ids, bert2toks = inputs
                     with torch.no_grad():
+                        logging.info("Berte giden idler nedir : ")
+                        logging.info(bert_batch_ids[0].detach().cpu().numpy()[:10])
                         feats = model._get_feats(bert_batch_ids,bert_seq_ids,bert2toks)
-                        logging.info("Feat shape {} ".format(feats.shape))
                         crf_scores = model.crf(feats)
-                        logging.info("CRF Scores shape nedir : {}".format(crf_scores.shape) )
                         for i in range(crf_scores.shape[0]):
-                            path, score = model._viterbi_decode3(crf_scores[0,:,:,:])
-                            print("Path nasil birsey : {} for word : {} ".format(len(path), crf_scores[0].shape))
-                            print(path)
+                            path, score = model._viterbi_decode3(crf_scores[i,:,:,:],lens[i])
+                            logging.info("Path nasil birsey : {} for word : {} with score {}".format(len(path), crf_scores[0].shape,score))
+                            truth = ner_inds[i].detach().cpu().numpy()//7
+                            logging.info(path)
+                            logging.info("Path uzunlugum : {} - truth length: {}".format(len(path),len(truth[:lens[i]])))
+                            logging.info("Gercek indexler: ")
+                            for j in range(lens[i]):
+                                logging.info("Word : {} pred : {} tag : {} ".format(tokens[i][j],path[j],truth[j]))
+                            logging.info(truth[:lens[i]])
+                            logging.info("Transitionlar nasil degisiyor end - start tag")
+                            logging.info(model.crf.transition.data[2,:])
+                            logging.info(model.crf.transition.data[:,1])
                         #decoded_path, score = model(ids,seq_ids, bert2tok)
                         #c_,p_,tot = evaluator.f_1(decoded_path,labels.numpy())
                     #logging.info("preds:  {}  true :  {} ".format(decoded_path,labels.numpy()))
