@@ -20,7 +20,12 @@ class Evaluate():
             if px!=0:
                 p_tot+=1
         return c,t,p_tot
-
+    
+    def conll_eval(self,pred_file):
+       """
+       to be implemented
+       """
+       return 0 
     def f_1(self,preds,labels):
         c, t, p_tot = self.countNonZeroMatch(preds, labels, 0)
         rec = 0

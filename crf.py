@@ -30,6 +30,7 @@ class CRF(nn.Module):
         self.transition.data.zero_()
         self.transition.data[START_IND,:] = torch.tensor(-10000)
         self.transition.data[:,END_IND]  = torch.tensor(-10000)
+        logging.info("CRF tagset size : {}".format(self.tagset_size))
     def forward(self, feats):
         """
         Forward propagation.

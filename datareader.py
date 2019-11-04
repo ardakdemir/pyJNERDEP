@@ -79,6 +79,7 @@ torch.tensor([seq_ids],dtype=torch.long), torch.tensor(bert2tok), lab])
         l2ind = {PAD : PAD_IND, START_TAG:START_IND, END_TAG: END_IND }
         word2ix = {PAD : PAD_IND, START_TAG:START_IND, END_TAG: END_IND }
         print(self.label_counts)
+        
         for x in self.label_counts:
             l2ind[x] = len(l2ind)
         for sent in self.dataset:
