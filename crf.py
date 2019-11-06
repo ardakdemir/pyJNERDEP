@@ -30,7 +30,6 @@ class CRF(nn.Module):
         self.transition.data.zero_()
         self.transition.data[START_IND,:] = torch.tensor(-10000)
         self.transition.data[:,END_IND]  = torch.tensor(-10000)
-        logging.info("CRF tagset size : {}".format(self.tagset_size))
     def forward(self, feats):
         """
         Forward propagation.
@@ -56,7 +55,6 @@ class CRFLoss(nn.Module):
         self.tag2ind = tag_set
         self.START_TAG = START_TAG
         self.END_TAG = END_TAG
-        logging.info("CRF indexes : {} {} ".format(self.tag2ind[self.START_TAG],self.tag2ind[self.END_TAG]))
     def _log_sum_exp(self,tensor, dim):
         """
         Calculates the log-sum-exponent of a tensor's dimension in a numerically stable way.
@@ -106,8 +104,8 @@ class CRFLoss(nn.Module):
                 self._log_sum_exp(scores[:batch_size_t,i,:,:]\
                     +forward_scores[:batch_size_t].unsqueeze(1),dim=2)
         all_scores = forward_scores[:,self.tag2ind[self.END_TAG]].sum()
-        logging.info("All scores : {}  gold_score : {} ".format(all_scores,gold_score))
         loss = all_scores - gold_score
-        loss = loss/batch_size
+        #loss = loss/batch_size
         
         return loss
+

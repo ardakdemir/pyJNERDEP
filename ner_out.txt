@@ -24,7 +24,7 @@ ritim	-	O	O
 ,	-	O	O
 melodi	-	O	O
 ve	-	O	O
-armoni	-	O	B-PER
+armoni	-	O	O
 ,	-	O	O
 hiç	-	O	O
 bir	-	O	O
@@ -42,7 +42,7 @@ hafta	-	O	O
 24	-	O	O
 Prelüd	-	O	O
 ve	-	O	O
-füg'de	-	O	B-ORG
+füg'de	-	O	O
 bunu	-	O	O
 gördük	-	O	O
 :	-	O	O
@@ -77,8 +77,8 @@ bir	-	O	O
 şey	-	O	O
 .	-	O	O
 
-Uluslararası	-	B-ORG	B-ORG
-Af	-	I-ORG	I-ORG
+Uluslararası	-	B-ORG	O
+Af	-	I-ORG	B-ORG
 Örgütü'nün	-	I-ORG	I-ORG
 eline	-	O	O
 ulaşan	-	O	O
@@ -200,7 +200,7 @@ aydınlanmanın	-	O	O
 eşiğindeyken	-	O	O
 ,	-	O	O
 ve	-	O	O
-Bach	-	B-PER	O
+Bach	-	B-PER	B-PER
 tam	-	O	O
 da	-	O	O
 bu	-	O	O
@@ -211,8 +211,8 @@ sırada	-	O	O
 ,	-	O	O
 Osmanlılar	-	O	B-LOC
 da	-	O	O
-Lale	-	O	O
-Devri'nin	-	O	O
+Lale	-	O	B-LOC
+Devri'nin	-	O	I-LOC
 kıpıtılarıyla	-	O	O
 yüzlerini	-	O	O
 Batı'ya	-	B-LOC	B-LOC
@@ -291,8 +291,8 @@ Savunma	-	I-ORG	I-ORG
 Bakanlığı'nın	-	I-ORG	I-ORG
 kararı	-	O	O
 ile	-	O	O
-askeri	-	O	B-ORG
-mahkemelerin	-	O	I-ORG
+askeri	-	O	O
+mahkemelerin	-	O	O
 kurulması	-	O	O
 ,	-	O	O
 kaldırılması	-	O	O
@@ -446,7 +446,7 @@ ve	-	O	O
 bu	-	O	O
 tespitlerin	-	O	O
 Türkiye'nin	-	B-LOC	B-LOC
-global	-	O	B-LOC
+global	-	O	O
 krizden	-	O	O
 neden	-	O	O
 daha	-	O	O
@@ -673,11 +673,11 @@ görüldü	-	O	O
 
 TBMM	-	B-ORG	B-ORG
 ile	-	O	O
-Türk	-	B-ORG	B-ORG
-Dil	-	I-ORG	I-ORG
-Kurumu'nun	-	I-ORG	I-ORG
-Dolmabahçe	-	B-LOC	I-ORG
-Sarayı'nda	-	I-LOC	I-ORG
+Türk	-	B-ORG	B-LOC
+Dil	-	I-ORG	I-LOC
+Kurumu'nun	-	I-ORG	I-LOC
+Dolmabahçe	-	B-LOC	I-LOC
+Sarayı'nda	-	I-LOC	I-LOC
 düzenlediği	-	O	O
 Cumhuriyetin	-	O	O
 75.	-	O	O
@@ -692,7 +692,7 @@ Cumhuriyetin	-	O	O
 75.	-	O	O
 yılı	-	O	O
 ile	-	O	O
-Türk	-	O	O
+Türk	-	O	B-PER
 harflerinin	-	O	O
 kabulünün	-	O	O
 70.	-	O	O
@@ -840,11 +840,11 @@ söyledi	-	O	O
 Bugüne	-	O	O
 kadar	-	O	O
 değil	-	O	O
-savaş	-	O	B-PER
+savaş	-	O	O
 çağrısı	-	O	O
 yapmak	-	O	O
 ,	-	O	O
-barıştan	-	O	B-LOC
+barıştan	-	O	O
 ,	-	O	O
 kardeşlikten	-	O	O
 ,	-	O	O
@@ -897,12 +897,12 @@ Ordu	-	I-ORG	I-ORG
 Komutanlığı	-	I-ORG	I-ORG
 bünyesinde	-	O	O
 "	-	O	O
-GAP	-	B-ORG	B-LOC
-Bölgesi	-	I-ORG	I-LOC
-Ağaçlandırma	-	I-ORG	O
-Koordinasyon	-	I-ORG	O
-ve	-	I-ORG	O
-İşbirliği	-	I-ORG	B-ORG
+GAP	-	B-ORG	B-ORG
+Bölgesi	-	I-ORG	I-ORG
+Ağaçlandırma	-	I-ORG	I-ORG
+Koordinasyon	-	I-ORG	I-ORG
+ve	-	I-ORG	I-ORG
+İşbirliği	-	I-ORG	I-ORG
 Kurulu	-	I-ORG	I-ORG
 "	-	O	O
 adında	-	O	O
@@ -996,7 +996,7 @@ ilk	-	O	O
 katılan	-	O	O
 kuruluş	-	O	O
 olan	-	O	O
-gazeteniz	-	O	B-ORG
+gazeteniz	-	O	O
 Milliyet'e	-	B-ORG	B-ORG
 ,	-	O	O
 evlat	-	O	O
@@ -1032,9 +1032,9 @@ bitiminden	-	O	O
 16	-	O	O
 gün	-	O	O
 sonra	-	O	O
-Bahçeşehir	-	B-LOC	B-ORG
-A	-	O	I-ORG
--	-	O	I-ORG
+Bahçeşehir	-	B-LOC	O
+A	-	O	O
+-	-	O	O
 18	-	O	O
 Blok'ta	-	O	O
 bulunan	-	O	O
@@ -1066,8 +1066,8 @@ ve	-	O	O
 yaralayıcı	-	O	O
 maddelerin	-	O	O
 Ali	-	B-LOC	B-LOC
-Sami	-	I-LOC	B-PER
-Yen'e	-	I-LOC	I-PER
+Sami	-	I-LOC	I-LOC
+Yen'e	-	I-LOC	I-LOC
 girmemesi	-	O	O
 için	-	O	O
 özel	-	O	O
@@ -1151,7 +1151,7 @@ ile	-	O	O
 Cumhurbaşkanı	-	O	O
 Muhammed	-	B-PER	B-PER
 Hatemi'nin'	-	I-PER	I-PER
-fetva	-	O	I-PER
+fetva	-	O	O
 faslı	-	O	O
 kapanmıştır'	-	O	O
 yorumunun	-	O	O
@@ -1290,8 +1290,8 @@ yapan	-	O	O
 Bülent	-	B-PER	B-PER
 Ecevit	-	I-PER	I-PER
 ve	-	O	O
-Sayın	-	O	B-PER
-Deniz	-	B-PER	I-PER
+Sayın	-	O	O
+Deniz	-	B-PER	B-PER
 Baykal	-	I-PER	I-PER
 ;	-	O	O
 bu	-	O	O
@@ -1308,8 +1308,8 @@ Türkiye	-	B-LOC	B-LOC
 Cumhuriyeti'nde	-	I-LOC	I-LOC
 bulunan	-	O	O
 milyonlarca	-	O	O
-sosyal	-	O	B-ORG
-demokrat	-	O	I-ORG
+sosyal	-	O	O
+demokrat	-	O	O
 ve	-	O	O
 Mustafa	-	B-PER	B-PER
 Kemal	-	I-PER	I-PER
@@ -1516,7 +1516,7 @@ verdikleri	-	O	O
 yanıtta	-	O	O
 ,	-	O	O
 ABD'nin	-	B-LOC	B-LOC
-Irak'ta	-	I-LOC	B-LOC
+Irak'ta	-	I-LOC	I-LOC
 veya	-	O	O
 bölgede	-	O	O
 bağımsız	-	O	O
@@ -1526,7 +1526,7 @@ devletinin	-	O	O
 kurulmasını	-	O	O
 amaçlamadığını	-	O	O
 ve	-	O	O
-Washington'da	-	B-LOC	B-LOC
+Washington'da	-	B-LOC	B-PER
 iki	-	O	O
 Irak'lı	-	B-LOC	B-LOC
 Kürt	-	O	O
@@ -1628,7 +1628,7 @@ olduğunu	-	O	O
 dile	-	O	O
 getiriyor	-	O	O
 
-Artıhaber'in	-	B-ORG	B-PER
+Artıhaber'in	-	B-ORG	O
 bu	-	O	O
 haftaki	-	O	O
 sayısında	-	O	O
@@ -1800,7 +1800,7 @@ yararlanalım	-	O	O
 .	-	O	O
 
 Başta	-	O	O
-Cezayir	-	B-LOC	O
+Cezayir	-	B-LOC	B-LOC
 olmak	-	O	O
 üzere	-	O	O
 Tunus	-	B-LOC	B-LOC
@@ -1909,7 +1909,7 @@ satabilmemiz	-	O	O
 bir	-	O	O
 Türk	-	O	O
 orkestrasıyla	-	O	O
-Bach	-	B-PER	O
+Bach	-	B-PER	B-PER
 çalabilmemiz	-	O	O
 ,	-	O	O
 çok	-	O	O
@@ -1978,8 +1978,8 @@ hakkındaki	-	O	O
 Yargıtay	-	B-ORG	B-ORG
 Kararı	-	O	O
 üzerine	-	O	O
-Büyükşehir	-	O	O
-Belediye	-	B-LOC	B-LOC
+Büyükşehir	-	O	B-LOC
+Belediye	-	B-LOC	I-LOC
 Sarayı'nda	-	I-LOC	I-LOC
 FP'li	-	B-ORG	B-ORG
 milletvekilleri	-	O	O
@@ -1987,7 +1987,7 @@ milletvekilleri	-	O	O
 belediye	-	O	O
 başkanları	-	O	O
 ve	-	O	O
-meclis	-	O	B-ORG
+meclis	-	O	O
 üyelerini	-	O	O
 yanına	-	O	O
 alarak	-	O	O
@@ -2051,8 +2051,8 @@ diliyle	-	O	O
 sahneye	-	O	O
 taşıdı	-	O	O
 
-ORAL	-	B-PER	O
-Çelik'in	-	I-PER	O
+ORAL	-	B-PER	B-PER
+Çelik'in	-	I-PER	I-PER
 Milliyet	-	B-ORG	B-ORG
 Gazetesi	-	I-ORG	I-ORG
 Genel	-	O	O
@@ -2102,7 +2102,7 @@ affettiğinin	-	O	O
 ,	-	O	O
 Aşık'ın	-	B-PER	B-PER
 "	-	O	O
-Yeşil	-	B-PER	O
+Yeşil	-	B-PER	B-PER
 kontrol	-	O	O
 altında	-	O	O
 "	-	O	O
@@ -2163,9 +2163,9 @@ savaş	-	O	O
 uçağı	-	O	O
 uçurmak	-	O	O
 olan	-	O	O
-Teğmen	-	O	O
-Hatice	-	B-PER	O
-Görünmez	-	I-PER	O
+Teğmen	-	O	B-LOC
+Hatice	-	B-PER	B-PER
+Görünmez	-	I-PER	I-PER
 ise	-	O	O
 ,	-	O	O
 kadın	-	O	O
@@ -2193,7 +2193,7 @@ ağır	-	O	O
 durumda	-	O	O
 olduğu	-	O	O
 ,	-	O	O
-Atina	-	B-LOC	O
+Atina	-	B-LOC	B-LOC
 Emniyet	-	O	O
 Müdürü	-	O	O
 Panayotis	-	B-PER	B-PER
@@ -2247,7 +2247,7 @@ yaklaşık	-	O	O
 silahın	-	O	O
 "	-	O	O
 dönemin	-	O	O
-Emniyet	-	O	B-ORG
+Emniyet	-	O	O
 Genel	-	O	O
 Müdürü	-	O	O
 Mehmet	-	B-PER	B-PER
@@ -2259,16 +2259,16 @@ vermeniz	-	O	O
 gerekmez	-	O	O
 mi	-	O	O
 Sayın	-	O	O
-Akşener	-	B-PER	O
+Akşener	-	B-PER	B-PER
 
-Şili	-	B-LOC	O
+Şili	-	B-LOC	B-LOC
 -	-	O	O
 Mersin	-	B-LOC	B-LOC
 uyuşturucu	-	O	O
 hattına	-	O	O
 büyük	-	O	O
 darbe	-	O	O
-vuran	-	O	B-PER
+vuran	-	O	O
 ,	-	O	O
 İçel	-	B-ORG	B-ORG
 Emniyet	-	I-ORG	I-ORG
@@ -2420,7 +2420,7 @@ Başkanvekili	-	O	O
 Hasan	-	B-PER	B-PER
 Korkmazcan	-	I-PER	I-PER
 ve	-	O	O
-Devlet	-	O	B-ORG
+Devlet	-	O	O
 Bakanı	-	O	O
 Ahat	-	B-PER	B-PER
 Andican	-	I-PER	I-PER
@@ -2454,8 +2454,8 @@ sanatçının	-	O	O
 neden	-	O	O
 Türkiye'de	-	B-LOC	B-LOC
 Akbank	-	B-ORG	B-ORG
-Oda	-	I-ORG	O
-Orkestrası	-	I-ORG	O
+Oda	-	I-ORG	I-ORG
+Orkestrası	-	I-ORG	I-ORG
 gibi	-	O	O
 bir	-	O	O
 topluluğun	-	O	O
@@ -2492,7 +2492,7 @@ Genel	-	O	O
 Başkan	-	O	O
 ve	-	O	O
 Genel	-	O	O
-Sekreter'in	-	O	B-PER
+Sekreter'in	-	O	O
 odasında	-	O	O
 ruhsatsız	-	O	O
 silah	-	O	O
@@ -2756,8 +2756,8 @@ ANKARA	-	B-ORG	B-ORG
 DGM	-	I-ORG	I-ORG
 Savcısı	-	I-ORG	O
 Nuh	-	B-PER	B-PER
-Mete	-	I-PER	I-PER
-Yüksel'in	-	I-PER	I-PER
+Mete	-	I-PER	O
+Yüksel'in	-	I-PER	O
 talimatıyla	-	O	O
 gözaltına	-	O	O
 alınan	-	O	O
@@ -2913,9 +2913,9 @@ yapmaktadır	-	O	O
 .	-	O	O
 
 İkinci	-	B-LOC	O
-Ana	-	I-LOC	B-ORG
-Jet	-	I-LOC	I-ORG
-Üssü'nün	-	I-LOC	I-ORG
+Ana	-	I-LOC	O
+Jet	-	I-LOC	O
+Üssü'nün	-	I-LOC	O
 ,	-	O	O
 ABD'deki	-	B-LOC	B-LOC
 üç	-	O	O
@@ -2928,12 +2928,12 @@ dünyanın	-	O	O
 en	-	O	O
 büyük	-	O	O
 5	-	O	O
-üssü	-	O	B-LOC
+üssü	-	O	O
 arasında	-	O	O
 bulunduğunu	-	O	O
 kaydeden	-	O	O
 Tuğgeneral	-	O	O
-Ortaç	-	B-PER	O
+Ortaç	-	B-PER	B-PER
 ,	-	O	O
 yurtdışı	-	O	O
 görevlerde	-	O	O
@@ -2959,7 +2959,7 @@ olmuş	-	O	O
 ve	-	O	O
 bir	-	O	O
 doktor	-	O	O
-albay	-	O	B-LOC
+albay	-	O	O
 hakkında	-	O	O
 sarkıntılık	-	O	O
 suçundan	-	O	O
@@ -3071,7 +3071,7 @@ olamaz	-	O	O
 dedi	-	O	O
 
 Büyükelçi	-	O	O
-Vergau	-	B-PER	O
+Vergau	-	B-PER	B-PER
 ,	-	O	O
 Şansölye	-	O	O
 Kohl'e	-	B-PER	B-PER
@@ -3269,8 +3269,8 @@ ANKARA	-	B-ORG	B-ORG
 DGM	-	I-ORG	I-ORG
 Savcısı	-	I-ORG	O
 Nuh	-	B-PER	B-PER
-Mete	-	I-PER	I-PER
-Yüksel'in	-	I-PER	I-PER
+Mete	-	I-PER	O
+Yüksel'in	-	I-PER	O
 talimatıyla	-	O	O
 gözaltına	-	O	O
 alınan	-	O	O
@@ -3463,7 +3463,7 @@ Türk	-	B-ORG	B-ORG
 Dil	-	I-ORG	I-ORG
 Kurumu'nun	-	I-ORG	I-ORG
 ,	-	O	O
-Türkçe'yi	-	O	B-LOC
+Türkçe'yi	-	O	O
 ,	-	O	O
 kendi	-	O	O
 öz	-	O	O
@@ -3619,19 +3619,19 @@ parlak	-	O	O
 koreograflarından	-	O	O
 biri	-	O	O
 sayılan	-	O	O
-Nacho	-	B-PER	B-PER
-Duato'nun	-	I-PER	I-PER
+Nacho	-	B-PER	B-ORG
+Duato'nun	-	I-PER	I-ORG
 koreografisini	-	O	O
 hazırladığı	-	O	O
 "	-	O	O
-Romeo	-	B-PER	B-PER
+Romeo	-	B-PER	O
 ve	-	O	O
-Juliette'i	-	B-PER	B-PER
+Juliette'i	-	B-PER	O
 sahneleyen	-	O	O
 İspanyol	-	O	O
-Ulusal	-	O	O
-Dans	-	O	O
-Topluluğu	-	O	O
+Ulusal	-	O	B-ORG
+Dans	-	O	I-ORG
+Topluluğu	-	O	I-ORG
 ,	-	O	O
 klasik	-	O	O
 ile	-	O	O
@@ -3801,8 +3801,8 @@ içinde	-	O	O
 yönetmekle	-	O	O
 yükümlüdürler	-	O	O
 
-Yine	-	O	B-ORG
-Kavaklıdere	-	B-ORG	I-ORG
+Yine	-	O	O
+Kavaklıdere	-	B-ORG	B-ORG
 Şubesi	-	I-ORG	I-ORG
 ,	-	O	O
 yine	-	O	O
@@ -3919,7 +3919,7 @@ pazartesi	-	O	O
 günü	-	O	O
 New	-	B-LOC	B-LOC
 York'ta	-	I-LOC	I-LOC
-ABD	-	I-LOC	B-LOC
+ABD	-	I-LOC	I-LOC
 Başkanı	-	O	O
 Bill	-	B-PER	B-PER
 Clinton	-	I-PER	I-PER
@@ -4006,18 +4006,18 @@ sonra	-	O	O
 Konya'da	-	B-LOC	B-LOC
 6	-	O	O
 ay	-	O	O
-savaş	-	O	B-PER
+savaş	-	O	O
 ,	-	O	O
 ardından	-	O	O
 da	-	O	O
 Ankara'da	-	B-LOC	B-LOC
-F	-	O	B-ORG
--	-	O	I-ORG
+F	-	O	O
+-	-	O	O
 16'	-	O	O
 Savaşan	-	O	O
 Şahin	-	O	B-PER
 "	-	O	O
-savaş	-	O	B-PER
+savaş	-	O	O
 uçaklarını	-	O	O
 kullanma	-	O	O
 eğitimi	-	O	O
@@ -4147,12 +4147,12 @@ Almanya'yla	-	B-LOC	B-LOC
 bağları	-	O	O
 bulunduğunu	-	O	O
 hatırlatan	-	O	O
-Scharping	-	B-PER	O
+Scharping	-	B-PER	B-PER
 ,	-	O	O
 2	-	O	O
 milyonun	-	O	O
 üzerinden	-	O	O
-Türk	-	O	O
+Türk	-	O	B-PER
 vatandaşın	-	O	O
 Almanya'da	-	B-LOC	B-LOC
 yaşaması	-	O	O
@@ -4391,7 +4391,7 @@ söyledi	-	O	O
 
 İçişleri	-	B-ORG	B-ORG
 Bakanlığı	-	I-ORG	I-ORG
-hiyararşisi	-	O	I-ORG
+hiyararşisi	-	O	O
 içinde	-	O	O
 bir	-	O	O
 polis	-	O	O
@@ -4713,8 +4713,8 @@ AB	-	B-ORG	B-ORG
 Türkiye	-	I-ORG	I-ORG
 Temsilciliği'ni	-	I-ORG	I-ORG
 ve	-	O	O
-Avusturya	-	B-ORG	B-ORG
-Kültür'ü	-	I-ORG	I-ORG
+Avusturya	-	B-ORG	B-LOC
+Kültür'ü	-	I-ORG	I-LOC
 ikna	-	O	O
 etmiş	-	O	O
 ,	-	O	O
@@ -4722,10 +4722,10 @@ etmiş	-	O	O
 Biret	-	I-PER	I-PER
 ve	-	O	O
 Akbank	-	B-ORG	B-ORG
-Oda	-	I-ORG	O
-Orkestrası	-	I-ORG	O
+Oda	-	I-ORG	I-ORG
+Orkestrası	-	I-ORG	I-ORG
 gene	-	O	O
-Bach	-	B-PER	O
+Bach	-	B-PER	B-PER
 çalacak	-	O	O
 ,	-	O	O
 Şefika	-	B-PER	B-PER
@@ -4739,13 +4739,13 @@ Oda	-	I-ORG	I-ORG
 Orkestrası	-	I-ORG	I-ORG
 ve	-	O	O
 Avusturya	-	B-LOC	B-LOC
-Kammer	-	O	O
-Senfoni	-	O	O
+Kammer	-	O	B-PER
+Senfoni	-	O	I-PER
 konuk	-	O	O
 olacak	-	O	O
 
-Aya	-	B-LOC	B-PER
-İrini	-	I-LOC	O
+Aya	-	B-LOC	B-LOC
+İrini	-	I-LOC	I-LOC
 7.	-	O	O
 Yüzyıl'da	-	O	O
 ne	-	O	O
@@ -4792,8 +4792,8 @@ hafızası	-	O	O
 insanüstü	-	O	O
 "	-	O	O
 dediği	-	O	O
-İdil	-	B-PER	O
-Biret	-	I-PER	O
+İdil	-	B-PER	B-PER
+Biret	-	I-PER	I-PER
 için	-	O	O
 ,	-	O	O
 entellektüel	-	O	O
@@ -4810,13 +4810,13 @@ bir	-	O	O
 virtüöz	-	O	O
 için	-	O	O
 ,	-	O	O
-Bach	-	B-PER	O
+Bach	-	B-PER	B-PER
 ideal	-	O	O
 besteci	-	O	O
 
 ALMANYA	-	B-LOC	B-LOC
 Büyükelçisi	-	O	O
-Vergau	-	B-PER	O
+Vergau	-	B-PER	B-PER
 ,	-	O	O
 bu	-	O	O
 seçimlerin	-	O	O
@@ -4852,15 +4852,15 @@ söylüyor	-	O	O
 Yargıç	-	O	O
 duruşma	-	O	O
 sonunda	-	O	O
-Afife	-	B-PER	O
-Sibel	-	I-PER	B-PER
+Afife	-	B-PER	B-PER
+Sibel	-	I-PER	I-PER
 İpekçi	-	I-PER	I-PER
 ve	-	O	O
 Nüket	-	B-PER	B-PER
 İzet'in	-	I-PER	I-PER
 dinlenmesi	-	O	O
 ,	-	O	O
-Ağar'ın	-	B-PER	B-PER
+Ağar'ın	-	B-PER	O
 durumunun	-	O	O
 daha	-	O	O
 sonra	-	O	O
@@ -5013,7 +5013,7 @@ sahasından	-	O	O
 çıkıp	-	O	O
 Bab	-	B-LOC	B-ORG
 -	-	I-LOC	I-ORG
-ı	-	I-LOC	O
+ı	-	I-LOC	I-ORG
 Ali'ye	-	I-LOC	B-PER
 geldikleri	-	O	O
 günden	-	O	O
@@ -5046,8 +5046,8 @@ hususunu	-	O	O
 Hakim	-	O	O
 Bağımsızlığı	-	O	O
 Açısından	-	O	O
-Askeri	-	O	B-ORG
-Mahkemelerin	-	O	I-ORG
+Askeri	-	O	O
+Mahkemelerin	-	O	O
 Kuruluşu	-	O	O
 ve	-	O	O
 Yetkileri	-	O	O
@@ -5074,7 +5074,7 @@ etti	-	O	O
 :	-	O	O
 "	-	O	O
 İngiltere'de	-	B-LOC	B-LOC
-Fransa'da	-	I-LOC	B-LOC
+Fransa'da	-	I-LOC	I-LOC
 herkes	-	O	O
 düşüncesini	-	O	O
 ,	-	O	O
@@ -5161,11 +5161,11 @@ hastayı	-	O	O
 görünce	-	O	O
 dayanamadı	-	O	O
 
-TÜRK	-	O	B-ORG
-İntikam	-	O	I-ORG
-Tugayı	-	O	I-ORG
+TÜRK	-	O	O
+İntikam	-	O	O
+Tugayı	-	O	O
 (	-	O	O
-TİT	-	O	B-ORG
+TİT	-	O	O
 )	-	O	O
 imzalı	-	O	O
 bir	-	O	O
@@ -5180,7 +5180,7 @@ ardından	-	O	O
 "	-	O	O
 diye	-	O	O
 adlandırılan	-	O	O
-Gebze	-	B-LOC	B-PER
+Gebze	-	B-LOC	B-LOC
 -	-	O	O
 Sapanca	-	B-LOC	B-LOC
 -	-	O	O
@@ -5204,7 +5204,7 @@ Kazan	-	B-PER	B-PER
 İstanbul	-	B-ORG	B-ORG
 Cumhuriyet	-	I-ORG	I-ORG
 Savcılığı'nca	-	I-ORG	I-ORG
-İpekçi	-	B-PER	I-ORG
+İpekçi	-	B-PER	B-PER
 cinayetine	-	O	O
 katılmaktan	-	O	O
 aranan	-	O	O
@@ -5245,7 +5245,7 @@ ele	-	O	O
 alınmasının	-	O	O
 kararlaştırıldığını	-	O	O
 bildiren	-	O	O
-Türk	-	O	O
+Türk	-	O	B-PER
 ,	-	O	O
 bu	-	O	O
 yasanın	-	O	O
@@ -5282,7 +5282,7 @@ konularını	-	O	O
 ele	-	O	O
 aldıklarını	-	O	O
 bildiren	-	O	O
-Türk	-	O	O
+Türk	-	O	B-PER
 ,	-	O	O
 söz	-	O	O
 konusu	-	O	O
@@ -5365,11 +5365,11 @@ kaynaştırma	-	O	O
 programını	-	O	O
 uygulamaya	-	O	O
 
-TÜRK	-	O	B-ORG
-İntikam	-	O	I-ORG
-Tugayı	-	O	I-ORG
+TÜRK	-	O	O
+İntikam	-	O	O
+Tugayı	-	O	O
 (	-	O	O
-TİT	-	O	B-ORG
+TİT	-	O	O
 )	-	O	O
 imzalı	-	O	O
 bir	-	O	O
@@ -5384,7 +5384,7 @@ ardından	-	O	O
 "	-	O	O
 diye	-	O	O
 adlandırılan	-	O	O
-Gebze	-	B-LOC	B-PER
+Gebze	-	B-LOC	B-LOC
 -	-	O	O
 Sapanca	-	B-LOC	B-LOC
 -	-	O	O
@@ -5441,7 +5441,7 @@ bulunan	-	O	O
 Yılmaz'ın	-	B-PER	B-PER
 istifadan	-	O	O
 Türkiye	-	B-LOC	B-LOC
-saati	-	O	I-LOC
+saati	-	O	O
 ile	-	O	O
 18.00	-	O	O
 sularında	-	O	O
@@ -5481,7 +5481,7 @@ görüştüğünü	-	O	O
 kaydederek	-	O	O
 ,	-	O	O
 Aşık	-	B-PER	B-PER
-benim	-	O	I-PER
+benim	-	O	O
 ve	-	O	O
 Başbakan'ın	-	O	O
 herhangi	-	O	O
@@ -5550,7 +5550,7 @@ bir	-	O	O
 manevra	-	O	O
 olduğunu	-	O	O
 savunan	-	O	O
-Bedük	-	O	O
+Bedük	-	O	B-PER
 sözlerini	-	O	O
 şöyle	-	O	O
 sürdürdürdü	-	O	O
@@ -5604,8 +5604,8 @@ beraberinde	-	O	O
 getirdi	-	O	O
 
 Hava	-	B-ORG	O
-Harb	-	I-ORG	B-LOC
-Okulu'ndan	-	I-ORG	I-LOC
+Harb	-	I-ORG	B-ORG
+Okulu'ndan	-	I-ORG	I-ORG
 mezun	-	O	O
 olduktan	-	O	O
 sonra	-	O	O
@@ -5614,7 +5614,7 @@ merkezine	-	O	O
 katılan	-	O	O
 Türkiye	-	B-LOC	B-LOC
 göklerinin	-	O	O
-müstakbel	-	O	B-PER
+müstakbel	-	O	O
 "	-	O	O
 çelik	-	O	O
 kanatları	-	O	O
@@ -5690,7 +5690,7 @@ Polis	-	I-ORG	O
 Teşkilatı	-	I-ORG	O
 şefi	-	O	O
 ,	-	O	O
-Atina	-	B-LOC	O
+Atina	-	B-LOC	B-LOC
 Emniyet	-	O	O
 Müdürü	-	O	O
 ,	-	O	O
@@ -5779,8 +5779,8 @@ Kavaklıdere	-	B-ORG	I-ORG
 ,	-	O	O
 bu	-	O	O
 kez	-	O	O
-Yıldırım	-	B-PER	B-PER
-Aktuna'ya	-	I-PER	I-PER
+Yıldırım	-	B-PER	B-LOC
+Aktuna'ya	-	I-PER	I-LOC
 kampanyanın	-	O	O
 bitiminden	-	O	O
 13	-	O	O
@@ -5981,8 +5981,8 @@ etmekle	-	O	O
 görevli	-	O	O
 jandarmaların	-	O	O
 hatası	-	O	O
-Brüksel	-	B-ORG	B-LOC
-Savcılığı	-	I-ORG	O
+Brüksel	-	B-ORG	B-ORG
+Savcılığı	-	I-ORG	I-ORG
 tarafından	-	O	O
 doğrulanırken	-	O	O
 bu	-	O	O
@@ -6037,12 +6037,12 @@ basılanlar	-	O	O
 saldırır	-	O	O
 .	-	O	O
 
-Remiks	-	O	O
+Remiks	-	O	B-PER
 çalışmalarıyla	-	O	O
 adını	-	O	O
 duyuran	-	O	O
-Kiss	-	B-ORG	O
-Müzik'in	-	I-ORG	O
+Kiss	-	B-ORG	B-ORG
+Müzik'in	-	I-ORG	I-ORG
 sahibi	-	O	O
 Cüneyt	-	B-PER	B-PER
 Ortan'ın	-	I-PER	I-PER
@@ -6120,7 +6120,7 @@ verdikleri	-	O	O
 yanıtta	-	O	O
 ,	-	O	O
 ABD'nin	-	B-LOC	B-LOC
-Irak'ta	-	I-LOC	B-LOC
+Irak'ta	-	I-LOC	I-LOC
 veya	-	O	O
 bölgede	-	O	O
 bağımsız	-	O	O
@@ -6130,7 +6130,7 @@ devletinin	-	O	O
 kurulmasını	-	O	O
 amaçlamadığını	-	O	O
 ve	-	O	O
-Washington'da	-	B-LOC	B-LOC
+Washington'da	-	B-LOC	B-PER
 iki	-	O	O
 Irak'lı	-	B-LOC	B-LOC
 Kürt	-	O	O
@@ -6254,7 +6254,7 @@ kurması	-	O	O
 muhtemel	-	O	O
 yeni	-	O	O
 hükümette	-	O	O
-Dışişleri	-	O	O
+Dışişleri	-	O	B-ORG
 Bakanı	-	O	O
 adayı	-	O	O
 olarak	-	O	O
@@ -6268,23 +6268,23 @@ diyaloğun	-	O	O
 düzeleceğini	-	O	O
 belirtti	-	O	O
 
-Güden	-	O	B-PER
+Güden	-	O	O
 ,	-	O	O
 14	-	O	O
 Mart	-	O	O
 1996'da	-	O	O
 Antalya	-	B-LOC	B-LOC
 Bölgesi'ndeki	-	O	I-LOC
-Emperyal	-	B-ORG	I-ORG
-Casinoları'nın	-	I-ORG	I-ORG
+Emperyal	-	B-ORG	I-LOC
+Casinoları'nın	-	I-ORG	I-LOC
 Sorumlu	-	O	O
 Müdürü	-	O	O
 Süleyman	-	B-PER	B-PER
 Çap'ın	-	I-PER	I-PER
 talimatı	-	O	O
 ile	-	O	O
-Gazete	-	B-ORG	B-ORG
-07	-	I-ORG	I-ORG
+Gazete	-	B-ORG	O
+07	-	I-ORG	O
 adlı	-	O	O
 gazete	-	O	O
 ile	-	O	O
@@ -6302,8 +6302,8 @@ itiraf	-	O	O
 etti	-	O	O
 
 SPD	-	B-ORG	B-ORG
-Alman	-	I-ORG	O
-Sosyal	-	I-ORG	B-ORG
+Alman	-	I-ORG	I-ORG
+Sosyal	-	I-ORG	I-ORG
 Demokrat	-	I-ORG	I-ORG
 Parti	-	I-ORG	I-ORG
 )	-	O	O
@@ -6433,7 +6433,7 @@ yolunda	-	O	O
 uyaranlar	-	O	O
 var	-	O	O
 
-Kültürlü'nün	-	B-PER	B-LOC
+Kültürlü'nün	-	B-PER	B-PER
 yazılı	-	O	O
 talimatı	-	O	O
 üzerine	-	O	O
@@ -6442,7 +6442,7 @@ Teftiş	-	I-ORG	I-ORG
 Kurulu	-	I-ORG	I-ORG
 Üyesi	-	O	O
 Cumali	-	B-PER	B-PER
-Özekici	-	I-PER	O
+Özekici	-	I-PER	I-PER
 tarafından	-	O	O
 hazırlanan	-	O	O
 rapora	-	O	O
@@ -6503,12 +6503,12 @@ anı	-	O	O
 kitabının'	-	O	O
 Arka	-	O	O
 Koltukta	-	O	O
-Yakın	-	O	O
-Dövüş'	-	O	O
+Yakın	-	O	B-PER
+Dövüş'	-	O	I-PER
 adlı	-	O	O
 bölümünde	-	O	O
 ,	-	O	O
-Tlass'ın	-	B-PER	B-ORG
+Tlass'ın	-	B-PER	O
 ciddi	-	O	O
 ve	-	O	O
 yardım	-	O	O
@@ -6534,8 +6534,8 @@ Başkanvekili	-	O	O
 ve	-	O	O
 TBMM	-	B-ORG	B-ORG
 Kültür	-	I-ORG	I-ORG
-,	-	I-ORG	O
-Sanat	-	I-ORG	B-ORG
+,	-	I-ORG	I-ORG
+Sanat	-	I-ORG	I-ORG
 ve	-	I-ORG	I-ORG
 Yayın	-	I-ORG	I-ORG
 Kurulu	-	I-ORG	I-ORG
@@ -6544,7 +6544,7 @@ Hasan	-	B-PER	B-PER
 Korkmazcan	-	I-PER	I-PER
 da	-	O	O
 ,	-	O	O
-Türkçe'nin	-	O	B-PER
+Türkçe'nin	-	O	O
 bugün	-	O	O
 yaşadığı	-	O	O
 soruna	-	O	O
@@ -6587,7 +6587,7 @@ ve	-	O	O
 havadan	-	O	O
 helikopterlerle	-	O	O
 görüntülenen	-	O	O
-Türk	-	O	O
+Türk	-	O	B-PER
 insanı	-	O	O
 kardeşlik	-	O	O
 mesajı	-	O	O
@@ -6640,7 +6640,7 @@ kapayan	-	O	O
 temsilcilerimizden	-	O	O
 Fenerbahçe	-	B-ORG	B-ORG
 ve	-	O	O
-Ülker	-	B-ORG	O
+Ülker	-	B-ORG	B-ORG
 gruplarında	-	O	O
 liderlik	-	O	O
 koltuğuna	-	O	O
@@ -6649,9 +6649,9 @@ otururken	-	O	O
 Efes	-	B-ORG	B-ORG
 Pilsen	-	I-ORG	I-ORG
 de	-	O	O
-Panathinaikos	-	B-ORG	B-ORG
+Panathinaikos	-	B-ORG	B-PER
 ve	-	O	O
-Cibona'nın	-	O	B-PER
+Cibona'nın	-	O	B-LOC
 ardında	-	O	O
 üçüncü	-	O	O
 sırayı	-	O	O
@@ -6822,7 +6822,7 @@ SPD	-	B-ORG	B-ORG
 Kohl	-	B-PER	B-PER
 gibi	-	O	O
 Charles	-	B-PER	B-PER
-de	-	I-PER	B-PER
+de	-	I-PER	I-PER
 Gaulle'un	-	I-PER	I-PER
 ardından	-	O	O
 yakın	-	O	O
@@ -6854,8 +6854,8 @@ destekli	-	O	O
 eğitim	-	O	O
 kararı	-	O	O
 nedeniyle	-	O	O
-bakanlık	-	O	B-ORG
-Dünya	-	B-ORG	I-ORG
+bakanlık	-	O	O
+Dünya	-	B-ORG	B-ORG
 Bankası'ndan	-	I-ORG	I-ORG
 alınan	-	O	O
 300	-	O	O
@@ -6868,7 +6868,7 @@ bilgisayar	-	O	O
 ,	-	O	O
 yazıcı	-	O	O
 ,	-	O	O
-scaner	-	O	B-ORG
+scaner	-	O	O
 ,	-	O	O
 televizyon	-	O	O
 ve	-	O	O
@@ -6915,7 +6915,7 @@ görüştü	-	O	O
 
 Bu	-	O	O
 arada	-	O	O
-Washington'da	-	B-LOC	B-LOC
+Washington'da	-	B-LOC	B-PER
 bir	-	O	O
 açıklama	-	O	O
 yapan	-	O	O
@@ -6999,7 +6999,7 @@ gerçekçi	-	O	O
 sayılamayacağını	-	O	O
 söyleyen	-	O	O
 Prof.	-	O	O
-Ansal	-	B-PER	B-PER
+Ansal	-	B-PER	O
 sunuşun	-	O	O
 ardından	-	O	O
 konuyla	-	O	O
@@ -7021,7 +7021,7 @@ denetimlerin	-	O	O
 kalktığına	-	O	O
 dikkat	-	O	O
 çeken	-	O	O
-Türkiye	-	B-ORG	B-LOC
+Türkiye	-	B-ORG	B-ORG
 İnşaat	-	I-ORG	I-ORG
 Mühendisleri	-	I-ORG	I-ORG
 Odası	-	I-ORG	I-ORG
@@ -7183,8 +7183,8 @@ terörizm	-	O	O
 uyuşturucu	-	O	O
 trafiği	-	O	O
 ve	-	O	O
-çevre	-	O	B-ORG
-kirliliği	-	O	I-ORG
+çevre	-	O	O
+kirliliği	-	O	O
 gibi	-	O	O
 ,	-	O	O
 uluslararası	-	O	O
@@ -7562,7 +7562,7 @@ yolsuzluklara	-	O	O
 ,	-	O	O
 faize	-	O	O
 ,	-	O	O
-KİT'lere	-	O	B-ORG
+KİT'lere	-	O	O
 ,	-	O	O
 SSK'ya	-	B-ORG	B-ORG
 akmaya	-	O	O
@@ -8009,7 +8009,7 @@ Koalisyonu	-	O	O
 sırasında	-	O	O
 ,	-	O	O
 Emlakbank'tan	-	B-ORG	B-ORG
-DYP'li	-	I-ORG	B-ORG
+DYP'li	-	I-ORG	I-ORG
 4	-	O	O
 milletvekiline	-	O	O
 ,	-	O	O
@@ -8071,7 +8071,7 @@ da	-	O	O
 Türk	-	O	O
 devletlerinden	-	O	O
 Azerbaycan'ın	-	B-LOC	B-LOC
-Latin	-	O	O
+Latin	-	O	I-LOC
 Alfabesi'ne	-	O	O
 geçtiğini	-	O	O
 ,	-	O	O
@@ -8218,7 +8218,7 @@ bir	-	O	O
 basın	-	O	O
 toplantısı	-	O	O
 düzenleyen	-	O	O
-Güney	-	B-PER	O
+Güney	-	B-PER	B-LOC
 devlet	-	O	O
 adamlarının	-	O	O
 bu	-	O	O
@@ -8229,7 +8229,7 @@ sağlıklı	-	O	O
 tahkik	-	O	O
 edilebilmesi	-	O	O
 için	-	O	O
-bakanlık	-	O	B-ORG
+bakanlık	-	O	O
 avantajı	-	O	O
 ve	-	O	O
 milletvekili	-	O	O
@@ -8555,8 +8555,8 @@ eşini	-	O	O
 Ankara'ya	-	B-LOC	B-LOC
 çağırarak	-	O	O
 ,	-	O	O
-MİT'in	-	B-ORG	B-PER
-Çakıcı'nın	-	B-PER	I-PER
+MİT'in	-	B-ORG	B-ORG
+Çakıcı'nın	-	B-PER	B-PER
 yerini	-	O	O
 belirlediğini	-	O	O
 ,	-	O	O
@@ -8747,7 +8747,7 @@ vefakarım	-	O	O
 "	-	O	O
 Hasan	-	B-PER	B-PER
 Yılmaer'in	-	I-PER	I-PER
-Hürriyet'te	-	B-ORG	I-ORG
+Hürriyet'te	-	B-ORG	O
 yazdığı	-	O	O
 spor	-	O	O
 yazılarını	-	O	O
@@ -8931,12 +8931,12 @@ konulu	-	O	O
 toplantıya	-	O	O
 katıldı	-	O	O
 
-Yine	-	O	B-ORG
-Kavaklıdere	-	B-ORG	I-ORG
+Yine	-	O	O
+Kavaklıdere	-	B-ORG	B-ORG
 Şubesi	-	I-ORG	I-ORG
 ,	-	O	O
 DYP'den	-	B-ORG	B-ORG
-MHP'ye	-	I-ORG	B-ORG
+MHP'ye	-	I-ORG	I-ORG
 geçen	-	O	O
 ve	-	O	O
 şu	-	O	O
@@ -8960,13 +8960,13 @@ daireyi	-	O	O
 tahsis	-	O	O
 etti	-	O	O
 
-Yine	-	O	B-ORG
-Kavaklıdere	-	B-ORG	I-ORG
+Yine	-	O	O
+Kavaklıdere	-	B-ORG	B-ORG
 Şubesi	-	I-ORG	I-ORG
 ,	-	O	O
 yine	-	O	O
-Yıldırım	-	B-PER	B-PER
-Aktuna'ya	-	I-PER	I-PER
+Yıldırım	-	B-PER	B-ORG
+Aktuna'ya	-	I-PER	I-ORG
 bu	-	O	O
 kez	-	O	O
 kampanyanın	-	O	O
@@ -8975,9 +8975,9 @@ bitiminden	-	O	O
 gün	-	O	O
 sonra	-	O	O
 ,	-	O	O
-Bahçeşehir	-	B-LOC	B-ORG
-A	-	O	I-ORG
--	-	O	I-ORG
+Bahçeşehir	-	B-LOC	O
+A	-	O	O
+-	-	O	O
 16	-	O	O
 Blok'taki	-	O	O
 9	-	O	O
@@ -9039,7 +9039,7 @@ toplantının	-	O	O
 sonunda	-	O	O
 ,	-	O	O
 Güneydoğu	-	B-LOC	B-LOC
-Avrupa'yı	-	I-LOC	B-LOC
+Avrupa'yı	-	I-LOC	I-LOC
 ilgilendiren	-	O	O
 bir	-	O	O
 dizi	-	O	O
@@ -9199,7 +9199,7 @@ yılında	-	O	O
 üretimi	-	O	O
 durdurulacak	-	O	O
 olan	-	O	O
-Escort'un	-	O	B-ORG
+Escort'un	-	O	O
 yerini	-	O	O
 alacak	-	O	O
 olan	-	O	O
@@ -9313,7 +9313,7 @@ Başkan	-	O	O
 Yardımcısı	-	O	O
 ,	-	O	O
 Meclis	-	B-ORG	B-ORG
-Grubu	-	I-ORG	O
+Grubu	-	I-ORG	I-ORG
 Başkanı	-	O	O
 ve	-	O	O
 muhtemel	-	O	O
@@ -9463,9 +9463,9 @@ biri	-	O	O
 olan	-	O	O
 İzmir'deki	-	B-LOC	B-LOC
 2.	-	B-ORG	O
-Ana	-	I-ORG	B-ORG
-Jet	-	I-ORG	I-ORG
-Üs	-	I-ORG	I-ORG
+Ana	-	I-ORG	O
+Jet	-	I-ORG	O
+Üs	-	I-ORG	B-ORG
 Uçuş	-	I-ORG	I-ORG
 Eğitim	-	I-ORG	I-ORG
 Merkezi	-	I-ORG	I-ORG
@@ -9492,7 +9492,7 @@ Aşık	-	B-PER	B-PER
 ,	-	O	O
 medyanın	-	O	O
 Çakıcı'yı	-	B-PER	B-PER
-kahraman	-	O	I-PER
+kahraman	-	O	O
 ilan	-	O	O
 ettiğini	-	O	O
 savunarak	-	O	O
@@ -9574,7 +9574,7 @@ Başkan	-	O	O
 Yardımcısı	-	O	O
 ,	-	O	O
 Meclis	-	B-ORG	B-ORG
-Grubu	-	I-ORG	O
+Grubu	-	I-ORG	I-ORG
 Başkanı	-	O	O
 ve	-	O	O
 muhtemel	-	O	O
@@ -9659,7 +9659,7 @@ istedi	-	O	O
 Köşe	-	O	O
 yazarlığına	-	O	O
 başladığı	-	O	O
-nice	-	O	B-LOC
+nice	-	O	O
 yıllardan	-	O	O
 beri	-	O	O
 Cumhuriyet'te	-	B-ORG	B-ORG
@@ -9707,7 +9707,7 @@ oylarını	-	O	O
 parayla	-	O	O
 satanlara	-	O	O
 ve	-	O	O
-kongre	-	O	B-ORG
+kongre	-	O	O
 basanların	-	O	O
 dürtülerine	-	O	O
 göre	-	O	O
@@ -9924,7 +9924,7 @@ yanısıra	-	O	O
 ünlü	-	O	O
 yönetmen	-	O	O
 Çağatay	-	B-PER	B-PER
-Karaçizmeli	-	I-PER	O
+Karaçizmeli	-	I-PER	I-PER
 ,	-	O	O
 bin	-	O	O
 kişilik	-	O	O
@@ -9960,8 +9960,8 @@ iki	-	O	O
 kanadının	-	O	O
 başkanları	-	O	O
 da	-	O	O
-Albright'ın'	-	B-PER	O
-Çek	-	O	B-PER
+Albright'ın'	-	B-PER	B-PER
+Çek	-	O	O
 Cumhurbaşkanı'	-	O	O
 olmasının	-	O	O
 yadırganmayacağını	-	O	O
@@ -9970,10 +9970,10 @@ ettiler	-	O	O
 
 Onu	-	O	O
 ,	-	O	O
-New	-	B-ORG	B-LOC
-York	-	I-ORG	I-LOC
-Flarmoni	-	I-ORG	I-LOC
-Orkestrası'nda	-	I-ORG	I-LOC
+New	-	B-ORG	B-ORG
+York	-	I-ORG	I-ORG
+Flarmoni	-	I-ORG	I-ORG
+Orkestrası'nda	-	I-ORG	I-ORG
 ,	-	O	O
 Şef	-	O	O
 Kurt	-	B-PER	B-PER
@@ -9998,8 +9998,8 @@ izledim	-	O	O
 
 AB'nin	-	B-ORG	B-ORG
 ,	-	O	O
-Alman	-	B-ORG	O
-Futbol	-	I-ORG	B-ORG
+Alman	-	B-ORG	B-ORG
+Futbol	-	I-ORG	I-ORG
 Federasyonu'nun	-	I-ORG	I-ORG
 televizyon	-	O	O
 haklarını	-	O	O
@@ -10271,9 +10271,9 @@ isme	-	O	O
 kadar	-	O	O
 ulaşıyorlar	-	O	O
 :	-	O	O
-Emekli	-	O	O
-Albay	-	O	B-LOC
-Hatay	-	B-PER	I-LOC
+Emekli	-	O	B-LOC
+Albay	-	O	O
+Hatay	-	B-PER	B-LOC
 Kortun	-	I-PER	O
 
 Bu	-	O	O
@@ -10310,7 +10310,7 @@ dönemin	-	O	O
 Emniyet	-	B-ORG	B-ORG
 Genel	-	O	O
 Müdürü	-	O	O
-Ağar'ın	-	B-PER	B-PER
+Ağar'ın	-	B-PER	O
 bu	-	O	O
 olaydan	-	O	O
 sorumlu	-	O	O
@@ -10360,11 +10360,11 @@ işlendiğini	-	O	O
 öne	-	O	O
 sürdü	-	O	O
 
-İNSAN	-	B-ORG	O
-Hakları	-	I-ORG	O
-Koordinatör	-	I-ORG	O
-Üst	-	I-ORG	O
-Kurulu	-	I-ORG	O
+İNSAN	-	B-ORG	B-ORG
+Hakları	-	I-ORG	I-ORG
+Koordinatör	-	I-ORG	I-ORG
+Üst	-	I-ORG	I-ORG
+Kurulu	-	I-ORG	I-ORG
 ,	-	O	O
 il	-	O	O
 ve	-	O	O
@@ -10388,11 +10388,11 @@ bütçesindeki	-	O	O
 kullanılmasını	-	O	O
 kararlaştırdı	-	O	O
 
-İNSAN	-	B-ORG	O
-Hakları	-	I-ORG	O
-Koordinatör	-	I-ORG	O
-Üst	-	I-ORG	O
-Kurulu	-	I-ORG	O
+İNSAN	-	B-ORG	B-ORG
+Hakları	-	I-ORG	I-ORG
+Koordinatör	-	I-ORG	I-ORG
+Üst	-	I-ORG	I-ORG
+Kurulu	-	I-ORG	I-ORG
 ,	-	O	O
 il	-	O	O
 ve	-	O	O
@@ -10697,9 +10697,9 @@ diye	-	O	O
 konuştu	-	O	O
 
 Yargıtay	-	B-ORG	B-ORG
-8.	-	I-ORG	I-ORG
-Hukuk	-	I-ORG	I-ORG
-Dairesi	-	I-ORG	I-ORG
+8.	-	I-ORG	O
+Hukuk	-	I-ORG	O
+Dairesi	-	I-ORG	O
 ,	-	O	O
 bu	-	O	O
 konuşmada	-	O	O
@@ -10842,8 +10842,8 @@ Finlandiya'da	-	B-LOC	B-LOC
 1994	-	O	O
 yılında	-	O	O
 yapılan	-	O	O
-devlet	-	O	B-ORG
-başkanlığı	-	O	I-ORG
+devlet	-	O	O
+başkanlığı	-	O	O
 seçimlerinde	-	O	O
 ,	-	O	O
 ülkenin	-	O	O
@@ -10917,13 +10917,13 @@ konuştu	-	O	O
 Diğer	-	O	O
 yandan	-	O	O
 ,	-	O	O
-İngiliz	-	B-ORG	O
-Sınırlı	-	I-ORG	O
-Uygulamalar	-	I-ORG	B-ORG
+İngiliz	-	B-ORG	B-ORG
+Sınırlı	-	I-ORG	I-ORG
+Uygulamalar	-	I-ORG	I-ORG
 Mahkemesi	-	I-ORG	I-ORG
 ,	-	O	O
-Ocak'ta	-	O	B-ORG
-Süper	-	O	I-ORG
+Ocak'ta	-	O	O
+Süper	-	O	O
 Lig'in	-	O	O
 TV	-	O	O
 anlaşmasının	-	O	O
@@ -11089,7 +11089,7 @@ dansın	-	O	O
 çarpıcı	-	O	O
 örneklerini	-	O	O
 sergilediği	-	O	O
-Bienal'de	-	O	B-ORG
+Bienal'de	-	O	O
 iki	-	O	O
 gösteri	-	O	O
 sunan	-	O	O
@@ -11104,8 +11104,8 @@ beğeniyle	-	O	O
 karşılandı	-	O	O
 
 Uluslararası	-	B-ORG	O
-Af	-	I-ORG	O
-Örgütü	-	I-ORG	O
+Af	-	I-ORG	B-ORG
+Örgütü	-	I-ORG	I-ORG
 İstanbul	-	B-LOC	B-LOC
 grubu	-	O	O
 ,'	-	O	O
@@ -11120,17 +11120,17 @@ konuya	-	O	O
 duyarlı	-	O	O
 kılma	-	O	O
 amacıyla	-	O	O
-Uluslararası	-	B-ORG	O
-Af	-	I-ORG	O
-Örgütü	-	I-ORG	O
+Uluslararası	-	B-ORG	B-ORG
+Af	-	I-ORG	I-ORG
+Örgütü	-	I-ORG	I-ORG
 Dünya	-	O	O
 "	-	O	O
 Kayıplar	-	O	O
 "	-	O	O
-Ormanı'nı	-	O	O
+Ormanı'nı	-	O	B-LOC
 oluşturuyor	-	O	O
 
-Söylemez	-	B-PER	B-PER
+Söylemez	-	B-PER	O
 ,	-	O	O
 Efes	-	B-ORG	B-ORG
 Oteli'ndeki	-	I-ORG	I-ORG
@@ -11239,8 +11239,8 @@ incelediğini	-	O	O
 söyledi	-	O	O
 
 Uluslararası	-	B-ORG	O
-Af	-	I-ORG	O
-Örgütü	-	I-ORG	O
+Af	-	I-ORG	B-ORG
+Örgütü	-	I-ORG	I-ORG
 İstanbul	-	B-LOC	B-LOC
 grubu	-	O	O
 ,'	-	O	O
@@ -11255,14 +11255,14 @@ konuya	-	O	O
 duyarlı	-	O	O
 kılma	-	O	O
 amacıyla	-	O	O
-Uluslararası	-	B-ORG	O
-Af	-	I-ORG	O
-Örgütü	-	I-ORG	O
+Uluslararası	-	B-ORG	B-ORG
+Af	-	I-ORG	I-ORG
+Örgütü	-	I-ORG	I-ORG
 Dünya	-	O	O
 "	-	O	O
 Kayıplar	-	O	O
 "	-	O	O
-Ormanı'nı	-	O	O
+Ormanı'nı	-	O	B-LOC
 oluşturuyor	-	O	O
 
 Erdoğan	-	B-PER	B-PER
@@ -11365,7 +11365,7 @@ takıp	-	O	O
 milyarlarca	-	O	O
 dolarlık	-	O	O
 muhteşem	-	O	O
-savaş	-	O	B-PER
+savaş	-	O	O
 uçaklarının	-	O	O
 kokpitine	-	O	O
 oturma	-	O	O
@@ -11383,14 +11383,14 @@ fazla	-	O	O
 olan	-	O	O
 merkezler	-	O	O
 ,	-	O	O
-Yatılı	-	B-ORG	O
-İlköğretim	-	I-ORG	O
-Bölge	-	I-ORG	O
-Okulları	-	I-ORG	O
+Yatılı	-	B-ORG	B-ORG
+İlköğretim	-	I-ORG	I-ORG
+Bölge	-	I-ORG	I-ORG
+Okulları	-	I-ORG	I-ORG
 ve	-	O	O
-Pansiyonlu	-	B-ORG	O
-İlköğretim	-	I-ORG	O
-Okulları	-	I-ORG	O
+Pansiyonlu	-	B-ORG	B-ORG
+İlköğretim	-	I-ORG	I-ORG
+Okulları	-	I-ORG	I-ORG
 ,	-	O	O
 taşımalı	-	O	O
 eğitim	-	O	O
@@ -11513,9 +11513,9 @@ ve	-	O	O
 SPD'nin	-	B-ORG	B-ORG
 ,	-	O	O
 eski	-	O	O
-komünist	-	O	B-ORG
-partisi	-	O	I-ORG
-PDS'in	-	B-ORG	I-ORG
+komünist	-	O	O
+partisi	-	O	O
+PDS'in	-	B-ORG	B-ORG
 desteğiyle	-	O	O
 iktidara	-	O	O
 gelebileceğini	-	O	O
@@ -11527,7 +11527,7 @@ vurgulayan	-	O	O
 Voigt	-	B-PER	B-PER
 ,	-	O	O
 Almanya'da	-	B-LOC	B-LOC
-Türkiye	-	I-LOC	B-LOC
+Türkiye	-	I-LOC	I-LOC
 gibi	-	O	O
 azınlık	-	O	O
 hükümeti	-	O	O
@@ -11667,7 +11667,7 @@ kaldığını	-	O	O
 ifade	-	O	O
 etti	-	O	O
 
-Tlass	-	B-PER	B-ORG
+Tlass	-	B-PER	O
 ,	-	O	O
 Suriye'yi	-	B-LOC	B-LOC
 27	-	O	O
@@ -11701,7 +11701,7 @@ ABD'li	-	B-LOC	B-LOC
 bir	-	O	O
 bakan	-	O	O
 olarak	-	O	O
-Prag'ı	-	B-LOC	B-ORG
+Prag'ı	-	B-LOC	B-LOC
 ziyaret	-	O	O
 eden	-	O	O
 Albright	-	B-PER	B-PER
@@ -11719,8 +11719,8 @@ konuşma	-	O	O
 yapmayı	-	O	O
 başarmıştı	-	O	O
 
-Fazıl	-	B-PER	O
-Say	-	I-PER	O
+Fazıl	-	B-PER	B-PER
+Say	-	I-PER	I-PER
 ,	-	O	O
 bir	-	O	O
 eseri	-	O	O
@@ -11801,8 +11801,8 @@ TSK'dan	-	B-ORG	B-ORG
 yapılan	-	O	O
 açıklamada	-	O	O
 ,	-	O	O
-Silahlı	-	B-ORG	O
-Kuvvetler'in	-	I-ORG	B-LOC
+Silahlı	-	B-ORG	B-ORG
+Kuvvetler'in	-	I-ORG	I-ORG
 meşe	-	O	O
 tohumu	-	O	O
 ekim	-	O	O
@@ -11864,14 +11864,14 @@ Cindoruk	-	I-PER	I-PER
 tarafından	-	O	O
 hizmete	-	O	O
 açılan	-	O	O
-Uşak	-	B-LOC	O
-Havaalanı	-	I-LOC	O
+Uşak	-	B-LOC	B-LOC
+Havaalanı	-	I-LOC	I-LOC
 ,	-	O	O
 üç	-	O	O
 aydır	-	O	O
 THY'nın	-	B-ORG	B-ORG
 tarifeli	-	O	O
-sefer	-	O	B-PER
+sefer	-	O	O
 koymasını	-	O	O
 bekliyor	-	O	O
 
@@ -11884,17 +11884,17 @@ Natassia	-	O	B-LOC
 "	-	O	O
 isimli	-	O	O
 teknesiyle	-	O	O
-Akyarlar	-	B-LOC	O
+Akyarlar	-	B-LOC	B-LOC
 köyü	-	O	O
 kıyılarına	-	O	O
 gelen	-	O	O
-Patey	-	B-PER	O
+Patey	-	B-PER	B-PER
 ,	-	O	O
 barış	-	O	O
 kulaçlarını	-	O	O
-Türk	-	B-ORG	O
-Sahil	-	I-ORG	B-PER
-Güvenliği'nin	-	I-ORG	I-PER
+Türk	-	B-ORG	B-ORG
+Sahil	-	I-ORG	I-ORG
+Güvenliği'nin	-	I-ORG	I-ORG
 56	-	O	O
 nolu	-	O	O
 botunun	-	O	O
@@ -12018,7 +12018,7 @@ ve	-	O	O
 Sağ'ın	-	O	O
 Ötesinde	-	O	O
 :	-	O	O
-Radikal	-	B-ORG	O
+Radikal	-	B-ORG	B-ORG
 Politikanın	-	O	O
 Geleceği	-	O	O
 (	-	O	O
@@ -12111,10 +12111,10 @@ söyledi	-	O	O
 
 Yıkık	-	O	B-PER
 haldeki	-	O	O
-Maktül	-	B-LOC	O
-Mustafa	-	I-LOC	B-PER
-Paşa	-	I-LOC	I-PER
-Camii	-	I-LOC	O
+Maktül	-	B-LOC	B-PER
+Mustafa	-	I-LOC	I-PER
+Paşa	-	I-LOC	B-LOC
+Camii	-	I-LOC	I-LOC
 Büyükşehir	-	O	O
 Belediye	-	O	O
 Başkanı	-	O	O
@@ -12198,7 +12198,7 @@ Oktay	-	B-PER	B-PER
 sancılarının	-	O	O
 artması	-	O	O
 üzerine	-	O	O
-Eskihisar'da	-	B-LOC	B-LOC
+Eskihisar'da	-	B-LOC	O
 otobüsten	-	O	O
 indirildi	-	O	O
 ve	-	O	O
@@ -12207,9 +12207,9 @@ doktoru	-	O	O
 Gökhan	-	B-PER	B-PER
 Metin	-	I-PER	I-PER
 tarafından	-	O	O
-taksi	-	O	B-ORG
-ile	-	O	I-ORG
-Alman	-	B-ORG	I-ORG
+taksi	-	O	O
+ile	-	O	O
+Alman	-	B-ORG	B-ORG
 Hastanesi'ne	-	I-ORG	I-ORG
 götürüldü	-	O	O
 
@@ -12296,7 +12296,7 @@ yüzde	-	O	O
 19'ü	-	O	O
 ,	-	O	O
 diktatörlüğü	-	O	O
-Lebed'in	-	B-PER	B-LOC
+Lebed'in	-	B-PER	B-PER
 ,	-	O	O
 yüzde	-	O	O
 14'ü	-	O	O
@@ -12327,7 +12327,7 @@ nedeniyle	-	O	O
 New	-	B-LOC	B-LOC
 York'ta	-	I-LOC	I-LOC
 bulunan	-	O	O
-Dışişleri	-	B-ORG	O
+Dışişleri	-	B-ORG	B-ORG
 Bakanı	-	O	O
 İsmail	-	B-PER	B-PER
 Cem	-	I-PER	I-PER
@@ -12497,7 +12497,7 @@ yok	-	O	O
 diye	-	O	O
 bağırdılar	-	O	O
 
-Aktuna'nın	-	B-PER	B-PER
+Aktuna'nın	-	B-PER	B-LOC
 elinden	-	O	O
 daireyi	-	O	O
 geri	-	O	O
@@ -12522,8 +12522,8 @@ lira	-	O	O
 kredi	-	O	O
 çıkarttırdı	-	O	O
 
-Yeni	-	B-ORG	O
-İşçi	-	I-ORG	B-ORG
+Yeni	-	B-ORG	B-ORG
+İşçi	-	I-ORG	I-ORG
 Partisi	-	I-ORG	I-ORG
 ,	-	O	O
 merkeziyetçi	-	O	O
@@ -12681,7 +12681,7 @@ Trabzon'u	-	B-LOC	B-LOC
 sadece	-	O	O
 Avni	-	B-LOC	B-PER
 Aker	-	I-LOC	I-PER
-Stadı	-	I-LOC	O
+Stadı	-	I-LOC	I-PER
 olarak	-	O	O
 bilen	-	O	O
 bendeniz	-	O	O
@@ -12701,7 +12701,7 @@ Tele	-	B-ORG	B-ORG
 Club	-	I-ORG	I-ORG
 Plus	-	I-ORG	I-ORG
 ,	-	O	O
-Tarkan'la	-	B-PER	B-LOC
+Tarkan'la	-	B-PER	O
 yaptığı	-	O	O
 röportaja	-	O	O
 geniş	-	O	O
@@ -12713,9 +12713,9 @@ ise	-	O	O
 genç	-	O	O
 şarkıcının	-	O	O
 Türkiye'den	-	B-LOC	B-LOC
-ABD'ye	-	I-LOC	B-LOC
+ABD'ye	-	I-LOC	I-LOC
 ,	-	O	O
-oradan	-	O	B-LOC
+oradan	-	O	O
 da	-	O	O
 Fransa'ya	-	B-LOC	B-LOC
 uzanan	-	O	O
@@ -12984,7 +12984,7 @@ gelen	-	O	O
 orduda	-	O	O
 cinayet	-	O	O
 ,	-	O	O
-isyan	-	O	B-LOC
+isyan	-	O	O
 ,	-	O	O
 intihar	-	O	O
 ve	-	O	O
@@ -13134,7 +13134,7 @@ gelen	-	O	O
 orduda	-	O	O
 cinayet	-	O	O
 ,	-	O	O
-isyan	-	O	B-LOC
+isyan	-	O	O
 ,	-	O	O
 intihar	-	O	O
 ve	-	O	O
@@ -13175,8 +13175,8 @@ var	-	O	O
 Bedük	-	O	B-PER
 ,	-	O	O
 Apo'nun	-	B-PER	B-PER
-MED	-	B-ORG	O
-TV'de	-	I-ORG	O
+MED	-	B-ORG	B-ORG
+TV'de	-	I-ORG	I-ORG
 "	-	O	O
 Bir	-	O	O
 operasyonda	-	O	O
@@ -13222,7 +13222,7 @@ bir	-	O	O
 düşüş	-	O	O
 gösterdi	-	O	O
 
-Refah	-	B-ORG	B-ORG
+Refah	-	B-ORG	O
 seviyesinin	-	O	O
 yüksek	-	O	O
 kalması	-	O	O
@@ -13381,8 +13381,8 @@ davranışına	-	O	O
 şaşırdığını	-	O	O
 belirterek	-	O	O
 ,	-	O	O
-Avrupa	-	B-ORG	B-LOC
-Kıck	-	I-ORG	B-ORG
+Avrupa	-	B-ORG	B-ORG
+Kıck	-	I-ORG	I-ORG
 Boks	-	I-ORG	I-ORG
 Birliği	-	I-ORG	I-ORG
 Başkanı	-	O	O
@@ -13449,7 +13449,7 @@ sürdü	-	O	O
 
 Her	-	O	O
 yıl	-	O	O
-albay	-	O	B-LOC
+albay	-	O	O
 rütbesinde	-	O	O
 ,	-	O	O
 50	-	O	O
@@ -13490,8 +13490,8 @@ alan	-	O	O
 Türkiye	-	B-LOC	B-LOC
 bu	-	O	O
 hafta	-	O	O
-Dünya	-	O	O
-Deprem	-	O	B-LOC
+Dünya	-	O	B-LOC
+Deprem	-	O	I-LOC
 Forumu'na	-	O	I-LOC
 ev	-	O	O
 sahipliği	-	O	O
@@ -13573,7 +13573,7 @@ alındı	-	O	O
 (	-	O	O
 )	-	O	O
 ,	-	O	O
-Nesim	-	B-PER	B-PER
+Nesim	-	B-PER	O
 (	-	O	O
 )	-	O	O
 ,	-	O	O
@@ -13600,14 +13600,14 @@ gecekondulaşmanın	-	O	O
 hızla	-	O	O
 arttığı	-	O	O
 Adana'nın	-	B-LOC	B-LOC
-Barbaros	-	I-LOC	I-LOC
+Barbaros	-	I-LOC	B-PER
 ve	-	O	O
-Yenibey	-	B-LOC	O
+Yenibey	-	B-LOC	B-LOC
 mahallelerine	-	O	O
 komşu	-	O	O
 narenciye	-	O	O
 deposu	-	O	O
-Mıdık	-	B-LOC	O
+Mıdık	-	B-LOC	B-PER
 ve	-	O	O
 Hadırlı	-	B-LOC	O
 köylerinde	-	O	O
@@ -13646,8 +13646,8 @@ müziğin	-	O	O
 en	-	O	O
 sevilen	-	O	O
 isimlerinden	-	O	O
-Bulutsuzluk	-	O	O
-Özlemi	-	O	O
+Bulutsuzluk	-	O	B-PER
+Özlemi	-	O	I-PER
 ,	-	O	O
 Yeni	-	O	O
 Türkü	-	O	O
@@ -13670,8 +13670,8 @@ yandan	-	O	O
 TV	-	O	O
 sahiplerinin	-	O	O
 Birinci	-	O	O
-Lig	-	O	B-ORG
-Kulüpleri'nin	-	O	I-ORG
+Lig	-	O	O
+Kulüpleri'nin	-	O	O
 de	-	O	O
 patronu	-	O	O
 olması	-	O	O
@@ -13787,7 +13787,7 @@ yakalanıyor	-	O	O
 
 Aşırı	-	O	O
 Nazım	-	B-PER	B-PER
-hayranları	-	O	I-PER
+hayranları	-	O	O
 ,	-	O	O
 bunu	-	O	O
 da	-	O	O
@@ -13984,9 +13984,9 @@ Cemiyeti	-	I-ORG	I-ORG
 TGC	-	B-ORG	B-ORG
 )	-	O	O
 ,	-	O	O
-İstanbul	-	B-LOC	B-ORG
-Belediye	-	I-LOC	I-ORG
-Sarayı'nda	-	I-LOC	I-ORG
+İstanbul	-	B-LOC	B-LOC
+Belediye	-	I-LOC	I-LOC
+Sarayı'nda	-	I-LOC	I-LOC
 Büyükşehir	-	O	O
 Belediye	-	O	O
 Başkanı	-	O	O
@@ -14034,11 +14034,11 @@ arasında	-	O	O
 ilk	-	O	O
 beşe	-	O	O
 giren	-	O	O
-İzmir	-	B-ORG	B-ORG
-2.	-	I-ORG	I-ORG
-Ana	-	I-ORG	I-ORG
-Jet	-	I-ORG	I-ORG
-Üs	-	I-ORG	I-ORG
+İzmir	-	B-ORG	B-LOC
+2.	-	I-ORG	O
+Ana	-	I-ORG	O
+Jet	-	I-ORG	O
+Üs	-	I-ORG	B-ORG
 Uçuş	-	I-ORG	I-ORG
 Eğitim	-	I-ORG	I-ORG
 Merkezi'nde	-	I-ORG	I-ORG
@@ -14056,9 +14056,9 @@ Cemiyeti	-	I-ORG	I-ORG
 TGC	-	B-ORG	B-ORG
 )	-	O	O
 ,	-	O	O
-İstanbul	-	B-LOC	B-ORG
-Belediye	-	I-LOC	I-ORG
-Sarayı'nda	-	I-LOC	I-ORG
+İstanbul	-	B-LOC	B-LOC
+Belediye	-	I-LOC	I-LOC
+Sarayı'nda	-	I-LOC	I-LOC
 Büyükşehir	-	O	O
 Belediye	-	O	O
 Başkanı	-	O	O
@@ -14249,8 +14249,8 @@ yakınan	-	O	O
 122.	-	O	O
 filo	-	O	O
 öğrencisi	-	O	O
-Teğmen	-	O	O
-Gülay	-	B-PER	B-PER
+Teğmen	-	O	B-PER
+Gülay	-	B-PER	I-PER
 Okan	-	I-PER	I-PER
 ,	-	O	O
 bu	-	O	O
@@ -14274,11 +14274,11 @@ arasında	-	O	O
 ilk	-	O	O
 beşe	-	O	O
 giren	-	O	O
-İzmir	-	B-ORG	B-ORG
-2.	-	I-ORG	I-ORG
-Ana	-	I-ORG	I-ORG
-Jet	-	I-ORG	I-ORG
-Üs	-	I-ORG	I-ORG
+İzmir	-	B-ORG	B-LOC
+2.	-	I-ORG	O
+Ana	-	I-ORG	O
+Jet	-	I-ORG	O
+Üs	-	I-ORG	B-ORG
 Uçuş	-	I-ORG	I-ORG
 Eğitim	-	I-ORG	I-ORG
 Merkezi'nde	-	I-ORG	I-ORG
@@ -14300,8 +14300,8 @@ lokomotif	-	O	O
 ülke	-	O	O
 görevini	-	O	O
 gördüğü	-	O	O
-euroya	-	O	B-ORG
-geçiş	-	O	I-ORG
+euroya	-	O	O
+geçiş	-	O	O
 arifesinde	-	O	O
 Avrupa	-	B-ORG	B-ORG
 Birliği'nin	-	I-ORG	I-ORG
@@ -14415,7 +14415,7 @@ savunması	-	O	O
 karşısında	-	O	O
 sıkıntı	-	O	O
 yaşayan	-	O	O
-Ülker	-	B-ORG	B-PER
+Ülker	-	B-ORG	B-ORG
 ,	-	O	O
 hücumda	-	O	O
 organize	-	O	O
@@ -14424,7 +14424,7 @@ olamayıp	-	O	O
 pota	-	O	O
 altında	-	O	O
 da	-	O	O
-Kovacic'i	-	B-PER	B-LOC
+Kovacic'i	-	B-PER	O
 durduramayınca	-	O	O
 bir	-	O	O
 ara	-	O	O
@@ -14436,8 +14436,8 @@ düştü	-	O	O
 Şirketin	-	O	O
 Türkiye'deki	-	B-LOC	B-LOC
 ortağı	-	O	O
-Yakındoğu	-	B-ORG	O
-Transport'un	-	I-ORG	B-ORG
+Yakındoğu	-	B-ORG	B-ORG
+Transport'un	-	I-ORG	I-ORG
 İtalyan	-	O	O
 sahibi	-	O	O
 ,	-	O	O
@@ -14553,9 +14553,9 @@ olmaya	-	O	O
 gerek	-	O	O
 yok	-	O	O
 
-Nazire	-	B-PER	O
-KALKAN	-	I-PER	O
-Türkiye	-	B-ORG	B-ORG
+Nazire	-	B-PER	B-ORG
+KALKAN	-	I-PER	I-ORG
+Türkiye	-	B-ORG	I-ORG
 Deprem	-	I-ORG	I-ORG
 Vakfı'nın	-	I-ORG	I-ORG
 düzenlediği	-	O	O
@@ -14720,7 +14720,7 @@ Saporta	-	O	O
 Kupası'nda	-	O	O
 PTT	-	B-ORG	B-ORG
 ,	-	O	O
-Slovakafarma'yı	-	O	O
+Slovakafarma'yı	-	O	B-ORG
 farklı	-	O	O
 mağlup	-	O	O
 ederken	-	O	O
@@ -14894,7 +14894,7 @@ yükselirken	-	O	O
 Fransız	-	O	O
 medyası	-	O	O
 da	-	O	O
-Tarkan'a	-	B-PER	B-LOC
+Tarkan'a	-	B-PER	O
 geniş	-	O	O
 yer	-	O	O
 ayırmaya	-	O	O
@@ -14926,7 +14926,7 @@ başladı	-	O	O
 VAHİT	-	B-PER	B-PER
 Halefoğlu'nun	-	I-PER	I-PER
 Bonn'da	-	B-LOC	B-LOC
-Türkiye	-	I-LOC	B-LOC
+Türkiye	-	I-LOC	I-LOC
 Büyükelçisi	-	O	O
 olarak	-	O	O
 bulunduğu	-	O	O
@@ -14958,7 +14958,7 @@ Aşık'ın	-	I-PER	I-PER
 istifasının	-	O	O
 öğrenildiği	-	O	O
 saatlerde	-	O	O
-İstanbul'da	-	B-LOC	O
+İstanbul'da	-	B-LOC	B-LOC
 CHP	-	B-ORG	B-ORG
 İl	-	O	I-ORG
 Başkanlığı'nın	-	O	I-ORG
@@ -14999,12 +14999,12 @@ bastırdı	-	O	O
 ki	-	O	O
 ,	-	O	O
 İtalyan	-	B-ORG	O
-Parlamentosu	-	I-ORG	O
+Parlamentosu	-	I-ORG	B-ORG
 solun	-	O	O
 büyük	-	O	O
 parçasının	-	O	O
 lideri	-	O	O
-Craxi'nin	-	B-PER	B-PER
+Craxi'nin	-	B-PER	B-LOC
 ve	-	O	O
 sağın	-	O	O
 büyük	-	O	O
@@ -15199,7 +15199,7 @@ motora	-	O	O
 sahip	-	O	O
 .	-	O	O
 
-Artıhaber'in	-	O	B-PER
+Artıhaber'in	-	O	O
 çeşitli	-	O	O
 istihbarat	-	O	O
 kaynaklarından	-	O	O
@@ -15299,8 +15299,8 @@ ayrı	-	O	O
 yerlerde	-	O	O
 toprağa	-	O	O
 verilen	-	O	O
-Maktül	-	O	O
-Mustafa	-	B-PER	B-PER
+Maktül	-	O	B-PER
+Mustafa	-	B-PER	I-PER
 Paşa'nın	-	I-PER	I-PER
 yaptırdığı	-	O	O
 camii	-	O	O
@@ -15308,8 +15308,8 @@ ve	-	O	O
 külliyede	-	O	O
 sonraki	-	O	O
 yıllarda	-	O	O
-Nakşibendi	-	O	O
-Tekkesi'nin	-	O	O
+Nakşibendi	-	O	B-LOC
+Tekkesi'nin	-	O	I-LOC
 şeyhleri	-	O	O
 görev	-	O	O
 yaptı	-	O	O
@@ -15317,10 +15317,10 @@ yaptı	-	O	O
 Cuma	-	O	O
 namazını	-	O	O
 Sadrazam	-	B-LOC	O
-Maktül	-	I-LOC	O
-Mustafa	-	I-LOC	B-PER
-Paşa	-	I-LOC	I-PER
-Camii'nde	-	I-LOC	B-LOC
+Maktül	-	I-LOC	B-LOC
+Mustafa	-	I-LOC	I-LOC
+Paşa	-	I-LOC	I-LOC
+Camii'nde	-	I-LOC	I-LOC
 kılan	-	O	O
 Erdoğan'a	-	B-PER	B-PER
 Urfa	-	B-LOC	B-LOC
@@ -15478,8 +15478,8 @@ görülüyordu	-	O	O
 Yine	-	O	O
 dün	-	O	O
 ,	-	O	O
-Kuzey	-	B-ORG	B-LOC
-Donanması'nda	-	I-ORG	I-LOC
+Kuzey	-	B-ORG	O
+Donanması'nda	-	I-ORG	O
 görevli	-	O	O
 bir	-	O	O
 grup	-	O	O
@@ -15683,8 +15683,8 @@ verilmeye	-	O	O
 başlanır	-	O	O
 
 Eski	-	O	O
-doğu	-	O	B-LOC
-Almanya'daki	-	B-LOC	I-LOC
+doğu	-	O	O
+Almanya'daki	-	B-LOC	B-LOC
 devlet	-	O	O
 partisinin	-	O	O
 devamı	-	O	O
@@ -15693,7 +15693,7 @@ görülen	-	O	O
 Demokratik	-	B-ORG	B-ORG
 Sosyalizm	-	I-ORG	I-ORG
 Partisi	-	I-ORG	I-ORG
-PDS	-	I-ORG	B-ORG
+PDS	-	I-ORG	I-ORG
 ,	-	O	O
 8	-	O	O
 yıldır	-	O	O
@@ -15755,7 +15755,7 @@ Murdock'u	-	B-PER	B-PER
 geçmişte	-	O	O
 futbol	-	O	O
 ile	-	O	O
-TV'yi	-	O	B-ORG
+TV'yi	-	O	O
 böyle	-	O	O
 yanyana	-	O	O
 getirmekle	-	O	O
@@ -15797,8 +15797,8 @@ kabul	-	O	O
 eder	-	O	O
 .	-	O	O
 
-Avrupa	-	B-ORG	B-LOC
-Kıck	-	I-ORG	B-ORG
+Avrupa	-	B-ORG	B-ORG
+Kıck	-	I-ORG	I-ORG
 Boks	-	I-ORG	I-ORG
 Birliği	-	I-ORG	I-ORG
 tarafından	-	O	O
@@ -15896,13 +15896,13 @@ olarak	-	O	O
 ,'	-	O	O
 şimdi	-	O	O
 Apo	-	B-PER	B-PER
-kalkıp	-	O	I-PER
+kalkıp	-	O	O
 ,'	-	O	O
 ordular	-	O	O
 ilk	-	O	O
 hedefiniz	-	O	O
-Akdeniz'	-	B-LOC	O
-dese	-	O	B-LOC
+Akdeniz'	-	B-LOC	B-LOC
+dese	-	O	I-LOC
 militanlarına	-	O	O
 ,	-	O	O
 bu	-	O	O
@@ -16190,19 +16190,19 @@ yanısıra	-	O	O
 gelen	-	O	O
 müzik	-	O	O
 dergilerinden	-	O	O
-Tele	-	B-ORG	O
-Club	-	I-ORG	O
-Plus	-	I-ORG	O
+Tele	-	B-ORG	B-ORG
+Club	-	I-ORG	I-ORG
+Plus	-	I-ORG	I-ORG
 ile	-	O	O
 Idoles	-	B-ORG	O
 de	-	O	O
-Tarkan'a	-	B-PER	B-LOC
+Tarkan'a	-	B-PER	O
 birer	-	O	O
 sayfa	-	O	O
 ayırdı	-	O	O
 
 İdil	-	B-PER	B-PER
-Biret	-	I-PER	O
+Biret	-	I-PER	I-PER
 biraz	-	O	O
 ironi	-	O	O
 ekliyor	-	O	O
@@ -16294,12 +16294,12 @@ uzun	-	O	O
 ayrıntıları	-	O	O
 sormak	-	O	O
 ,	-	O	O
-yok	-	O	B-ORG
+yok	-	O	O
 göğsüne	-	O	O
 dokundun	-	O	O
 mu	-	O	O
 ,	-	O	O
-yok	-	O	B-ORG
+yok	-	O	O
 puroyu	-	O	O
 ne	-	O	O
 yaptın	-	O	O
@@ -16357,7 +16357,7 @@ vurguluyor	-	O	O
 
 Lyon	-	B-LOC	B-LOC
 Dans	-	O	O
-Bienali'nde	-	O	B-LOC
+Bienali'nde	-	O	O
 izlediğimiz	-	O	O
 topluluklar	-	O	O
 arasında	-	O	O
@@ -16365,16 +16365,16 @@ en	-	O	O
 çarpıcıları	-	O	O
 Fransa'dan	-	B-LOC	B-LOC
 katılan	-	O	O
-Lyon	-	B-ORG	B-LOC
-Ulusal	-	I-ORG	O
-Operası	-	I-ORG	O
-Bale	-	O	O
-Topluluğu	-	O	O
+Lyon	-	B-ORG	B-ORG
+Ulusal	-	I-ORG	I-ORG
+Operası	-	I-ORG	I-ORG
+Bale	-	O	I-ORG
+Topluluğu	-	O	I-ORG
 ile	-	O	O
 İspanya'dan	-	B-LOC	B-LOC
-Ulusal	-	O	O
-Dans	-	O	O
-Topluluğu'nun	-	O	O
+Ulusal	-	O	B-ORG
+Dans	-	O	I-ORG
+Topluluğu'nun	-	O	I-ORG
 gösterileriydi	-	O	O
 
 Toplantıya	-	O	O
@@ -16502,8 +16502,8 @@ mahkeme	-	O	O
 salonuna	-	O	O
 alınmayan	-	O	O
 kardeşi	-	O	O
-Gençağa	-	B-PER	O
-Çakıcı	-	I-PER	B-PER
+Gençağa	-	B-PER	B-PER
+Çakıcı	-	I-PER	I-PER
 ile	-	O	O
 dün	-	O	O
 görüştüğü	-	O	O
@@ -16568,7 +16568,7 @@ partiler	-	O	O
 arasında	-	O	O
 bir	-	O	O
 müsabakaya	-	O	O
-tekabül	-	O	B-LOC
+tekabül	-	O	O
 eden	-	O	O
 derecede	-	O	O
 rekabete	-	O	O
@@ -16813,12 +16813,12 @@ beyzbol	-	O	O
 serileri	-	O	O
 haklarını	-	O	O
 da	-	O	O
-Fox	-	B-ORG	O
+Fox	-	B-ORG	B-PER
 aracılığıyla	-	O	O
 aldı	-	O	O
 
-Avrupa	-	B-ORG	B-LOC
-Kıck	-	I-ORG	B-ORG
+Avrupa	-	B-ORG	B-ORG
+Kıck	-	I-ORG	I-ORG
 Boks	-	I-ORG	I-ORG
 Birliği	-	I-ORG	I-ORG
 tarafından	-	O	O
@@ -16844,14 +16844,14 @@ TURUNCU	-	O	O
 Yeşilliler	-	O	O
 ,	-	O	O
 Avrupa	-	B-LOC	B-LOC
-Süper	-	O	I-LOC
+Süper	-	O	O
 Ligi	-	O	O
 C	-	O	O
 Grubu'ndaki	-	O	O
 ilk	-	O	O
 maçında	-	O	O
 Hırvat	-	O	O
-Zadar	-	B-ORG	B-LOC
+Zadar	-	B-ORG	B-ORG
 önünde	-	O	O
 zorlanırken	-	O	O
 ,	-	O	O
@@ -16884,8 +16884,8 @@ sonra	-	O	O
 yakalandı	-	O	O
 
 Ben	-	O	O
-Güney	-	B-LOC	O
-Amerika'da	-	I-LOC	B-LOC
+Güney	-	B-LOC	B-LOC
+Amerika'da	-	I-LOC	I-LOC
 iken	-	O	O
 ,	-	O	O
 Yılmaz'ın	-	B-PER	B-PER
@@ -17066,7 +17066,7 @@ rejimi	-	O	O
 demokrasinin	-	O	O
 "	-	O	O
 alameti	-	O	O
-farikası	-	O	B-LOC
+farikası	-	O	O
 "	-	O	O
 diye	-	O	O
 nitelendirerek	-	O	O
@@ -17135,16 +17135,16 @@ Yunanistan	-	B-LOC	B-LOC
 Ermenistan	-	B-LOC	B-LOC
 ,	-	O	O
 Beyaz	-	B-LOC	B-LOC
-Rusya	-	I-LOC	B-LOC
+Rusya	-	I-LOC	I-LOC
 gibi	-	O	O
 ülkelere	-	O	O
 şimdi	-	O	O
-Çek	-	B-LOC	O
-Cumhuriyeti	-	I-LOC	B-LOC
+Çek	-	B-LOC	B-LOC
+Cumhuriyeti	-	I-LOC	I-LOC
 katılıyor	-	O	O
 
 Suriye'nin	-	B-LOC	B-LOC
-Türkiye'ye	-	I-LOC	B-LOC
+Türkiye'ye	-	I-LOC	I-LOC
 karşı	-	O	O
 daha	-	O	O
 hassas	-	O	O
@@ -17253,7 +17253,7 @@ ardından	-	O	O
 hemen	-	O	O
 ameliyat	-	O	O
 odasına	-	O	O
-Beyribey	-	B-PER	O
+Beyribey	-	B-PER	B-PER
 ,	-	O	O
 Kerim'i	-	B-PER	B-PER
 sağlığına	-	O	O
@@ -17358,7 +17358,7 @@ Hatta	-	O	O
 Başbakan	-	O	O
 Yılmaz	-	B-PER	B-PER
 "	-	O	O
-Cumhuriyet	-	B-ORG	B-ORG
+Cumhuriyet	-	B-ORG	O
 tarihinde	-	O	O
 görülmemiş	-	O	O
 miktarlarda	-	O	O
@@ -17710,7 +17710,7 @@ Ersever'i	-	B-PER	B-PER
 öldürmek	-	O	O
 istiyordu	-	O	O
 
-Ersever'in	-	B-PER	B-LOC
+Ersever'in	-	B-PER	B-PER
 mahkemeye	-	O	O
 gönderdiği	-	O	O
 mazeret	-	O	O
@@ -17734,8 +17734,8 @@ beni	-	O	O
 Söylemez	-	B-PER	O
 Türkiye'de	-	B-LOC	B-LOC
 "	-	O	O
-ahbap	-	O	B-PER
-çavuş	-	O	I-PER
+ahbap	-	O	O
+çavuş	-	O	O
 kapitalizmi	-	O	O
 "	-	O	O
 uygulandığını	-	O	O
@@ -17752,7 +17752,7 @@ bakmak	-	O	O
 gerekir	-	O	O
 .	-	O	O
 
-Savaş	-	B-PER	B-PER
+Savaş	-	B-PER	O
 sonrası	-	O	O
 dönemin	-	O	O
 en	-	O	O
@@ -18046,7 +18046,7 @@ kendisine	-	O	O
 puan	-	O	O
 kaybettirmekte	-	O	O
 
-Savaş	-	O	B-PER
+Savaş	-	O	O
 sonrası	-	O	O
 dönemin	-	O	O
 en	-	O	O
@@ -18068,7 +18068,7 @@ olarak	-	O	O
 etkilemekte	-	O	O
 
 Herkesin	-	O	O
-Yeşil	-	B-PER	O
+Yeşil	-	B-PER	B-PER
 öldü	-	O	O
 dediği	-	O	O
 zaman	-	O	O
@@ -18079,7 +18079,7 @@ ki	-	O	O
 benim	-	O	O
 kanaatime	-	O	O
 göre	-	O	O
-Yeşil	-	B-PER	O
+Yeşil	-	B-PER	B-PER
 yaşıyor	-	O	O
 ,	-	O	O
 kontrol	-	O	O
@@ -18395,7 +18395,7 @@ uluslararası	-	O	O
 müsabakalara	-	O	O
 çağrılmayan	-	O	O
 Kuzey	-	B-LOC	B-LOC
-Kıbrıs	-	I-LOC	B-LOC
+Kıbrıs	-	I-LOC	I-LOC
 Türk	-	I-LOC	I-LOC
 Cumhuriyeti	-	I-LOC	I-LOC
 ambargoyu	-	O	O
@@ -18479,7 +18479,7 @@ sorunlarını	-	O	O
 serbest	-	O	O
 avukatlık	-	O	O
 yapan	-	O	O
-Emekli	-	O	O
+Emekli	-	O	B-LOC
 Askeri	-	O	O
 Yargıç	-	O	O
 Albay	-	O	O
@@ -18595,7 +18595,7 @@ saptanmaya	-	O	O
 Yaşar	-	B-PER	B-PER
 Okuyan	-	I-PER	I-PER
 ,	-	O	O
-iktidar	-	O	B-ORG
+iktidar	-	O	O
 partisi	-	O	O
 ANAP'ın	-	B-ORG	B-ORG
 en	-	O	O
@@ -18784,7 +18784,7 @@ Lig'de	-	O	O
 F.	-	B-ORG	B-ORG
 Bahçe	-	I-ORG	I-ORG
 ve	-	O	O
-Ülker	-	B-ORG	B-PER
+Ülker	-	B-ORG	B-ORG
 ilk	-	O	O
 maçlarını	-	O	O
 galibiyetle	-	O	O
@@ -18834,7 +18834,7 @@ Avni	-	B-LOC	B-PER
 Aker'den	-	I-LOC	I-PER
 
 Norveçli	-	O	O
-turist	-	O	B-PER
+turist	-	O	O
 ,	-	O	O
 hava	-	O	O
 rüzgarlı	-	O	O
@@ -19175,7 +19175,7 @@ olmuştur	-	O	O
 
 Cengiz	-	B-PER	B-PER
 Ersever	-	I-PER	I-PER
-DGM'deki	-	B-ORG	B-ORG
+DGM'deki	-	B-ORG	I-ORG
 ilk	-	O	O
 duruşmada	-	O	O
 Akın	-	B-PER	B-PER
@@ -19224,7 +19224,7 @@ Lig'de	-	O	O
 F.	-	B-ORG	B-ORG
 Bahçe	-	I-ORG	I-ORG
 ve	-	O	O
-Ülker	-	B-ORG	B-PER
+Ülker	-	B-ORG	B-ORG
 ilk	-	O	O
 maçlarını	-	O	O
 galibiyetle	-	O	O
@@ -19235,7 +19235,7 @@ oturdu	-	O	O
 
 ALAADDİN	-	B-PER	B-PER
 Çakıcı'yla	-	I-PER	I-PER
-Eyüp	-	I-PER	B-PER
+Eyüp	-	I-PER	I-PER
 Aşık	-	I-PER	I-PER
 arasındaki	-	O	O
 telefon	-	O	O
@@ -19494,8 +19494,8 @@ içmişler	-	O	O
 .	-	O	O
 
 Hava	-	B-ORG	O
-Harb	-	I-ORG	B-LOC
-Okulu'nda	-	I-ORG	I-LOC
+Harb	-	I-ORG	B-ORG
+Okulu'nda	-	I-ORG	I-ORG
 akademik	-	O	O
 eğitimini	-	O	O
 tamamlayan	-	O	O
@@ -19575,7 +19575,7 @@ açıyor	-	O	O
 
 ALAADDİN	-	B-PER	B-PER
 Çakıcı'yla	-	I-PER	I-PER
-Eyüp	-	I-PER	B-PER
+Eyüp	-	I-PER	I-PER
 Aşık	-	I-PER	I-PER
 arasındaki	-	O	O
 telefon	-	O	O
@@ -19643,9 +19643,9 @@ Düzeni	-	I-ORG	B-ORG
 Bakanlığı	-	I-ORG	I-ORG
 siyasi	-	O	O
 mercileriyle	-	O	O
-Yunan	-	B-ORG	O
-Polis	-	I-ORG	O
-Teşkilatı	-	I-ORG	O
+Yunan	-	B-ORG	B-ORG
+Polis	-	I-ORG	I-ORG
+Teşkilatı	-	I-ORG	I-ORG
 liderlerinin	-	O	O
 hemen	-	O	O
 görevden	-	O	O
@@ -19678,7 +19678,7 @@ son	-	O	O
 10	-	O	O
 dakikasına	-	O	O
 girilirken	-	O	O
-Zadar'ı	-	B-ORG	B-LOC
+Zadar'ı	-	B-ORG	B-ORG
 yakalayan	-	O	O
 temsilcimiz	-	O	O
 ,	-	O	O
@@ -19819,8 +19819,8 @@ günü	-	O	O
 İstanbul'un	-	B-LOC	B-LOC
 sismik	-	O	O
 raporunu	-	O	O
-sunan	-	O	B-ORG
-İnşaat	-	B-ORG	I-ORG
+sunan	-	O	O
+İnşaat	-	B-ORG	B-ORG
 Mühendisleri	-	I-ORG	I-ORG
 Odası	-	I-ORG	I-ORG
 Başkanı	-	O	O
@@ -19833,8 +19833,8 @@ yanıt	-	O	O
 Bilmiyoruz	-	O	O
 .	-	O	O
 
-MİLLİ	-	O	O
-Takım	-	O	O
+MİLLİ	-	O	B-ORG
+Takım	-	O	I-ORG
 Teknik	-	O	O
 Direktörü	-	O	O
 Mustafa	-	B-PER	B-PER
@@ -19916,7 +19916,7 @@ milyar	-	O	O
 milyon	-	O	O
 liraya	-	O	O
 satılan	-	O	O
-daire	-	O	B-ORG
+daire	-	O	O
 için	-	O	O
 Alişan'a	-	B-PER	B-PER
 banka	-	O	O
@@ -19988,8 +19988,8 @@ verecek	-	O	O
 Havel	-	B-PER	B-PER
 ,	-	O	O
 kendisi	-	O	O
-Çek	-	O	O
-Cumhurbaşkanlığı	-	O	O
+Çek	-	O	B-ORG
+Cumhurbaşkanlığı	-	O	I-ORG
 görevini	-	O	O
 bıraktıktan	-	O	O
 sonra	-	O	O
@@ -20063,8 +20063,8 @@ söylediler	-	O	O
 
 BASKETBOLDA	-	O	O
 temsilcilerimiz	-	O	O
-Avrupa	-	B-LOC	B-ORG
-Süper	-	O	I-ORG
+Avrupa	-	B-LOC	B-LOC
+Süper	-	O	B-ORG
 Ligi'ne	-	O	I-ORG
 süper	-	O	O
 bir	-	O	O
@@ -20126,7 +20126,7 @@ Kerim'in	-	I-PER	I-PER
 önce	-	O	O
 filmlerini	-	O	O
 çektiren	-	O	O
-Beribey	-	B-PER	O
+Beribey	-	B-PER	B-PER
 ,	-	O	O
 böbreklerinde	-	O	O
 taş	-	O	O
@@ -20143,16 +20143,16 @@ kulesine	-	O	O
 tüm	-	O	O
 donanımıyla	-	O	O
 açılan	-	O	O
-Uşak	-	B-LOC	O
-Havaalanı	-	I-LOC	O
+Uşak	-	B-LOC	B-PER
+Havaalanı	-	I-LOC	I-PER
 ,	-	O	O
 tam	-	O	O
 üç	-	O	O
 aydır	-	O	O
-Türk	-	B-ORG	B-PER
-Havayolları'nın	-	I-ORG	I-PER
+Türk	-	B-ORG	B-ORG
+Havayolları'nın	-	I-ORG	I-ORG
 tarifeli	-	O	O
-sefer	-	O	B-PER
+sefer	-	O	O
 koymasını	-	O	O
 bekliyor	-	O	O
 
@@ -20189,8 +20189,8 @@ bulurken	-	O	O
 ,	-	O	O
 Osmanlılar	-	O	B-LOC
 da	-	O	O
-Lale	-	O	O
-Devri'yle	-	O	O
+Lale	-	O	B-LOC
+Devri'yle	-	O	I-LOC
 aydınlanmaya	-	O	O
 yöneliyordu	-	O	O
 
@@ -20233,7 +20233,7 @@ yüzde	-	O	O
 azaltmak	-	O	O
 
 Süleyman	-	B-PER	B-PER
-Işıldar	-	I-PER	O
+Işıldar	-	I-PER	I-PER
 ve	-	O	O
 ekibinin	-	O	O
 çalışmalarına	-	O	O
@@ -20365,8 +20365,8 @@ konuşmasını	-	O	O
 destekler	-	O	O
 mi	-	O	O
 
-Dönüştüremezsek	-	O	B-ORG
-GSMH'yi	-	O	I-ORG
+Dönüştüremezsek	-	O	O
+GSMH'yi	-	O	O
 65	-	O	O
 milyona	-	O	O
 böler	-	O	O
@@ -20403,9 +20403,9 @@ gösterebilirsek	-	O	O
 bahtımızı	-	O	O
 döndürebiliriz	-	O	O
 
-Romer	-	B-PER	B-PER
+Romer	-	B-PER	O
 ,	-	O	O
-GSMH'nin	-	O	B-ORG
+GSMH'nin	-	O	O
 artışında	-	O	O
 araştırma	-	O	O
 ve	-	O	O
@@ -20423,9 +20423,9 @@ oluşturduğunu	-	O	O
 modellendirmiş	-	O	O
 
 "	-	O	O
-Türkiye	-	B-LOC	B-LOC
-Bilişim	-	O	O
-Stratejileri	-	O	O
+Türkiye	-	B-LOC	B-ORG
+Bilişim	-	O	I-ORG
+Stratejileri	-	O	I-ORG
 -	-	O	O
 Genel	-	O	O
 Denge	-	O	O
@@ -20433,7 +20433,7 @@ Modeli	-	O	O
 "	-	O	O
 araştırması	-	O	O
 ,	-	O	O
-Romer'in	-	B-PER	B-PER
+Romer'in	-	B-PER	O
 teknoloji	-	O	O
 değişiminin	-	O	O
 endojenleri	-	O	O
@@ -20510,7 +20510,7 @@ kapitalizme	-	O	O
 geçiş	-	O	O
 koşullarında	-	O	O
 ,	-	O	O
-refah	-	O	B-ORG
+refah	-	O	O
 devleti	-	O	O
 mevcut	-	O	O
 biçimiyle	-	O	O
@@ -20521,9 +20521,9 @@ Giddens'ın	-	B-PER	B-PER
 Üçüncü	-	O	O
 Yol	-	O	O
 :	-	O	O
-Sosyal	-	O	O
-Demokrasinin	-	O	O
-Yenilenmesi	-	O	O
+Sosyal	-	O	B-ORG
+Demokrasinin	-	O	I-ORG
+Yenilenmesi	-	O	I-ORG
 (	-	O	O
 Polity	-	O	B-ORG
 Press	-	O	I-ORG
@@ -20536,8 +20536,8 @@ hafta	-	O	O
 piyasaya	-	O	O
 çıktı	-	O	O
 
-Af	-	B-ORG	O
-Örgütü	-	I-ORG	O
+Af	-	B-ORG	B-ORG
+Örgütü	-	I-ORG	I-ORG
 ,	-	O	O
 yaptığı	-	O	O
 açıklamada	-	O	O
@@ -20562,16 +20562,16 @@ Fakültesi	-	I-ORG	I-ORG
 Güzel	-	I-ORG	I-ORG
 Sanatlar	-	I-ORG	I-ORG
 Bölümü	-	I-ORG	I-ORG
-mezunu	-	O	I-ORG
+mezunu	-	O	O
 Prof.	-	O	O
 Dr.	-	O	O
 Mehmet	-	B-PER	B-PER
 Özet'in	-	I-PER	I-PER
 resim	-	O	O
 sergisi	-	O	O
-G	-	O	B-ORG
-aleri	-	B-LOC	I-ORG
-3K'da	-	I-LOC	I-ORG
+G	-	O	O
+aleri	-	B-LOC	O
+3K'da	-	I-LOC	O
 sürüyor	-	O	O
 
 ALFA	-	B-ORG	B-ORG
@@ -20583,7 +20583,7 @@ Madrid'te	-	B-LOC	B-LOC
 dünya	-	O	O
 lansmanı	-	O	O
 yapılan	-	O	O
-Alfa	-	O	O
+Alfa	-	O	B-ORG
 166	-	O	O
 ,	-	O	O
 fuarda	-	O	O
@@ -20618,8 +20618,8 @@ yönelik	-	O	O
 saldırılardan	-	O	O
 kurtulmak	-	O	O
 için	-	O	O
-Belediye	-	B-LOC	B-ORG
-Sarayı'na	-	I-LOC	I-ORG
+Belediye	-	B-LOC	B-LOC
+Sarayı'na	-	I-LOC	I-LOC
 giren	-	O	O
 meslektaşlarımız	-	O	O
 burada	-	O	O
@@ -20637,23 +20637,23 @@ kulesine	-	O	O
 tüm	-	O	O
 donanımıyla	-	O	O
 açılan	-	O	O
-Uşak	-	B-LOC	O
-Havaalanı	-	I-LOC	O
+Uşak	-	B-LOC	B-PER
+Havaalanı	-	I-LOC	I-PER
 ,	-	O	O
 tam	-	O	O
 üç	-	O	O
 aydır	-	O	O
-Türk	-	B-ORG	B-PER
-Havayolları'nın	-	I-ORG	I-PER
+Türk	-	B-ORG	B-ORG
+Havayolları'nın	-	I-ORG	I-ORG
 tarifeli	-	O	O
-sefer	-	O	B-PER
+sefer	-	O	O
 koymasını	-	O	O
 bekliyor	-	O	O
 
 Maktul	-	B-LOC	O
-Mustafa	-	I-LOC	B-PER
-Paşa	-	I-LOC	I-PER
-Camii	-	I-LOC	O
+Mustafa	-	I-LOC	B-LOC
+Paşa	-	I-LOC	I-LOC
+Camii	-	I-LOC	I-LOC
 ve	-	O	O
 külliyesine	-	O	O
 adını	-	O	O
@@ -20784,7 +20784,7 @@ kıtayı	-	O	O
 ilgilendirmektedir	-	O	O
 
 1	-	O	O
-Ocak	-	O	O
+Ocak	-	O	B-PER
 1999'da	-	O	O
 yürürlüğe	-	O	O
 girecek	-	O	O
@@ -20962,7 +20962,7 @@ futbol	-	O	O
 sahalarından	-	O	O
 basın	-	O	O
 tribününe	-	O	O
-ÇIKMIŞ	-	O	O
+ÇIKMIŞ	-	O	B-ORG
 olanların	-	O	O
 spor	-	O	O
 yazarlığı	-	O	O
@@ -20997,7 +20997,7 @@ spor	-	O	O
 müsabakalarına	-	O	O
 çağrılmayan	-	O	O
 Kuzey	-	B-LOC	B-LOC
-Kıbrıs	-	I-LOC	B-LOC
+Kıbrıs	-	I-LOC	I-LOC
 Türk	-	I-LOC	I-LOC
 Cumhuriyeti	-	I-LOC	I-LOC
 ,	-	O	O
@@ -21420,9 +21420,9 @@ tarafından	-	O	O
 ele	-	O	O
 alındı	-	O	O
 
-Ulu	-	O	O
-Önder	-	O	O
-Atatürk	-	B-PER	B-PER
+Ulu	-	O	B-PER
+Önder	-	O	I-PER
+Atatürk	-	B-PER	I-PER
 ,	-	O	O
 bu	-	O	O
 çağdaş	-	O	O
@@ -21774,7 +21774,7 @@ kurarsa	-	O	O
 kursun	-	O	O
 ,	-	O	O
 Almanya'nın	-	B-LOC	B-LOC
-Türkiye	-	I-LOC	B-LOC
+Türkiye	-	I-LOC	I-LOC
 politikasında	-	O	O
 devamlılık	-	O	O
 olacaktır	-	O	O
@@ -21810,8 +21810,8 @@ dünyada	-	O	O
 dijitalleşme	-	O	O
 oranınız	-	O	O
 ,	-	O	O
-Bilgi	-	O	B-LOC
-Toplumu'ndaki	-	O	I-LOC
+Bilgi	-	O	B-ORG
+Toplumu'ndaki	-	O	I-ORG
 sıralamanızı	-	O	O
 da	-	O	O
 belirleyecek	-	O	O
@@ -21963,7 +21963,7 @@ diziliyor	-	O	O
 Kohl'ün	-	B-PER	B-PER
 ve	-	O	O
 diğer	-	O	O
-Hıristiyan	-	O	O
+Hıristiyan	-	O	B-LOC
 Demokrat	-	O	O
 sözcülerin	-	O	O
 daha	-	O	O
@@ -22086,7 +22086,7 @@ olduğunu	-	O	O
 idia	-	O	O
 etti	-	O	O
 
-Kazan	-	B-PER	B-PER
+Kazan	-	B-PER	O
 ayrıca	-	O	O
 Özbey'le	-	B-PER	B-PER
 görüşen	-	O	O
@@ -22111,15 +22111,15 @@ Fakültesi	-	I-ORG	I-ORG
 Güzel	-	I-ORG	I-ORG
 Sanatlar	-	I-ORG	I-ORG
 Bölümü	-	I-ORG	I-ORG
-mezunu	-	O	I-ORG
+mezunu	-	O	O
 Prof.	-	O	O
 Dr.	-	O	O
 Mehmet	-	B-PER	B-PER
 Özet'in	-	I-PER	I-PER
 resim	-	O	O
-sergisi	-	O	B-ORG
-Galeri	-	O	I-ORG
-3K'da	-	O	I-ORG
+sergisi	-	O	O
+Galeri	-	O	O
+3K'da	-	O	O
 sürüyor	-	O	O
 
 Cezaevine	-	O	O
@@ -22142,7 +22142,7 @@ söyledi	-	O	O
 
 Daha	-	O	O
 sonra	-	O	O
-Kasımpaşa'da	-	B-ORG	B-LOC
+Kasımpaşa'da	-	B-ORG	B-ORG
 çocukluk	-	O	O
 arkadaşı	-	O	O
 Ahmet	-	B-PER	B-PER
@@ -22200,7 +22200,7 @@ FP	-	B-ORG	B-ORG
 Başkanı	-	O	O
 Doç.	-	O	O
 Numan	-	B-PER	B-PER
-Kurtulmuş'un	-	I-PER	I-PER
+Kurtulmuş'un	-	I-PER	O
 da	-	O	O
 Erbakan	-	B-PER	B-PER
 tarafından	-	O	O
@@ -22302,11 +22302,11 @@ uçuş	-	O	O
 yapmak	-	O	O
 zorunda	-	O	O
 
-İZMİR	-	B-ORG	B-ORG
-2.	-	I-ORG	I-ORG
-Ana	-	I-ORG	I-ORG
-Jet	-	I-ORG	I-ORG
-Üs	-	I-ORG	I-ORG
+İZMİR	-	B-ORG	B-LOC
+2.	-	I-ORG	O
+Ana	-	I-ORG	O
+Jet	-	I-ORG	O
+Üs	-	I-ORG	B-ORG
 Uçuş	-	I-ORG	I-ORG
 Eğitim	-	I-ORG	I-ORG
 Merkezi'nde	-	I-ORG	I-ORG
@@ -22324,7 +22324,7 @@ Buna	-	O	O
 ek	-	O	O
 olarak	-	O	O
 ,	-	O	O
-İskandinav	-	O	B-LOC
+İskandinav	-	O	O
 ülkelerinin	-	O	O
 gerçekleştirdikleri	-	O	O
 başarılı	-	O	O
@@ -22410,7 +22410,7 @@ bulunduğu	-	O	O
 ortaya	-	O	O
 çıktı	-	O	O
 
-Atletico	-	O	B-ORG
+Atletico	-	O	O
 Madridli	-	O	O
 Munos'la	-	B-PER	B-PER
 anlaştıklarını	-	O	O
@@ -22423,8 +22423,8 @@ Başkanı	-	O	O
 ,'	-	O	O
 Ancak	-	O	O
 Löw	-	B-PER	B-PER
-ısrarla	-	O	I-PER
-Dimas'ı	-	B-PER	I-PER
+ısrarla	-	O	O
+Dimas'ı	-	B-PER	B-PER
 istiyor	-	O	O
 .	-	O	O
 
@@ -22452,7 +22452,7 @@ seçim	-	O	O
 öncesinde	-	O	O
 SPD	-	B-ORG	B-ORG
 -	-	O	O
-Yeşil	-	O	O
+Yeşil	-	O	B-ORG
 koalisyonu	-	O	O
 veya	-	O	O
 Büyük	-	O	O
@@ -22538,8 +22538,8 @@ zorundadır	-	O	O
 
 Artık	-	O	O
 başta	-	O	O
-Manchester	-	B-ORG	B-ORG
-United	-	I-ORG	I-ORG
+Manchester	-	B-ORG	B-LOC
+United	-	I-ORG	B-ORG
 olmak	-	O	O
 üzere	-	O	O
 ,	-	O	O
@@ -22716,9 +22716,9 @@ ya	-	O	O
 da	-	O	O
 yaralı	-	O	O
 
-Devlet	-	B-ORG	O
-Planlama	-	I-ORG	O
-Teşkilatı	-	I-ORG	O
+Devlet	-	B-ORG	B-ORG
+Planlama	-	I-ORG	I-ORG
+Teşkilatı	-	I-ORG	I-ORG
 tarafından	-	O	O
 ODTÜ'ye	-	B-ORG	B-ORG
 yaptırılan	-	O	O
@@ -23028,10 +23028,10 @@ aynı	-	O	O
 tutulduğu	-	O	O
 belirlendi	-	O	O
 
-Bayanlar	-	O	B-ORG
-Süper	-	O	I-ORG
-Ligi'nde	-	O	O
-Galatasaray	-	B-ORG	B-ORG
+Bayanlar	-	O	O
+Süper	-	O	B-ORG
+Ligi'nde	-	O	I-ORG
+Galatasaray	-	B-ORG	I-ORG
 ,	-	O	O
 İstanbul'da	-	B-LOC	B-LOC
 İtalyan	-	O	O
@@ -23113,8 +23113,8 @@ için	-	O	O
 önlem	-	O	O
 aldı	-	O	O
 
-Gipys	-	O	B-ORG
-Kings'in	-	O	I-ORG
+Gipys	-	O	O
+Kings'in	-	O	O
 rumbaları	-	O	O
 ve	-	O	O
 elektronik	-	O	O
@@ -23480,7 +23480,7 @@ bir	-	O	O
 da	-	O	O
 canı	-	O	O
 pahasına	-	O	O
-nice	-	O	B-LOC
+nice	-	O	O
 oyunlar	-	O	O
 döndürülmüş	-	O	O
 masada	-	O	O
@@ -23555,10 +23555,10 @@ olmaya	-	O	O
 yetmediğini	-	O	O
 savundu	-	O	O
 
-İnsan	-	B-ORG	O
-Hakları	-	I-ORG	O
-Koordinatör	-	I-ORG	O
-Üst	-	I-ORG	B-ORG
+İnsan	-	B-ORG	B-ORG
+Hakları	-	I-ORG	I-ORG
+Koordinatör	-	I-ORG	I-ORG
+Üst	-	I-ORG	I-ORG
 Kurulu	-	I-ORG	I-ORG
 ,	-	O	O
 dün	-	O	O
@@ -23633,7 +23633,7 @@ böylesine	-	O	O
 kararlılıkla	-	O	O
 yürümesi	-	O	O
 bana	-	O	O
-kıvanç	-	O	B-LOC
+kıvanç	-	O	O
 veriyor	-	O	O
 "	-	O	O
 karşılığını	-	O	O
@@ -23694,8 +23694,8 @@ götürüldü	-	O	O
 "	-	O	O
 Sudaki	-	O	O
 Çocuğunuz	-	O	O
-Akdeniz	-	B-LOC	B-LOC
-Foku	-	O	O
+Akdeniz	-	B-LOC	B-ORG
+Foku	-	O	I-ORG
 "	-	O	O
 adlı	-	O	O
 bültende	-	O	O
@@ -23760,7 +23760,7 @@ eğitim	-	O	O
 alıyor	-	O	O
 
 Kohl'un	-	B-PER	B-PER
-Doğu	-	B-LOC	I-PER
+Doğu	-	B-LOC	O
 Almanya'yı	-	O	B-LOC
 Batıya	-	O	O
 entegre	-	O	O
@@ -23777,7 +23777,7 @@ görevi	-	O	O
 görmüştür	-	O	O
 
 Buna	-	O	O
-mukabil	-	O	B-PER
+mukabil	-	O	O
 ,	-	O	O
 ülkedeki	-	O	O
 yabancılar	-	O	O
@@ -23964,7 +23964,7 @@ gelmesiyle	-	O	O
 düşünüyor	-	O	O
 
 IRAK'la	-	B-LOC	B-LOC
-Suriye	-	I-LOC	B-LOC
+Suriye	-	I-LOC	I-LOC
 ,	-	O	O
 Türkiye'nin	-	B-LOC	B-LOC
 katılımı	-	O	O
@@ -24153,7 +24153,7 @@ meydanda	-	O	O
 Ural	-	B-PER	B-PER
 ,	-	O	O
 Kobe'yi	-	B-LOC	B-LOC
-İzmir'e	-	I-LOC	B-LOC
+İzmir'e	-	I-LOC	I-LOC
 hem	-	O	O
 sismik	-	O	O
 açıdan	-	O	O
@@ -24173,8 +24173,8 @@ Türkiye'den	-	B-LOC	B-LOC
 ODTÜ	-	B-ORG	B-ORG
 öğretim	-	O	O
 üyelerinden	-	O	O
-Derin	-	B-PER	O
-Ural	-	I-PER	O
+Derin	-	B-PER	B-PER
+Ural	-	I-PER	I-PER
 İzmir	-	B-LOC	B-LOC
 için	-	O	O
 hazırlanan	-	O	O
@@ -24336,17 +24336,17 @@ tehdit	-	O	O
 ediyor	-	O	O
 .	-	O	O
 
-Çalımbay	-	B-PER	B-LOC
+Çalımbay	-	B-PER	B-PER
 ,	-	O	O
 ayrıca	-	O	O
 Almanya	-	B-LOC	B-LOC
 maçı	-	O	O
 öncesi	-	O	O
-Milli	-	B-ORG	B-ORG
-Takım'ın	-	I-ORG	I-ORG
-kamp	-	O	I-ORG
-yapacağı	-	O	I-ORG
-Vakıfköy	-	B-ORG	I-ORG
+Milli	-	B-ORG	O
+Takım'ın	-	I-ORG	O
+kamp	-	O	O
+yapacağı	-	O	O
+Vakıfköy	-	B-ORG	B-ORG
 Tesisleri'nde	-	I-ORG	I-ORG
 de	-	O	O
 incelemelerde	-	O	O
@@ -24384,7 +24384,7 @@ de	-	O	O
 güven	-	O	O
 verdi	-	O	O
 
-Aktuna	-	B-PER	B-PER
+Aktuna	-	B-PER	O
 ,	-	O	O
 860	-	O	O
 milyon	-	O	O
@@ -24469,8 +24469,8 @@ Andican	-	B-PER	B-PER
 Türk	-	O	O
 lehçelerinin	-	O	O
 tümünün	-	O	O
-Latin	-	O	O
-Alfabesi'ne	-	O	O
+Latin	-	O	B-LOC
+Alfabesi'ne	-	O	I-LOC
 basıldığında	-	O	O
 ,	-	O	O
 tüm	-	O	O
@@ -24693,7 +24693,7 @@ Devri'nin	-	O	I-PER
 eğlence	-	O	O
 kültürü	-	O	O
 dışında	-	O	O
-Batıy'la	-	O	B-LOC
+Batıy'la	-	O	O
 daha	-	O	O
 derin	-	O	O
 bir	-	O	O
@@ -24707,8 +24707,8 @@ düşündüm	-	O	O
 Birol	-	B-PER	O
 Yayla	-	I-PER	O
 ,	-	O	O
-Şenol	-	B-PER	O
-Filiz	-	I-PER	O
+Şenol	-	B-PER	B-PER
+Filiz	-	I-PER	I-PER
 ,	-	O	O
 Münip	-	B-PER	O
 Utandı	-	I-PER	O
@@ -24723,7 +24723,7 @@ bile	-	O	O
 "	-	O	O
 Bugün	-	O	O
 en	-	O	O
-avangard	-	O	B-LOC
+avangard	-	O	O
 besteci	-	O	O
 bile	-	O	O
 bir	-	O	O
@@ -24824,7 +24824,7 @@ biri	-	O	O
 de	-	O	O
 1978'den	-	O	O
 beri	-	O	O
-Mercedes'le	-	O	B-LOC
+Mercedes'le	-	O	O
 işbirliği	-	O	O
 halinde	-	O	O
 yürütülen	-	O	O
@@ -24850,7 +24850,7 @@ ortaya	-	O	O
 
 Çünkü	-	O	O
 SPD	-	B-ORG	B-ORG
--	-	O	I-ORG
+-	-	O	O
 ve	-	O	O
 Yeşiller	-	B-ORG	B-ORG
 -	-	O	O
@@ -24881,7 +24881,7 @@ kolaylaşabilir	-	O	O
 .	-	O	O
 
 Almanya	-	B-LOC	B-LOC
-Türkiye'nin	-	O	B-LOC
+Türkiye'nin	-	O	I-LOC
 ihracatında	-	O	O
 ,	-	O	O
 yabancı	-	O	O
@@ -24960,7 +24960,7 @@ medet	-	O	O
 umar	-	O	O
 mı	-	O	O
 
-GSMH	-	O	B-ORG
+GSMH	-	O	O
 sıralamasında	-	O	O
 dünya	-	O	O
 24'üncüsü	-	O	O
@@ -25011,7 +25011,7 @@ yaratıyor	-	O	O
 Bizde	-	O	O
 Eyüp	-	B-PER	B-PER
 Aşık'ın	-	I-PER	I-PER
-Çakıcı'yla	-	I-PER	B-PER
+Çakıcı'yla	-	I-PER	I-PER
 yaptığı	-	O	O
 görüşmelerinin	-	O	O
 ortaya	-	O	O
@@ -25268,7 +25268,7 @@ Başta	-	O	O
 Devlet	-	O	O
 Resim	-	O	O
 ve	-	O	O
-Heykel	-	O	O
+Heykel	-	O	B-PER
 sergisi	-	O	O
 olmak	-	O	O
 üzere	-	O	O
@@ -25316,7 +25316,7 @@ Avukat	-	O	O
 Turgut	-	B-PER	B-PER
 Kazan	-	I-PER	I-PER
 dönemin	-	O	O
-Emniyet	-	O	B-ORG
+Emniyet	-	O	O
 Genel	-	O	O
 Müdürü	-	O	O
 Mehmet	-	B-PER	B-PER
@@ -25380,7 +25380,7 @@ Avukat	-	O	O
 Turgut	-	B-PER	B-PER
 Kazan	-	I-PER	I-PER
 dönemin	-	O	O
-Emniyet	-	O	B-ORG
+Emniyet	-	O	O
 Genel	-	O	O
 Müdürü	-	O	O
 Mehmet	-	B-PER	B-PER
@@ -25552,7 +25552,7 @@ pilot	-	O	O
 eğitim	-	O	O
 görüyor	-	O	O
 
-Sembolü	-	O	B-PER
+Sembolü	-	O	O
 "	-	O	O
 palaz	-	O	O
 "	-	O	O
@@ -25879,8 +25879,8 @@ alanında	-	O	O
 uzmanlaşmış	-	O	O
 bu	-	O	O
 yargıçları	-	O	O
-Ağır	-	B-ORG	O
-Ceza	-	I-ORG	B-ORG
+Ağır	-	B-ORG	B-ORG
+Ceza	-	I-ORG	I-ORG
 Mahkemeleri'nde	-	I-ORG	I-ORG
 görevlendirme	-	O	O
 yollarını	-	O	O
@@ -25925,7 +25925,7 @@ talip	-	O	O
 olan	-	O	O
 SPD	-	B-ORG	B-ORG
 ve	-	O	O
-Yeşiller	-	B-ORG	O
+Yeşiller	-	B-ORG	B-ORG
 bir	-	O	O
 tarafta	-	O	O
 ,	-	O	O
@@ -25953,10 +25953,10 @@ zemine	-	O	O
 sahip	-	O	O
 
 "	-	O	O
-Büyük	-	O	O
-Şehirlerin	-	O	O
-Deprem	-	O	O
-Güvenliği	-	O	O
+Büyük	-	O	B-ORG
+Şehirlerin	-	O	I-ORG
+Deprem	-	O	I-ORG
+Güvenliği	-	O	I-ORG
 "	-	O	O
 konulu	-	O	O
 konferansın	-	O	O
@@ -26317,7 +26317,7 @@ oynayıp	-	O	O
 ,	-	O	O
 gitti	-	O	O
 
-Güzel	-	O	O
+Güzel	-	O	B-PER
 sesi	-	O	O
 ve	-	O	O
 naif	-	O	O
@@ -26347,7 +26347,7 @@ da	-	O	O
 rastlıyoruz	-	O	O
 .	-	O	O
 
-Patey	-	B-PER	B-PER
+Patey	-	B-PER	O
 ,'	-	O	O
 Amacım	-	O	O
 ,	-	O	O
@@ -26487,7 +26487,7 @@ ne	-	O	O
 duruyoruz	-	O	O
 ,	-	O	O
 Hüsam	-	O	B-PER
-Bey	-	O	O
+Bey	-	O	I-PER
 ,	-	O	O
 Mehmet	-	B-PER	B-PER
 Ali	-	I-PER	I-PER
@@ -26518,7 +26518,7 @@ iki	-	O	O
 yıl	-	O	O
 kala	-	O	O
 ,	-	O	O
-parlamento	-	O	B-ORG
+parlamento	-	O	O
 büyük	-	O	O
 çoğunlukla	-	O	O
 erken	-	O	O
@@ -26591,7 +26591,7 @@ Türkiye	-	B-ORG	B-ORG
 Bilişim	-	I-ORG	I-ORG
 Vakfı	-	I-ORG	I-ORG
 ,	-	O	O
-Romer'ın	-	B-PER	B-PER
+Romer'ın	-	B-PER	O
 bu	-	O	O
 yeni	-	O	O
 büyüme	-	O	O
@@ -26857,7 +26857,7 @@ oynayıp	-	O	O
 ,	-	O	O
 gitti	-	O	O
 
-Güney	-	B-LOC	B-PER
+Güney	-	B-LOC	B-LOC
 ,	-	O	O
 hakkında	-	O	O
 yıllardır	-	O	O
@@ -26982,8 +26982,8 @@ görebilmek	-	O	O
 için	-	O	O
 Nice'e	-	B-LOC	B-LOC
 gelen	-	O	O
-Gençağa	-	B-PER	O
-Çakıcı	-	I-PER	B-PER
+Gençağa	-	B-PER	B-PER
+Çakıcı	-	I-PER	I-PER
 ve	-	O	O
 dayısı	-	O	O
 ,	-	O	O
@@ -27208,7 +27208,7 @@ etmek	-	O	O
 amacıyla	-	O	O
 ,	-	O	O
 SDP'li	-	B-ORG	B-ORG
-federal	-	O	I-ORG
+federal	-	O	O
 hükümet	-	O	O
 ,	-	O	O
 yoksulluk	-	O	O
@@ -27356,8 +27356,8 @@ Devletle	-	O	O
 ,	-	O	O
 MİT	-	B-ORG	B-ORG
 ve	-	O	O
-emniyet	-	O	B-ORG
-teşkilatı	-	O	I-ORG
+emniyet	-	O	O
+teşkilatı	-	O	O
 ile	-	O	O
 birlikte	-	O	O
 hiçbir	-	O	O
@@ -27493,7 +27493,7 @@ Türkiye'nin	-	B-LOC	B-LOC
 sorununun	-	O	O
 "	-	O	O
 Tayyip	-	B-PER	B-PER
-Bey'i	-	O	I-PER
+Bey'i	-	O	O
 hapse	-	O	O
 atmaktan	-	O	O
 ibaret	-	O	O
@@ -27642,8 +27642,8 @@ gerek	-	O	O
 yok	-	O	O
 .	-	O	O
 
-Yeni	-	B-ORG	O
-İşçi	-	I-ORG	B-ORG
+Yeni	-	B-ORG	B-ORG
+İşçi	-	I-ORG	I-ORG
 Partisi	-	I-ORG	I-ORG
 ise	-	O	O
 ilerlemeyi	-	O	O
@@ -27749,8 +27749,8 @@ büyük	-	O	O
 gürültü	-	O	O
 kopacak	-	O	O
 ve	-	O	O
-SKY	-	B-ORG	O
-TV'nin	-	I-ORG	B-ORG
+SKY	-	B-ORG	B-ORG
+TV'nin	-	I-ORG	O
 anlaşması	-	O	O
 feshedilecek	-	O	O
 
@@ -27820,8 +27820,8 @@ kiralık	-	O	O
 olarak	-	O	O
 Sakaryasporlu	-	O	O
 yapan	-	O	O
-imzayı	-	O	B-LOC
-Adapazarı'nda	-	B-LOC	I-LOC
+imzayı	-	O	O
+Adapazarı'nda	-	B-LOC	B-LOC
 attı	-	O	O
 
 Güney	-	B-PER	B-PER
@@ -27841,7 +27841,7 @@ dedi	-	O	O
 TÜRK	-	O	O
 popunun	-	O	O
 yıldızı	-	O	O
-Tarkan	-	B-PER	O
+Tarkan	-	B-PER	B-PER
 ,	-	O	O
 Fransa'da	-	B-LOC	B-LOC
 çıkardığı	-	O	O
@@ -27944,11 +27944,11 @@ Mansur	-	I-PER	I-PER
 ve	-	O	O
 Akbank	-	B-ORG	B-ORG
 Oda	-	I-ORG	I-ORG
-Orkestrası	-	I-ORG	I-ORG
-Aya	-	B-LOC	I-ORG
-İrini	-	I-LOC	I-ORG
-Bach	-	B-PER	I-ORG
-Günleri'nde	-	I-PER	I-ORG
+Orkestrası	-	I-ORG	O
+Aya	-	B-LOC	B-LOC
+İrini	-	I-LOC	I-LOC
+Bach	-	B-PER	I-LOC
+Günleri'nde	-	I-PER	I-LOC
 
 Bunların	-	O	O
 arasında	-	O	O
@@ -27987,7 +27987,7 @@ bir	-	O	O
 kez	-	O	O
 daha	-	O	O
 ANAP'lı	-	B-ORG	B-ORG
-Aşık	-	B-PER	I-ORG
+Aşık	-	B-PER	B-PER
 konunun	-	O	O
 baş	-	O	O
 kahramanı	-	O	O
@@ -28236,7 +28236,7 @@ girişimine	-	O	O
 kadar	-	O	O
 sürükleyen	-	O	O
 neden	-	O	O
-TİT	-	O	O
+TİT	-	O	B-PER
 imzalı	-	O	O
 bir	-	O	O
 bildiri	-	O	O
@@ -28294,11 +28294,11 @@ Mansur	-	I-PER	I-PER
 ve	-	O	O
 Akbank	-	B-ORG	B-ORG
 Oda	-	I-ORG	I-ORG
-Orkestrası	-	I-ORG	I-ORG
-Aya	-	B-LOC	I-ORG
-İrini	-	I-LOC	I-ORG
-Bach	-	B-PER	I-ORG
-Günleri'nde	-	O	I-ORG
+Orkestrası	-	I-ORG	O
+Aya	-	B-LOC	B-LOC
+İrini	-	I-LOC	I-LOC
+Bach	-	B-PER	I-LOC
+Günleri'nde	-	O	I-LOC
 
 Dün	-	O	O
 CHP	-	B-ORG	B-ORG
@@ -28566,7 +28566,7 @@ düşüyor	-	O	O
 Ama	-	O	O
 .	-	O	O
 
-Ocak	-	B-PER	O
+Ocak	-	B-PER	B-PER
 başından	-	O	O
 itibaren	-	O	O
 ,	-	O	O
@@ -28832,8 +28832,8 @@ etkileri	-	O	O
 dahil	-	O	O
 edilmemiş	-	O	O
 
-Deprem	-	O	O
-Forumu'nun	-	O	O
+Deprem	-	O	B-LOC
+Forumu'nun	-	O	I-LOC
 son	-	O	O
 dönemde	-	O	O
 Türkiye'yi	-	B-LOC	B-LOC
@@ -28886,7 +28886,7 @@ gerçeği	-	O	O
 görmüştür	-	O	O
 ,	-	O	O
 hidayete	-	O	O
-ermiştir	-	O	B-PER
+ermiştir	-	O	O
 
 Ecevit'i	-	B-PER	B-PER
 Ecevit	-	I-PER	I-PER
@@ -29052,7 +29052,7 @@ devirden	-	O	O
 sonra	-	O	O
 geldi	-	O	O
 
-Aktuna	-	B-PER	B-PER
+Aktuna	-	B-PER	O
 ,	-	O	O
 kredi	-	O	O
 çıktıktan	-	O	O
@@ -29132,7 +29132,7 @@ almıştır	-	O	O
 
 Galatasaray	-	B-ORG	B-ORG
 ve	-	O	O
-Trabzon	-	B-ORG	B-LOC
+Trabzon	-	B-ORG	B-ORG
 maçlarında	-	O	O
 beş	-	O	O
 puan	-	O	O
@@ -29171,9 +29171,9 @@ müzisyen	-	O	O
 
 Duvarlar	-	O	O
 ,	-	O	O
-boydan	-	O	B-PER
-boya	-	O	I-PER
-Beyoğlu'nu	-	B-LOC	B-PER
+boydan	-	O	O
+boya	-	O	O
+Beyoğlu'nu	-	B-LOC	B-LOC
 simgeleyen	-	O	O
 resimlerle	-	O	O
 ,	-	O	O
@@ -29334,8 +29334,8 @@ programı	-	O	O
 nasıl	-	O	O
 bulduğunu	-	O	O
 ,	-	O	O
-Lale	-	O	O
-Devri	-	O	O
+Lale	-	O	B-PER
+Devri	-	O	I-PER
 bağlantısını	-	O	O
 
 Bu	-	O	O
@@ -29494,7 +29494,7 @@ yeniden	-	O	O
 paylaşıldıkça	-	O	O
 artıyor	-	O	O
 
-Romer'in	-	B-PER	B-PER
+Romer'in	-	B-PER	O
 modeli	-	O	O
 ,	-	O	O
 bilgi	-	O	O
@@ -29590,7 +29590,7 @@ Böylece	-	O	O
 dünyanın	-	O	O
 en	-	O	O
 gelişmiş	-	O	O
-refah	-	O	B-ORG
+refah	-	O	O
 devleti	-	O	O
 ya	-	O	O
 da	-	O	O
@@ -29749,8 +29749,8 @@ ibret	-	O	O
 olsun	-	O	O
 diye	-	O	O
 İstanbul'a	-	B-LOC	B-LOC
-getirilip	-	O	B-ORG
-Saray'ın	-	O	I-ORG
+getirilip	-	O	O
+Saray'ın	-	O	B-ORG
 önüne	-	O	O
 asıldı	-	O	O
 
@@ -29860,14 +29860,14 @@ süre	-	O	O
 
 Çakıcı'nın	-	B-PER	B-PER
 kardeşi	-	O	O
-Gençağa	-	B-PER	O
-Çakıcı	-	I-PER	B-PER
+Gençağa	-	B-PER	B-PER
+Çakıcı	-	I-PER	I-PER
 da	-	O	O
 ağabeyinin	-	O	O
 konuşmaya	-	O	O
 yetkili	-	O	O
 avukatının	-	O	O
-Doğancan	-	B-PER	O
+Doğancan	-	B-PER	B-PER
 olduğunu	-	O	O
 söyledi	-	O	O
 
@@ -30171,7 +30171,7 @@ yapmıştır	-	O	O
 .	-	O	O
 
 CHP	-	B-ORG	B-ORG
-Erzincan	-	B-LOC	B-LOC
+Erzincan	-	B-LOC	O
 milletvekili	-	O	O
 Mustafa	-	B-PER	B-PER
 Yıldız	-	I-PER	I-PER
@@ -30329,7 +30329,7 @@ açmış	-	O	O
 Devlet	-	B-ORG	B-ORG
 Planlama	-	I-ORG	I-ORG
 Teşkilatı'nın	-	I-ORG	I-ORG
-ODTÜ'ye	-	I-ORG	B-ORG
+ODTÜ'ye	-	I-ORG	I-ORG
 yaptırdığı	-	O	O
 araştırma	-	O	O
 bundan	-	O	O
@@ -30624,7 +30624,7 @@ Gül	-	I-PER	B-PER
 ,	-	O	O
 Atrium'daki	-	B-LOC	B-LOC
 Çukurova	-	B-ORG	I-LOC
-Emlak'ın	-	I-ORG	B-LOC
+Emlak'ın	-	I-ORG	I-LOC
 sahibi	-	O	O
 Hasan	-	B-PER	B-PER
 Şen'in	-	I-PER	I-PER
@@ -30800,12 +30800,12 @@ sergiliyor	-	O	O
 
 Uçağın	-	O	O
 ,	-	O	O
-Melilla'ya	-	B-LOC	B-LOC
+Melilla'ya	-	B-LOC	B-PER
 20	-	O	O
 kilometre	-	O	O
 mesafede	-	O	O
 ,	-	O	O
-Fas	-	B-LOC	B-ORG
+Fas	-	B-LOC	O
 topraklarında	-	O	O
 düştüğü	-	O	O
 belirtildi	-	O	O
@@ -30815,8 +30815,8 @@ sınırdışı	-	O	O
 edilmek	-	O	O
 istenirken	-	O	O
 ölen	-	O	O
-Samira	-	B-PER	O
-Adamu'nun	-	I-PER	B-PER
+Samira	-	B-PER	B-PER
+Adamu'nun	-	I-PER	I-PER
 ölümünün	-	O	O
 yankıları	-	O	O
 giderek	-	O	O
@@ -31042,9 +31042,9 @@ Müzisyenler	-	O	O
 arasında	-	O	O
 doğucu	-	O	O
 ,	-	O	O
-batıcı	-	O	B-LOC
+batıcı	-	O	O
 ,	-	O	O
-cazcı	-	O	B-PER
+cazcı	-	O	O
 gibi	-	O	O
 bölünmeler	-	O	O
 var	-	O	O
@@ -31334,7 +31334,7 @@ son	-	O	O
 tanım	-	O	O
 şu	-	O	O
 ;	-	O	O
-Ticaretin	-	O	B-LOC
+Ticaretin	-	O	O
 4.	-	O	O
 Yolu	-	O	O
 
@@ -31386,7 +31386,7 @@ gösterenlere	-	O	O
 gönülden	-	O	O
 teşekkürler	-	O	O
 
-ÖSYS'ye	-	O	B-ORG
+ÖSYS'ye	-	O	O
 ikinci	-	O	O
 girişinde	-	O	O
 ,	-	O	O
@@ -31518,7 +31518,7 @@ Başbakanı'adını	-	O	O
 taktı	-	O	O
 .	-	O	O
 
-Ford	-	B-ORG	B-ORG
+Ford	-	B-ORG	B-PER
 Ka	-	O	O
 Press	-	O	O
 Cup	-	O	O
@@ -31542,14 +31542,14 @@ farklılıklar	-	O	O
 hakim	-	O	O
 .	-	O	O
 
-Clio	-	O	B-ORG
+Clio	-	O	O
 ve	-	O	O
 Peugeot	-	O	B-ORG
-206'la	-	O	I-ORG
+206'la	-	O	O
 aynı	-	O	O
 sınıfta	-	O	O
 olan	-	O	O
-Yaris	-	O	O
+Yaris	-	O	B-PER
 ,	-	O	O
 Fransa'da	-	B-LOC	B-LOC
 üretilecek	-	O	O
@@ -31557,7 +31557,7 @@ Fransa'da	-	B-LOC	B-LOC
 TOYOTA	-	B-ORG	B-ORG
 :	-	O	O
 Toyota'nın	-	B-ORG	B-ORG
-Yaris'i	-	O	I-ORG
+Yaris'i	-	O	O
 de	-	O	O
 ilk	-	O	O
 kez	-	O	O
@@ -31590,8 +31590,8 @@ saldırıları	-	O	O
 kınıyoruz	-	O	O
 .	-	O	O
 
-Ahbap	-	O	B-PER
-çavuş	-	O	I-PER
+Ahbap	-	O	O
+çavuş	-	O	O
 kapitalizmi	-	O	O
 ,	-	O	O
 yolsuzluk	-	O	O
@@ -31619,8 +31619,8 @@ sınırdışı	-	O	O
 edilmek	-	O	O
 istenirken	-	O	O
 ölen	-	O	O
-Samira	-	B-PER	O
-Adamu'nun	-	I-PER	B-PER
+Samira	-	B-PER	B-PER
+Adamu'nun	-	I-PER	I-PER
 ölümünün	-	O	O
 yankıları	-	O	O
 giderek	-	O	O
@@ -32313,7 +32313,7 @@ göreceğiz	-	O	O
 Ancak	-	O	O
 ABD	-	B-LOC	B-LOC
 ve	-	O	O
-Tayvan	-	B-LOC	B-PER
+Tayvan	-	B-LOC	B-LOC
 ,	-	O	O
 Japonya	-	B-LOC	B-LOC
 gibi	-	O	O
@@ -32431,7 +32431,7 @@ içinde	-	O	O
 
 Bu	-	O	O
 istifa	-	O	O
-Nasrettin	-	O	O
+Nasrettin	-	O	B-PER
 Hoca'nın	-	O	O
 düşmesem	-	O	O
 de	-	O	O
@@ -32608,7 +32608,7 @@ yok	-	O	O
 Sadece	-	O	O
 bugün	-	O	O
 (	-	O	O
-Cuma	-	O	B-PER
+Cuma	-	O	O
 )	-	O	O
 200	-	O	O
 milyon	-	O	O
@@ -32631,8 +32631,8 @@ Modern	-	O	O
 mimaride	-	O	O
 ise	-	O	O
 ,	-	O	O
-Hill	-	B-LOC	O
-Side'da	-	I-LOC	B-LOC
+Hill	-	B-LOC	B-LOC
+Side'da	-	I-LOC	I-LOC
 film	-	O	O
 izlemek	-	O	O
 bir	-	O	O
@@ -32661,7 +32661,7 @@ geriye	-	O	O
 dönmek	-	O	O
 
 GÜNEYDOĞU	-	B-LOC	B-LOC
-Avrupa	-	I-LOC	B-LOC
+Avrupa	-	I-LOC	I-LOC
 ülkeleri	-	O	O
 savunma	-	O	O
 bakanları	-	O	O
@@ -32693,8 +32693,8 @@ golün	-	O	O
 pasını	-	O	O
 verdi	-	O	O
 
-Sky	-	B-ORG	B-ORG
-TV'nin	-	I-ORG	I-ORG
+Sky	-	B-ORG	O
+TV'nin	-	I-ORG	O
 Süper	-	O	O
 lig	-	O	O
 ile	-	O	O
@@ -32706,9 +32706,9 @@ bitecek	-	O	O
 
 Bu	-	O	O
 da	-	O	O
-İngiliz	-	O	B-ORG
-Süper	-	O	I-ORG
-Ligi'nde	-	O	I-ORG
+İngiliz	-	O	O
+Süper	-	O	O
+Ligi'nde	-	O	O
 yeni	-	O	O
 bir	-	O	O
 sıkıntıya	-	O	O
@@ -32774,11 +32774,11 @@ Ra	-	B-ORG	O
 Tekstil	-	I-ORG	O
 ,	-	O	O
 Rachel	-	B-ORG	B-PER
-Beachwear	-	I-ORG	O
+Beachwear	-	I-ORG	I-PER
 koleksiyonun	-	O	O
 katolog	-	O	O
 çekimlerini	-	O	O
-Side'de	-	B-LOC	O
+Side'de	-	B-LOC	B-LOC
 tamamladı	-	O	O
 
 Bu	-	O	O
@@ -32909,14 +32909,14 @@ seçimlerini	-	O	O
 kazanınca	-	O	O
 ,	-	O	O
 Kohl	-	B-PER	B-PER
-iş	-	O	I-PER
+iş	-	O	O
 başına	-	O	O
 geçti	-	O	O
 
 O	-	O	O
 zaman	-	O	O
-Hıristiyan	-	O	O
-Demokratlar	-	O	O
+Hıristiyan	-	O	B-ORG
+Demokratlar	-	O	I-ORG
 (	-	O	O
 CDU	-	B-ORG	B-ORG
 )	-	O	O
@@ -32953,7 +32953,7 @@ teması	-	O	O
 onaylıyor	-	O	O
 ;	-	O	O
 "	-	O	O
-Devam	-	O	B-PER
+Devam	-	O	O
 et	-	O	O
 .	-	O	O
 
@@ -33122,7 +33122,7 @@ halka	-	O	O
 daha	-	O	O
 eklendi	-	O	O
 
-Söylemez	-	B-PER	B-PER
+Söylemez	-	B-PER	O
 ,	-	O	O
 Efes	-	B-ORG	B-ORG
 Oteli'ndeki	-	I-ORG	I-ORG
@@ -33159,11 +33159,11 @@ Ra	-	B-ORG	O
 Tekstil	-	I-ORG	O
 ,	-	O	O
 Rachel	-	B-ORG	B-PER
-Beachwear	-	I-ORG	O
+Beachwear	-	I-ORG	I-PER
 koleksiyonun	-	O	O
 katolog	-	O	O
 çekimlerini	-	O	O
-Side'de	-	B-LOC	O
+Side'de	-	B-LOC	B-LOC
 tamamladı	-	O	O
 
 Kulaktan	-	O	O
@@ -33177,13 +33177,13 @@ vermeye	-	O	O
 çalışırken	-	O	O
 dikkat	-	O	O
 
-Kasımpaşa'da	-	B-ORG	B-LOC
+Kasımpaşa'da	-	B-ORG	B-ORG
 eski	-	O	O
 arkadaşlarıyla	-	O	O
 buluşan	-	O	O
 Erdoğan	-	B-PER	B-PER
 ,	-	O	O
-Kasımpaşa'ya	-	B-ORG	B-LOC
+Kasımpaşa'ya	-	B-ORG	B-ORG
 dönmem	-	O	O
 "	-	O	O
 dedi	-	O	O
@@ -33257,7 +33257,7 @@ umuyorlardı	-	O	O
 Dizinde	-	O	O
 yırtık	-	O	O
 olan	-	O	O
-Mutlu	-	B-PER	O
+Mutlu	-	B-PER	B-PER
 pazartesi	-	O	O
 günü	-	O	O
 Alman	-	B-ORG	B-ORG
@@ -33272,8 +33272,8 @@ bir	-	O	O
 gelen	-	O	O
 Oktay'ı	-	B-PER	B-PER
 yönetici	-	O	O
-Affan	-	B-PER	O
-Keçeci	-	I-PER	O
+Affan	-	B-PER	B-PER
+Keçeci	-	I-PER	I-PER
 karşıladı	-	O	O
 
 Ve	-	O	O
@@ -33443,7 +33443,7 @@ yaratmayacağım	-	O	O
 
 Öyle	-	O	O
 ,'	-	O	O
-Mesut'la	-	B-PER	B-PER
+Mesut'la	-	B-PER	O
 en	-	O	O
 az	-	O	O
 10	-	O	O
@@ -33526,7 +33526,7 @@ temel	-	O	O
 görevlerinden	-	O	O
 biri	-	O	O
 olan	-	O	O
-TSYD	-	B-ORG	O
+TSYD	-	B-ORG	B-ORG
 uğraşsın	-	O	O
 
 Hukukun	-	O	O
@@ -33684,7 +33684,7 @@ testte	-	O	O
 anlaşılır	-	O	O
 
 Siverekli	-	O	O
-Işıkgöz	-	B-PER	O
+Işıkgöz	-	B-PER	B-PER
 ailesinden	-	O	O
 sonra	-	O	O
 ,	-	O	O
@@ -33727,7 +33727,7 @@ görüşlerini	-	O	O
 de	-	O	O
 bıraktılar	-	O	O
 
-Gath'ın	-	B-PER	B-PER
+Gath'ın	-	B-PER	B-ORG
 belirtttiğine	-	O	O
 göre	-	O	O
 harcamaların	-	O	O
@@ -33783,10 +33783,10 @@ kelimeyle	-	O	O
 ürkütücü	-	O	O
 
 "	-	O	O
-Büyük	-	O	O
-Şehirlerin	-	O	O
-Deprem	-	O	O
-Güvenliği	-	O	O
+Büyük	-	O	B-ORG
+Şehirlerin	-	O	I-ORG
+Deprem	-	O	I-ORG
+Güvenliği	-	O	I-ORG
 "	-	O	O
 forumun	-	O	O
 ana	-	O	O
@@ -33835,7 +33835,7 @@ de	-	O	O
 "	-	O	O
 en	-	O	O
 akıllıca	-	O	O
-yolu'dur	-	O	O
+yolu'dur	-	O	B-LOC
 
 Aynı	-	O	O
 derecede	-	O	O
@@ -33943,8 +33943,8 @@ yaşamı	-	O	O
 bile	-	O	O
 televizyonlarda	-	O	O
 sorgu	-	O	O
-sual	-	O	B-PER
-meydana	-	O	I-PER
+sual	-	O	O
+meydana	-	O	O
 dökülüyor	-	O	O
 
 Yapılacağı	-	O	O
@@ -34016,7 +34016,7 @@ Timur	-	B-PER	B-PER
 ,	-	O	O
 Güven	-	B-PER	B-PER
 ,	-	O	O
-Amir	-	B-PER	B-PER
+Amir	-	B-PER	O
 
 YEDEKLER	-	O	O
 :	-	O	O
@@ -34054,13 +34054,13 @@ satışta	-	O	O
 da	-	O	O
 hiçbir	-	O	O
 belgede	-	O	O
-Aktuna'nın	-	B-PER	B-PER
+Aktuna'nın	-	B-PER	B-LOC
 imzasına	-	O	O
 rastlanmadı	-	O	O
 
 Bu	-	O	O
 kişi	-	O	O
-Aktuna'nın	-	B-PER	B-PER
+Aktuna'nın	-	B-PER	O
 Sağlık	-	B-ORG	B-ORG
 Bakanlığı	-	I-ORG	I-ORG
 sırasında	-	O	O
@@ -34074,7 +34074,7 @@ birinde	-	O	O
 ismi	-	O	O
 Ahmet	-	B-PER	B-PER
 Cem	-	I-PER	I-PER
-Ulaşmış	-	I-PER	O
+Ulaşmış	-	I-PER	I-PER
 olarak	-	O	O
 değiştirildi	-	O	O
 
@@ -34169,7 +34169,7 @@ Rüştü	-	B-PER	B-PER
 vardı	-	O	O
 
 Mustafa	-	B-PER	B-PER
-öne	-	O	I-PER
+öne	-	O	O
 çıktı	-	O	O
 mı	-	O	O
 ,	-	O	O
@@ -34248,10 +34248,10 @@ organizasyonlarda	-	O	O
 çok	-	O	O
 başarılıydılar	-	O	O
 
-Show	-	B-ORG	B-ORG
+Show	-	B-ORG	O
 ve	-	O	O
 Cine	-	B-ORG	B-ORG
-5'in	-	I-ORG	O
+5'in	-	I-ORG	I-ORG
 sahipleri	-	O	O
 ise	-	O	O
 Sakaryaspor'u	-	B-ORG	B-ORG
@@ -34328,7 +34328,7 @@ vermiş	-	O	O
 olmuyorum	-	O	O
 .	-	O	O
 
-Bach	-	B-PER	O
+Bach	-	B-PER	B-PER
 konserleri	-	O	O
 arasına	-	O	O
 bir	-	O	O
@@ -34448,8 +34448,8 @@ verdin	-	O	O
 işte	-	O	O
 .	-	O	O
 
-KÖKSAL	-	B-PER	B-PER
-Toptan	-	I-PER	I-PER
+KÖKSAL	-	B-PER	O
+Toptan	-	I-PER	B-PER
 da	-	O	O
 ,	-	O	O
 Hikmet	-	B-PER	B-PER
@@ -34520,7 +34520,7 @@ da	-	O	O
 
 "	-	O	O
 Almanya'nın	-	B-LOC	B-LOC
-Türkiye	-	I-LOC	B-LOC
+Türkiye	-	I-LOC	I-LOC
 politikası	-	O	O
 aynı	-	O	O
 çizgide	-	O	O
@@ -34788,9 +34788,9 @@ kira	-	O	O
 bedellerini	-	O	O
 ödemedi	-	O	O
 
-RENAULT	-	B-ORG	O
+RENAULT	-	B-ORG	B-ORG
 :	-	O	O
-Renault	-	B-ORG	O
+Renault	-	B-ORG	B-ORG
 fuarda	-	O	O
 yeni	-	O	O
 Clio	-	O	O
@@ -34878,7 +34878,7 @@ yad	-	O	O
 etmeyecektir	-	O	O
 .	-	O	O
 
-Tekel'den	-	O	B-PER
+Tekel'den	-	O	B-ORG
 sorumlu	-	O	O
 devlet	-	O	O
 bakanı	-	O	O
@@ -35052,7 +35052,7 @@ Eğer	-	O	O
 bu	-	O	O
 transfer	-	O	O
 gerçekleşmezse	-	O	O
-Munos'a	-	B-PER	O
+Munos'a	-	B-PER	B-PER
 döneceğiz	-	O	O
 "	-	O	O
 diye	-	O	O
@@ -35160,7 +35160,7 @@ girmekten	-	O	O
 
 Bu	-	O	O
 kararın	-	O	O
-Washington'da	-	B-LOC	B-LOC
+Washington'da	-	B-LOC	B-PER
 alınması	-	O	O
 doğru	-	O	O
 bir	-	O	O
@@ -35188,8 +35188,8 @@ bir	-	O	O
 bütünleşmenin	-	O	O
 anahtarıdır	-	O	O
 
-ALMANY	-	O	B-ORG
-A'da	-	B-PER	I-ORG
+ALMANY	-	O	O
+A'da	-	B-PER	O
 yaklaşık	-	O	O
 2.5	-	O	O
 milyon	-	O	O
@@ -35275,7 +35275,7 @@ SKORU	-	O	O
 -	-	O	O
 55	-	O	O
 (	-	O	O
-Ülker	-	B-ORG	B-PER
+Ülker	-	B-ORG	B-ORG
 )	-	O	O
 
 İLK	-	O	O
@@ -35285,7 +35285,7 @@ YARI	-	O	O
 -	-	O	O
 30	-	O	O
 (	-	O	O
-Zadar	-	B-ORG	B-LOC
+Zadar	-	B-ORG	B-ORG
 )	-	O	O
 
 Bu	-	O	O
@@ -35392,7 +35392,7 @@ bulunmakta	-	O	O
 vatandaşlık	-	O	O
 konusunda	-	O	O
 ise	-	O	O
-Voigt	-	O	O
+Voigt	-	O	B-PER
 ,	-	O	O
 partisinden	-	O	O
 farklı	-	O	O
@@ -35509,7 +35509,7 @@ genelge	-	O	O
 yayınlıyor	-	O	O
 
 "	-	O	O
-Hayhay	-	O	B-PER
+Hayhay	-	O	O
 ,	-	O	O
 istediğiniz	-	O	O
 desteği	-	O	O
@@ -35673,8 +35673,8 @@ aracılık	-	O	O
 eden	-	O	O
 kişinin	-	O	O
 ismi	-	O	O
-Vecdet	-	B-PER	O
-Öz	-	I-PER	O
+Vecdet	-	B-PER	B-PER
+Öz	-	I-PER	I-PER
 
 YENİ	-	O	O
 bir	-	O	O
@@ -35726,8 +35726,8 @@ iki	-	O	O
 köyünde	-	O	O
 yüzlerce	-	O	O
 dönüm	-	O	O
-narenciye	-	O	B-ORG
-bahçesi	-	O	I-ORG
+narenciye	-	O	O
+bahçesi	-	O	O
 katledildi	-	O	O
 
 Benim	-	O	O
@@ -35820,7 +35820,7 @@ hayran	-	O	O
 kalırdı	-	O	O
 .	-	O	O
 
-Tavan	-	O	B-PER
+Tavan	-	O	O
 ,	-	O	O
 gene	-	O	O
 koyu	-	O	O
@@ -35874,7 +35874,7 @@ olur	-	O	O
 musunuz	-	O	O
 .	-	O	O
 
-Oscar	-	O	B-PER
+Oscar	-	O	O
 ödülü	-	O	O
 ,	-	O	O
 edebiyat	-	O	O
@@ -35920,7 +35920,7 @@ mesajını	-	O	O
 gönderdi	-	O	O
 
 Kemalettin	-	B-PER	B-PER
-asli	-	O	I-PER
+asli	-	O	O
 görevini	-	O	O
 unutmuş	-	O	O
 ,	-	O	O
@@ -36137,7 +36137,7 @@ konuşuyorduk	-	O	O
 
 Hatta	-	O	O
 Hüsamettin	-	B-PER	B-PER
-Ağabey'le	-	O	I-PER
+Ağabey'le	-	O	O
 konuşuyor	-	O	O
 Mehmet	-	B-PER	B-PER
 Ali	-	I-PER	I-PER
@@ -36153,11 +36153,11 @@ ha	-	O	O
 gayret	-	O	O
 .	-	O	O
 
-Toptan	-	B-PER	O
+Toptan	-	B-PER	B-PER
 :	-	O	O
 -	-	O	O
-Siyaset	-	O	B-ORG
-kurumu	-	O	I-ORG
+Siyaset	-	O	O
+kurumu	-	O	O
 su	-	O	O
 alıyor	-	O	O
 .	-	O	O
@@ -36283,7 +36283,7 @@ Bu	-	O	O
 takdirde	-	O	O
 yeni	-	O	O
 Belediye	-	B-ORG	O
-Meclisi	-	I-ORG	O
+Meclisi	-	I-ORG	B-ORG
 seçimine	-	O	O
 gidilir	-	O	O
 .	-	O	O
@@ -36307,7 +36307,7 @@ mümkün	-	O	O
 değil	-	O	O
 
 Bugün	-	O	O
-Romer	-	O	O
+Romer	-	O	B-PER
 ,	-	O	O
 bu	-	O	O
 üç	-	O	O
@@ -36612,7 +36612,7 @@ yine	-	O	O
 ona	-	O	O
 çevrildi	-	O	O
 
-Güler	-	B-PER	B-PER
+Güler	-	B-PER	O
 ,	-	O	O
 dört	-	O	O
 kişilik	-	O	O
@@ -36667,7 +36667,7 @@ yansıtamadık	-	O	O
 .	-	O	O
 
 Sonuçta	-	O	O
-gülen	-	O	B-PER
+gülen	-	O	O
 daha	-	O	O
 iyi	-	O	O
 oynayan	-	O	O
@@ -36724,7 +36724,7 @@ Adil	-	B-PER	O
 konusunda	-	O	O
 ,	-	O	O
 ben	-	O	O
-Adil'i	-	B-PER	B-PER
+Adil'i	-	B-PER	O
 sıkıştırıyorum	-	O	O
 ya	-	O	O
 aylardır	-	O	O
@@ -36748,8 +36748,8 @@ var	-	O	O
 .	-	O	O
 
 Geçenlerde	-	O	O
-Şanlı	-	O	O
-Urfa'da	-	B-LOC	B-LOC
+Şanlı	-	O	B-LOC
+Urfa'da	-	B-LOC	I-LOC
 da	-	O	O
 aynı	-	O	O
 benzetmeyi	-	O	O
@@ -36762,7 +36762,7 @@ KARS	-	I-PER	I-PER
 Işıl	-	B-PER	B-PER
 ARSLAN	-	I-PER	I-PER
 -	-	O	O
-BURS	-	O	B-PER
+BURS	-	O	O
 A	-	B-PER	O
 
 Zayıflayayım	-	O	O
@@ -36922,9 +36922,9 @@ Adanaspor	-	B-ORG	B-ORG
 ve	-	O	O
 İstanbulspor	-	B-ORG	B-ORG
 ,	-	O	O
-İnterstar'ın	-	B-ORG	B-ORG
+İnterstar'ın	-	B-ORG	O
 sahibi	-	O	O
-Uzanlar'ın	-	O	B-PER
+Uzanlar'ın	-	O	O
 elinde	-	O	O
 
 Polis	-	O	O
@@ -37090,7 +37090,7 @@ işine	-	O	O
 yarıyor	-	O	O
 
 -	-	O	O
-ÜLKÜ	-	B-PER	B-PER
+ÜLKÜ	-	B-PER	O
 Bey	-	O	O
 biz	-	O	O
 yine	-	O	O
@@ -37222,7 +37222,7 @@ biliyor	-	O	O
 dedi	-	O	O
 
 Yani	-	O	O
-Aktuna	-	O	O
+Aktuna	-	O	B-ORG
 bankaya	-	O	O
 bile	-	O	O
 uğramadan	-	O	O
@@ -37327,8 +37327,8 @@ sahneye	-	O	O
 
 Bağımsız	-	O	O
 bir	-	O	O
-Kürdistan	-	B-LOC	O
-ABD'nin	-	I-LOC	B-LOC
+Kürdistan	-	B-LOC	B-LOC
+ABD'nin	-	I-LOC	I-LOC
 gündeminde	-	O	O
 yoktur	-	O	O
 .	-	O	O
@@ -37354,7 +37354,7 @@ geceye	-	O	O
 kadar	-	O	O
 ağır	-	O	O
 bedeller	-	O	O
-ödense	-	O	B-LOC
+ödense	-	O	O
 de	-	O	O
 
 Silik	-	O	O
@@ -37366,8 +37366,8 @@ bir	-	O	O
 Trabzonspor	-	B-ORG	B-ORG
 
 Trabzonspor	-	B-ORG	B-ORG
-diriliş	-	O	I-ORG
-müjdesi	-	O	I-ORG
+diriliş	-	O	O
+müjdesi	-	O	O
 verir	-	O	O
 gibiydi	-	O	O
 bu	-	O	O
@@ -37525,8 +37525,8 @@ kesen	-	O	O
 operasyonlar	-	O	O
 dizisi	-	O	O
 
-Musluk	-	O	B-PER
-kesildikçe	-	O	I-PER
+Musluk	-	O	O
+kesildikçe	-	O	O
 ,'	-	O	O
 siyasette	-	O	O
 kelle	-	O	O
@@ -37713,7 +37713,7 @@ yönetemiyor'da	-	O	O
 tek	-	O	O
 seçenek	-	O	O
 Açık	-	B-ORG	O
-Lise'ydi	-	I-ORG	B-PER
+Lise'ydi	-	I-ORG	O
 ona	-	O	O
 kaydoldu	-	O	O
 
@@ -37773,8 +37773,8 @@ doyuma	-	O	O
 ulaştırır	-	O	O
 .	-	O	O
 
-Aklıma	-	O	B-PER
-Mitterrand'ın	-	B-PER	I-PER
+Aklıma	-	O	O
+Mitterrand'ın	-	B-PER	B-PER
 cenaze	-	O	O
 törenindeki	-	O	O
 görüntü	-	O	O
@@ -37832,7 +37832,7 @@ artırmadı	-	O	O
 Gözaltına	-	O	O
 alınan	-	O	O
 Gülşah	-	B-PER	B-PER
-İrk	-	I-PER	I-PER
+İrk	-	I-PER	O
 ise	-	O	O
 serbest	-	O	O
 kaldı	-	O	O
@@ -38143,8 +38143,8 @@ oluşturacak	-	O	O
 
 Yılmaz'ın	-	B-PER	B-PER
 ,	-	O	O
-derhal	-	O	B-PER
-Başbakanlık'tan	-	B-ORG	I-PER
+derhal	-	O	O
+Başbakanlık'tan	-	B-ORG	B-ORG
 çekilmesi	-	O	O
 gerekir	-	O	O
 .	-	O	O
@@ -38379,7 +38379,7 @@ olaylar	-	O	O
 da	-	O	O
 yaşandı	-	O	O
 
-Güzel	-	B-PER	O
+Güzel	-	B-PER	B-PER
 oyununu	-	O	O
 bir	-	O	O
 de	-	O	O
@@ -38492,7 +38492,7 @@ ikramıydı	-	O	O
 diyelim	-	O	O
 
 Erkan	-	B-PER	B-PER
-tedirgin	-	O	I-PER
+tedirgin	-	O	O
 ,	-	O	O
 sürekli	-	O	O
 yerini	-	O	O
@@ -39139,8 +39139,8 @@ Kimse	-	O	O
 ,	-	O	O
 halk	-	O	O
 adına	-	O	O
-ahkam	-	O	B-PER
-gütmez	-	O	I-PER
+ahkam	-	O	O
+gütmez	-	O	O
 
 Siyasetçiler	-	O	O
 ,	-	O	O
@@ -39244,7 +39244,7 @@ Pınar	-	B-PER	B-PER
 AKTAŞ	-	I-PER	I-PER
 ,	-	O	O
 Dursun	-	B-PER	B-PER
-ÖZDEN	-	I-PER	I-PER
+ÖZDEN	-	I-PER	O
 İSTANBUL	-	B-LOC	B-LOC
 
 Devletim	-	O	O
@@ -39276,8 +39276,8 @@ hakkını	-	O	O
 ilgilendirmektedir	-	O	O
 
 (	-	O	O
-Kazancı	-	B-ORG	O
-Yayınları	-	I-ORG	O
+Kazancı	-	B-ORG	B-ORG
+Yayınları	-	I-ORG	I-ORG
 -	-	O	O
 1992	-	O	O
 )	-	O	O
@@ -39563,8 +39563,8 @@ hayati	-	O	O
 önceliklerimizden	-	O	O
 biridir	-	O	O
 
-Kutlu	-	O	B-PER
-doğumlar	-	O	I-PER
+Kutlu	-	O	O
+doğumlar	-	O	O
 sancılı	-	O	O
 olur	-	O	O
 .	-	O	O
@@ -39738,9 +39738,9 @@ Biret	-	I-PER	I-PER
 için	-	O	O
 
 Akbank	-	B-ORG	B-ORG
-Aya	-	B-LOC	I-ORG
-İrini	-	I-LOC	B-PER
-Bach	-	B-PER	I-PER
+Aya	-	B-LOC	B-LOC
+İrini	-	I-LOC	I-LOC
+Bach	-	B-PER	B-PER
 GÜnleri	-	O	O
 
 Diğer	-	O	O
@@ -39827,7 +39827,7 @@ el	-	O	O
 koyması	-	O	O
 .	-	O	O
 
-Parlamento	-	B-ORG	O
+Parlamento	-	B-ORG	B-ORG
 üzerine	-	O	O
 düşeni	-	O	O
 yapacaktır	-	O	O
@@ -40134,7 +40134,7 @@ ANKAR	-	O	B-PER
 A	-	B-PER	O
 
 Bursa'da	-	B-LOC	B-LOC
-Avrupa	-	I-LOC	B-LOC
+Avrupa	-	I-LOC	I-LOC
 şehri	-	O	O
 oldu	-	O	O
 .	-	O	O
@@ -40253,7 +40253,7 @@ bir	-	O	O
 şifre	-	O	O
 veriliyor	-	O	O
 
-Tahminen	-	O	B-PER
+Tahminen	-	O	O
 senin	-	O	O
 gibi	-	O	O
 bir	-	O	O
@@ -40322,8 +40322,8 @@ olacak	-	O	O
 Çeteler	-	O	O
 ise	-	O	O
 dışarda	-	O	O
-cirit	-	O	B-PER
-atacak	-	O	I-PER
+cirit	-	O	O
+atacak	-	O	O
 
 RECEP	-	B-PER	B-PER
 Tayyip	-	I-PER	I-PER
@@ -40384,7 +40384,7 @@ göstergeler	-	O	O
 Kohl'ün	-	B-PER	B-PER
 aleyhinde	-	O	O
 
-Asli	-	O	O
+Asli	-	O	B-PER
 fail	-	O	O
 Yılmaz'dır	-	B-PER	B-PER
 .	-	O	O
@@ -40931,8 +40931,8 @@ egzersizler	-	O	O
 
 2	-	O	O
 -	-	O	O
-Naylon	-	O	B-PER
-eşofman	-	O	I-PER
+Naylon	-	O	O
+eşofman	-	O	O
 
 Mehmet	-	B-PER	B-PER
 AKTAN	-	I-PER	I-PER
@@ -41039,8 +41039,8 @@ suçüstü	-	O	O
 yakalanmıştır	-	O	O
 .	-	O	O
 
-Aşık	-	B-PER	B-ORG
-bakanlığı	-	O	I-ORG
+Aşık	-	B-PER	B-PER
+bakanlığı	-	O	O
 terkedecek	-	O	O
 .	-	O	O
 
@@ -41247,7 +41247,7 @@ mi	-	O	O
 olurdu	-	O	O
 
 YA	-	O	O
-Rüştü	-	B-PER	O
+Rüştü	-	B-PER	B-PER
 olmasaydı	-	O	O
 
 Oturup	-	O	O
@@ -41364,7 +41364,7 @@ kullanıyorlar	-	O	O
 
 Altan	-	B-PER	B-PER
 ÖYMEN	-	I-PER	I-PER
-Mainz	-	B-LOC	I-PER
+Mainz	-	B-LOC	B-LOC
 
 Yoksa	-	O	O
 kiracıyı	-	O	O
@@ -41383,7 +41383,7 @@ yaşındaki	-	O	O
 Moskovalı	-	O	B-LOC
 
 Norveçli	-	O	O
-turist	-	O	B-PER
+turist	-	O	O
 ,	-	O	O
 
 Şiir	-	O	O
@@ -41534,8 +41534,8 @@ Bizi	-	O	O
 avutacaklar	-	O	O
 .	-	O	O
 
-Mine	-	B-PER	O
-G.	-	I-PER	O
+Mine	-	B-PER	B-PER
+G.	-	I-PER	I-PER
 KIRIKKANAT	-	I-PER	O
 
 "	-	O	O
@@ -41648,7 +41648,7 @@ Pozisyon	-	O	O
 bulamadı	-	O	O
 
 Susiç	-	O	B-PER
-kutladı	-	O	I-PER
+kutladı	-	O	O
 
 Muhteşemdik	-	O	O
 .	-	O	O

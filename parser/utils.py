@@ -53,7 +53,6 @@ def conll_writer(file_name, content, field_names, task_name,verbose=False):
         out.write("{}\n".format("\t".join([k for k in task_dict])))
     init = ["-" for i in range(len(task_dict))]
     for sent in content:
-        logging.info(sent)
         for id,tok in enumerate(sent):
             for i,f in enumerate(field_names):
                 init[task_dict[f]] = tok[i]

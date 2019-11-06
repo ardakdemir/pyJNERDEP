@@ -10,6 +10,7 @@ import torchvision
 from torch.utils.data import Dataset, DataLoader
 from torchvision import datasets, models, transforms
 import matplotlib.pyplot as plt
+from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 import time
 import os
 import copy
@@ -35,21 +36,27 @@ class BertNER(nn.Module):
         self.bert_model = BertModel.from_pretrained('bert-base-uncased',output_hidden_states=True)
         self.w_dim = self.bert_model.encoder.layer[11].output.dense.out_features
         self.vocab_size = vocab_size
+        self.cap_types = 4
+        self.cap_dim = 10
+        self.dropout = 0.5
+        self.lstm_input_size = self.w_dim + self.cap_dim
+        self.cap_embeds  = nn.Embedding(self.cap_types,self.cap_dim)
         self.word_embeds = nn.Embedding(self.vocab_size, self.w_dim)
-        self.bilstm  = nn.LSTM(self.w_dim,lstm_hidden, bidirectional=True, num_layers=1, batch_first=True)
+        self.bilstm  = nn.LSTM(self.lstm_input_size, lstm_hidden, bidirectional=True, num_layers=1, batch_first=True)
+        
         self.fc = nn.Linear(lstm_hidden*2, self.num_cat)
         self.crf = CRF(lstm_hidden*2, self.num_cat,self.device)
         assert self.START_TAG in l2ind, "Add the start and end  tags!!"
         self.crf_loss = CRFLoss(l2ind,device =self.device)
         self.transitions = nn.Parameter(torch.randn(self.num_cat, self.num_cat,dtype=torch.float,device=device))
+        self.dropout = nn.Dropout(self.dropout)
+        self.drop_replacement = nn.Parameter(torch.randn(self.lstm_input_size) / np.sqrt(self.lstm_input_size))
         #self.crf.transition[self.l2ind[self.START_TAG],:] = torch.tensor([-10000]).expand(1,self.num_cat)
         #self.crf.transition[:,self.l2ind[self.END_TAG]] = torch.tensor([-10000]).expand(1,self.num_cat)
     
     def _viterbi_decode3(self,feats,sent_len):
-        logging.info("Decodera gelen uzunluk : {}".format(feats.shape))
         start_ind = self.l2ind[self.START_TAG]
         end_ind = self.l2ind[self.END_TAG]
-        logging.info("End ind ve start ind neddir burada : {} {}".format(end_ind,start_ind))
         #feats = feats[:,end_ind+1:,end_ind+1:]
         parents = [[start_ind for x in range(feats.size()[1])]]
         layer_scores = feats[0,:,start_ind] 
@@ -63,13 +70,11 @@ class BertNER(nn.Module):
         path = [end_ind]
         path_score = layer_scores[end_ind]
         parent = path[0]
-        logging.info("SON TAG TAHMININIZ NEDIR : {}".format(layer_scores))
         #parents.reverse()
         for p in range(len(parents)-1,0,-1):
             path.append(parents[p][parent].item())
             parent = parents[p][parent]
         path.reverse()
-        logging.info("Decoderdan cikan uzunluk : {}".format(len(path)))
         return path, path_score.item()
     
     
@@ -219,11 +224,15 @@ class BertNER(nn.Module):
             batch_my_hiddens.append(torch.cat(my_hiddens))
         return torch.stack(batch_my_hiddens)
 
-    def _get_feats(self,batch_bert_ids, batch_seq_ids, bert2toks):
+    def _get_feats(self,batch_bert_ids, batch_seq_ids, bert2toks, cap_inds, sent_lens):
         bert_out = self.bert_model(batch_bert_ids,batch_seq_ids)
-        bert_hiddens = self._get_bert_batch_hidden(bert_out[2],bert2toks)
-        lstm_out,_ = self.bilstm(bert_hiddens)
-        return lstm_out
+        bert_hiddens = self.dropout(self._get_bert_batch_hidden(bert_out[2],bert2toks))
+        cap_embedding = self.cap_embeds(cap_inds)
+        concat = self.dropout(torch.cat((bert_hiddens,cap_embedding),dim=2))
+        padded = pack_padded_sequence(concat,sent_lens,batch_first=True)
+        lstm_out,_ = self.bilstm(padded)
+        unpacked , _ = pad_packed_sequence(lstm_out, batch_first=True)
+        return self.dropout(unpacked)
 
 
     def _crf_neg_loss(self,sent,true_tags):

@@ -16,6 +16,16 @@ START_IND = 1
 END_IND = 2
 
 
+def get_orthographic_feat(token):
+    if token==START_TAG or token==END_TAG or token==PAD:
+        return 3
+    if token.isupper():
+        return 2
+    if token.istitle():
+        return 1 
+    if token.islower():
+        return 0
+    return 0
 
 def pad_trunc(sent,max_len, pad_len, pad_ind):
     if len(sent)>max_len:
@@ -188,6 +198,8 @@ torch.tensor([seq_ids],dtype=torch.long), torch.tensor(bert2tok), lab])
             else:
                 return 0
         return 0
+    def __len__(self):
+        return len(self.batched_dataset)
     def __getitem__(self,idx):
         """
             Indexing for the DepDataset
@@ -215,8 +227,10 @@ torch.tensor([seq_ids],dtype=torch.long), torch.tensor(bert2tok), lab])
         bert_lens = []
         max_bert_len = 0
         bert2toks = []
+        cap_types = []
         for sent, l in zip(batch,lens):
             my_tokens = [x[0] for x in sent]
+            cap_types.append(torch.tensor([get_orthographic_feat(x[0]) for x in sent]))
             sentence = " ".join(my_tokens)
             bert_tokens = self.bert_tokenizer.tokenize(sentence)
             bert_lens.append(len(bert_tokens))
@@ -235,7 +249,7 @@ torch.tensor([seq_ids],dtype=torch.long), torch.tensor(bert2tok), lab])
             sent in bert_batch_after_padding])
         bert_seq_ids = torch.LongTensor([[1 for i in range(len(bert_batch_after_padding[0]))]\
             for j in range(len(bert_batch_after_padding))])
-        data = torch.tensor(lens), tok_inds, ner_inds, bert_batch_ids,  bert_seq_ids, torch.tensor(bert2tokens_padded,dtype=torch.long) 
+        data = torch.tensor(lens), tok_inds, ner_inds, bert_batch_ids,  bert_seq_ids, torch.tensor(bert2tokens_padded,dtype=torch.long) , torch.stack(cap_types)
         return tokens, bert_batch_after_padding, data 
 if __name__ == "__main__":
     data_path = '../datasets/turkish-ner-train.tsv'
