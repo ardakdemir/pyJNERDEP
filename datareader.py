@@ -42,7 +42,7 @@ def pad_trunc(sent,max_len, pad_len, pad_ind):
 
 class DataReader():
 
-    def __init__(self,file_path, task_name, batch_size = 300):
+    def __init__(self,file_path, task_name, batch_size = 3000):
         self.file_path = file_path
         self.task_name = task_name
         self.batch_size = batch_size

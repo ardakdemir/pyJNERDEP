@@ -22,7 +22,7 @@ from pytorch_transformers import *
 from parser.parsereader import *
 from parser.parser import *
 
-from utils import score, conll_writer
+from utils import score, conll_writer, unsort_dataset, sort_dataset
 import sys
 import logging
 import time

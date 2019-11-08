@@ -25,31 +25,35 @@ from datareader import DataReader, START_TAG, END_TAG, PAD_IND, START_IND, END_I
 
 
 class BertNER(nn.Module):
-    def __init__(self,l2ind,vocab_size, lstm_hidden=100,channel_size=400,num_cat=5, device='cpu'):
+    def __init__(self,args,l2ind, lstm_hidden=100,channel_size=400,num_cat=5, device='cpu'):
         super(BertNER,self).__init__()
+        self.args = args
+        self.args['ner_cats'] = num_cat
         self.num_cat = num_cat
         self.l2ind = l2ind
+        print(l2ind)
+        print(num_cat)
         self.START_TAG = "[SOS]"
         self.END_TAG = "[EOS]"
         self.device = device
         self.bert_tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
         self.bert_model = BertModel.from_pretrained('bert-base-uncased',output_hidden_states=True)
         self.w_dim = self.bert_model.encoder.layer[11].output.dense.out_features
-        self.vocab_size = vocab_size
+        #self.vocab_size = vocab_size
         self.cap_types = 4
         self.cap_dim = 10
-        self.dropout = 0.5
+        self.drop_prob = 0.5
         self.lstm_input_size = self.w_dim + self.cap_dim
         self.cap_embeds  = nn.Embedding(self.cap_types,self.cap_dim)
-        self.word_embeds = nn.Embedding(self.vocab_size, self.w_dim)
+        #self.word_embeds = nn.Embedding(self.vocab_size, self.w_dim)
         self.bilstm  = nn.LSTM(self.lstm_input_size, lstm_hidden, bidirectional=True, num_layers=1, batch_first=True)
         
         self.fc = nn.Linear(lstm_hidden*2, self.num_cat)
         self.crf = CRF(lstm_hidden*2, self.num_cat,self.device)
         assert self.START_TAG in l2ind, "Add the start and end  tags!!"
-        self.crf_loss = CRFLoss(l2ind,device =self.device)
+        self.crf_loss = CRFLoss(self.args,device =self.device)
         self.transitions = nn.Parameter(torch.randn(self.num_cat, self.num_cat,dtype=torch.float,device=device))
-        self.dropout = nn.Dropout(self.dropout)
+        self.dropout = nn.Dropout(self.drop_prob)
         self.drop_replacement = nn.Parameter(torch.randn(self.lstm_input_size) / np.sqrt(self.lstm_input_size))
         #self.crf.transition[self.l2ind[self.START_TAG],:] = torch.tensor([-10000]).expand(1,self.num_cat)
         #self.crf.transition[:,self.l2ind[self.END_TAG]] = torch.tensor([-10000]).expand(1,self.num_cat)

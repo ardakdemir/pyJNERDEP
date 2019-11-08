@@ -49,10 +49,13 @@ class CRF(nn.Module):
 
 
 class CRFLoss(nn.Module):
-    def __init__(self,tag_set,START_TAG = "[SOS]", END_TAG   = "[EOS]",device='cpu'):
+    def __init__(self,args,START_TAG = "[SOS]", END_TAG   = "[EOS]",device='cpu'):
         super(CRFLoss, self).__init__()
         self.device = device
-        self.tag2ind = tag_set
+        self.tagset_size = args['ner_cats']
+        print("end index : {}".format(END_IND))
+        print("start index : {}".format(START_IND))
+        print("Tag set size : {}".format(self.tagset_size))
         self.START_TAG = START_TAG
         self.END_TAG = END_TAG
     def _log_sum_exp(self,tensor, dim):
@@ -88,8 +91,8 @@ class CRFLoss(nn.Module):
         
         
         ## forward score : initialize from start tag
-        forward_scores = torch.zeros(batch_size, len(self.tag2ind)).to(self.device)
-        forward_scores[:batch_size] = scores[:,0,:,self.tag2ind[self.START_TAG]]
+        forward_scores = torch.zeros(batch_size,self.tagset_size).to(self.device)
+        forward_scores[:batch_size] = scores[:,0,:,START_IND]
         
         ## burada  hangisi  dogru emin   degilim index1-> index2 or  opposite?
         ## i think  opposite  is correct
@@ -103,7 +106,7 @@ class CRFLoss(nn.Module):
             forward_scores[:batch_size_t] =\
                 self._log_sum_exp(scores[:batch_size_t,i,:,:]\
                     +forward_scores[:batch_size_t].unsqueeze(1),dim=2)
-        all_scores = forward_scores[:,self.tag2ind[self.END_TAG]].sum()
+        all_scores = forward_scores[:,END_IND].sum()
         loss = all_scores - gold_score
         #loss = loss/batch_size
         

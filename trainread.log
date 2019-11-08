@@ -36,1008 +36,436 @@ DEBUG - Starting new HTTPS connection (1): s3.amazonaws.com:443
 DEBUG - https://s3.amazonaws.com:443 "HEAD /models.huggingface.co/bert/bert-base-uncased-pytorch_model.bin HTTP/1.1" 200 0
 INFO - loading weights file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-pytorch_model.bin from cache at /home/aakdemir/.cache/torch/pytorch_transformers/aa1ef1aede4482d0dbcd4d52baad8ae300e60902e88fcb0bebdec09afd232066.36ca03ab34a1a5d5fa7bc3d03d55c4fa650fed07220e2eeebc06ce58d0e9a157
 INFO - GPU : 1
+INFO - Model loaded ../best_model_batch300_test.pth
 INFO - Best epoch -1 with f1 0
-INFO - torch.Size([2])
-INFO - torch.Size([2, 153, 400])
-INFO - torch.Size([2])
-INFO - torch.Size([2, 109, 400])
-INFO - torch.Size([3])
-INFO - torch.Size([3, 98, 400])
-INFO - torch.Size([3])
-INFO - torch.Size([3, 83, 400])
-INFO - torch.Size([3])
-INFO - torch.Size([3, 81, 400])
-INFO - torch.Size([3])
-INFO - torch.Size([3, 79, 400])
-INFO - torch.Size([4])
-INFO - torch.Size([4, 77, 400])
-INFO - torch.Size([4])
-INFO - torch.Size([4, 72, 400])
-INFO - torch.Size([4])
-INFO - torch.Size([4, 69, 400])
-INFO - torch.Size([4])
-INFO - torch.Size([4, 65, 400])
-INFO - torch.Size([4])
-INFO - torch.Size([4, 64, 400])
-INFO - torch.Size([5])
-INFO - torch.Size([5, 61, 400])
-INFO - torch.Size([5])
-INFO - torch.Size([5, 59, 400])
-INFO - torch.Size([5])
-INFO - torch.Size([5, 58, 400])
-INFO - torch.Size([5])
-INFO - torch.Size([5, 57, 400])
-INFO - torch.Size([5])
-INFO - torch.Size([5, 56, 400])
-INFO - torch.Size([5])
-INFO - torch.Size([5, 55, 400])
-INFO - torch.Size([5])
-INFO - torch.Size([5, 54, 400])
-INFO - torch.Size([5])
-INFO - torch.Size([5, 53, 400])
-INFO - torch.Size([5])
-INFO - torch.Size([5, 53, 400])
-INFO - torch.Size([5])
-INFO - torch.Size([5, 52, 400])
-INFO - torch.Size([5])
-INFO - torch.Size([5, 52, 400])
-INFO - torch.Size([5])
-INFO - torch.Size([5, 52, 400])
-INFO - torch.Size([5])
-INFO - torch.Size([5, 51, 400])
-INFO - torch.Size([5])
-INFO - torch.Size([5, 51, 400])
-INFO - torch.Size([5])
-INFO - torch.Size([5, 51, 400])
-INFO - torch.Size([6])
-INFO - torch.Size([6, 50, 400])
-INFO - torch.Size([6])
-INFO - torch.Size([6, 50, 400])
-INFO - torch.Size([6])
-INFO - torch.Size([6, 49, 400])
-INFO - torch.Size([6])
-INFO - torch.Size([6, 49, 400])
-INFO - torch.Size([6])
-INFO - torch.Size([6, 48, 400])
-INFO - torch.Size([6])
-INFO - torch.Size([6, 48, 400])
-INFO - torch.Size([6])
-INFO - torch.Size([6, 48, 400])
-INFO - torch.Size([6])
-INFO - torch.Size([6, 47, 400])
-INFO - torch.Size([6])
-INFO - torch.Size([6, 47, 400])
-INFO - torch.Size([6])
-INFO - torch.Size([6, 46, 400])
-INFO - torch.Size([6])
-INFO - torch.Size([6, 46, 400])
-INFO - torch.Size([6])
-INFO - torch.Size([6, 46, 400])
-INFO - torch.Size([6])
-INFO - torch.Size([6, 45, 400])
-INFO - torch.Size([6])
-INFO - torch.Size([6, 45, 400])
-INFO - torch.Size([6])
-INFO - torch.Size([6, 45, 400])
-INFO - torch.Size([6])
-INFO - torch.Size([6, 45, 400])
-INFO - torch.Size([6])
-INFO - torch.Size([6, 45, 400])
-INFO - torch.Size([6])
-INFO - torch.Size([6, 44, 400])
-INFO - torch.Size([6])
-INFO - torch.Size([6, 44, 400])
-INFO - torch.Size([6])
-INFO - torch.Size([6, 44, 400])
-INFO - torch.Size([6])
-INFO - torch.Size([6, 44, 400])
-INFO - torch.Size([6])
-INFO - torch.Size([6, 44, 400])
-INFO - torch.Size([6])
-INFO - torch.Size([6, 44, 400])
-INFO - torch.Size([6])
-INFO - torch.Size([6, 43, 400])
-INFO - torch.Size([6])
-INFO - torch.Size([6, 43, 400])
-INFO - torch.Size([6])
-INFO - torch.Size([6, 43, 400])
-INFO - torch.Size([6])
-INFO - torch.Size([6, 43, 400])
-INFO - torch.Size([6])
-INFO - torch.Size([6, 43, 400])
-INFO - torch.Size([7])
-INFO - torch.Size([7, 43, 400])
-INFO - torch.Size([7])
-INFO - torch.Size([7, 42, 400])
-INFO - torch.Size([7])
-INFO - torch.Size([7, 42, 400])
-INFO - torch.Size([7])
-INFO - torch.Size([7, 42, 400])
-INFO - torch.Size([7])
-INFO - torch.Size([7, 42, 400])
-INFO - torch.Size([7])
-INFO - torch.Size([7, 42, 400])
-INFO - torch.Size([7])
-INFO - torch.Size([7, 41, 400])
-INFO - torch.Size([7])
-INFO - torch.Size([7, 41, 400])
-INFO - torch.Size([7])
-INFO - torch.Size([7, 41, 400])
-INFO - torch.Size([7])
-INFO - torch.Size([7, 41, 400])
-INFO - torch.Size([7])
-INFO - torch.Size([7, 41, 400])
-INFO - torch.Size([7])
-INFO - torch.Size([7, 40, 400])
-INFO - torch.Size([7])
-INFO - torch.Size([7, 40, 400])
-INFO - torch.Size([7])
-INFO - torch.Size([7, 40, 400])
-INFO - torch.Size([7])
-INFO - torch.Size([7, 40, 400])
-INFO - torch.Size([7])
-INFO - torch.Size([7, 40, 400])
-INFO - torch.Size([7])
-INFO - torch.Size([7, 40, 400])
-INFO - torch.Size([7])
-INFO - torch.Size([7, 40, 400])
-INFO - torch.Size([7])
-INFO - torch.Size([7, 39, 400])
-INFO - torch.Size([7])
-INFO - torch.Size([7, 39, 400])
-INFO - torch.Size([7])
-INFO - torch.Size([7, 39, 400])
-INFO - torch.Size([7])
-INFO - torch.Size([7, 39, 400])
-INFO - torch.Size([7])
-INFO - torch.Size([7, 39, 400])
-INFO - torch.Size([7])
-INFO - torch.Size([7, 39, 400])
-INFO - torch.Size([7])
-INFO - torch.Size([7, 39, 400])
-INFO - torch.Size([7])
-INFO - torch.Size([7, 39, 400])
-INFO - torch.Size([7])
-INFO - torch.Size([7, 39, 400])
-INFO - torch.Size([7])
-INFO - torch.Size([7, 38, 400])
-INFO - torch.Size([7])
-INFO - torch.Size([7, 38, 400])
-INFO - torch.Size([7])
-INFO - torch.Size([7, 38, 400])
-INFO - torch.Size([7])
-INFO - torch.Size([7, 38, 400])
-INFO - torch.Size([7])
-INFO - torch.Size([7, 38, 400])
-INFO - torch.Size([7])
-INFO - torch.Size([7, 38, 400])
-INFO - torch.Size([7])
-INFO - torch.Size([7, 38, 400])
-INFO - torch.Size([7])
-INFO - torch.Size([7, 38, 400])
-INFO - torch.Size([7])
-INFO - torch.Size([7, 38, 400])
-INFO - torch.Size([7])
-INFO - torch.Size([7, 38, 400])
-INFO - torch.Size([7])
-INFO - torch.Size([7, 38, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 38, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 37, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 37, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 37, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 37, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 37, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 37, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 37, 400])
-INFO - Average loss after 99 examples:  292.9558703489978
-INFO - torch.Size([8])
-INFO - torch.Size([8, 37, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 37, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 37, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 37, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 36, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 36, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 36, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 36, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 36, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 36, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 36, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 36, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 36, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 36, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 36, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 36, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 35, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 35, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 35, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 35, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 35, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 35, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 35, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 35, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 35, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 35, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 34, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 34, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 34, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 34, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 34, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 34, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 34, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 34, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 34, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 34, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 34, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 34, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 34, 400])
-INFO - torch.Size([8])
-INFO - torch.Size([8, 34, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 33, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 33, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 33, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 33, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 33, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 33, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 33, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 33, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 33, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 33, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 33, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 33, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 33, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 32, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 32, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 32, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 32, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 32, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 32, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 32, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 32, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 32, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 32, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 32, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 32, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 32, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 32, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 32, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 32, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 32, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 31, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 31, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 31, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 31, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 31, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 31, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 31, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 31, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 31, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 31, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 31, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 31, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 31, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 31, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 31, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 31, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 31, 400])
-INFO - torch.Size([9])
-INFO - torch.Size([9, 31, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 30, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 30, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 30, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 30, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 30, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 30, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 30, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 30, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 30, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 30, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 30, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 30, 400])
-INFO - Average loss after 199 examples:  201.88283826358355
-INFO - torch.Size([10])
-INFO - torch.Size([10, 30, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 30, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 30, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 30, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 30, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 30, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 29, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 29, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 29, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 29, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 29, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 29, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 29, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 29, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 29, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 29, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 29, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 29, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 29, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 29, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 29, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 29, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 29, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 29, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 29, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 29, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 29, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 28, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 28, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 28, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 28, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 28, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 28, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 28, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 28, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 28, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 28, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 28, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 28, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 28, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 28, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 28, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 28, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 28, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 28, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 28, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 28, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 28, 400])
-INFO - torch.Size([10])
-INFO - torch.Size([10, 28, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 27, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 27, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 27, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 27, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 27, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 27, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 27, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 27, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 27, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 27, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 27, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 27, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 27, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 27, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 27, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 27, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 27, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 27, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 27, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 27, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 27, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 27, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 27, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 26, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 26, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 26, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 26, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 26, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 26, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 26, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 26, 400])
-INFOINFO - Average loss after 99 examples:  0.10935527146464646
-INFO - Average loss after 199 examples:  0.17164680826005024
-INFO - Average loss after 299 examples:  0.22824127299331104
-ze([11])
-INFO - torch.Size([11, 26, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 26, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 26, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 26, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 26, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 26, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 26, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 26, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 26, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 26, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 26, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 26, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 26, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 26, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 26, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 26, 400])
-INFO - torch.Size([11])
-INFO - torch.Size([11, 26, 400])
-INFO - Average loss after 299 examples:  164.9443259350831
-INFO - torch.Size([11])
-INFO - torch.Size([11, 26, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 25, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 25, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 25, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 25, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 25, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 25, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 25, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 25, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 25, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 25, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 25, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 25, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 25, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 25, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 25, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 25, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 25, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 25, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 25, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 25, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 25, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 25, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 25, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 25, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 25, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 25, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 25, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 25, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 24, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 24, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 24, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 24, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 24, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 24, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 24, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 24, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 24, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 24, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 24, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 24, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 24, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 24, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 24, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 24, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 24, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 24, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 24, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 24, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 24, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 24, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 24, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 24, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 24, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 24, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 24, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 24, 400])
-INFO - torch.Size([12])
-INFO - torch.Size([12, 24, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 23, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 23, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 23, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 23, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 23, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 23, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 23, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 23, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 23, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 23, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 23, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 23, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 23, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 23, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 23, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 23, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 23, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 23, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 23, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 23, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 23, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 23, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 23, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 23, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 23, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 23, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 23, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 23, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 23, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 23, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 22, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 22, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 22, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 22, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 22, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 22, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 22, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 22, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 22, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 22, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 22, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 22, 400])
-INFO - Average loss after 399 examples:  142.30203973679315
-INFO - torch.Size([13])
-INFO - torch.Size([13, 22, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 22, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 22, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 22, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 22, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 22, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 22, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 22, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 22, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 22, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 22, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 22, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 22, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 22, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 22, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 22, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 22, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 22, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 22, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 22, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 22, 400])
-INFO - torch.Size([13])
-INFO - torch.Size([13, 22, 400])
-INFO - torch.Size([14])
-INFO - torch.Size([14, 22, 400])
-INFO - torch.Size([14])
-INFO - torch.Size([14, 21, 400])
-INFO - torch.Size([14])
-INFO - torch.Size([14, 21, 400])
-INFO - torch.Size([14])
-INFO - torch.Size([14, 21, 400])
-INFO - torch.Size([14])
-INFO - torch.Size([14, 21, 400])
-INFO - torch.Size([14])
-INFO - torch.Size([14, 21, 400])
-INFO - torch.Size([14])
-INFO - torch.Size([14, 21, 400])
-INFO - torch.Size([14])
-INFO - torch.Size([14, 21, 400])
-INFO - torch.Size([14])
-INFO - torch.Size([14, 21, 400])
-INFO - torch.Size([14])
-INFO - torch.Size([14, 21, 400])
-INFO - torch.Size([14])
-INFO - torch.Size([14, 21, 400])
-INFO - torch.Size([14])
-INFO - torch.Size([14, 21, 400])
-INFO - torch.Size([14])
-INFO - torch.Size([14, 21, 400])
-INFO - torch.Size([14])
-INFO - torch.Size([14, 21, 400])
-INFO - torch.Size([14])
-INFO - torch.Size([14, 21, 400])
-INFO - torch.Size([14])
-INFO - torch.Size([14, 21, 400])
-INFO - torch.Size([14])
-INFO - torch.Size([14, 21, 400])
-INFO - torch.Size([14])
-INFO - torch.Size([14, 21, 400])
-INFO - torch.Size([14])
-INFO - torch.Size([14, 21, 400])
-INFO - torch.Size([14])
-INFO - torch.Size([14, 21, 400])
-INFO - torch.Size([14])
-INFO - torch.Size([14, 21, 400])
-INFO - torch.Size([14])
-INFO - torch.Size([14, 21, 400])
-INFO - torch.Size([14])
-INFO - torch.Size([14, 21, 400])
-INFO - torch.Size([14])
-INFO - torch.Size([14, 21, 400])
-INFO - torch.Size([14])
-INFO - torch.Size([14, 21, 400])
-INFO - torch.Size([14])
-INFO - torch.Size([14, 21, 400])
-INFO - torch.Size([14])
-INFO - torch.Size([14, 21, 400])
-INFO - torch.Size([14])
-INFO - torch.Size([14, 21, 400])
-INFO - torch.Size([14])
-INFO - torch.Size([14, 21, 400])
-INFO - torch.Size([14])
-INFO - torch.Size([14, 21, 400])
-INFO - torch.Size([14])
-INFO - torch.Size([14, 21, 400])
-INFO - torch.Size([14])
-INFO - torch.Size([14, 21, 400])
-INFO - torch.Size([14])
-INFO - torch.Size([14, 21, 400])
-INFO - torch.Size([14])
-INFO - torch.Size([14, 21, 400])
-INFO - torch.Size([14])
-INFO - torch.Size([14, 21, 400])
-INFO - torch.Size([14])
-INFO - torch.Size([14, 21, 400])
-INFO - torch.Size([14])
-INFO - torch.Size([14, 21, 400])
-INFO - torch.Size([14])
-INFO - torch.Size([14, 21, 400])
-INFO - torch.Size([14])
-INFO - torch.Size([14, 21, 400])
-INFO - torch.Size([14])
-INFO - torch.Size([14, 21, 400])
-INFO - torch.Size([15])
-INFO - torch.Size([15, 20, 400])
-INFO - torch.Size([15])
-INFO - torch.Size([15, 20, 400])
-INFO - torch.Size([15])
-INFO - torch.Size([15, 20, 400])
-INFO - torch.Size([15])
-INFO - torch.Size([15, 20, 400])
-INFO - torch.Size([15])
-INFO - torch.Size([15, 20, 400])
-INFO - torch.Size([15])
-INFO - torch.Size([15, 20, 400])
-INFO - torch.Size([15])
-INFO - torch.Size([15, 20, 400])
-INFO - torch.Size([15])
-INFO - torch.Size([15, 20, 400])
-INFO - torch.Size([15])
-INFO - torch.Size([15, 20, 400])
-INFO - torch.Size([15])
-INFO - torch.Size([15, 20, 400])
-INFO - torch.Size([15])
-INFO - torch.Size([15, 20, 400])
-INFO - torch.Size([15])
-INFO - torch.Size([15, 20, 400])
-INFO - torch.Size([15])
-INFO - torch.Size([15, 20, 400])
-INFO - torch.Size([15])
-INFO - torch.Size([15, 20, 400])
-INFO - torch.Size([15])
-INFO - torch.Size([15, 20, 400])
-INFO - torch.Size([15])
-INFO - torch.Size([15, 20, 400])
-INFO - torch.Size([15])
-INFO - torch.Size([15, 20, 400])
-INFO - torch.Size([15])
-INFO - torch.Size([15, 20, 400])
-INFO - torch.Size([15])
-INFO - torch.Size([15, 20, 400])
-INFO - torch.Size([15])
-INFO - torch.Size([15, 20, 400])
-INFO - torch.Size([15])
-INFO - torch.Size([15, 20, 400])
-INFO - torch.Size([15])
-INFO - torch.Size([15, 20, 400])
-INFO - torch.Size([15])
-INFO - torch.Size([15, 20, 400])
-INFO - torch.Size([15])
-INFO - torch.Size([15, 20, 400])
-INFO - torch.Size([15])
-INFO - torch.Size([15, 20, 400])
-INFO - torch.Size([15])
-INFO - torch.Size([15, 20, 400])
-INFO - torch.Size([15])
-INFO - torch.Size([15, 20, 400])
-INFO - torch.Size([15])
-INFO - torch.Size([15, 20, 400])
-INFO - torch.Size([15])
-INFO - torch.Size([15, 20, 400])
-INFO - torch.Size([15])
-INFO - torch.Size([15, 20, 400])
-INFO - torch.Size([15])
-INFO - torch.Size([15, 20, 400])
-INFO - torch.Size([15])
-INFO - torch.Size([15, 20, 400])
-INFO - torch.Size([15])
-INFO - torch.Size([15, 20, 400])
-INFO - torch.Size([15])
-INFO - torch.Size([15, 20, 400])
-INFO - torch.Size([15])
-INFO - torch.Size([15, 20, 400])
-INFO - torch.Size([15])
-INFO - torch.Size([15, 20, 400])
-INFO - torch.Size([15])
-INFO - torch.Size([15, 20, 400])
-INFO - torch.Size([15])
-INFO - torch.Size([15, 20, 400])
-INFO - Average loss after 499 examples:  125.75454559020385
-INFO - torch.Size([15])
-INFO - torch.Size([15, 20, 400])
+INFO - Average loss after 99 examples:  0.005250806898329022
+INFO - Average loss after 199 examples:  0.004783978368592654
+INFO - Average loss after 299 examples:  0.005030273399259319
+INFO - Average loss after 399 examples:  0.004747801088139515
+INFO - Average loss after 499 examples:  0.004759066986329042
+INFO - Average loss after 599 examples:  0.0047815037263860116
+INFO - Average loss after 699 examples:  0.004872060559974958
+INFO - Average loss after 799 examples:  0.00481933993719753
+INFO - Average loss after 899 examples:  0.004625496724742833
+INFO - Average loss after 999 examples:  0.004550156727147352
+INFO - Average loss after 1099 examples:  0.00435049233743779
+INFO - Best epoch for training loss : 0 since -1
+INFO - 89.31098696461824 86.72694394213381 88.0 
+INFO - Best f1 achieved!! pre : 89.31098696461824  rec : 86.72694394213381  f1 : 88.0
+INFO - Saving best model to ../best_model_batch300_test.pth
+INFO - Best epoch 0 with f1 88.0
+INFO - Average loss after 99 examples:  0.007976579913784835
+INFO - Average loss after 199 examples:  0.0066087184393141965
+INFO - Average loss after 299 examples:  0.006189127212345918
+INFO - Average loss after 399 examples:  0.005535978942284977
+INFO - Average loss after 499 examples:  0.005275234509875834
+INFO - Average loss after 599 examples:  0.005134612214426978
+INFO - Average loss after 699 examples:  0.005180254066920904
+INFO - Average loss after 799 examples:  0.005073677044376691
+INFO - Average loss after 899 examples:  0.004900638187956531
+INFO - Average loss after 999 examples:  0.0047662512168697956
+INFO - Average loss after 1099 examples:  0.004551441233117452
+INFO - Best epoch for training loss : 1 since 0
+INFO - 88.74953891552933 87.01627486437613 87.87436084733382 
+INFO - Best epoch 1 with f1 88.0
+INFO - Average loss after 99 examples:  0.007064800976418109
+INFO - Average loss after 199 examples:  0.0066446986279904315
+INFO - Average loss after 299 examples:  0.0063913364608127335
+INFO - Average loss after 399 examples:  0.006037955777777971
+INFO - Average loss after 499 examples:  0.005707569869201563
+INFO - Average loss after 599 examples:  0.005511422881791259
+INFO - Average loss after 699 examples:  0.005288037616118005
+INFO - Average loss after 799 examples:  0.005100886875643186
+INFO - Average loss after 899 examples:  0.004888215530363302
+INFO - Average loss after 999 examples:  0.004610066198873463
+INFO - Average loss after 1099 examples:  0.004391168175475249
+INFO - Best epoch for training loss : 2 since 1
+INFO - 88.20754716981132 87.92043399638337 88.06375656583953 
+INFO - Best f1 achieved!! pre : 88.20754716981132  rec : 87.92043399638337  f1 : 88.06375656583953
+INFO - Saving best model to ../best_model_batch300_test.pth
+INFO - Best epoch 2 with f1 88.06375656583953
+INFO - Average loss after 99 examples:  0.008115296053783638
+INFO - Average loss after 199 examples:  0.005895395385526734
+INFO - Average loss after 299 examples:  0.005344096897919444
+INFO - Average loss after 399 examples:  0.004992441772236745
+INFO - Average loss after 499 examples:  0.004667292501471091
+INFO - Average loss after 599 examples:  0.004547881730535777
+INFO - Average loss after 699 examples:  0.004517054176964805
+INFO - Average loss after 799 examples:  0.0045595449591154585
+INFO - Average loss after 899 examples:  0.00442421168661407
+INFO - Average loss after 999 examples:  0.004314184227618748
+INFO - Average loss after 1099 examples:  0.004088639584565925
+INFO - Best epoch for training loss : 3 since 2
+INFO - 88.14301349872309 87.37793851717902 87.7588085724664 
+INFO - Best epoch 3 with f1 88.06375656583953
+INFO - Average loss after 99 examples:  0.005879158077107724
+INFO - Average loss after 199 examples:  0.00565343826977611
+INFO - Average loss after 299 examples:  0.006383144697929766
+INFO - Average loss after 399 examples:  0.006052988634606996
+INFO - Average loss after 499 examples:  0.005532951615046232
+INFO - Average loss after 599 examples:  0.005318658414743032
+INFO - Average loss after 699 examples:  0.005187368419666566
+INFO - Average loss after 799 examples:  0.0051251215251507665
+INFO - Average loss after 899 examples:  0.004951431754375917
+INFO - Average loss after 999 examples:  0.00476396498967776
+INFO - Average loss after 1099 examples:  0.004532594014876721
+INFO - Best epoch for training loss : 4 since 3
+INFO - 90.36053130929791 86.11211573236889 88.18518518518518 
+INFO - Best f1 achieved!! pre : 90.36053130929791  rec : 86.11211573236889  f1 : 88.18518518518518
+INFO - Saving best model to ../best_model_batch300_test.pth
+INFO - Best epoch 4 with f1 88.18518518518518
+INFO - Average loss after 99 examples:  0.005401373988886439
+INFO - Average loss after 199 examples:  0.005092395259750113
+INFO - Average loss after 299 examples:  0.005426616541915542
+INFO - Average loss after 399 examples:  0.005254363122853955
+INFO - Average loss after 499 examples:  0.004934091193076337
+INFO - Average loss after 599 examples:  0.0049575856170966486
+INFO - Average loss after 699 examples:  0.004727455113080293
+INFO - Average loss after 799 examples:  0.004686340543830351
+INFO - Average loss after 899 examples:  0.004548989686298752
+INFO - Average loss after 999 examples:  0.004392539173488978
+INFO - Average loss after 1099 examples:  0.004174760668811806
+INFO - Best epoch for training loss : 5 since 4
+INFO - 90.2731013842125 87.26943942133816 88.74586244942994 
+INFO - Best f1 achieved!! pre : 90.2731013842125  rec : 87.26943942133816  f1 : 88.74586244942994
+INFO - Saving best model to ../best_model_batch300_test.pth
+INFO - Best epoch 5 with f1 88.74586244942994
+INFO - Average loss after 99 examples:  0.005341493264146412
+INFO - Average loss after 199 examples:  0.005261156951655264
+INFO - Average loss after 299 examples:  0.005039153037550719
+INFO - Average loss after 399 examples:  0.00476079199356342
+INFO - Average loss after 499 examples:  0.00459454196282683
+INFO - Average loss after 599 examples:  0.004757641908471303
+INFO - Average loss after 699 examples:  0.004872703059987486
+INFO - Average loss after 799 examples:  0.004726360560627509
+INFO - Average loss after 899 examples:  0.004632302248332876
+INFO - Average loss after 999 examples:  0.004437971711723349
+INFO - Average loss after 1099 examples:  0.0042672708638479976
+INFO - Best epoch for training loss : 6 since 5
+INFO - 88.49104859335038 87.59493670886076 88.04071246819338 
+INFO - Best epoch 6 with f1 88.74586244942994
+INFO - Average loss after 99 examples:  0.008322836453744181
+INFO - Average loss after 199 examples:  0.0060393767558323715
+INFO - Average loss after 299 examples:  0.0057789236893114266
+INFO - Average loss after 399 examples:  0.005530497620878904
+INFO - Average loss after 499 examples:  0.005180559298961437
+INFO - Average loss after 599 examples:  0.005152187436292001
+INFO - Average loss after 699 examples:  0.004991463700043589
+INFO - Average loss after 799 examples:  0.004734157350137818
+INFO - Average loss after 899 examples:  0.00451009681592597
+INFO - Average loss after 999 examples:  0.00428941392063469
+INFO - Average loss after 1099 examples:  0.004080246858715289
+INFO - Best epoch for training loss : 7 since 6
+INFO - 88.90126206384559 86.61844484629296 87.745008243268 
+INFO - Best epoch 7 with f1 88.74586244942994
+INFO - Average loss after 99 examples:  0.005494359813070847
+INFO - Average loss after 199 examples:  0.004711194540989403
+INFO - Average loss after 299 examples:  0.005185114157099564
+INFO - Average loss after 399 examples:  0.005189940154950431
+INFO - Average loss after 499 examples:  0.0049480746420523065
+INFO - Average loss after 599 examples:  0.004709380843300755
+INFO - Average loss after 699 examples:  0.004631983071010365
+INFO - Average loss after 799 examples:  0.004469720564089955
+INFO - Average loss after 899 examples:  0.004510538401579416
+INFO - Average loss after 999 examples:  0.004492801933082518
+INFO - Average loss after 1099 examples:  0.004361647091014861
+INFO - Best epoch for training loss : 8 since 7
+INFO - 90.61317183951552 86.58227848101265 88.5518771962271 
+INFO - Best epoch 8 with f1 88.74586244942994
+INFO - Average loss after 99 examples:  0.004697971247051927
+INFO - Average loss after 199 examples:  0.004769465636406983
+INFO - Average loss after 299 examples:  0.004722504030304173
+INFO - Average loss after 399 examples:  0.004653007727111094
+INFO - Average loss after 499 examples:  0.004714455394009464
+INFO - Average loss after 599 examples:  0.004544063507746796
+INFO - Average loss after 699 examples:  0.00453151540763447
+INFO - Average loss after 799 examples:  0.004420983107626212
+INFO - Average loss after 899 examples:  0.004404531618251566
+INFO - Average loss after 999 examples:  0.00427291192655294
+INFO - Average loss after 1099 examples:  0.004127614004624324
+INFO - Best epoch for training loss : 9 since 8
+INFO - 90.05586592178771 87.4502712477396 88.73394495412843 
+INFO - Best epoch 9 with f1 88.74586244942994
+INFO - Average loss after 99 examples:  0.004491807022449476
+INFO - Average loss after 199 examples:  0.0038252063445108077
+INFO - Average loss after 299 examples:  0.004648194801631573
+INFO - Average loss after 399 examples:  0.004341012415669293
+INFO - Average loss after 499 examples:  0.004119726423235267
+INFO - Average loss after 599 examples:  0.004149304587968885
+INFO - Average loss after 699 examples:  0.004030410150643598
+INFO - Average loss after 799 examples:  0.003977234439581379
+INFO - Average loss after 899 examples:  0.00399987647757043
+INFO - Average loss after 999 examples:  0.0038286308422698654
+INFO - Average loss after 1099 examples:  0.0036664272202663988
+INFO - Best epoch for training loss : 10 since 9
+INFO - 90.15209125475285 85.750452079566 87.8962001853568 
+INFO - Best epoch 10 with f1 88.74586244942994
+INFO - Average loss after 99 examples:  0.004049220142975412
+INFO - Average loss after 199 examples:  0.003917402057234553
+INFO - Average loss after 299 examples:  0.004048567407676501
+INFO - Average loss after 399 examples:  0.004295384474224143
+INFO - Average loss after 499 examples:  0.004410035023559072
+INFO - Average loss after 599 examples:  0.004272820384090825
+INFO - Average loss after 699 examples:  0.004264346360880482
+INFO - Average loss after 799 examples:  0.004289462150053269
+INFO - Average loss after 899 examples:  0.004154872682745319
+INFO - Average loss after 999 examples:  0.004008570274508729
+INFO - Average loss after 1099 examples:  0.0038835077846155427
+INFO - Best epoch for training loss : 11 since 10
+INFO - 89.54198473282443 84.84629294755877 87.1309192200557 
+INFO - Best epoch 11 with f1 88.74586244942994
+INFO - Average loss after 99 examples:  0.004610209181496751
+INFO - Average loss after 199 examples:  0.004065127639423461
+INFO - Average loss after 299 examples:  0.004395848461966043
+INFO - Average loss after 399 examples:  0.004649693912639455
+INFO - Average loss after 499 examples:  0.004690753705833408
+INFO - Average loss after 599 examples:  0.004699328738034047
+INFO - Average loss after 699 examples:  0.004706162197162458
+INFO - Average loss after 799 examples:  0.0047113929130989315
+INFO - Average loss after 899 examples:  0.004561768929947098
+INFO - Average loss after 999 examples:  0.004396232831740152
+INFO - Average loss after 1099 examples:  0.004258618696879391
+INFO - Best epoch for training loss : 12 since 11
+INFO - 89.1832229580574 87.66726943942133 88.41874886011307 
+INFO - Best epoch 12 with f1 88.74586244942994
+INFO - Average loss after 99 examples:  0.00425837819836093
+INFO - Average loss after 199 examples:  0.003747452112603886
+INFO - Average loss after 299 examples:  0.004025864438231673
+INFO - Average loss after 399 examples:  0.004813712830030894
+INFO - Average loss after 499 examples:  0.004787404509867824
+INFO - Average loss after 599 examples:  0.004666808028505238
+INFO - Average loss after 699 examples:  0.00448088946980251
+INFO - Average loss after 799 examples:  0.004303869837115534
+INFO - Average loss after 899 examples:  0.004123733093897585
+INFO - Average loss after 999 examples:  0.003932926988384609
+INFO - Average loss after 1099 examples:  0.0037909890251747714
+INFO - Best epoch for training loss : 13 since 12
+INFO - 89.77230309817095 86.98010849909585 88.35415135929463 
+INFO - Best epoch 13 with f1 88.74586244942994
+INFO - Average loss after 99 examples:  0.003399847154276248
+INFO - Average loss after 199 examples:  0.003108050922021368
+INFO - Average loss after 299 examples:  0.004069829677115973
+INFO - Average loss after 399 examples:  0.004143091495010832
+INFO - Average loss after 499 examples:  0.004127843227168174
+INFO - Average loss after 599 examples:  0.004446792906545334
+INFO - Average loss after 699 examples:  0.004366049265412538
+INFO - Average loss after 799 examples:  0.004188632205594477
+INFO - Average loss after 899 examples:  0.004024747110418566
+INFO - Average loss after 999 examples:  0.003863872055296303
+INFO - Average loss after 1099 examples:  0.0037337765957094734
+INFO - Best epoch for training loss : 14 since 13
+INFO - 88.71147419235054 86.40144665461122 87.54122389153537 
+INFO - Best epoch 14 with f1 88.74586244942994
+INFO - Average loss after 99 examples:  0.004611048562866118
+INFO - Average loss after 199 examples:  0.004925598034134425
+INFO - Average loss after 299 examples:  0.004793500238745302
+INFO - Average loss after 399 examples:  0.004467430956125432
+INFO - Average loss after 499 examples:  0.0041617797321956305
+INFO - Average loss after 599 examples:  0.00416345646171885
+INFO - Average loss after 699 examples:  0.004208112907884389
+INFO - Average loss after 799 examples:  0.0040347066869127575
+INFO - Average loss after 899 examples:  0.0038287580962856407
+INFO - Average loss after 999 examples:  0.0037369227149112202
+INFO - Average loss after 1099 examples:  0.0035386123623692804
+INFO - Best epoch for training loss : 15 since 14
+INFO - 88.94601542416453 87.59493670886076 88.26530612244898 
+INFO - Best epoch 15 with f1 88.74586244942994
+INFO - Average loss after 99 examples:  0.005374555615649436
+INFO - Average loss after 199 examples:  0.004797356641510895
+INFO - Average loss after 299 examples:  0.0045945965756006525
+INFO - Average loss after 399 examples:  0.004243334529910909
+INFO - Average loss after 499 examples:  0.0040075524770426104
+INFO - Average loss after 599 examples:  0.004177791496951798
+INFO - Average loss after 699 examples:  0.003967872228017423
+INFO - Average loss after 799 examples:  0.0038015753180047937
+INFO - Average loss after 899 examples:  0.003644827699759567
+INFO - Average loss after 999 examples:  0.0036297606002062546
+INFO - Average loss after 1099 examples:  0.0034763666537286947
+INFO - Best epoch for training loss : 16 since 15
+INFO - 90.00745712155108 87.30560578661844 88.63594639250964 
+INFO - Best epoch 16 with f1 88.74586244942994
+INFO - Average loss after 99 examples:  0.004374733879677763
+INFO - Average loss after 199 examples:  0.003956213243359504
+INFO - Average loss after 299 examples:  0.004171477977449641
+INFO - Average loss after 399 examples:  0.004102948607811541
+INFO - Average loss after 499 examples:  0.003980115522807352
+INFO - Average loss after 599 examples:  0.004103852321134526
+INFO - Average loss after 699 examples:  0.004102377567486238
+INFO - Average loss after 799 examples:  0.004002985833136969
+INFO - Average loss after 899 examples:  0.003857529417486567
+INFO - Average loss after 999 examples:  0.0036879317659068503
+INFO - Average loss after 1099 examples:  0.003526585295412298
+INFO - Best epoch for training loss : 17 since 16
+INFO - 89.70423062523399 86.65461121157324 88.15305371596762 
+INFO - Best epoch 17 with f1 88.74586244942994
+INFO - Average loss after 99 examples:  0.0041847241215755915
+INFO - Average loss after 199 examples:  0.004277116273022046
+INFO - Average loss after 299 examples:  0.004357065393606569
+INFO - Average loss after 399 examples:  0.004132120407237217
+INFO - Average loss after 499 examples:  0.0040810941037290795
+INFO - Average loss after 599 examples:  0.0039279610135779875
+INFO - Average loss after 699 examples:  0.003750025853897726
+INFO - Average loss after 799 examples:  0.003618898333768035
+INFO - Average loss after 899 examples:  0.003526915596129613
+INFO - Average loss after 999 examples:  0.003444917931419996
+INFO - Average loss after 1099 examples:  0.003372538558403314
+INFO - Best epoch for training loss : 18 since 17
+INFO - 89.76553777446968 87.23327305605787 88.48129126925899 
+INFO - Best epoch 18 with f1 88.74586244942994
+INFO - Average loss after 99 examples:  0.004238810284989839
+INFO - Average loss after 199 examples:  0.004216384961054516
+INFO - Average loss after 299 examples:  0.004098485799211959
+INFO - Average loss after 399 examples:  0.00400222980212782
+INFO - Average loss after 499 examples:  0.0038493775731355756
+INFO - Average loss after 599 examples:  0.003970118301762393
+INFO - Average loss after 699 examples:  0.003926931742889519
+INFO - Average loss after 799 examples:  0.0038176182945895924
+INFO - Average loss after 899 examples:  0.0036907917110288765
+INFO - Average loss after 999 examples:  0.003600855429990784
+INFO - Average loss after 1099 examples:  0.003453904856081113
+INFO - Best epoch for training loss : 19 since 18
+INFO - 90.35514018691589 87.41410488245931 88.86029411764706 
+INFO - Best f1 achieved!! pre : 90.35514018691589  rec : 87.41410488245931  f1 : 88.86029411764706
+INFO - Saving best model to ../best_model_batch300_test.pth
+INFO - Best epoch 19 with f1 88.86029411764706
+INFO - Average loss after 99 examples:  0.004095668178798415
+INFO - Average loss after 199 examples:  0.004006788726523401
+INFO - Average loss after 299 examples:  0.004099429480645441
+INFO - Average loss after 399 examples:  0.004119610463910652
+INFO - Average loss after 499 examples:  0.003960704417668987
+INFO - Average loss after 599 examples:  0.00398885230009521
+INFO - Average loss after 699 examples:  0.004018478586528489
+INFO - Average loss after 799 examples:  0.003836838436394275
+INFO - Average loss after 899 examples:  0.0036469832387363314
+INFO - Average loss after 999 examples:  0.0034652426457524328
+INFO - Average loss after 1099 examples:  0.003286989499100639
+INFO - Best epoch for training loss : 20 since 19
+INFO - 88.70788596815994 86.65461121157324 87.66922795462861 
+INFO - Best epoch 20 with f1 88.86029411764706
+INFO - Average loss after 99 examples:  0.006398730011006601
+INFO - Average loss after 199 examples:  0.005842929008582387
+INFO - Average loss after 299 examples:  0.0061101960888958655
+INFO - Average loss after 399 examples:  0.006495805527440991
+INFO - Average loss after 499 examples:  0.006234281107682767
+INFO - Average loss after 599 examples:  0.006115505867351028
+INFO - Average loss after 699 examples:  0.0056730462330833505
+INFO - Average loss after 799 examples:  0.005334338031557519
+INFO - Average loss after 899 examples:  0.0049693207692729675
+INFO - Average loss after 999 examples:  0.004763638774412348
+INFO - Average loss after 1099 examples:  0.004501884151411665
+INFO - Best epoch for training loss : 21 since 20
+INFO - 88.90117994100295 87.19710669077759 88.04089830199014 
+INFO - Best epoch 21 with f1 88.86029411764706
+INFO - Average loss after 99 examples:  0.005234595163574799
+INFO - Average loss after 199 examples:  0.004435393383349737
+INFO - Average loss after 299 examples:  0.004577838927102478
+INFO - Average loss after 399 examples:  0.004394834758384144
+INFO - Average loss after 499 examples:  0.004546134207219927
+INFO - Average loss after 599 examples:  0.0045354610605096175
+INFO - Average loss after 699 examples:  0.004349771010618156
+INFO - Average loss after 799 examples:  0.004209568685607504
+INFO - Average loss after 899 examples:  0.004041847469297044
+INFO - Average loss after 999 examples:  0.0038723028807686895
+INFO - Average loss after 1099 examples:  0.003662885124147916
+INFO - Best epoch for training loss : 22 since 21
+INFO - 88.71449925261584 85.85895117540687 87.26337070391473 
+INFO - Best epoch 22 with f1 88.86029411764706
+INFO - Average loss after 99 examples:  0.003816784703175095
+INFO - Average loss after 199 examples:  0.003701976557781723
+INFO - Average loss after 299 examples:  0.003942729569726271
+INFO - Average loss after 399 examples:  0.004032734354720439
+INFO - Average loss after 499 examples:  0.0038254367284904158
+INFO - Average loss after 599 examples:  0.003856676906943539
+INFO - Average loss after 699 examples:  0.0037646995131136217
+INFO - Average loss after 799 examples:  0.0036010346055591483
+INFO - Average loss after 899 examples:  0.0034823505061502996
+INFO - Average loss after 999 examples:  0.003425161989021895
+INFO - Average loss after 1099 examples:  0.0032284181085707017
+INFO - Best epoch for training loss : 23 since 22
+INFO - 88.89692585895116 88.89692585895116 88.89692585895116 
+INFO - Best f1 achieved!! pre : 88.89692585895116  rec : 88.89692585895116  f1 : 88.89692585895116
+INFO - Saving best model to ../best_model_batch300_test.pth
+INFO - Best epoch 23 with f1 88.89692585895116
+INFO - Average loss after 99 examples:  0.003132617022140149
+INFO - Average loss after 199 examples:  0.0030528286416534023
+INFO - Average loss after 299 examples:  0.003321112014762481
+INFO - Average loss after 399 examples:  0.003268569107084269
+INFO - Average loss after 499 examples:  0.0032198769271661637
+INFO - Average loss after 599 examples:  0.0032597531494616494
+INFO - Average loss after 699 examples:  0.003227253087564939
+INFO - Average loss after 799 examples:  0.0031453971205565095
+INFO - Average loss after 899 examples:  0.0030216442717652865
+INFO - Average loss after 999 examples:  0.0030077494748848702
+INFO - Average loss after 1099 examples:  0.002932290475862355
+INFO - Best epoch for training loss : 24 since 23
+INFO - 89.284390063033 87.0886075949367 88.17283046503111 
+INFO - Best epoch 24 with f1 88.89692585895116
+INFO - Average loss after 99 examples:  0.0033310185662221463
+INFO - Average loss after 199 examples:  0.003246090312438067
+INFO - Average loss after 299 examples:  0.003374128250181706
+INFO - Average loss after 399 examples:  0.003289685170513398
+INFO - Average loss after 499 examples:  0.0032699340179292878
+INFO - Average loss after 599 examples:  0.003282968795678356
+INFO - Average loss after 699 examples:  0.003271060027170444
+INFO - Average loss after 799 examples:  0.0033028941783896392
+INFO - Average loss after 899 examples:  0.003316605147577121
+INFO - Average loss after 999 examples:  0.003233130520800603
+INFO - Average loss after 1099 examples:  0.0030768313259378903
+INFO - Best epoch for training loss : 25 since 24
+INFO - 88.59357696566998 86.79927667269439 87.68724881256848 
+INFO - Best epoch 25 with f1 88.89692585895116
+INFO - Average loss after 99 examples:  0.004281686991394375
+INFO - Average loss after 199 examples:  0.003637527383866266
+INFO - Average loss after 299 examples:  0.0038173240344709777
+INFO - Average loss after 399 examples:  0.003928291664766918
+INFO - Average loss after 499 examples:  0.0037620391914591133
+INFO - Average loss after 599 examples:  0.003655691422892887
+INFO - Average loss after 699 examples:  0.003591989269585033
+INFO - Average loss after 799 examples:  0.003654177203358184
+INFO - Average loss after 899 examples:  0.0035568627981461005
+INFO - Average loss after 999 examples:  0.003395550307954449
+INFO - Average loss after 1099 examples:  0.0032157204944776624
+INFO - Best epoch for training loss : 26 since 25
+INFO - 88.34915997078159 87.4864376130199 87.91568235507906 
+INFO - Best epoch 26 with f1 88.89692585895116
+INFO - Average loss after 99 examples:  0.0035876333773797
+INFO - Average loss after 199 examples:  0.003024414314577782
+INFO - Average loss after 299 examples:  0.003325197943472646
+INFO - Average loss after 399 examples:  0.003401686938867302
+INFO - Average loss after 499 examples:  0.003531985168275517
+INFO - Average loss after 599 examples:  0.0035825324973267564
+INFO - Average loss after 699 examples:  0.00361843650304304
+INFO - Average loss after 799 examples:  0.003534923160075092
+INFO - Average loss after 899 examples:  0.0034994781460821237
+INFO - Average loss after 999 examples:  0.003441576303284218
+INFO - Average loss after 1099 examples:  0.0032986982413627983
+INFO - Best epoch for training loss : 27 since 26
+INFO - 90.46003016591251 86.76311030741411 88.57301089163744 
+INFO - Best epoch 27 with f1 88.89692585895116
+INFO - Average loss after 99 examples:  0.004896487811382747
+INFO - Average loss after 199 examples:  0.004329545512308727
+INFO - Average loss after 299 examples:  0.004243581222209076
+INFO - Average loss after 399 examples:  0.003752060370583363
+INFO - Average loss after 499 examples:  0.0037440958556850703
+INFO - Average loss after 599 examples:  0.0039124522665834275
+INFO - Average loss after 699 examples:  0.0040728802355462675
+INFO - Average loss after 799 examples:  0.004019756427739055
+INFO - Average loss after 899 examples:  0.003913349721456947
+INFO - Average loss after 999 examples:  0.003719870200201457
+INFO - Average loss after 1099 examples:  0.0035415659056672634
+INFO - Best epoch for training loss : 28 since 27
+INFO - 90.04845322400298 87.37793851717902 88.69309838472834 
+INFO - Best epoch 28 with f1 88.89692585895116
+INFO - Average loss after 99 examples:  0.002851650569202247
+INFO - Average loss after 199 examples:  0.003139731894251914
+INFO - Average loss after 299 examples:  0.003378739801467549
+INFO - Average loss after 399 examples:  0.0032080725344676374
+INFO - Average loss after 499 examples:  0.0033091189031687965
+INFO - Average loss after 599 examples:  0.0032898946539386144
+INFO - Average loss after 699 examples:  0.0035328053643970945
+INFO - Average loss after 799 examples:  0.0034223157732624523
+INFO - Average loss after 899 examples:  0.0033218459804318077
+INFO - Average loss after 999 examples:  0.003256522787675901
+INFO - Average loss after 1099 examples:  0.0031071464445374592
+INFO - Best epoch for training loss : 29 since 28
+INFO - 89.09623124771313 88.06509945750453 88.57766460531103 

@@ -20,6 +20,7 @@ import unidecode
 from pytorch_transformers import *
 from torch import autograd
 
+from parser.utils import sort_dataset, unsort_dataset
 from parser.utils import conll_writer
 from datareader import DataReader
 from bertner import BertNER
@@ -47,14 +48,14 @@ class NERTrainer:
         if gpu:
             device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         self.device = device
-        
-        self.model = BertNER(lstm_hidden = 200, vocab_size=self.vocab_size, l2ind = self.l2ind, num_cat = self.num_cat, device = self.device)
+        self.args = {}
+        self.model = BertNER(self.args, l2ind = self.l2ind,lstm_hidden = self.lstm_hidden,  num_cat = self.num_cat, device = self.device)
         
         self.optimizer = optim.SGD([{"params": self.model.fc.parameters()},\
         {"params": self.model.bilstm.parameters()},\
         {"params": self.model.cap_embeds.parameters()},\
         {"params":self.model.crf.parameters()}],\
-        lr=0.01, weight_decay = 1e-4)
+        lr=0.1, weight_decay = 1e-3)
 
         param_optimizer = list(self.model.bert_model.named_parameters())
         no_decay = ['bias', 'gamma', 'beta']
@@ -68,7 +69,7 @@ class NERTrainer:
                          lr=2e-5)
         self.bert_optimizer = bert_optimizer
 
-    def get_data(self,train_file,val_file,batch_size=300):
+    def get_data(self,train_file,val_file,batch_size=3000):
         datareader = DataReader(train_file, "NER",batch_size=batch_size)
         self.trainreader = datareader
         if val_file:
@@ -115,7 +116,7 @@ class NERTrainer:
             feats = self.model._get_feats(bert_batch_ids, bert_seq_ids, bert2toks, cap_inds, lens)
             crf_scores = self.model.crf(feats)
             loss = self.model.crf_loss(crf_scores, ner_inds, lens)
-            return loss
+            return loss/torch.sum(lens).item()
         else:
             with torch.no_grad():
                 feats = self.model._get_feats(bert_batch_ids, bert_seq_ids, bert2toks, cap_inds, lens)
@@ -144,7 +145,8 @@ class NERTrainer:
                     truths.append(truth) 
         
         content = generate_pred_content(sents, preds, truths, label_voc = self.trainreader.label_voc)
-        
+        orig_idx = self.valreader.orig_idx
+        content = unsort_dataset(content,orig_idx)
         field_names = ["token","truth", "ner_tag"]
         out_file = self.output_file
         conll_writer(out_file,content,field_names,"ner")
@@ -181,11 +183,10 @@ class NERTrainer:
                     logging.info("Average loss after {} examples:  {}".format(j,epoch_loss/j))
             ##info
             if epoch_loss < best_loss:
-                logging.info("Best epoch {} since {}".format(i,best_epoch))
+                logging.info("Best epoch for training loss : {} since {}".format(i,best_epoch))
                 best_epoch = i
             elif i - best_epoch > 4:
                 logging.info("No improvement in crf_loss for the last {} epochs ".format(i-best_epoch))
-            
             ##evaluate
             self.model.eval()
             prec, rec, f1= self.evaluate()
@@ -193,6 +194,7 @@ class NERTrainer:
                 logging.info("Best f1 achieved!! pre : {}  rec : {}  f1 : {}".format(prec,rec,f1))
                 best_f1 = f1
                 self.save_model()
+    
     
     def save_model(self,weights = True): 
         if weights:
@@ -349,9 +351,9 @@ if __name__ == "__main__":
     args = sys.argv
     gpu =args[1]
     load = args[2]
-    save_path = "../best_model_batch.pth"
+    save_path = "../best_model_batch300_test.pth"
     data_path = '../../datasets/turkish-ner-train.tsv'
-    val_path = '../../datasets/turkish-ner-dev.tsv'
+    val_path = '../../datasets/turkish-ner-test.tsv'
     #ner_train(data_path, val_path, save_path, load = int(load), gpu = int(gpu))
     nertrainer = NERTrainer(data_path, val_path, save_path, gpu = int(gpu), load = int(load))
     nertrainer.train()
