@@ -1,0 +1,200 @@
+INFO - Sorting dataset is set to True
+DEBUG - Starting new HTTPS connection (1): s3.amazonaws.com:443
+DEBUG - https://s3.amazonaws.com:443 "HEAD /models.huggingface.co/bert/bert-base-uncased-vocab.txt HTTP/1.1" 200 0
+INFO - loading file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt from cache at /home/aakdemir/.cache/torch/pytorch_transformers/26bc1ad6c0ac742e9b52263248f6d0f00068293b33709fae12320c0e35ccfbbb.542ce4285a40d23a559526243235df47c5f75c197f04f37d1a0c124c32c9a084
+INFO - Sorting dataset is set to True
+DEBUG - Starting new HTTPS connection (1): s3.amazonaws.com:443
+DEBUG - https://s3.amazonaws.com:443 "HEAD /models.huggingface.co/bert/bert-base-uncased-vocab.txt HTTP/1.1" 200 0
+INFO - loading file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt from cache at /home/aakdemir/.cache/torch/pytorch_transformers/26bc1ad6c0ac742e9b52263248f6d0f00068293b33709fae12320c0e35ccfbbb.542ce4285a40d23a559526243235df47c5f75c197f04f37d1a0c124c32c9a084
+DEBUG - Starting new HTTPS connection (1): s3.amazonaws.com:443
+DEBUG - https://s3.amazonaws.com:443 "HEAD /models.huggingface.co/bert/bert-base-uncased-config.json HTTP/1.1" 200 0
+INFO - loading configuration file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-config.json from cache at /home/aakdemir/.cache/torch/pytorch_transformers/4dad0251492946e18ac39290fcfe91b89d370fee250efe9521476438fe8ca185.bf3b9ea126d8c0001ee8a1e8b92229871d06d36d8808208cc2449280da87785c
+INFO - Model config {
+  "attention_probs_dropout_prob": 0.1,
+  "finetuning_task": null,
+  "hidden_act": "gelu",
+  "hidden_dropout_prob": 0.1,
+  "hidden_size": 768,
+  "initializer_range": 0.02,
+  "intermediate_size": 3072,
+  "layer_norm_eps": 1e-12,
+  "max_position_embeddings": 512,
+  "num_attention_heads": 12,
+  "num_hidden_layers": 12,
+  "num_labels": 2,
+  "output_attentions": false,
+  "output_hidden_states": true,
+  "pruned_heads": {},
+  "torchscript": false,
+  "type_vocab_size": 2,
+  "vocab_size": 30522
+}
+
+DEBUG - Starting new HTTPS connection (1): s3.amazonaws.com:443
+DEBUG - https://s3.amazonaws.com:443 "HEAD /models.huggingface.co/bert/bert-base-uncased-pytorch_model.bin HTTP/1.1" 200 0
+INFO - loading weights file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-pytorch_model.bin from cache at /home/aakdemir/.cache/torch/pytorch_transformers/aa1ef1aede4482d0dbcd4d52baad8ae300e60902e88fcb0bebdec09afd232066.36ca03ab34a1a5d5fa7bc3d03d55c4fa650fed07220e2eeebc06ce58d0e9a157
+INFO - Pos vocab nasil 
+INFO - {'[PAD]': 0, '[ROOT]': 1, 'ADJ': 2, 'NOUN': 3, 'AUX': 4, 'PRON': 5, 'VERB': 6, 'PUNCT': 7, 'DET': 8, 'ADP': 9, 'PROPN': 10, 'NUM': 11, 'ADV': 12, 'CCONJ': 13, 'INTJ': 14, 'X': 15}
+INFO - {'[PAD]': 0, '[ROOT]': 1, 'amod': 2, 'csubj': 3, 'cop': 4, 'nmod:poss': 5, 'obj': 6, 'root': 7, 'punct': 8, 'obl': 9, 'compound': 10, 'case': 11, 'nmod': 12, 'nsubj': 13, 'conj': 14, 'det': 15, 'advmod': 16, 'acl': 17, 'cc': 18, 'flat': 19, 'compound:lvc': 20, 'nummod': 21, 'discourse': 22, 'compound:redup': 23, 'appos': 24, 'mark': 25, 'advmod:emph': 26, 'aux:q': 27, 'fixed': 28, 'parataxis': 29, 'ccomp': 30, 'dep': 31, 'vocative': 32}
+INFO - Average Train Loss  8.238077163696289 after 11 sentences 
+INFO - Dep rel losses 4.402027726173401
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  6.847517291704814 after 89 sentences 
+INFO - Dep rel losses 3.4841179649035134
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  6.253620061007413 after 187 sentences 
+INFO - Dep rel losses 3.093807426365939
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  5.877921149134636 after 303 sentences 
+INFO - Dep rel losses 2.8571805506944656
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  5.5779977185385565 after 434 sentences 
+INFO - Dep rel losses 2.6790050864219666
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  5.322095036506653 after 583 sentences 
+INFO - Dep rel losses 2.5351461928624373
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  5.085738135922339 after 752 sentences 
+INFO - Dep rel losses 2.410465225096672
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  4.866030153301027 after 950 sentences 
+INFO - Dep rel losses 2.3022138393587537
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  4.648973339941444 after 1178 sentences 
+INFO - Dep rel losses 2.1958430671110385
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  4.4473294356594915 after 1439 sentences 
+INFO - Dep rel losses 2.1011263494906216
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  4.2574923950083114 after 1743 sentences 
+INFO - Dep rel losses 2.015840080438876
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  4.072916660990034 after 2091 sentences 
+INFO - Dep rel losses 1.9320145893309797
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  3.8914081268623226 after 2493 sentences 
+INFO - Dep rel losses 1.8505580376406185
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  3.714430166013313 after 2972 sentences 
+INFO - Dep rel losses 1.7721479381575729
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  3.5165881959485334 after 3639 sentences 
+INFO - Dep rel losses 1.6810432392316805
+INFO - Pos embedding nasil degisiyor
+INFO - Final train loss of epoch 1 :  3.4933368095776416
+INFO - Evaluating performance on ../../datasets/tr_imst-ud-dev.conllu
+INFO - LAS Precision : 0.2938767355908501  Recall 0.2938767355908501 F1 0.2938767355908501
+INFO - Average Train Loss  5.109745740890503 after 11 sentences 
+INFO - Dep rel losses 1.864406406879425
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  4.486522793769836 after 89 sentences 
+INFO - Dep rel losses 1.6149456600348155
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  4.154778632250699 after 187 sentences 
+INFO - Dep rel losses 1.49044560844248
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  3.98940559476614 after 303 sentences 
+INFO - Dep rel losses 1.4637361392378807
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  3.808197435878572 after 434 sentences 
+INFO - Dep rel losses 1.3993406778290158
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  3.68314279959752 after 583 sentences 
+INFO - Dep rel losses 1.3693744310965905
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  3.5449924199811873 after 752 sentences 
+INFO - Dep rel losses 1.3273545167138499
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  3.4283390508757696 after 950 sentences 
+INFO - Dep rel losses 1.297510417799155
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  3.30529458348344 after 1178 sentences 
+INFO - Dep rel losses 1.2611217098992045
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  3.1885620925737466 after 1439 sentences 
+INFO - Dep rel losses 1.231625570551209
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  3.0691355011042427 after 1743 sentences 
+INFO - Dep rel losses 1.1979205304501104
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  2.946141223822321 after 2091 sentences 
+INFO - Dep rel losses 1.1585288324526377
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  2.824347638693012 after 2493 sentences 
+INFO - Dep rel losses 1.119019691084252
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  2.7045761699026283 after 2972 sentences 
+INFO - Dep rel losses 1.0799808262875585
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  2.5665461716937346 after 3639 sentences 
+INFO - Dep rel losses 1.029478290236332
+INFO - Pos embedding nasil degisiyor
+INFO - Final train loss of epoch 2 :  2.549390058834236
+INFO - Evaluating performance on ../../datasets/tr_imst-ud-dev.conllu
+INFO - LAS Precision : 0.3645989411647188  Recall 0.3645989411647188 F1 0.3645989411647188
+INFO - Average Train Loss  4.181489944458008 after 11 sentences 
+INFO - Dep rel losses 1.335884690284729
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  3.719486355781555 after 89 sentences 
+INFO - Dep rel losses 1.2671094040075939
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  3.445857048034668 after 187 sentences 
+INFO - Dep rel losses 1.161093454469334
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  3.310982972383499 after 303 sentences 
+INFO - Dep rel losses 1.1502755228430033
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  3.158512234687805 after 434 sentences 
+INFO - Dep rel losses 1.1061642964680989
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  3.058261128572317 after 583 sentences 
+INFO - Dep rel losses 1.0907889994291158
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  2.9491991381491385 after 752 sentences 
+INFO - Dep rel losses 1.0592812511228746
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  2.849414540661706 after 950 sentences 
+INFO - Dep rel losses 1.0369732586873903
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  2.7524516393498675 after 1178 sentences 
+INFO - Dep rel losses 1.0105148045028127
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  2.654215168693791 after 1439 sentences 
+INFO - Dep rel losses 0.9874422524286353
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  2.560569209211013 after 1743 sentences 
+INFO - Dep rel losses 0.9614424763941297
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  2.461269388241427 after 2091 sentences 
+INFO - Dep rel losses 0.9322119115718773
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  2.361907713725919 after 2493 sentences 
+INFO - Dep rel losses 0.9006151850106286
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  2.2642748215884874 after 2972 sentences 
+INFO - Dep rel losses 0.8711065771904859
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  2.149895370426312 after 3639 sentences 
+INFO - Dep rel losses 0.8309759152921993
+INFO - Pos embedding nasil degisiyor
+INFO - Final train loss of epoch 3 :  2.1356220096870735
+INFO - Evaluating performance on ../../datasets/tr_imst-ud-dev.conllu
+INFO - LAS Precision : 0.4112476276096294  Recall 0.4112476276096294 F1 0.4112476276096294
+INFO - Average Train Loss  3.625593423843384 after 11 sentences 
+INFO - Dep rel losses 1.1642783880233765
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  3.1625447273254395 after 89 sentences 
+INFO - Dep rel losses 1.0370631615320842
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  2.961668946526267 after 187 sentences 
+INFO - Dep rel losses 0.9639374451203779
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  2.8728683441877365 after 303 sentences 
+INFO - Dep rel losses 0.9727004859596491
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  2.75057882354373 after 434 sentences 
+INFO - Dep rel losses 0.9351897580283028
+INFO - Pos embedding nasil degisiyor
+INFO - Average Train Loss  2.6660779118537903 after 583 sentences 
+INFO - Dep rel losses 0.921103468308082
+INFO - Pos embedding nasil degisiyor

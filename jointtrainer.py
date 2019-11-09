@@ -15,6 +15,7 @@ import torch.nn.functional as F
 import numpy as np
 from tqdm import tqdm
 import torchvision
+from torch.nn.utils import clip_grad_norm_
 from torch.utils.data import Dataset, DataLoader
 from torchvision import datasets, models, transforms
 from parser.parsereader import bert2token, pad_trunc_batch
@@ -76,9 +77,9 @@ def parse_args():
     parser.add_argument('--lang', type=str, help='Language')
     parser.add_argument('--shorthand', type=str, help="Treebank shorthand")
 
-    parser.add_argument('--lstm_hidden', type=int, default=200)
+    parser.add_argument('--lstm_hidden', type=int, default=20)
     parser.add_argument('--char_hidden_dim', type=int, default=400)
-    parser.add_argument('--biaffine_hidden', type=int, default=400)
+    parser.add_argument('--biaffine_hidden', type=int, default=20)
     parser.add_argument('--composite_deep_biaff_hidden_dim', type=int, default=100)
     parser.add_argument('--cap_dim', type=int, default=50)
     parser.add_argument('--char_emb_dim', type=int, default=100)
@@ -88,7 +89,7 @@ def parse_args():
     parser.add_argument('--char_num_layers', type=int, default=1)
     parser.add_argument('--pretrain_max_vocab', type=int, default=-1)
     parser.add_argument('--word_dropout', type=float, default=0.33)
-    parser.add_argument('--drop_prob', type=float, default=0.5)
+    parser.add_argument('--drop_prob', type=float, default=0.3)
     parser.add_argument('--rec_dropout', type=float, default=0, help="Recurrent dropout")
     parser.add_argument('--char_rec_dropout', type=float, default=0, help="Recurrent dropout")
     parser.add_argument('--no_char', dest='char', action='store_false', help="Turn off character model.")
@@ -104,7 +105,7 @@ def parse_args():
     parser.add_argument('--max_steps', type=int, default=50000)
     parser.add_argument('--eval_interval', type=int, default=100)
     parser.add_argument('--max_steps_before_stop', type=int, default=3000)
-    parser.add_argument('--batch_size', type=int, default=500)
+    parser.add_argument('--batch_size', type=int, default=200)
     parser.add_argument('--max_grad_norm', type=float, default=1.0, help='Gradient clipping.')
     parser.add_argument('--log_step', type=int, default=20, help='Print log every k steps.')
     parser.add_argument('--save_dir', type=str, default='saved_models/depparse', help='Root dir for saving models.')
@@ -129,7 +130,7 @@ class JointModel(nn.Module):
         
         self.depparser= JointParser(self.args)
         
-        self.nermodel = JointNer(self.args)
+        #self.nermodel = JointNer(self.args)
 
 
 
@@ -145,7 +146,7 @@ class BaseModel(nn.Module):
         self.bert_model = BertModel.from_pretrained('bert-base-uncased',output_hidden_states=True)
         
         self.w_dim = self.bert_model.encoder.layer[11].output.dense.out_features
-        self.vocab_size = args['vocab_size']
+        #self.vocab_size = args['vocab_size']
         
         self.cap_types = 4
         self.cap_dim = args['cap_dim']
@@ -153,7 +154,7 @@ class BaseModel(nn.Module):
         
         self.lstm_input_size = self.w_dim + self.cap_dim
         self.cap_embeds  = nn.Embedding(self.cap_types, self.cap_dim)
-        self.word_embeds = nn.Embedding(self.vocab_size, self.w_dim)
+        #self.word_embeds = nn.Embedding(self.vocab_size, self.w_dim)
         
         #self.bilstm  = nn.LSTM(self.lstm_input, self.lstm_hidden, bidirectional=True, num_layers=1, batch_first=True)
         self.dropout = nn.Dropout(self.drop_prob)
@@ -171,10 +172,9 @@ class BaseModel(nn.Module):
         {'params': [p for n, p in param_optimizer if any(nd in n for nd in no_decay)],
          'weight_decay_rate': 0.0}
          ]
-        bert_optimizer =AdamW(optimizer_grouped_parameters,
+        bert_optimizer = AdamW(optimizer_grouped_parameters,
                          lr=2e-5)
         self.bert_optimizer = bert_optimizer
-    
     def _get_bert_batch_hidden(self, hiddens , bert2toks, layers=[-2,-3,-4]):
         meanss = torch.mean(torch.stack([hiddens[i] for i in layers]),0)
         batch_my_hiddens = []
@@ -190,15 +190,27 @@ class BaseModel(nn.Module):
             my_hiddens.append(torch.mean(torch.cat(my_token_hids),0).view(1,-1))
             batch_my_hiddens.append(torch.cat(my_hiddens))
         return torch.stack(batch_my_hiddens)
+    
+    def _get_bert_batch_hidden2(self, hiddens , bert2toks, layers=[-2,-3,-4]):
+        meanss = torch.mean(torch.stack([hiddens[i] for i in layers]),0)
+        batch_my_hiddens = []
+        for means,bert2tok in zip(meanss,bert2toks):
+            my_token_hids = []
+            my_hiddens = []
+            for i,b2t in enumerate(bert2tok):
+                if i>0 and b2t!=bert2tok[i-1]:
+                    my_hiddens.append(torch.mean(torch.cat(my_token_hids),0).view(1,-1))
+                    my_token_hids.append(means[i+1].view(1,-1))
+            my_hiddens.append(torch.mean(torch.cat(my_token_hids),0).view(1,-1))
+            batch_my_hiddens.append(torch.cat(my_hiddens))
+        return torch.stack(batch_my_hiddens)
 
     def forward(self,batch_bert_ids, batch_seq_ids, bert2toks, cap_inds, sent_lens):
         
         bert_out = self.bert_model(batch_bert_ids,batch_seq_ids)
         bert_hiddens = self._get_bert_batch_hidden(bert_out[2],bert2toks)
-        
         cap_embedding = self.cap_embeds(cap_inds)
-        concat = torch.cat((bert_hiddens,cap_embedding),dim=2)
-        
+        concat = torch.cat((bert_hiddens,cap_embedding),dim=2) 
         #bilstms are separate for each task
         #padded = pack_padded_sequence(concat,sent_lens,batch_first=True)
         #lstm_out,_ = self.bilstm(padded)
@@ -214,22 +226,23 @@ class JointTrainer:
         #args2 = {'bert_dim' : 100,'pos_dim' : 12, 'pos_vocab_size': 23,'lstm_hidden' : 10,'device':device}
         #self.args  = {**self.args,**args2}
         self.getdatasets()
-        self.args['ner_cats'] = len(self.nertrainreader.label_voc)
+        #self.args['ner_cats'] = len(self.nertrainreader.label_voc)
         ## feature extraction
         self.device = self.args['device']
         print("Joint Trainer initialized on {}".format(self.device))
         self.jointmodel=JointModel(self.args)
         self.jointmodel.depparser.vocabs = self.deptraindataset.vocabs 
         self.jointmodel.to(self.device)
+    
     def getdatasets(self):
         
-        self.nertrainreader = DataReader(self.args['ner_train_file'],"NER",batch_size = self.args['batch_size'])
-        self.nervalreader = DataReader(self.args['ner_val_file'],"NER", batch_size = self.args['batch_size'])
-        self.nervalreader.label_voc = self.nertrainreader.label_voc
+        #self.nertrainreader = DataReader(self.args['ner_train_file'],"NER",batch_size = self.args['batch_size'])
+        #self.nervalreader = DataReader(self.args['ner_val_file'],"NER", batch_size = self.args['batch_size'])
+        #self.nervalreader.label_voc = self.nertrainreader.label_voc
         
         self.deptraindataset = DepDataset(self.args['dep_train_file'],batch_size = self.args['batch_size'])
         self.depvaldataset  = DepDataset(self.args['dep_val_file'], batch_size = self.args['batch_size'], vocabs = self.deptraindataset.vocabs, for_eval=True)
-        self.args['vocab_size'] = len(self.nertrainreader.word_voc)
+        #self.args['vocab_size'] = len(self.nertrainreader.word_voc)
         self.args['pos_vocab_size'] = len(self.deptraindataset.vocabs['pos_vocab'])
         self.args['dep_cats'] = len(self.deptraindataset.vocabs['dep_vocab'])
         assert self.args['dep_cats'] == self.deptraindataset.num_rels, 'Dependency types do not match'
@@ -243,43 +256,124 @@ class JointTrainer:
                 inputs.append(d.to(self.device))
             sent_lens, tok_inds, ner_inds,\
                  bert_batch_ids,  bert_seq_ids, bert2toks, cap_inds = inputs
+            features = self.jointmodel.base_model(bert_batch_ids, bert_seq_ids, bert2toks, cap_inds, sent_lens) 
+            return features
+        if task=="DEP": 
+            tokens, bert_batch_after_padding = batch[0], batch[1]
+            inputs = []
+            for d in batch[2:]:
+                inputs.append(d.to(self.device))
+            sent_lens, masks, tok_inds, pos, dep_inds, dep_rels, \
+                bert_batch_ids, bert_seq_ids, bert2toks, cap_inds = inputs
             features = self.jointmodel.base_model(bert_batch_ids, bert_seq_ids, bert2toks, cap_inds, sent_lens)
-
             return features   
-            
+    
+    def ner_loss(self,batch):
+        sent_lens = batch[2][0].to(self.device)
+        ner_inds = batch[2][2].to(self.device)
+        bert_feats = self.forward(batch, task="NER") 
+        crf_scores = self.jointmodel.nermodel(bert_feats, sent_lens)
+        loss = self.jointmodel.nermodel.loss(crf_scores, ner_inds, sent_lens)
+        loss = loss/ self.args['batch_size']
+        return loss 
+    
+    def dep_forward(self,dep_batch):
+        bert_feats = self.forward(dep_batch,task="DEP")
+        inputs = []
+        for d in dep_batch[2:]:
+            inputs.append(d.to(self.device))
+        sent_lens, masks, _, pos, dep_inds, dep_rels, \
+            _ , _ , _ , _  = inputs
+        tokens = dep_batch[0]
+        preds, dep_loss = self.jointmodel.depparser(masks,bert_feats,dep_inds, dep_rels, pos, sent_lens, training=True, dep=True)
+        #logging.info("Head predictions ")
+        #logging.info(preds[0][-1])
+        #logging.info(dep_inds[-1])
+        return dep_loss, preds
+    
     def train(self):
         logging.info("Training on {} ".format(self.args['device']))
-
-        epoch = 100
+        logging.info("Dependency pos vocab : {} ".format(self.deptraindataset.vocabs['pos_vocab'].w2ind))
+        logging.info("Dependency dep vocab : {} ".format(self.deptraindataset.vocabs['dep_vocab'].w2ind))
+        epoch = 10
         self.jointmodel.train()
         for e in range(epoch):
             train_loss = 0
             for i in tqdm(range(100)):
                  
-                batch = self.nertrainreader[0]
-                sent_lens = batch[2][0].to(self.device)
-                ner_inds = batch[2][2].to(self.device)
+                #self.jointmodel.base_model.embed_optimizer.zero_grad()
+                #self.jointmodel.base_model.bert_optimizer.zero_grad()
+                #self.jointmodel.nermodel.ner_optimizer.zero_grad()
                 
+                #batch = self.nertrainreader[5]
+                #sent_lens = batch[2][0].to(self.device)
+                #ner_inds = batch[2][2].to(self.device)
+       
+                #bert_feats = self.forward(batch, task="NER") 
+                #crf_scores = self.jointmodel.nermodel(bert_feats, sent_lens)
+                #loss = self.jointmodel.nermodel.loss(crf_scores, ner_inds, sent_lens)
+                #loss = loss/ self.args['batch_size']
+                #train_loss += loss.item()
+                #clip_grad_norm_(self.jointmodel.nermodel.parameters(),self.args['max_grad_norm'])
+                clip_grad_norm_(self.jointmodel.base_model.parameters(),self.args['max_grad_norm'])
+                clip_grad_norm_(self.jointmodel.depparser.parameters(),self.args['max_grad_norm'])
+                #loss.backward()
+                #self.jointmodel.base_model.embed_optimizer.step()
+                #self.jointmodel.base_model.bert_optimizer.step()
+                #self.jointmodel.nermodel.ner_optimizer.step()
+
                 self.jointmodel.base_model.embed_optimizer.zero_grad()
                 self.jointmodel.base_model.bert_optimizer.zero_grad()
-                self.jointmodel.nermodel.ner_optimizer.zero_grad()
-
-                bert_feats = self.forward(batch, task="NER") 
-                crf_scores = self.jointmodel.nermodel(bert_feats, sent_lens)
-                loss = self.jointmodel.nermodel.loss(crf_scores, ner_inds, sent_lens)
-                loss = loss/ self.args['batch_size']
-                train_loss += loss.item()
-                loss.backward()
+                self.jointmodel.depparser.optimizer.zero_grad()
+                
+                dep_batch = self.deptraindataset[0]
+                dep_loss,preds = self.dep_forward(dep_batch)
+                dep_loss = dep_loss/self.args['batch_size']
+                train_loss +=dep_loss
+                #logging.info("Dependency Loss : {}".format(dep_loss.item()))
+                dep_loss.backward()
                 self.jointmodel.base_model.embed_optimizer.step()
                 self.jointmodel.base_model.bert_optimizer.step()
-                self.jointmodel.nermodel.ner_optimizer.step()
+                self.jointmodel.depparser.optimizer.step()
+                
                 if i%10 == 9:
                     logging.info("Train loss average : {} after {} examples".format(train_loss/(i+1),i+1))
-                    logging.info(self.jointmodel.nermodel.crf.transition)
-                    logging.info("Cap embeds: ")
-                    logging.info(self.jointmodel.base_model.cap_embeds.weight)
-            self.ner_evaluate()
+            self.dep_evaluate()
             self.jointmodel.train()
+    def dep_evaluate(self): 
+        logging.info("Evaluating performance on {}".format(self.deptraindataset.file_name))
+        self.jointmodel.eval()
+        dataset = self.deptraindataset
+        orig_idx = self.deptraindataset.orig_idx
+        data = []
+        
+        field_names = ["word", "head", "deprel"]
+        gold_file = dataset.file_name
+        pred_file = "pred_"+gold_file.split("/")[-1]    
+        start_id = orig_idx[0]
+        for x in tqdm(range(1),desc = "Evaluation"):
+            batch = dataset[x]
+            sent_lens = batch[2]
+            tokens = batch[0]
+            
+            loss, preds = self.dep_forward(batch)
+            heads, dep_rels , output = self.jointmodel.depparser.decode(preds[0], preds[1], sent_lens,verbose=True)
+            for outs,sent,l in zip(output,tokens,sent_lens):
+                new_sent = []
+                assert len(sent[1:l]) == len(outs), "Sizes do not match"
+                for pred,tok in zip(outs,sent[1:l]):
+                    new_sent.append([tok]+pred)
+                data.append(new_sent)
+         
+        #data = unsort_dataset(data,orig_idx)
+        
+        conll_writer(pred_file, data, field_names,task_name = "dep")
+        #p, r, f1 = score(pred_file, gold_file,verbose=False)
+        p,r, f1 = 0,0,0
+        logging.info("LAS Precision : {}  Recall {} F1 {}".format(p,r,f1))
+        #self.parser.train() 
+        
+        return p, r, f1
     def ner_evaluate(self):
         self.jointmodel.eval()
         sents = []
@@ -287,7 +381,7 @@ class JointTrainer:
         truths = []
         ## for each batch
         for i in tqdm(range(1)):
-            d = self.nertrainreader[0]
+            d = self.nertrainreader[5]
             tokens = d[0]
             sent_lens = d[2][0]
             ner_inds = d[2][2]

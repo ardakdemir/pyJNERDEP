@@ -14,6 +14,17 @@ import logging
 import time
 import random
 
+def get_orthographic_feat(token):
+    if token==ROOT or token==UNK or token==PAD:
+        return 3
+    if token.isupper():
+        return 2
+    if token.istitle():
+        return 1 
+    if token.islower():
+        return 0
+    return 0
+
 def bert2token(my_tokens, bert_tokens, bert_ind = 1):
     inds = []
     token_sum =""
@@ -251,8 +262,11 @@ class DepDataset(Dataset):
         bert2toks = []
         masks = torch.ones(tok_inds.shape,dtype=torch.bool)
         i = 0
+        cap_types = []
         for sent, l in zip(batch,lens):
             my_tokens = [x[0] for x in sent]
+            cap = [get_orthographic_feat(x[0]) for x in sent]
+            cap_types.append(torch.tensor(cap))
             masks[i,:l] = torch.tensor([0]*l,dtype=torch.bool)    
             sentence = " ".join(my_tokens)
             bert_tokens = self.bert_tokenizer.tokenize(sentence)
@@ -274,8 +288,9 @@ class DepDataset(Dataset):
             sent in bert_batch_after_padding])
         bert_seq_ids = torch.LongTensor([[1 for i in range(len(bert_batch_after_padding[0]))]\
             for j in range(len(bert_batch_after_padding))])
-        return tokens, torch.tensor(lens),masks, tok_inds, pos, dep_inds, dep_rels,\
-            bert_batch_after_padding, bert_batch_ids,  bert_seq_ids, bert2toks
+        
+        return tokens,bert_batch_after_padding, torch.tensor(lens),masks, tok_inds, pos, dep_inds, dep_rels,\
+        bert_batch_ids,  bert_seq_ids, bert2toks, torch.stack(cap_types)
 
 if __name__=="__main__":
     depdataset = DepDataset("../../datasets/tr_imst-ud-train.conllu", batch_size = 300)

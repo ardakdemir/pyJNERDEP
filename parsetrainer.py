@@ -22,14 +22,14 @@ from pytorch_transformers import *
 from parser.parsereader import *
 from parser.parser import *
 
-from utils import score, conll_writer, unsort_dataset, sort_dataset
+from parser.utils import score, conll_writer, unsort_dataset, sort_dataset
 import sys
 import logging
 import time
 
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-logging.basicConfig(level=logging.DEBUG,handlers= [logging.FileHandler('reader.log','w','utf-8')], format='%(levelname)s - %(message)s')
+logging.basicConfig(level=logging.DEBUG,handlers= [logging.FileHandler('parsing.log','w','utf-8')], format='%(levelname)s - %(message)s')
 
 class DepTrainer:
     def __init__(self,args, dataset, load_file = None):
@@ -56,7 +56,7 @@ class DepTrainer:
                          lr=2e-5)
         self.optimizer = optim.SGD([{"params":self.parser.bilstm.parameters()},\
             {"params": self.parser.dep_rel.parameters()},\
-            {"params":self.parser.unlabeled.parameters()}], lr=0.1,weight_decay=0.001)    
+            {"params":self.parser.unlabeled.parameters()}, {"params": self.parser.pos_embed.parameters()}], lr=0.1,weight_decay=0.001)    
     
     
     def forward(self,batch,train=True):
@@ -114,8 +114,9 @@ class DepTrainer:
         start_id = orig_idx[0]
         for x in tqdm(range(len(dataset)),desc = "Evaluation"):
             batch = dataset[x]
-            sent_lens = batch[1]
+            sent_lens = batch[2]
             tokens = batch[0]
+            
             preds = self.forward(batch,train=False)
             heads, dep_rels , output = self.parser.decode(preds[0], preds[1], sent_lens,verbose=True)
             for outs,sent,l in zip(output,tokens,sent_lens):
@@ -139,8 +140,8 @@ def main(args = None):
     
     print("Working on : {}".format(device))
     
-    file_name = "../../../datasets/tr_imst-ud-train.conllu"
-    val_name = "../../../datasets/tr_imst-ud-dev.conllu"
+    file_name = "../../datasets/tr_imst-ud-train.conllu"
+    val_name = "../../datasets/tr_imst-ud-dev.conllu"
     args = {"pos_dim" : 50}
     depdataset = DepDataset(file_name,batch_size = 300)
     dep_valid = DepDataset(val_name,batch_size = 300 , vocabs=depdataset.vocabs, for_eval=True)
@@ -149,7 +150,9 @@ def main(args = None):
     
     EPOCH =  30
     L = len(depdataset)
-
+    logging.info("Pos vocab nasil ")
+    logging.info(depdataset.vocabs['pos_vocab'].w2ind)
+    logging.info(depdataset.vocabs['dep_vocab'].w2ind)
     for i in tqdm(range(EPOCH),desc= "Epochs"):
         train_loss = 0
         ex = 0

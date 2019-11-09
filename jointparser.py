@@ -60,14 +60,20 @@ class JointParser(nn.Module):
         self.drop_prob = self.args['drop_prob']
         self.lstm_input_dim = self.args['lstm_input_size'] + self.pos_dim
         self.lstm_hidden = self.args['lstm_hidden']
-        self.bilstm  = nn.LSTM(self.lstm_input_dim,self.lstm_hidden, bidirectional=True, num_layers=1, batch_first=True)
-        self.dropout = nn.Dropout(self.drop_prob)
+        self.parserlstm  = nn.LSTM(self.lstm_input_dim,self.lstm_hidden, bidirectional=True, num_layers=1, batch_first=True)
+        self.dropout = nn.Dropout(0.2)
         
         self.unlabeled = DeepBiaffineScorer(2*self.lstm_hidden,2*self.lstm_hidden,self.biaffine_hidden,1,pairwise=True)
         self.dep_rel = DeepBiaffineScorer(2*self.lstm_hidden,2*self.lstm_hidden, self.biaffine_hidden, self.num_cat,pairwise=True)
         
         self.dep_rel_crit = nn.CrossEntropyLoss(ignore_index=0, reduction= 'sum')## ignore paddings
         self.dep_ind_crit = nn.CrossEntropyLoss(ignore_index=-1, reduction = 'sum')## ignore paddings at -1 including root
+    
+        
+        self.optimizer = optim.SGD([{"params":self.parserlstm.parameters()},\
+            {"params": self.dep_rel.parameters()},\
+            {"params":self.unlabeled.parameters()}, {"params": self.pos_embed.parameters()}],\
+             lr=0.1,weight_decay=0.001)    
     
     
     def decode(self,edge_preds, label_preds, sent_lens, verbose=False):
@@ -117,18 +123,14 @@ class JointParser(nn.Module):
         ## if ner epoch we must get pos_ids from somewhere like a separate model
         pos_embeds = self.pos_embed(pos_ids)
         x = torch.cat([bert_out,pos_embeds],dim=2)
-        print(x.shape)
         #packed_sequence = pack_padded_sequence(bert_out,sent_lens, batch_first=True) 
         packed_sequence = pack_padded_sequence(x,sent_lens, batch_first=True)
-        lstm_out, hidden = self.bilstm(packed_sequence)
+        lstm_out, hidden = self.parserlstm(packed_sequence)
         unpacked, _ = pad_packed_sequence(lstm_out,batch_first=True)
-        
+        #unpacked = self.dropout(unpacked)
         unlabeled_scores = self.unlabeled(unpacked,unpacked).squeeze(3)
         deprel_scores  = self.dep_rel(unpacked,unpacked) 
         preds = []
-        print(deprel_scores.shape)
-        print(unlabeled_scores.shape)
-
         if dep and training:
             diag = torch.eye(heads.size()[1]).to(self.device)
             diag = diag.bool()
@@ -137,9 +139,19 @@ class JointParser(nn.Module):
             head_scores = torch.gather(deprel_scores,2,heads.unsqueeze(2).\
                 unsqueeze(3).expand(-1,-1,1,self.num_cat)).squeeze(2).transpose(1,2)
                 #.view(batch_size, self.num_cat,word_size)
+            with torch.no_grad():
+                #set [PAD] [ROOT] predictions to -infinity
+                mask = torch.zeros(deprel_scores.size(),dtype=torch.long).to(self.args['device'])
+                mask[:,:,:,:2] = 1 
+                mask = mask.bool()
+                deprel_save = deprel_scores.clone()
+                deprel_save = deprel_save.masked_fill(mask,-float('inf'))
+                preds.append(F.log_softmax(unlabeled_scores,2).detach().cpu().numpy())
+                preds.append(torch.argmax(deprel_save,dim = 3).detach().cpu().numpy())
             heads_ = heads.masked_fill(masks,-1)            
             deprel_loss = self.dep_rel_crit(head_scores,dep_rels)
             depind_loss = self.dep_ind_crit(unlabeled_scores[:,1:].transpose(1,2),heads_[:,1:])
+            logging.info("deprel loss {} depind loss {} ".format(deprel_loss,depind_loss))
             loss = deprel_loss + depind_loss
             return preds, loss
         else:
@@ -151,7 +163,7 @@ class JointParser(nn.Module):
                 deprel_save = deprel_scores.clone()
                 deprel_save = deprel_save.masked_fill(mask,-float('inf'))
                 preds = []
-                preds.append(F.log_softmax(unlabeled_scores,2).detach().cpu().numpy())
+                preds.append(torch.argmax(unlabeled_scores,dim = 2).detach().cpu().numpy())
                 preds.append(torch.argmax(deprel_save,dim = 3).detach().cpu().numpy())
                 #preds.append(deprel_save)
             return preds, 0
