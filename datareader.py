@@ -21,6 +21,7 @@ def all_num(token):
         if c not in n:
             return False
     return True
+
 def get_orthographic_feat(token):
     if token==START_TAG or token==END_TAG or token==PAD:
         return 5
@@ -55,10 +56,11 @@ class DataReader():
         self.file_path = file_path
         self.task_name = task_name
         self.batch_size = batch_size
-        self.dataset, self.orig_idx , self.label_counts = self.get_dataset()
+        self.dataset, self.orig_idx , self.label_counts, self.pos_counts = self.get_dataset()
         print("Dataset size : {}".format(len(self.dataset)))
         self.data_len = len(self.dataset)
-        self.l2ind, self.word2ind, self.vocab_size = self.get_vocabs()
+        self.pos2ind, self.l2ind, self.word2ind, self.vocab_size = self.get_vocabs()
+        self.pos_voc = Vocab(self.pos2ind)
         self.label_voc = Vocab(self.l2ind)
         self.word_voc = Vocab(self.word2ind)
         self.batched_dataset, self.sentence_lens = group_into_batch(self.dataset,batch_size = self.batch_size)
@@ -97,26 +99,31 @@ torch.tensor([seq_ids],dtype=torch.long), torch.tensor(bert2tok), lab])
     def get_vocabs(self):
         l2ind = {PAD : PAD_IND, START_TAG:START_IND, END_TAG: END_IND }
         word2ix = {PAD : PAD_IND, START_TAG:START_IND, END_TAG: END_IND }
+        pos2ind = {PAD : PAD_IND, START_TAG:START_IND, END_TAG: END_IND }
         print(self.label_counts)
         
         for x in self.label_counts:
             l2ind[x] = len(l2ind)
+        for x in self.pos_counts:
+            pos2ind[x] = len(pos2ind)
+
         for sent in self.dataset:
             for word in sent:
                 if word[0] not in word2ix:
                     word2ix[word[0]]=len(word2ix)
         vocab_size = len(word2ix)
-        return l2ind, word2ix, vocab_size
+        return pos2ind, l2ind, word2ix, vocab_size
 
     def get_dataset(self):
         dataset = open(self.file_path,encoding='utf-8').readlines()
         new_dataset = []
         sent = []
         label_counts = Counter()
+        pos_counts = Counter()
         for line in dataset:
             if line.rstrip()=='':
                 if len(sent)>0:
-                    sent.append([END_TAG, END_TAG , END_TAG ])
+                    sent.append([END_TAG, END_TAG , END_TAG, END_TAG ])
                     new_dataset.append(sent)
                     sent = []
             else:
@@ -124,13 +131,14 @@ torch.tensor([seq_ids],dtype=torch.long), torch.tensor(bert2tok), lab])
                 row[0] = row[0].replace("\ufeff","")
                 sent.append(row)
                 label_counts.update([row[-1]])
+                pos_counts.update([row[-2]])
         if len(sent)>0:
-            sent.append([END_TAG, END_TAG , END_TAG ])
+            sent.append([END_TAG, END_TAG, END_TAG , END_TAG ])
             new_dataset.append(sent)
         
         new_dataset, orig_idx = sort_dataset(new_dataset, sort = True)
         
-        return new_dataset, orig_idx, label_counts
+        return new_dataset, orig_idx, label_counts, pos_counts
 
     def get_next_data(sent_inds, data_len=-1,feats = True, padding=False):
         sents, labels = self.get_sents(sent_inds, feats = feats)
@@ -226,15 +234,18 @@ torch.tensor([seq_ids],dtype=torch.long), torch.tensor(bert2tok), lab])
         lens = self.sentence_lens[idx]
         tok_inds = []
         ner_inds = []
+        pos_inds = []
         tokens = []
         for x in batch:
-            toks, feats, labels = zip(*x) ##unzip the batch
+            toks, feats,poss, labels = zip(*x) ##unzip the batch
             tokens.append(toks)
+            pos_inds.append(self.pos_voc.map(poss))
             tok_inds.append(self.word_voc.map(toks))
             ner_inds.append(self.get_1d_targets(self.label_voc.map(labels)))
-        assert len(tok_inds)== len(ner_inds) == len(tokens) == len(batch)
+        assert len(tok_inds)== len(ner_inds) == len(tokens) == len(batch) == len(pos_inds)
         tok_inds = torch.LongTensor(tok_inds)
         ner_inds = torch.LongTensor(ner_inds)
+        ner_inds = torch.LongTensor(pos_inds)
         bert_batch_before_padding = []
         bert_lens = []
         max_bert_len = 0
@@ -261,7 +272,7 @@ torch.tensor([seq_ids],dtype=torch.long), torch.tensor(bert2tok), lab])
             sent in bert_batch_after_padding])
         bert_seq_ids = torch.LongTensor([[1 for i in range(len(bert_batch_after_padding[0]))]\
             for j in range(len(bert_batch_after_padding))])
-        data = torch.tensor(lens), tok_inds, ner_inds, bert_batch_ids,  bert_seq_ids, torch.tensor(bert2tokens_padded,dtype=torch.long) , torch.stack(cap_types)
+        data = torch.tensor(lens), tok_inds, ner_inds, pos_inds, bert_batch_ids,  bert_seq_ids, torch.tensor(bert2tokens_padded,dtype=torch.long) , torch.stack(cap_types)
         return tokens, bert_batch_after_padding, data 
 if __name__ == "__main__":
     data_path = '../datasets/turkish-ner-train.tsv'

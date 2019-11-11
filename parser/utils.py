@@ -83,6 +83,79 @@ def score(system_conllu_file, gold_conllu_file, verbose=True):
 
 
 
+def extract_pos_from_morp(pos_dict,word, morp, unk_ind):
+    morp = morp.split("+")
+    morp.reverse()
+    found=False
+    for x in morp:
+        if x in pos_dict:
+            found = True
+            return pos_dict[x]
+        elif x[:-1] in pos_dict:
+            found = True
+            return pos_dict[x[:-1]]
+        if x == "*UNKNOWN*":
+            found = True
+            return pos_dict[unk_ind]
+        elif x == "Num":
+            return pos_dict['NNum']
+        elif x == "Adv":
+            return pos_dict['Adverb']
+        elif x == "PersP":
+            return pos_dict['Pers'] 
+            found = True
+        elif word=="km" or word=="m":
+            return pos_dict['Noun']
+        elif word=='satın':
+            return pos_dict['Adv']
+            found = True
+    if not found:
+        print(f[i-2])
+        print(f[i-1])
+        print(line)
+        print(f[i+1])
+        print(f[i+2])
+        c+=1
+    return unk_ind       
+
+
+def extract_pos_ner(pos_dict, ner_file):
+    posdict = {}
+    f = open(ner_file,encoding='utf-8').read().rstrip().split("\n")
+    c = 0
+    for i, line in enumerate(f):
+        if line=="":
+            continue
+        ls = line.split()
+        morp = ls[1].split("+")
+        morp.reverse()
+        found=False
+        for x in morp:
+            if x in pos_dict:
+                found = True
+                if x not in posdict:
+                    posdict[x]=len(posdict)
+                break
+            elif x[:-1] in pos_dict:
+                if x[:-1] not in posdict:
+                    posdict[x] = len(posdict)
+                found = True
+            if x == "*UNKNOWN*":
+                found = True
+            elif x == "Num" or x=="Adv" or x=="PersP":
+                found = True
+            elif ls[0]=="km" or ls[0]=="satın" or ls[0]=="m":
+                found = True
+        if not found:
+            print(f[i-2])
+            print(f[i-1])
+            print(line)
+            print(f[i+1])
+            print(f[i+2])
+            c+=1
+    return posdict,c       
+
+
 
 def conll_writer(file_name, content, field_names, task_name,verbose=False):
     out = open(file_name,'w',encoding = 'utf-8')

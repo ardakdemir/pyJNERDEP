@@ -280,7 +280,7 @@ class JointTrainer:
             inputs = []
             for d in data:
                 inputs.append(d.to(self.device))
-            sent_lens, tok_inds, ner_inds,\
+            sent_lens, tok_inds, ner_inds,pos_inds\
                  bert_batch_ids,  bert_seq_ids, bert2toks, cap_inds = inputs
             features = self.jointmodel.base_model(bert_batch_ids, bert_seq_ids, bert2toks, cap_inds, sent_lens) 
             return features
