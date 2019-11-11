@@ -40,7 +40,7 @@ def bert2token(my_tokens, bert_tokens, bert_ind = 1):
                 token_sum+=token
             inds.append(ind)
             bert_ind+=1
-        assert len(token_sum)==len(my_token), logging.info(my_tokens)
+        assert len(token_sum)==len(my_token), logging.info("{} {} {} {}".format(my_token, token_sum,my_tokens,bert_tokens))
         token_sum=""
 
     return inds, ind+1
@@ -234,6 +234,8 @@ class DepDataset(Dataset):
         #random.shuffle(x)
         #idx = x[idx]
         #print(idx)
+        idx = np.random.randint(len(self.dataset))
+        idx = idx% len(self.dataset)
         batch = self.dataset[idx]
         lens = self.sent_lens[idx]
         ## create the bert tokens and pad each sentence to match the longest

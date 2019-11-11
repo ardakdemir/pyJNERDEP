@@ -21,7 +21,7 @@ import logging
 from pytorch_transformers import *
 
 from datareader import DataReader, START_TAG, END_TAG, PAD_IND, START_IND, END_IND
-
+from hlstm import HighwayLSTM
 
 
 class JointNer(nn.Module):
@@ -34,26 +34,30 @@ class JointNer(nn.Module):
         self.device = self.args['device']
         
         #self.vocab_size = vocab_size
-        self.drop_prob = self.args['drop_prob']
+        self.lstm_drop = self.args['lstm_drop'] 
         
-        self.lstm_input_size = self.args['lstm_input_size']
+        self.lstm_input_dim = self.args['lstm_input_size']
         self.lstm_hidden = self.args['lstm_hidden']
         self.lstm_layers = self.args['lstm_layers']
         self.lr = self.args['ner_lr']
+        self.weight_decay = self.args['weight_decay']
         #self.cap_embeds  = nn.Embedding(self.cap_types,self.cap_dim)
         #self.word_embeds = nn.Embedding(self.vocab_size, self.w_dim)
         
-        self.nerlstm  = nn.LSTM(self.lstm_input_size, self.lstm_hidden, bidirectional=True, num_layers=self.lstm_layers, batch_first=True) 
+        self.nerlstm  = nn.LSTM(self.lstm_input_dim, self.lstm_hidden, bidirectional=True, num_layers=self.lstm_layers, batch_first=True) 
         
+        self.highwaylstm = HighwayLSTM(self.lstm_input_dim,self.lstm_hidden, bidirectional=True,num_layers=self.lstm_layers,batch_first=True,dropout=self.lstm_drop,pad=True )
+
         self.crf = CRF(self.lstm_hidden*2, self.num_cat,self.device)
         self.crf_loss = CRFLoss(args,device =self.device)
         
-        self.dropout = nn.Dropout(self.drop_prob)
-        self.drop_replacement = nn.Parameter(torch.randn(self.lstm_input_size) / np.sqrt(self.lstm_input_size))
+        self.dropout = nn.Dropout(self.lstm_drop)
+        self.drop_replacement = nn.Parameter(torch.randn(self.lstm_input_dim) / np.sqrt(self.lstm_input_dim))
     
-        self.ner_optimizer = optim.SGD([{"params": self.nerlstm.parameters()},\
+        self.ner_optimizer = optim.AdamW([{"params": self.nerlstm.parameters()},\
+        {"params": self.highwaylstm.parameters()},\
         {"params":self.crf.parameters()}],\
-        lr=self.lr, weight_decay = 1e-3)
+        lr=self.lr, weight_decay = self.weight_decay, betas=(0.9,self.args['beta2']), eps=1e-6)
 
     def batch_viterbi_decode(self,feats,sent_lens):
         paths = []
@@ -65,6 +69,7 @@ class JointNer(nn.Module):
             paths.append(path)
             scores.append(score)
         return paths, scores
+    
     def _viterbi_decode(self,feats,sent_len):
         start_ind = START_IND
         end_ind = END_IND
@@ -105,12 +110,14 @@ class JointNer(nn.Module):
 
     def _get_feats(self, bert_out, sent_lens):
 
-        bert_out = self.dropout(bert_out)
         padded = pack_padded_sequence(bert_out,sent_lens, batch_first=True)
-        lstm_out,_ = self.nerlstm(padded)
-        unpacked , _ = pad_packed_sequence(lstm_out, batch_first=True)
-        return self.dropout(unpacked)
-
+        #lstm_out,_ = self.nerlstm(padded)
+        highway_out, _ = self.highwaylstm(bert_out,sent_lens)
+        #unpacked , _ = pad_packed_sequence(lstm_out, batch_first=True)
+        return self.dropout(highway_out)
+        
+        #return self.dropout(unpacked)
+        #return unpacked
     
 
     def loss(self,crf_scores, ner_inds, sent_lens):

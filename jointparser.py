@@ -21,7 +21,7 @@ from pdb import set_trace
 import unidecode
 from pytorch_transformers import *
 
-
+from hlstm import HighwayLSTM
 from parser.parsereader import *
 from parser.biaffine import *
 from parser.decoder import *
@@ -56,24 +56,37 @@ class JointParser(nn.Module):
         self.device = self.args['device']
         self.pos_dim = self.args['pos_dim']
         self.pos_embed = nn.Embedding(self.args['pos_vocab_size'], self.args['pos_dim'], padding_idx=0)
-        
-        self.drop_prob = self.args['drop_prob']
+       
+        self.dep_lr = self.args['dep_lr']
+        self.weight_decay = self.args['weight_decay']
+        self.pos_drop = self.args['word_drop']
+        self.lstm_drop = self.args['lstm_drop']
+        self.parser_drop = self.args['parser_drop']
+        self.lstm_layers = self.args['lstm_layers']
         self.lstm_input_dim = self.args['lstm_input_size'] + self.pos_dim
         self.lstm_hidden = self.args['lstm_hidden']
-        self.parserlstm  = nn.LSTM(self.lstm_input_dim,self.lstm_hidden, bidirectional=True, num_layers=1, batch_first=True)
-        self.dropout = nn.Dropout(0.2)
         
-        self.unlabeled = DeepBiaffineScorer(2*self.lstm_hidden,2*self.lstm_hidden,self.biaffine_hidden,1,pairwise=True)
-        self.dep_rel = DeepBiaffineScorer(2*self.lstm_hidden,2*self.lstm_hidden, self.biaffine_hidden, self.num_cat,pairwise=True)
+        
+        self.parserlstm  = nn.LSTM(self.lstm_input_dim,self.lstm_hidden, bidirectional=True, num_layers=self.lstm_layers, batch_first=True)
+        self.highwaylstm = HighwayLSTM(self.lstm_input_dim,self.lstm_hidden, bidirectional=True,num_layers=self.lstm_layers,batch_first=True,dropout=self.lstm_drop,pad=True )
+        
+        
+        self.pos_dropout = nn.Dropout(self.pos_drop)
+        self.lstm_dropout = nn.Dropout(self.lstm_drop)
+        self.parser_dropout = nn.Dropout(self.parser_drop)
+        
+        self.unlabeled = DeepBiaffineScorer(2*self.lstm_hidden,2*self.lstm_hidden,self.biaffine_hidden,1,pairwise=True,dropout=self.parser_drop)
+        self.dep_rel = DeepBiaffineScorer(2*self.lstm_hidden,2*self.lstm_hidden, self.biaffine_hidden, self.num_cat,pairwise=True,dropout=self.parser_drop)
         
         self.dep_rel_crit = nn.CrossEntropyLoss(ignore_index=0, reduction= 'sum')## ignore paddings
         self.dep_ind_crit = nn.CrossEntropyLoss(ignore_index=-1, reduction = 'sum')## ignore paddings at -1 including root
     
         
-        self.optimizer = optim.SGD([{"params":self.parserlstm.parameters()},\
+        self.optimizer = optim.AdamW([{"params":self.parserlstm.parameters()},\
             {"params": self.dep_rel.parameters()},\
+            {"params": self.highwaylstm.parameters()},\
             {"params":self.unlabeled.parameters()}, {"params": self.pos_embed.parameters()}],\
-             lr=0.1,weight_decay=0.001)    
+             lr=self.dep_lr,weight_decay=self.weight_decay, betas=(0.9,self.args['beta2']), eps=1e-6)    
     
     
     def decode(self,edge_preds, label_preds, sent_lens, verbose=False):
@@ -121,15 +134,21 @@ class JointParser(nn.Module):
         ## may consider multi-learning this one as well!!
         ## if dependency epoch we have pos tags so use this information as well
         ## if ner epoch we must get pos_ids from somewhere like a separate model
-        pos_embeds = self.pos_embed(pos_ids)
+        pos_embeds = self.pos_dropout(self.pos_embed(pos_ids))
         x = torch.cat([bert_out,pos_embeds],dim=2)
         #packed_sequence = pack_padded_sequence(bert_out,sent_lens, batch_first=True) 
         packed_sequence = pack_padded_sequence(x,sent_lens, batch_first=True)
-        lstm_out, hidden = self.parserlstm(packed_sequence)
-        unpacked, _ = pad_packed_sequence(lstm_out,batch_first=True)
-        #unpacked = self.dropout(unpacked)
+        
+        #lstm_out, hidden = self.parserlstm(packed_sequence)
+        highway_out,_ = self.highwaylstm(x,sent_lens)
+        #logging.info(highway_out.shape)
+        unpacked = self.lstm_dropout(highway_out)
+        #unpacked, _ = pad_packed_sequence(lstm_out,batch_first=True)
+        #unpacked = self.lstm_dropout(unpacked)
+        
         unlabeled_scores = self.unlabeled(unpacked,unpacked).squeeze(3)
         deprel_scores  = self.dep_rel(unpacked,unpacked) 
+        
         preds = []
         if dep and training:
             diag = torch.eye(heads.size()[1]).to(self.device)
@@ -151,7 +170,6 @@ class JointParser(nn.Module):
             heads_ = heads.masked_fill(masks,-1)            
             deprel_loss = self.dep_rel_crit(head_scores,dep_rels)
             depind_loss = self.dep_ind_crit(unlabeled_scores[:,1:].transpose(1,2),heads_[:,1:])
-            logging.info("deprel loss {} depind loss {} ".format(deprel_loss,depind_loss))
             loss = deprel_loss + depind_loss
             return preds, loss
         else:

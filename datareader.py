@@ -15,9 +15,18 @@ END_TAG   = "[EOS]"
 START_IND = 1
 END_IND = 2
 
-
+def all_num(token):
+    n = "0123456789."
+    for c in token:
+        if c not in n:
+            return False
+    return True
 def get_orthographic_feat(token):
     if token==START_TAG or token==END_TAG or token==PAD:
+        return 5
+    if "'" in token:
+        return 4
+    if all_num(token):
         return 3
     if token.isupper():
         return 2
@@ -112,6 +121,7 @@ torch.tensor([seq_ids],dtype=torch.long), torch.tensor(bert2tok), lab])
                     sent = []
             else:
                 row = line.rstrip().split()
+                row[0] = row[0].replace("\ufeff","")
                 sent.append(row)
                 label_counts.update([row[-1]])
         if len(sent)>0:
@@ -210,6 +220,8 @@ torch.tensor([seq_ids],dtype=torch.long), torch.tensor(bert2tok), lab])
         """
         if torch.is_tensor(idx):
             idx = idx.tolist()
+        idx = np.random.randint(len(self.batched_dataset))
+        idx = idx%len(self.batched_dataset)
         batch = self.batched_dataset[idx]
         lens = self.sentence_lens[idx]
         tok_inds = []

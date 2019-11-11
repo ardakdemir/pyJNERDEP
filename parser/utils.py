@@ -7,6 +7,44 @@ dicts = {"dep": dep_dict, "ner":ner_dict}
 
 
 
+def convert2IOB2new(input_file, output_file):
+    a = open(input_file,encoding="utf-8").readlines()
+    out = open(output_file,"w",encoding="utf-8")
+    prev_tag_1 = "O"
+    prev_tag_2 = "O"
+    for line in a:
+        if len(line)>2:
+            ls = line.split()
+            line = ls
+            new_line = ""
+            if ls[-2]!="O":
+                if ls[-2][2:]!=prev_tag_2:
+                    new_line = line[:-2] + ["B-"+ls[-2][2:]]
+                else:
+                    new_line = line[:-2] + ["I-"+ls[-2][2:]]
+                if ls[-1]!="O":
+                    if ls[-1][2:]!=prev_tag_1:
+                        new_line = new_line + ["B-"+ls[-1][2:]]
+                    else:
+                        new_line = new_line + [ls[-1]]
+                else:
+                    new_line = new_line + [ls[-1]]
+            elif ls[-1]!="O":
+                new_line = line[:-1]
+                if ls[-1][2:]!=prev_tag_1:
+                    new_line = new_line + ["B-"+ls[-1][2:]]
+                else:
+                    new_line = new_line + [ls[-1]]
+            else:
+                new_line = line
+            out.write("{}\n".format("\t".join([l for l in new_line])))
+            prev_tag_1 = ls[-1][2:]
+            prev_tag_2 = ls[-2][2:]
+        else:
+            prev_tag = "O"
+            out.write("\n")
+
+
 def convert2IOB2(input_file, output_file):
     a = open(input_file,encoding="utf-8").readlines()
     out = open(output_file,"w",encoding="utf-8")
@@ -103,5 +141,4 @@ def unsort_dataset(dataset,orig_idx):
     dataset , _ = list(zip(*(zipped)))
     return dataset
 if __name__ == "__main__":
-
-    out_name = 'dependency_out.conllu'
+    convert2IOB2_new('joint_ner_out.txt','iobnerout')

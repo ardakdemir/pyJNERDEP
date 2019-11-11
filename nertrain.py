@@ -245,11 +245,11 @@ def ner_train(data_path, val_path, save_path, load = True, gpu = True):
         logging.info("Model loaded %s"%save_path)
         model.load_state_dict(torch.load(save_path))
 
-    optimizer = optim.SGD([{"params": model.fc.parameters()},\
+    optimizer = optim.AdamW([{"params": model.fc.parameters()},\
         {"params": model.bilstm.parameters()},\
         {"params": model.cap_embeds.parameters()},\
         {"params":model.crf.parameters()}],\
-        lr=0.01, weight_decay = 1e-4)
+        lr=3e-4, weight_decay = 0.01)
     param_optimizer = list(model.bert_model.named_parameters())
     no_decay = ['bias', 'gamma', 'beta']
     optimizer_grouped_parameters = [
@@ -260,7 +260,7 @@ def ner_train(data_path, val_path, save_path, load = True, gpu = True):
      ]
     bert_optimizer =AdamW(optimizer_grouped_parameters,
                      lr=2e-5)
-    EPOCH = 10
+    EPOCH = 20
     B_S = 1
     best_loss = -1
     best_model = 0
@@ -351,9 +351,9 @@ if __name__ == "__main__":
     args = sys.argv
     gpu =args[1]
     load = args[2]
-    save_path = "../best_model_batch300_test.pth"
-    data_path = '../../datasets/turkish-ner-train.tsv'
-    val_path = '../../datasets/turkish-ner-test.tsv'
+    save_path = "../best_model_yenitest.pth"
+    data_path = '../../datasets/yenitrain.txt'
+    val_path = '../../datasets/yenitest.txt'
     #ner_train(data_path, val_path, save_path, load = int(load), gpu = int(gpu))
     nertrainer = NERTrainer(data_path, val_path, save_path, gpu = int(gpu), load = int(load))
     nertrainer.train()
