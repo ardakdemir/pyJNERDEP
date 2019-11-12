@@ -36,7 +36,7 @@ ROOT = "[ROOT]"
 ROOT_IND = 1
 UNK = "[UNK]"
 UNK_IND = 3
-END_TAG = "[END]"
+END_TAG = "[EOS]"
 END_IND = 2
 ## not sure if root is needed at this stage
 VOCAB_PREF = {PAD : PAD_IND, ROOT : ROOT_IND,END_TAG:END_IND}

@@ -93,10 +93,10 @@ def parse_args():
     parser.add_argument('--char_num_layers', type=int, default=1)
     parser.add_argument('--pretrain_max_vocab', type=int, default=-1)
     
-    parser.add_argument('--word_drop', type=float, default=0.25)
-    parser.add_argument('--lstm_drop', type=float, default=0.40)
-    parser.add_argument('--crf_drop', type=float, default=0.20)
-    parser.add_argument('--parser_drop', type=float, default=0.35)
+    parser.add_argument('--word_drop', type=float, default=0.0)
+    parser.add_argument('--lstm_drop', type=float, default=0.0)
+    parser.add_argument('--crf_drop', type=float, default=0.0)
+    parser.add_argument('--parser_drop', type=float, default=0.0)
     
     parser.add_argument('--rec_dropout', type=float, default=0, help="Recurrent dropout")
     parser.add_argument('--char_rec_dropout', type=float, default=0, help="Recurrent dropout")
@@ -107,15 +107,16 @@ def parse_args():
 
     parser.add_argument('--sample_train', type=float, default=1.0, help='Subsample training data.')
     parser.add_argument('--optim', type=str, default='adam', help='sgd, adagrad, adam or adamax.')
-    parser.add_argument('--ner_lr', type=float, default=3e-4, help='Learning rate')
-    parser.add_argument('--dep_lr', type=float, default=3e-4, help='Learning rate')
-    parser.add_argument('--lr_decay', type=float, default=0.90, help='Learning rate')
+    parser.add_argument('--ner_lr', type=float, default=3e-4, help='Learning rate for ner lstm')
+    parser.add_argument('--embed_lr', type=float, default=0.1, help='Learning rate for embeddiing')
+    parser.add_argument('--dep_lr', type=float, default=3e-4, help='Learning rate dependency lstm')
+    parser.add_argument('--lr_decay', type=float, default=0.990, help='Learning rate decay')
     
     parser.add_argument('--beta2', type=float, default=0.95)
-    parser.add_argument('--weight_decay', type=float, default=1)
+    parser.add_argument('--weight_decay', type=float, default=0.90)
     
-    parser.add_argument('--max_steps', type=int, default=200)
-    parser.add_argument('--eval_interval', type=int, default=100)
+    parser.add_argument('--max_steps', type=int, default=9000)
+    parser.add_argument('--eval_interval', type=int, default=300)
     parser.add_argument('--max_steps_before_stop', type=int, default=3000)
     parser.add_argument('--batch_size', type=int, default=500)
     parser.add_argument('--max_grad_norm', type=float, default=1.0, help='Gradient clipping.')
@@ -179,10 +180,11 @@ class BaseModel(nn.Module):
         self.dropout = nn.Dropout(self.word_drop)
         
 
-        self.embed_optimizer = optim.AdamW([
-        {"params": self.cap_embeds.parameters()}],\
-        lr=self.args['ner_lr'], weight_decay = self.weight_decay, betas=(0.9,self.args['beta2']), eps=1e-6)
-    
+        self.embed_optimizer = optim.SGD([
+        {"params": self.cap_embeds.parameters()},\
+        {"params": self.pos_embeds.parameters()}],\
+        lr=self.args['embed_lr'], weight_decay = self.weight_decay, )
+            #betas=(0.9,self.args['beta2']), eps=1e-6 
         param_optimizer = list(self.bert_model.named_parameters())
         no_decay = ['bias', 'gamma', 'beta']
         optimizer_grouped_parameters = [
@@ -291,19 +293,6 @@ class JointTrainer:
             sent_lens, masks, tok_inds, ner_inds, pos_inds,\
                  bert_batch_ids,  bert_seq_ids, bert2toks, cap_inds = inputs
             features = self.jointmodel.base_model(pos_inds, bert_batch_ids, bert_seq_ids, bert2toks, cap_inds, sent_lens) 
-
-            logging.info("For a ner sentence what are the true lengths and input lengths : ")
-            logging.info("First two sentence lengths : {} {}".format(len(tokens[0]),len(tokens[-1])))
-            logging.info("Tok_inds shape : {} ".format(tok_inds.shape))
-            logging.info("pos_inds shape : {}".format(pos_inds.shape))
-            logging.info("Ilk tok inds nedir")
-            logging.info(tokens[0])
-            logging.info(tok_inds[0])
-            logging.info(tokens[-1])
-            logging.info(tok_inds[-1])
-            logging.info("Pos inids nedir")
-            logging.info(pos_inds[0])
-            logging.info(pos_inds[-1])
             return features
         if task=="DEP": 
             tokens, bert_batch_after_padding = batch[0], batch[1]
@@ -327,7 +316,8 @@ class JointTrainer:
         loss = loss/ self.args['batch_size']
         return loss 
     
-    def dep_forward(self,dep_batch):
+        
+    def dep_forward(self,dep_batch,task = "DEP"):
         bert_feats = self.forward(dep_batch,task="DEP")
         inputs = []
         for d in dep_batch[2:]:
@@ -335,11 +325,11 @@ class JointTrainer:
         sent_lens, masks, _, pos, dep_inds, dep_rels, \
             _ , _ , _ , _  = inputs
         tokens = dep_batch[0]
-        preds, dep_loss = self.jointmodel.depparser(masks,bert_feats,dep_inds, dep_rels, pos, sent_lens, training=True, dep=True)
+        preds, dep_loss, deprel_loss, depind_loss, acc, head_acc = self.jointmodel.depparser(masks,bert_feats, dep_inds, dep_rels, pos, sent_lens, training=True, task=task)
         #logging.info("Head predictions ")
         #logging.info(preds[0][-1])
         #logging.info(dep_inds[-1])
-        return dep_loss, preds
+        return dep_loss, preds, deprel_loss, depind_loss, acc, head_acc
     
     def ner_update(self,batch):
         
@@ -357,10 +347,7 @@ class JointTrainer:
         loss = loss/ self.args['batch_size']
         loss.backward()
         pos_inds = batch[2][4]
-        logging.info(self.nertrainreader.pos_vocab.unmap(pos_inds[-1]))
-        logging.info(self.nertrainreader.pos_vocab.w2ind)
-        logging.info("Son sentence length {} ".format(sent_lens[-1]))
-        
+         
         clip_grad_norm_(self.jointmodel.nermodel.parameters(),self.args['max_grad_norm'])
         clip_grad_norm_(self.jointmodel.base_model.parameters(),self.args['max_grad_norm'])
         
@@ -376,9 +363,10 @@ class JointTrainer:
         self.jointmodel.base_model.bert_optimizer.zero_grad()
         self.jointmodel.depparser.optimizer.zero_grad()
         
-        dep_loss,_ = self.dep_forward(dep_batch)
+        dep_loss,_,deprel_loss, depind_loss, acc, head_acc = self.dep_forward(dep_batch)
         dep_loss = dep_loss/self.args['batch_size']
-        
+        deprel_loss /=self.args['batch_size']
+        depind_loss /= self.args['batch_size']
         dep_loss.backward()
         
         clip_grad_norm_(self.jointmodel.base_model.parameters(),self.args['max_depgrad_norm'])
@@ -388,13 +376,13 @@ class JointTrainer:
         self.jointmodel.base_model.bert_optimizer.step()
         self.jointmodel.depparser.optimizer.step()
         
-        return dep_loss.item()
+        return dep_loss.item(), deprel_loss.item(), depind_loss.item(), acc
     
     def train(self):
         logging.info("Training on {} ".format(self.args['device']))
         logging.info("Dependency pos vocab : {} ".format(self.deptraindataset.vocabs['pos_vocab'].w2ind))
         logging.info("Dependency dep vocab : {} ".format(self.deptraindataset.vocabs['dep_vocab'].w2ind))
-        epoch = 30
+        epoch = self.args['max_steps']//self.args['eval_interval']
         self.jointmodel.train()
         best_ner_f1 = 0
         best_dep_f1 = 0
@@ -407,37 +395,48 @@ class JointTrainer:
         print(self.deptraindataset.vocabs['pos_vocab'].w2ind)
         print("Pos tag vocab for named entity dataset")
         print(self.nertrainreader.pos_vocab.w2ind)
+        print("Dep vocab for dependency dataset")
+        print(self.deptraindataset.vocabs['dep_vocab'].w2ind)
         for e in range(epoch):
             if e>0:
                 self.update_lr()
             train_loss = 0
             ner_losses = 0
             dep_losses = 0
-            for i in tqdm(range(self.args['max_steps'])):
+            depind_losses = 0
+            deprel_losses = 0
+            deprel_acc = 0
+            self.deptraindataset.for_eval=False
+            for i in tqdm(range(self.args['eval_interval'])):
                  
-                ner_batch = self.nertrainreader[i]
-                ner_loss = self.ner_update(ner_batch)
-                ner_losses += ner_loss
-                train_loss +=ner_loss
+                #ner_batch = self.nertrainreader[i]
+                #ner_loss = self.ner_update(ner_batch)
+                #ner_losses += ner_loss
+                #train_loss +=ner_loss
                 
-                #dep_batch = self.deptraindataset[i]
-                #dep_loss = self.dep_update(dep_batch)
-                #dep_losses += dep_loss
-                #train_loss +=dep_loss
-                
+                dep_batch = self.deptraindataset[0]
+                dep_loss,deprel_loss,depind_loss, acc = self.dep_update(dep_batch)
+                dep_losses += dep_loss
+                train_loss +=dep_loss
+                deprel_losses += deprel_loss
+                depind_losses += depind_loss
+                deprel_acc += acc
                 if i%10 == 9:
                     logging.info("Train loss average : {} after {} examples".format(train_loss/(i+1),i+1))
-                    logging.info("Ner loss average {} - dep loss average {} ".format(ner_losses/(i+1),dep_losses/(i+1)))
+                    logging.info("Ner loss average {} - dep loss average {} ".format(ner_losses/(i+1),dep_losses/(i+1)))    
+                    logging.info("Deprel losses {} depind losses {}".format(deprel_losses/(i+1),depind_losses/(i+1)))
+                    logging.info("Deprel prediction accuracy {} ".format(deprel_acc/(i+1)))
             logging.info("Results for epoch : {}".format(e+1))
             self.jointmodel.eval()
-            #dep_pre, dep_rec, dep_f1 = self.dep_evaluate()
-            ner_pre, ner_rec, ner_f1 = self.ner_evaluate()
-            #if dep_f1 > best_dep_f1:
-            #    self.save_model(self.args['save_dep_name'])
-            #    best_dep_f1 = dep_f1
-            if ner_f1 > best_ner_f1:
-                self.save_model(self.args['save_ner_name'])
-                best_ner_f1 = ner_f1
+            dep_pre, dep_rec, dep_f1 = self.dep_evaluate()
+            #ner_pre, ner_rec, ner_f1 = self.ner_evaluate()
+            print("Dependency Results -- f1 : {} ".format(dep_f1))
+            if dep_f1 > best_dep_f1:
+                self.save_model(self.args['save_dep_name'])
+                best_dep_f1 = dep_f1
+            #if ner_f1 > best_ner_f1:
+                #self.save_model(self.args['save_ner_name'])
+                #best_ner_f1 = ner_f1
             #if ner_f1 > best_ner_f1 and dep_f1 > best_dep_f1:
             #    self.save_model(self.args['save_name'])
             self.jointmodel.train()
@@ -460,12 +459,18 @@ class JointTrainer:
         gold_file = dataset.file_name
         pred_file = "pred_"+gold_file.split("/")[-1]    
         start_id = orig_idx[0]
+        #for x in tqdm(range(len(self.depvaldataset)),desc = "Evaluation"):
+        rel_accs = 0
+        head_accs = 0
         for x in tqdm(range(len(self.depvaldataset)),desc = "Evaluation"):
-            batch = dataset[x]
+            #batch = dataset[x]
+            batch = self.depvaldataset[x]
             sent_lens = batch[2]
             tokens = batch[0]
             
-            loss, preds = self.dep_forward(batch)
+            loss, preds, _ , _, rel_acc , head_acc = self.dep_forward(batch)
+            rel_accs += rel_acc
+            head_accs += head_acc
             heads, dep_rels , output = self.jointmodel.depparser.decode(preds[0], preds[1], sent_lens,verbose=True)
             for outs,sent,l in zip(output,tokens,sent_lens):
                 new_sent = []
@@ -473,10 +478,15 @@ class JointTrainer:
                 for pred,tok in zip(outs,sent[1:l]):
                     new_sent.append([tok]+pred)
                 data.append(new_sent)
-         
+        #print(orig_idx)
+        #print(len(data))
+        head_accs /= len(self.depvaldataset)
+        rel_accs /= len(self.depvaldataset)
+        print("Head prediction accuracy {}  rel prediction accuracy {}".format(head_accs,rel_accs))
         data = unsort_dataset(data,orig_idx)
         pred_file = os.path.join(self.args['save_dir'],pred_file)
         conll_writer(pred_file, data, field_names,task_name = "dep")
+        print("Predictions can be observed from {}".format(pred_file))
         p, r, f1 = score(pred_file, gold_file,verbose=False)
         #p,r, f1 = 0,0,0
         logging.info("LAS Precision : {}  Recall {} F1 {}".format(p,r,f1))

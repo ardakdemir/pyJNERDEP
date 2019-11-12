@@ -55,7 +55,9 @@ class JointParser(nn.Module):
         self.num_cat = self.args['dep_cats']
         self.device = self.args['device']
         self.pos_dim = self.args['pos_dim']
+        
         self.pos_embed = nn.Embedding(self.args['pos_vocab_size'], self.args['pos_dim'], padding_idx=0)
+        self.dep_embed = nn.Embedding(self.num_cat, self.args['pos_dim'], padding_idx=0)
        
         self.dep_lr = self.args['dep_lr']
         self.weight_decay = self.args['weight_decay']
@@ -85,7 +87,9 @@ class JointParser(nn.Module):
         self.optimizer = optim.AdamW([{"params":self.parserlstm.parameters()},\
             {"params": self.dep_rel.parameters()},\
             {"params": self.highwaylstm.parameters()},\
-            {"params":self.unlabeled.parameters()}, {"params": self.pos_embed.parameters()}],\
+            {"params":self.unlabeled.parameters()},\
+            {"params": self.pos_embed.parameters()},\
+            {"params": self.dep_embed.parameters()}],\
              lr=self.dep_lr,weight_decay=self.weight_decay, betas=(0.9,self.args['beta2']), eps=1e-6)    
     
     
@@ -122,7 +126,7 @@ class JointParser(nn.Module):
         return trees, dep_rels, outputs
     
     
-    def forward(self, masks, bert_out,  heads, dep_rels, pos_ids, sent_lens, training=True, dep=True):
+    def forward(self, masks, bert_out,  heads, dep_rels, pos_ids, sent_lens, training=True, task="DEP"):
         """
             heads and dep_rels are used during training
             must be initialized to empty if ner-epoch or during prediction mode
@@ -153,7 +157,8 @@ class JointParser(nn.Module):
         deprel_scores  = self.dep_rel(unpacked,unpacked) 
         
         preds = []
-        if dep and training:
+        acc = 0
+        if task=="DEP" and training:
             diag = torch.eye(heads.size()[1]).to(self.device)
             diag = diag.bool()
             ## set self-edge scores to negative infinity
@@ -162,19 +167,64 @@ class JointParser(nn.Module):
                 unsqueeze(3).expand(-1,-1,1,self.num_cat)).squeeze(2).transpose(1,2)
                 #.view(batch_size, self.num_cat,word_size)
             with torch.no_grad():
-                #set [PAD] [ROOT] predictions to -infinity
+                #set [PAD] [ROOT] [EOS] [UNK] predictions to -infinity
                 mask = torch.zeros(deprel_scores.size(),dtype=torch.long).to(self.args['device'])
-                mask[:,:,:,:2] = 1 
+                mask[:,:,:,:4] = 1 
                 mask = mask.bool()
                 deprel_save = deprel_scores.clone()
                 deprel_save = deprel_save.masked_fill(mask,-float('inf'))
                 preds.append(F.log_softmax(unlabeled_scores,2).detach().cpu().numpy())
                 preds.append(torch.argmax(deprel_save,dim = 3).detach().cpu().numpy())
+                
+                arc_scores = torch.argmax(unlabeled_scores,dim=2)
+                dep_scores = torch.argmax(deprel_save,dim=3) 
+                dep_ind_preds = torch.gather(dep_scores, 2, arc_scores.unsqueeze(2)).squeeze(2)
+                
+                #logging.info("Input nasil birseydi : ")
+                #logging.info(x.shape)
+                #logging.info("Dep preds nasil birsey")
+                #logging.info(preds[1].shape)
+                #logging.info("Head preds nasil birsey")
+                #logging.info(preds[0].shape)
+                head_eq = sum(sum(arc_scores[:,1:].detach().cpu().numpy()==heads[:,1:].detach().cpu().numpy()))
+                rel_eq = sum(sum(dep_ind_preds.detach().cpu().numpy()==dep_rels.detach().cpu().numpy()))
+                acc = rel_eq*1.0/sum(sent_lens).item()
+                head_acc = head_eq/sum(sent_lens).item()
             heads_ = heads.masked_fill(masks,-1)            
             deprel_loss = self.dep_rel_crit(head_scores,dep_rels)
             depind_loss = self.dep_ind_crit(unlabeled_scores[:,1:].transpose(1,2),heads_[:,1:])
             loss = deprel_loss + depind_loss
-            return preds, loss
+
+            return preds, loss, deprel_loss, depind_loss, acc , head_acc
+        
+        elif task=="NER" and training:   
+            mask = torch.zeros(deprel_scores.size(),dtype=torch.long).to(self.device)
+            mask[:,:,:,:4] = 1 
+            mask = mask.bool()
+
+            deprel_save = deprel_scores.clone()
+            deprel_save = deprel_save.masked_fill(mask,-float('inf'))
+            
+            preds = []
+            arc_scores = torch.argmax(unlabeled_scores,dim = 2)
+            rel_scores = torch.argmax(deprel_save, dim = 3 )
+            preds.append(arc_scores.detach().cpu().numpy())
+            preds.append(rel_scores.detach().cpu().numpy())
+            dep_ind_preds = torch.gather(rel_scores,2,arc_scores.unsqueeze(2)).squeeze(2)
+            dep_embeddings = self.dep_embed(dep_ind_preds[:,1:])
+            logging.info("Input nasil birseydi : ")
+            logging.info(x.shape)
+            logging.info("Dep preds nasil birsey")
+            logging.info(preds[1].shape)
+            logging.info("Head preds nasil birsey")
+            logging.info(preds[0].shape)
+            logging.info("Dep ind preds nasil ")
+            logging.info(dep_ind_preds.shape)
+            logging.info("Dep embeddings nasiil")
+            logging.info(dep_embeddings.shape)
+            #preds.append(deprel_save)
+            return preds, 0
+        
         else:
             with torch.no_grad():
                 #set [PAD] [ROOT] predictions to -infinity

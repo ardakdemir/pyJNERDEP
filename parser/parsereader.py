@@ -140,8 +140,8 @@ def read_conllu(file_name, cols = ['word','xpos','head','deprel']):
             sentence.append([line[FIELD_TO_IDX[x.lower()]] for x in cols])
             if line[FIELD_TO_IDX['word']] not in tok2ind:
                 tok2ind[line[FIELD_TO_IDX['word']]] = len(tok2ind)
-            if line[FIELD_TO_IDX['xpos']] not in pos2ind:
-                pos2ind[line[FIELD_TO_IDX['xpos']]] = len(pos2ind)
+            if line[FIELD_TO_IDX['upos']] not in pos2ind:
+                pos2ind[line[FIELD_TO_IDX['upos']]] = len(pos2ind)
             if line[FIELD_TO_IDX['deprel']] not in dep2ind:
                 dep2ind[line[FIELD_TO_IDX['deprel']]] = len(dep2ind)
     
@@ -235,8 +235,9 @@ class DepDataset(Dataset):
         #random.shuffle(x)
         #idx = x[idx]
         #print(idx)
-        idx = np.random.randint(len(self.dataset))
-        idx = idx% len(self.dataset)
+        if not self.for_eval:
+            idx = np.random.randint(len(self.dataset))
+            idx = idx% len(self.dataset)
         batch = self.dataset[idx]
         lens = self.sent_lens[idx]
         ## create the bert tokens and pad each sentence to match the longest
