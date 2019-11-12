@@ -208,22 +208,13 @@ class JointParser(nn.Module):
             preds = []
             arc_scores = torch.argmax(unlabeled_scores,dim = 2)
             rel_scores = torch.argmax(deprel_save, dim = 3 )
+            
             preds.append(arc_scores.detach().cpu().numpy())
             preds.append(rel_scores.detach().cpu().numpy())
+            
             dep_ind_preds = torch.gather(rel_scores,2,arc_scores.unsqueeze(2)).squeeze(2)
-            dep_embeddings = self.dep_embed(dep_ind_preds[:,1:])
-            logging.info("Input nasil birseydi : ")
-            logging.info(x.shape)
-            logging.info("Dep preds nasil birsey")
-            logging.info(preds[1].shape)
-            logging.info("Head preds nasil birsey")
-            logging.info(preds[0].shape)
-            logging.info("Dep ind preds nasil ")
-            logging.info(dep_ind_preds.shape)
-            logging.info("Dep embeddings nasiil")
-            logging.info(dep_embeddings.shape)
-            #preds.append(deprel_save)
-            return preds, 0
+            dep_embeddings = self.dep_embed(dep_ind_preds)
+            return dep_embeddings
         
         else:
             with torch.no_grad():

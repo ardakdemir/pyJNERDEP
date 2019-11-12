@@ -46,11 +46,11 @@ import argparse
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 def generate_pred_content(tokens, preds, truths=None, label_voc=None):
-    
+    ## this is where the end token gets eliminated!!
     sents = []
     if truths:
         for sent,pred,truth in zip(tokens,preds,truths):
-            l = list(zip(sent[:-1], label_voc.unmap(truth[:-1]),label_voc.unmap(pred[:-1])))
+            l = list(zip(sent[1:-1], label_voc.unmap(truth[1:-1]),label_voc.unmap(pred[1:-1])))
             sents.append(l)
     else:
         for sent,pred in zip(tokens,preds):
@@ -79,8 +79,8 @@ def parse_args():
     parser.add_argument('--lang', type=str, help='Language')
     parser.add_argument('--shorthand', type=str, help="Treebank shorthand")
 
-    parser.add_argument('--lstm_hidden', type=int, default=200)
-    parser.add_argument('--char_hidden_dim', type=int, default=400)
+    parser.add_argument('--lstm_hidden', type=int, default=100)
+    parser.add_argument('--char_hidden_dim', type=int, default=200)
     parser.add_argument('--biaffine_hidden', type=int, default=200)
     parser.add_argument('--composite_deep_biaff_hidden_dim', type=int, default=100)
     parser.add_argument('--cap_dim', type=int, default=50)
@@ -89,14 +89,14 @@ def parse_args():
     parser.add_argument('--pos_dim', type=int, default=50)
     parser.add_argument('--transformed_dim', type=int, default=125)
     
-    parser.add_argument('--lstm_layers', type=int, default=4)
+    parser.add_argument('--lstm_layers', type=int, default=1)
     parser.add_argument('--char_num_layers', type=int, default=1)
     parser.add_argument('--pretrain_max_vocab', type=int, default=-1)
     
-    parser.add_argument('--word_drop', type=float, default=0.0)
-    parser.add_argument('--lstm_drop', type=float, default=0.0)
-    parser.add_argument('--crf_drop', type=float, default=0.0)
-    parser.add_argument('--parser_drop', type=float, default=0.0)
+    parser.add_argument('--word_drop', type=float, default=0.3)
+    parser.add_argument('--lstm_drop', type=float, default=0.5)
+    parser.add_argument('--crf_drop', type=float, default=0.3)
+    parser.add_argument('--parser_drop', type=float, default=0.35)
     
     parser.add_argument('--rec_dropout', type=float, default=0, help="Recurrent dropout")
     parser.add_argument('--char_rec_dropout', type=float, default=0, help="Recurrent dropout")
@@ -107,7 +107,7 @@ def parse_args():
 
     parser.add_argument('--sample_train', type=float, default=1.0, help='Subsample training data.')
     parser.add_argument('--optim', type=str, default='adam', help='sgd, adagrad, adam or adamax.')
-    parser.add_argument('--ner_lr', type=float, default=3e-4, help='Learning rate for ner lstm')
+    parser.add_argument('--ner_lr', type=float, default=0.01, help='Learning rate for ner lstm')
     parser.add_argument('--embed_lr', type=float, default=0.1, help='Learning rate for embeddiing')
     parser.add_argument('--dep_lr', type=float, default=3e-4, help='Learning rate dependency lstm')
     parser.add_argument('--lr_decay', type=float, default=0.990, help='Learning rate decay')
@@ -285,27 +285,14 @@ class JointTrainer:
         assert self.args['pos_vocab_size'] == self.deptraindataset.num_pos," Pos vocab size do not match "
 
     def forward(self, batch, task= "DEP"):
-        if task=="NER":
-            tokens, bert_batch_after_padding, data = batch
-            inputs = []
-            for d in data:
-                inputs.append(d.to(self.device))
-            sent_lens, masks, tok_inds, ner_inds, pos_inds,\
-                 bert_batch_ids,  bert_seq_ids, bert2toks, cap_inds = inputs
-            features = self.jointmodel.base_model(pos_inds, bert_batch_ids, bert_seq_ids, bert2toks, cap_inds, sent_lens) 
-            return features
-        if task=="DEP": 
-            tokens, bert_batch_after_padding = batch[0], batch[1]
-            inputs = []
-            for d in batch[2:]:
-                inputs.append(d.to(self.device))
-            sent_lens, masks, tok_inds, pos, dep_inds, dep_rels, \
-                bert_batch_ids, bert_seq_ids, bert2toks, cap_inds = inputs
-            
-
-
-            features = self.jointmodel.base_model(pos, bert_batch_ids, bert_seq_ids, bert2toks, cap_inds, sent_lens)
-            return features   
+        tokens, bert_batch_after_padding, data = batch
+        inputs = []
+        for d in data:
+            inputs.append(d.to(self.device))
+        sent_lens, masks, tok_inds, ner_inds, pos_inds,_, _,\
+             bert_batch_ids,  bert_seq_ids, bert2toks, cap_inds = inputs
+        features = self.jointmodel.base_model(pos_inds, bert_batch_ids, bert_seq_ids, bert2toks, cap_inds, sent_lens) 
+        return features
     
     def ner_loss(self,batch):
         sent_lens = batch[2][0].to(self.device)
@@ -317,20 +304,25 @@ class JointTrainer:
         return loss 
     
         
-    def dep_forward(self,dep_batch,task = "DEP"):
-        bert_feats = self.forward(dep_batch,task="DEP")
+    def dep_forward(self, dep_batch, task = "DEP"):
+        bert_feats = self.forward(dep_batch)
         inputs = []
-        for d in dep_batch[2:]:
+        data = dep_batch[2]
+        for d in data:
             inputs.append(d.to(self.device))
-        sent_lens, masks, _, pos, dep_inds, dep_rels, \
+        sent_lens, masks, _, _, pos, dep_inds, dep_rels, \
             _ , _ , _ , _  = inputs
         tokens = dep_batch[0]
-        preds, dep_loss, deprel_loss, depind_loss, acc, head_acc = self.jointmodel.depparser(masks,bert_feats, dep_inds, dep_rels, pos, sent_lens, training=True, task=task)
+        if task=="NER":
+            dep_embeds = self.jointmodel.depparser(masks,bert_feats, dep_inds, dep_rels, pos, sent_lens, training=True, task=task)
+            print(dep_embeds.shape)
+            return torch.cat([bert_feats, dep_embeds],dim=2)
         #logging.info("Head predictions ")
         #logging.info(preds[0][-1])
         #logging.info(dep_inds[-1])
-        return dep_loss, preds, deprel_loss, depind_loss, acc, head_acc
-    
+        else:
+            preds, loss, deprel_loss, depind_loss, acc, head_acc = self.jointmodel.depparser(masks,bert_feats, dep_inds, dep_rels, pos, sent_lens, training=True, task=task)
+            return preds, loss, deprel_loss, depind_loss, acc , head_acc 
     def ner_update(self,batch):
         
         self.jointmodel.base_model.embed_optimizer.zero_grad()
@@ -343,8 +335,9 @@ class JointTrainer:
         bert_feats = self.forward(batch, task="NER") 
         crf_scores = self.jointmodel.nermodel(bert_feats, sent_lens)
         
+
         loss = self.jointmodel.nermodel.loss(crf_scores, ner_inds, sent_lens)
-        loss = loss/ self.args['batch_size']
+        loss = loss/ sum(sent_lens).item()
         loss.backward()
         pos_inds = batch[2][4]
          
@@ -406,34 +399,36 @@ class JointTrainer:
             depind_losses = 0
             deprel_losses = 0
             deprel_acc = 0
-            self.deptraindataset.for_eval=False
+            self.nertrainreader.for_eval = False
             for i in tqdm(range(self.args['eval_interval'])):
                  
-                #ner_batch = self.nertrainreader[i]
-                #ner_loss = self.ner_update(ner_batch)
-                #ner_losses += ner_loss
-                #train_loss +=ner_loss
+                ner_batch = self.nertrainreader[i]
+                #logging.info(ner_batch[0])
+                dep_out = self.dep_forward(ner_batch,task="NER")
+                ner_loss = self.ner_update(ner_batch)
+                ner_losses += ner_loss
+                train_loss +=ner_loss
                 
-                dep_batch = self.deptraindataset[0]
-                dep_loss,deprel_loss,depind_loss, acc = self.dep_update(dep_batch)
-                dep_losses += dep_loss
-                train_loss +=dep_loss
-                deprel_losses += deprel_loss
-                depind_losses += depind_loss
-                deprel_acc += acc
+                #dep_batch = self.deptraindataset[0]
+                #dep_loss,deprel_loss,depind_loss, acc = self.dep_update(dep_batch)
+                #dep_losses += dep_loss
+                #train_loss +=dep_loss
+                #deprel_losses += deprel_loss
+                #depind_losses += depind_loss
+                #deprel_acc += acc
                 if i%10 == 9:
                     logging.info("Train loss average : {} after {} examples".format(train_loss/(i+1),i+1))
                     logging.info("Ner loss average {} - dep loss average {} ".format(ner_losses/(i+1),dep_losses/(i+1)))    
-                    logging.info("Deprel losses {} depind losses {}".format(deprel_losses/(i+1),depind_losses/(i+1)))
-                    logging.info("Deprel prediction accuracy {} ".format(deprel_acc/(i+1)))
+                    #logging.info("Deprel losses {} depind losses {}".format(deprel_losses/(i+1),depind_losses/(i+1)))
+                    #logging.info("Deprel prediction accuracy {} ".format(deprel_acc/(i+1)))
             logging.info("Results for epoch : {}".format(e+1))
             self.jointmodel.eval()
-            dep_pre, dep_rec, dep_f1 = self.dep_evaluate()
-            #ner_pre, ner_rec, ner_f1 = self.ner_evaluate()
-            print("Dependency Results -- f1 : {} ".format(dep_f1))
-            if dep_f1 > best_dep_f1:
-                self.save_model(self.args['save_dep_name'])
-                best_dep_f1 = dep_f1
+            #dep_pre, dep_rec, dep_f1 = self.dep_evaluate()
+            ner_pre, ner_rec, ner_f1 = self.ner_evaluate()
+            #print("Dependency Results -- f1 : {} ".format(dep_f1))
+            #if dep_f1 > best_dep_f1:
+            #    self.save_model(self.args['save_dep_name'])
+            #    best_dep_f1 = dep_f1
             #if ner_f1 > best_ner_f1:
                 #self.save_model(self.args['save_ner_name'])
                 #best_ner_f1 = ner_f1
@@ -465,7 +460,7 @@ class JointTrainer:
         for x in tqdm(range(len(self.depvaldataset)),desc = "Evaluation"):
             #batch = dataset[x]
             batch = self.depvaldataset[x]
-            sent_lens = batch[2]
+            sent_lens = batch[2][0]
             tokens = batch[0]
             
             loss, preds, _ , _, rel_acc , head_acc = self.dep_forward(batch)
@@ -503,8 +498,10 @@ class JointTrainer:
         preds = []
         truths = []
         ## for each batch
-        for i in tqdm(range(len(self.nervalreader))):
-            d = self.nervalreader[i]
+        dataset = self.nertrainreader
+        dataset.for_eval = True
+        for i in tqdm(range(len(dataset))):
+            d = dataset[i]
             tokens = d[0]
             sent_lens = d[2][0]
             ner_inds = d[2][3]

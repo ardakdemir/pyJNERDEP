@@ -75,8 +75,8 @@ class JointNer(nn.Module):
         end_ind = END_IND
         #feats = feats[:,end_ind+1:,end_ind+1:]
         parents = [[start_ind for x in range(feats.size()[1])]]
-        layer_scores = feats[0,:,start_ind] 
-        for feat in feats[1:sent_len,:,:]:
+        layer_scores = feats[1,:,start_ind] 
+        for feat in feats[2:sent_len,:,:]:
             #layer_scores =feat[:,:start_ind,:start_ind] + layer_scores.unsqueeze(1).expand(1,layer_scores.shape[1],layer_scores.shape[2])
             layer_scores =feat + layer_scores.unsqueeze(0).expand(layer_scores.shape[0],layer_scores.shape[0])
             layer_scores, parent = torch.max(layer_scores,dim=1)
@@ -90,7 +90,9 @@ class JointNer(nn.Module):
         for p in range(len(parents)-1,0,-1):
             path.append(parents[p][parent].item())
             parent = parents[p][parent]
+        path.append(start_ind)
         path.reverse()
+        
         return path, path_score.item()
     
     

@@ -1,0 +1,1060 @@
+DEBUG - Starting new HTTPS connection (1): s3.amazonaws.com:443
+DEBUG - https://s3.amazonaws.com:443 "HEAD /models.huggingface.co/bert/bert-base-uncased-vocab.txt HTTP/1.1" 200 0
+INFO - loading file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt from cache at /home/aakdemir/.cache/torch/pytorch_transformers/26bc1ad6c0ac742e9b52263248f6d0f00068293b33709fae12320c0e35ccfbbb.542ce4285a40d23a559526243235df47c5f75c197f04f37d1a0c124c32c9a084
+DEBUG - Starting new HTTPS connection (1): s3.amazonaws.com:443
+DEBUG - https://s3.amazonaws.com:443 "HEAD /models.huggingface.co/bert/bert-base-uncased-vocab.txt HTTP/1.1" 200 0
+INFO - loading file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt from cache at /home/aakdemir/.cache/torch/pytorch_transformers/26bc1ad6c0ac742e9b52263248f6d0f00068293b33709fae12320c0e35ccfbbb.542ce4285a40d23a559526243235df47c5f75c197f04f37d1a0c124c32c9a084
+INFO - Sorting dataset is set to True
+DEBUG - Starting new HTTPS connection (1): s3.amazonaws.com:443
+DEBUG - https://s3.amazonaws.com:443 "HEAD /models.huggingface.co/bert/bert-base-uncased-vocab.txt HTTP/1.1" 200 0
+INFO - loading file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt from cache at /home/aakdemir/.cache/torch/pytorch_transformers/26bc1ad6c0ac742e9b52263248f6d0f00068293b33709fae12320c0e35ccfbbb.542ce4285a40d23a559526243235df47c5f75c197f04f37d1a0c124c32c9a084
+INFO - Sorting dataset is set to True
+DEBUG - Starting new HTTPS connection (1): s3.amazonaws.com:443
+DEBUG - https://s3.amazonaws.com:443 "HEAD /models.huggingface.co/bert/bert-base-uncased-vocab.txt HTTP/1.1" 200 0
+INFO - loading file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt from cache at /home/aakdemir/.cache/torch/pytorch_transformers/26bc1ad6c0ac742e9b52263248f6d0f00068293b33709fae12320c0e35ccfbbb.542ce4285a40d23a559526243235df47c5f75c197f04f37d1a0c124c32c9a084
+DEBUG - Starting new HTTPS connection (1): s3.amazonaws.com:443
+DEBUG - https://s3.amazonaws.com:443 "HEAD /models.huggingface.co/bert/bert-base-uncased-vocab.txt HTTP/1.1" 200 0
+INFO - loading file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt from cache at /home/aakdemir/.cache/torch/pytorch_transformers/26bc1ad6c0ac742e9b52263248f6d0f00068293b33709fae12320c0e35ccfbbb.542ce4285a40d23a559526243235df47c5f75c197f04f37d1a0c124c32c9a084
+DEBUG - Starting new HTTPS connection (1): s3.amazonaws.com:443
+DEBUG - https://s3.amazonaws.com:443 "HEAD /models.huggingface.co/bert/bert-base-uncased-config.json HTTP/1.1" 200 0
+INFO - loading configuration file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-config.json from cache at /home/aakdemir/.cache/torch/pytorch_transformers/4dad0251492946e18ac39290fcfe91b89d370fee250efe9521476438fe8ca185.bf3b9ea126d8c0001ee8a1e8b92229871d06d36d8808208cc2449280da87785c
+INFO - Model config {
+  "attention_probs_dropout_prob": 0.1,
+  "finetuning_task": null,
+  "hidden_act": "gelu",
+  "hidden_dropout_prob": 0.1,
+  "hidden_size": 768,
+  "initializer_range": 0.02,
+  "intermediate_size": 3072,
+  "layer_norm_eps": 1e-12,
+  "max_position_embeddings": 512,
+  "num_attention_heads": 12,
+  "num_hidden_layers": 12,
+  "num_labels": 2,
+  "output_attentions": false,
+  "output_hidden_states": true,
+  "pruned_heads": {},
+  "torchscript": false,
+  "type_vocab_size": 2,
+  "vocab_size": 30522
+}
+
+DEBUG - Starting new HTTPS connection (1): s3.amazonaws.com:443
+DEBUG - https://s3.amazonaws.com:443 "HEAD /models.huggingface.co/bert/bert-base-uncased-pytorch_model.bin HTTP/1.1" 200 0
+INFO - loading weights file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-pytorch_model.bin from cache at /home/aakdemir/.cache/torch/pytorch_transformers/aa1ef1aede4482d0dbcd4d52baad8ae300e60902e88fcb0bebdec09afd232066.36ca03ab34a1a5d5fa7bc3d03d55c4fa650fed07220e2eeebc06ce58d0e9a157
+INFO - Training on cuda:0 
+INFO - Dependency pos vocab : {'[PAD]': 0, '[ROOT]': 1, '[EOS]': 2, '[UNK]': 3, 'Adj': 4, 'Noun': 5, 'Zero': 6, 'Demons': 7, 'Quant': 8, 'Verb': 9, 'Punc': 10, 'Pers': 11, 'Det': 12, 'NAdj': 13, 'PCDat': 14, 'Prop': 15, 'Ques': 16, 'ANum': 17, 'Adverb': 18, 'Rel': 19, 'PCNom': 20, 'Reflex': 21, 'Conj': 22, 'PCAbl': 23, 'With': 24, 'Ly': 25, 'NNum': 26, 'Interj': 27, 'Without': 28, 'Abr': 29, 'Dup': 30, 'Ness': 31, 'Neg': 32, 'Agt': 33, 'PCIns': 34, 'Postp': 35, 'Since': 36, 'PCGen': 37, 'AsIf': 38, 'PCAcc': 39} 
+INFO - Dependency dep vocab : {'[PAD]': 0, '[ROOT]': 1, '[EOS]': 2, '[UNK]': 3, 'amod': 4, 'csubj': 5, 'cop': 6, 'nmod:poss': 7, 'obj': 8, 'root': 9, 'punct': 10, 'obl': 11, 'compound': 12, 'case': 13, 'nmod': 14, 'nsubj': 15, 'conj': 16, 'det': 17, 'advmod': 18, 'acl': 19, 'cc': 20, 'flat': 21, 'compound:lvc': 22, 'nummod': 23, 'discourse': 24, 'compound:redup': 25, 'appos': 26, 'mark': 27, 'advmod:emph': 28, 'aux:q': 29, 'fixed': 30, 'parataxis': 31, 'ccomp': 32, 'dep': 33, 'vocative': 34} 
+INFO - Train loss average : 0.9905709743499755 after 10 examples
+INFO - Ner loss average 0.9905709743499755 - dep loss average 0.0 
+INFO - Train loss average : 0.7390693828463555 after 20 examples
+INFO - Ner loss average 0.7390693828463555 - dep loss average 0.0 
+INFO - Train loss average : 0.6414907266696294 after 30 examples
+INFO - Ner loss average 0.6414907266696294 - dep loss average 0.0 
+INFO - Train loss average : 0.5652823369950056 after 40 examples
+INFO - Ner loss average 0.5652823369950056 - dep loss average 0.0 
+INFO - Train loss average : 0.5333121487498284 after 50 examples
+INFO - Ner loss average 0.5333121487498284 - dep loss average 0.0 
+INFO - Train loss average : 0.491653644045194 after 60 examples
+INFO - Ner loss average 0.491653644045194 - dep loss average 0.0 
+INFO - Train loss average : 0.4618021928838321 after 70 examples
+INFO - Ner loss average 0.4618021928838321 - dep loss average 0.0 
+INFO - Train loss average : 0.442216693982482 after 80 examples
+INFO - Ner loss average 0.442216693982482 - dep loss average 0.0 
+INFO - Train loss average : 0.423139016992516 after 90 examples
+INFO - Ner loss average 0.423139016992516 - dep loss average 0.0 
+INFO - Train loss average : 0.4034510251879692 after 100 examples
+INFO - Ner loss average 0.4034510251879692 - dep loss average 0.0 
+INFO - Train loss average : 0.38855116800828415 after 110 examples
+INFO - Ner loss average 0.38855116800828415 - dep loss average 0.0 
+INFO - Train loss average : 0.3796552013605833 after 120 examples
+INFO - Ner loss average 0.3796552013605833 - dep loss average 0.0 
+INFO - Train loss average : 0.3691241605923726 after 130 examples
+INFO - Ner loss average 0.3691241605923726 - dep loss average 0.0 
+INFO - Train loss average : 0.3549585757511003 after 140 examples
+INFO - Ner loss average 0.3549585757511003 - dep loss average 0.0 
+INFO - Train loss average : 0.34817699680725733 after 150 examples
+INFO - Ner loss average 0.34817699680725733 - dep loss average 0.0 
+INFO - Train loss average : 0.3376582841388881 after 160 examples
+INFO - Ner loss average 0.3376582841388881 - dep loss average 0.0 
+INFO - Train loss average : 0.3298123360118445 after 170 examples
+INFO - Ner loss average 0.3298123360118445 - dep loss average 0.0 
+INFO - Train loss average : 0.3231949897689952 after 180 examples
+INFO - Ner loss average 0.3231949897689952 - dep loss average 0.0 
+INFO - Train loss average : 0.3132608451537396 after 190 examples
+INFO - Ner loss average 0.3132608451537396 - dep loss average 0.0 
+INFO - Train loss average : 0.3064970033429563 after 200 examples
+INFO - Ner loss average 0.3064970033429563 - dep loss average 0.0 
+INFO - Train loss average : 0.2979583456934918 after 210 examples
+INFO - Ner loss average 0.2979583456934918 - dep loss average 0.0 
+INFO - Train loss average : 0.29299111371351916 after 220 examples
+INFO - Ner loss average 0.29299111371351916 - dep loss average 0.0 
+INFO - Train loss average : 0.28774634403703003 after 230 examples
+INFO - Ner loss average 0.28774634403703003 - dep loss average 0.0 
+INFO - Train loss average : 0.2828872566577047 after 240 examples
+INFO - Ner loss average 0.2828872566577047 - dep loss average 0.0 
+INFO - Train loss average : 0.2782972250133753 after 250 examples
+INFO - Ner loss average 0.2782972250133753 - dep loss average 0.0 
+INFO - Train loss average : 0.27365256391752224 after 260 examples
+INFO - Ner loss average 0.27365256391752224 - dep loss average 0.0 
+INFO - Train loss average : 0.2697480830191462 after 270 examples
+INFO - Ner loss average 0.2697480830191462 - dep loss average 0.0 
+INFO - Train loss average : 0.26428486655599304 after 280 examples
+INFO - Ner loss average 0.26428486655599304 - dep loss average 0.0 
+INFO - Train loss average : 0.2596021175256063 after 290 examples
+INFO - Ner loss average 0.2596021175256063 - dep loss average 0.0 
+INFO - Train loss average : 0.25674173252036175 after 300 examples
+INFO - Ner loss average 0.25674173252036175 - dep loss average 0.0 
+INFO - Train loss average : 0.2525509484953457 after 310 examples
+INFO - Ner loss average 0.2525509484953457 - dep loss average 0.0 
+INFO - Train loss average : 0.2488921301672235 after 320 examples
+INFO - Ner loss average 0.2488921301672235 - dep loss average 0.0 
+INFO - Train loss average : 0.24512625888667322 after 330 examples
+INFO - Ner loss average 0.24512625888667322 - dep loss average 0.0 
+INFO - Train loss average : 0.24215370052877594 after 340 examples
+INFO - Ner loss average 0.24215370052877594 - dep loss average 0.0 
+INFO - Train loss average : 0.23907836824655532 after 350 examples
+INFO - Ner loss average 0.23907836824655532 - dep loss average 0.0 
+INFO - Train loss average : 0.23572712835545342 after 360 examples
+INFO - Ner loss average 0.23572712835545342 - dep loss average 0.0 
+INFO - Train loss average : 0.23214810837966365 after 370 examples
+INFO - Ner loss average 0.23214810837966365 - dep loss average 0.0 
+INFO - Train loss average : 0.22896056849705546 after 380 examples
+INFO - Ner loss average 0.22896056849705546 - dep loss average 0.0 
+INFO - Train loss average : 0.22667705567601398 after 390 examples
+INFO - Ner loss average 0.22667705567601398 - dep loss average 0.0 
+INFO - Train loss average : 0.22362980359233917 after 400 examples
+INFO - Ner loss average 0.22362980359233917 - dep loss average 0.0 
+INFO - Train loss average : 0.22059278410018945 after 410 examples
+INFO - Ner loss average 0.22059278410018945 - dep loss average 0.0 
+INFO - Train loss average : 0.21778703665449506 after 420 examples
+INFO - Ner loss average 0.21778703665449506 - dep loss average 0.0 
+INFO - Train loss average : 0.215265916547803 after 430 examples
+INFO - Ner loss average 0.215265916547803 - dep loss average 0.0 
+INFO - Train loss average : 0.21304666167125105 after 440 examples
+INFO - Ner loss average 0.21304666167125105 - dep loss average 0.0 
+INFO - Train loss average : 0.21038589622411463 after 450 examples
+INFO - Ner loss average 0.21038589622411463 - dep loss average 0.0 
+INFO - Train loss average : 0.20803292495724948 after 460 examples
+INFO - Ner loss average 0.20803292495724948 - dep loss average 0.0 
+INFO - Train loss average : 0.20588179093963924 after 470 examples
+INFO - Ner loss average 0.20588179093963924 - dep loss average 0.0 
+INFO - Train loss average : 0.20386219855475549 after 480 examples
+INFO - Ner loss average 0.20386219855475549 - dep loss average 0.0 
+INFO - Train loss average : 0.2010285504694496 after 490 examples
+INFO - Ner loss average 0.2010285504694496 - dep loss average 0.0 
+INFO - Train loss average : 0.19865768920630217 after 500 examples
+INFO - Ner loss average 0.19865768920630217 - dep loss average 0.0 
+INFO - Train loss average : 0.196325667207038 after 510 examples
+INFO - Ner loss average 0.196325667207038 - dep loss average 0.0 
+INFO - Train loss average : 0.19454293151189073 after 520 examples
+INFO - Ner loss average 0.19454293151189073 - dep loss average 0.0 
+INFO - Train loss average : 0.19233922206023532 after 530 examples
+INFO - Ner loss average 0.19233922206023532 - dep loss average 0.0 
+INFO - Train loss average : 0.19000621746483914 after 540 examples
+INFO - Ner loss average 0.19000621746483914 - dep loss average 0.0 
+INFO - Train loss average : 0.18807953914204104 after 550 examples
+INFO - Ner loss average 0.18807953914204104 - dep loss average 0.0 
+INFO - Train loss average : 0.1861851100585357 after 560 examples
+INFO - Ner loss average 0.1861851100585357 - dep loss average 0.0 
+INFO - Train loss average : 0.18471241791797965 after 570 examples
+INFO - Ner loss average 0.18471241791797965 - dep loss average 0.0 
+INFO - Train loss average : 0.1826653272579906 after 580 examples
+INFO - Ner loss average 0.1826653272579906 - dep loss average 0.0 
+INFO - Train loss average : 0.1807525530307538 after 590 examples
+INFO - Ner loss average 0.1807525530307538 - dep loss average 0.0 
+INFO - Train loss average : 0.1789572294157309 after 600 examples
+INFO - Ner loss average 0.1789572294157309 - dep loss average 0.0 
+INFO - Train loss average : 0.177768114945836 after 610 examples
+INFO - Ner loss average 0.177768114945836 - dep loss average 0.0 
+INFO - Train loss average : 0.1760613656580268 after 620 examples
+INFO - Ner loss average 0.1760613656580268 - dep loss average 0.0 
+INFO - Train loss average : 0.1750682548080231 after 630 examples
+INFO - Ner loss average 0.1750682548080231 - dep loss average 0.0 
+INFO - Train loss average : 0.17360513793537394 after 640 examples
+INFO - Ner loss average 0.17360513793537394 - dep loss average 0.0 
+INFO - Train loss average : 0.1722246872447431 after 650 examples
+INFO - Ner loss average 0.1722246872447431 - dep loss average 0.0 
+INFO - Train loss average : 0.17041780122442904 after 660 examples
+INFO - Ner loss average 0.17041780122442904 - dep loss average 0.0 
+INFO - Train loss average : 0.16886994587535512 after 670 examples
+INFO - Ner loss average 0.16886994587535512 - dep loss average 0.0 
+INFO - Train loss average : 0.16745164991383824 after 680 examples
+INFO - Ner loss average 0.16745164991383824 - dep loss average 0.0 
+INFO - Train loss average : 0.16605082474837918 after 690 examples
+INFO - Ner loss average 0.16605082474837918 - dep loss average 0.0 
+INFO - Train loss average : 0.16487035600202424 after 700 examples
+INFO - Ner loss average 0.16487035600202424 - dep loss average 0.0 
+INFO - Train loss average : 0.16369417793261754 after 710 examples
+INFO - Ner loss average 0.16369417793261754 - dep loss average 0.0 
+INFO - Train loss average : 0.16224134324066755 after 720 examples
+INFO - Ner loss average 0.16224134324066755 - dep loss average 0.0 
+INFO - Train loss average : 0.16100595829855294 after 730 examples
+INFO - Ner loss average 0.16100595829855294 - dep loss average 0.0 
+INFO - Train loss average : 0.15948917511473032 after 740 examples
+INFO - Ner loss average 0.15948917511473032 - dep loss average 0.0 
+INFO - Train loss average : 0.15831886024648945 after 750 examples
+INFO - Ner loss average 0.15831886024648945 - dep loss average 0.0 
+INFO - Train loss average : 0.15706477542040184 after 760 examples
+INFO - Ner loss average 0.15706477542040184 - dep loss average 0.0 
+INFO - Train loss average : 0.1557234267486477 after 770 examples
+INFO - Ner loss average 0.1557234267486477 - dep loss average 0.0 
+INFO - Train loss average : 0.15453950281207188 after 780 examples
+INFO - Ner loss average 0.15453950281207188 - dep loss average 0.0 
+INFO - Train loss average : 0.15337330221870465 after 790 examples
+INFO - Ner loss average 0.15337330221870465 - dep loss average 0.0 
+INFO - Train loss average : 0.1523220937687438 after 800 examples
+INFO - Ner loss average 0.1523220937687438 - dep loss average 0.0 
+INFO - Train loss average : 0.15103885655371863 after 810 examples
+INFO - Ner loss average 0.15103885655371863 - dep loss average 0.0 
+INFO - Train loss average : 0.14994923799843868 after 820 examples
+INFO - Ner loss average 0.14994923799843868 - dep loss average 0.0 
+INFO - Train loss average : 0.14882784700918808 after 830 examples
+INFO - Ner loss average 0.14882784700918808 - dep loss average 0.0 
+INFO - Train loss average : 0.14785999617694567 after 840 examples
+INFO - Ner loss average 0.14785999617694567 - dep loss average 0.0 
+INFO - Train loss average : 0.14688290055074235 after 850 examples
+INFO - Ner loss average 0.14688290055074235 - dep loss average 0.0 
+INFO - Train loss average : 0.145856890785183 after 860 examples
+INFO - Ner loss average 0.145856890785183 - dep loss average 0.0 
+INFO - Train loss average : 0.1449993804075766 after 870 examples
+INFO - Ner loss average 0.1449993804075766 - dep loss average 0.0 
+INFO - Train loss average : 0.14417184355922721 after 880 examples
+INFO - Ner loss average 0.14417184355922721 - dep loss average 0.0 
+INFO - Train loss average : 0.14328165752499292 after 890 examples
+INFO - Ner loss average 0.14328165752499292 - dep loss average 0.0 
+INFO - Train loss average : 0.14231429982723462 after 900 examples
+INFO - Ner loss average 0.14231429982723462 - dep loss average 0.0 
+INFO - Train loss average : 0.1412472339480051 after 910 examples
+INFO - Ner loss average 0.1412472339480051 - dep loss average 0.0 
+INFO - Train loss average : 0.1402854605972686 after 920 examples
+INFO - Ner loss average 0.1402854605972686 - dep loss average 0.0 
+INFO - Train loss average : 0.13912259679367786 after 930 examples
+INFO - Ner loss average 0.13912259679367786 - dep loss average 0.0 
+INFO - Train loss average : 0.1381746303062252 after 940 examples
+INFO - Ner loss average 0.1381746303062252 - dep loss average 0.0 
+INFO - Train loss average : 0.1373222047889507 after 950 examples
+INFO - Ner loss average 0.1373222047889507 - dep loss average 0.0 
+INFO - Train loss average : 0.13656321824285744 after 960 examples
+INFO - Ner loss average 0.13656321824285744 - dep loss average 0.0 
+INFO - Train loss average : 0.13558228350935753 after 970 examples
+INFO - Ner loss average 0.13558228350935753 - dep loss average 0.0 
+INFO - Train loss average : 0.13489590566747878 after 980 examples
+INFO - Ner loss average 0.13489590566747878 - dep loss average 0.0 
+INFO - Train loss average : 0.13399266932733508 after 990 examples
+INFO - Ner loss average 0.13399266932733508 - dep loss average 0.0 
+INFO - Train loss average : 0.13327721710735932 after 1000 examples
+INFO - Ner loss average 0.13327721710735932 - dep loss average 0.0 
+INFO - Results for epoch : 1
+INFO - My values ignoring the boundaries.
+pre: 0.8846225018504811  rec: 0.9224312590448626  f1: 0.9031313465262362 
+INFO - Train loss average : 0.06650830088183284 after 10 examples
+INFO - Ner loss average 0.06650830088183284 - dep loss average 0.0 
+INFO - Train loss average : 0.06782758254557848 after 20 examples
+INFO - Ner loss average 0.06782758254557848 - dep loss average 0.0 
+INFO - Train loss average : 0.0635604929799835 after 30 examples
+INFO - Ner loss average 0.0635604929799835 - dep loss average 0.0 
+INFO - Train loss average : 0.05661775344051421 after 40 examples
+INFO - Ner loss average 0.05661775344051421 - dep loss average 0.0 
+INFO - Train loss average : 0.054413598775863645 after 50 examples
+INFO - Ner loss average 0.054413598775863645 - dep loss average 0.0 
+INFO - Train loss average : 0.05051150041011473 after 60 examples
+INFO - Ner loss average 0.05051150041011473 - dep loss average 0.0 
+INFO - Train loss average : 0.04866294378547796 after 70 examples
+INFO - Ner loss average 0.04866294378547796 - dep loss average 0.0 
+INFO - Train loss average : 0.050042581831803545 after 80 examples
+INFO - Ner loss average 0.050042581831803545 - dep loss average 0.0 
+INFO - Train loss average : 0.050689146749209615 after 90 examples
+INFO - Ner loss average 0.050689146749209615 - dep loss average 0.0 
+INFO - Train loss average : 0.050019555705366654 after 100 examples
+INFO - Ner loss average 0.050019555705366654 - dep loss average 0.0 
+INFO - Train loss average : 0.049433691578451545 after 110 examples
+INFO - Ner loss average 0.049433691578451545 - dep loss average 0.0 
+INFO - Train loss average : 0.05026402361593985 after 120 examples
+INFO - Ner loss average 0.05026402361593985 - dep loss average 0.0 
+INFO - Train loss average : 0.04981388843600423 after 130 examples
+INFO - Ner loss average 0.04981388843600423 - dep loss average 0.0 
+INFO - Train loss average : 0.04932704505294428 after 140 examples
+INFO - Ner loss average 0.04932704505294428 - dep loss average 0.0 
+INFO - Train loss average : 0.050630503047723326 after 150 examples
+INFO - Ner loss average 0.050630503047723326 - dep loss average 0.0 
+INFO - Train loss average : 0.05032001061990741 after 160 examples
+INFO - Ner loss average 0.05032001061990741 - dep loss average 0.0 
+INFO - Train loss average : 0.05043266313629882 after 170 examples
+INFO - Ner loss average 0.05043266313629882 - dep loss average 0.0 
+INFO - Train loss average : 0.04982814370693329 after 180 examples
+INFO - Ner loss average 0.04982814370693329 - dep loss average 0.0 
+INFO - Train loss average : 0.04875905028066451 after 190 examples
+INFO - Ner loss average 0.04875905028066451 - dep loss average 0.0 
+INFO - Train loss average : 0.04872551791893784 after 200 examples
+INFO - Ner loss average 0.04872551791893784 - dep loss average 0.0 
+INFO - Train loss average : 0.04847246102955458 after 210 examples
+INFO - Ner loss average 0.04847246102955458 - dep loss average 0.0 
+INFO - Train loss average : 0.048627184264213696 after 220 examples
+INFO - Ner loss average 0.048627184264213696 - dep loss average 0.0 
+INFO - Train loss average : 0.04782699643401429 after 230 examples
+INFO - Ner loss average 0.04782699643401429 - dep loss average 0.0 
+INFO - Train loss average : 0.047818597779163 after 240 examples
+INFO - Ner loss average 0.047818597779163 - dep loss average 0.0 
+INFO - Train loss average : 0.047730736867059025 after 250 examples
+INFO - Ner loss average 0.047730736867059025 - dep loss average 0.0 
+INFO - Train loss average : 0.04779131348074701 after 260 examples
+INFO - Ner loss average 0.04779131348074701 - dep loss average 0.0 
+INFO - Train loss average : 0.04742088695444788 after 270 examples
+INFO - Ner loss average 0.04742088695444788 - dep loss average 0.0 
+INFO - Train loss average : 0.04756253795494558 after 280 examples
+INFO - Ner loss average 0.04756253795494558 - dep loss average 0.0 
+INFO - Train loss average : 0.047177621382409066 after 290 examples
+INFO - Ner loss average 0.047177621382409066 - dep loss average 0.0 
+INFO - Train loss average : 0.04677324564254377 after 300 examples
+INFO - Ner loss average 0.04677324564254377 - dep loss average 0.0 
+INFO - Train loss average : 0.04664319994344917 after 310 examples
+INFO - Ner loss average 0.04664319994344917 - dep loss average 0.0 
+INFO - Train loss average : 0.04629547454296699 after 320 examples
+INFO - Ner loss average 0.04629547454296699 - dep loss average 0.0 
+INFO - Train loss average : 0.04640477717145008 after 330 examples
+INFO - Ner loss average 0.04640477717145008 - dep loss average 0.0 
+INFO - Train loss average : 0.0462219955295201 after 340 examples
+INFO - Ner loss average 0.0462219955295201 - dep loss average 0.0 
+INFO - Train loss average : 0.04623007837998947 after 350 examples
+INFO - Ner loss average 0.04623007837998947 - dep loss average 0.0 
+INFO - Train loss average : 0.046347921585321375 after 360 examples
+INFO - Ner loss average 0.046347921585321375 - dep loss average 0.0 
+INFO - Train loss average : 0.04621943466639071 after 370 examples
+INFO - Ner loss average 0.04621943466639071 - dep loss average 0.0 
+INFO - Train loss average : 0.046157178708419545 after 380 examples
+INFO - Ner loss average 0.046157178708419545 - dep loss average 0.0 
+INFO - Train loss average : 0.04626348936043751 after 390 examples
+INFO - Ner loss average 0.04626348936043751 - dep loss average 0.0 
+INFO - Train loss average : 0.04602120169132831 after 400 examples
+INFO - Ner loss average 0.04602120169132831 - dep loss average 0.0 
+INFO - Train loss average : 0.045547575481298445 after 410 examples
+INFO - Ner loss average 0.045547575481298445 - dep loss average 0.0 
+INFO - Train loss average : 0.04571927914082716 after 420 examples
+INFO - Ner loss average 0.04571927914082716 - dep loss average 0.0 
+INFO - Train loss average : 0.045503252124560044 after 430 examples
+INFO - Ner loss average 0.045503252124560044 - dep loss average 0.0 
+INFO - Train loss average : 0.04590349870413775 after 440 examples
+INFO - Ner loss average 0.04590349870413775 - dep loss average 0.0 
+INFO - Train loss average : 0.045592715265617395 after 450 examples
+INFO - Ner loss average 0.045592715265617395 - dep loss average 0.0 
+INFO - Train loss average : 0.045795293477662515 after 460 examples
+INFO - Ner loss average 0.045795293477662515 - dep loss average 0.0 
+INFO - Train loss average : 0.04563582189556984 after 470 examples
+INFO - Ner loss average 0.04563582189556984 - dep loss average 0.0 
+INFO - Train loss average : 0.04565699930086945 after 480 examples
+INFO - Ner loss average 0.04565699930086945 - dep loss average 0.0 
+INFO - Train loss average : 0.04517514684263674 after 490 examples
+INFO - Ner loss average 0.04517514684263674 - dep loss average 0.0 
+INFO - Train loss average : 0.04497774240269791 after 500 examples
+INFO - Ner loss average 0.04497774240269791 - dep loss average 0.0 
+INFO - Train loss average : 0.04502077677787063 after 510 examples
+INFO - Ner loss average 0.04502077677787063 - dep loss average 0.0 
+INFO - Train loss average : 0.045079256580636586 after 520 examples
+INFO - Ner loss average 0.045079256580636586 - dep loss average 0.0 
+INFO - Train loss average : 0.04491020165776992 after 530 examples
+INFO - Ner loss average 0.04491020165776992 - dep loss average 0.0 
+INFO - Train loss average : 0.044611215533546376 after 540 examples
+INFO - Ner loss average 0.044611215533546376 - dep loss average 0.0 
+INFO - Train loss average : 0.044514505079502914 after 550 examples
+INFO - Ner loss average 0.044514505079502914 - dep loss average 0.0 
+INFO - Train loss average : 0.04439645783308411 after 560 examples
+INFO - Ner loss average 0.04439645783308411 - dep loss average 0.0 
+INFO - Train loss average : 0.04425929236346284 after 570 examples
+INFO - Ner loss average 0.04425929236346284 - dep loss average 0.0 
+INFO - Train loss average : 0.04403380911851478 after 580 examples
+INFO - Ner loss average 0.04403380911851478 - dep loss average 0.0 
+INFO - Train loss average : 0.043914811762929815 after 590 examples
+INFO - Ner loss average 0.043914811762929815 - dep loss average 0.0 
+INFO - Train loss average : 0.04368682474043453 after 600 examples
+INFO - Ner loss average 0.04368682474043453 - dep loss average 0.0 
+INFO - Train loss average : 0.043388423866298445 after 610 examples
+INFO - Ner loss average 0.043388423866298445 - dep loss average 0.0 
+INFO - Train loss average : 0.04328277435166866 after 620 examples
+INFO - Ner loss average 0.04328277435166866 - dep loss average 0.0 
+INFO - Train loss average : 0.04295865422852027 after 630 examples
+INFO - Ner loss average 0.04295865422852027 - dep loss average 0.0 
+INFO - Train loss average : 0.043013729669019084 after 640 examples
+INFO - Ner loss average 0.043013729669019084 - dep loss average 0.0 
+INFO - Train loss average : 0.04278446445411716 after 650 examples
+INFO - Ner loss average 0.04278446445411716 - dep loss average 0.0 
+INFO - Train loss average : 0.042451157921018556 after 660 examples
+INFO - Ner loss average 0.042451157921018556 - dep loss average 0.0 
+INFO - Train loss average : 0.04258372614207094 after 670 examples
+INFO - Ner loss average 0.04258372614207094 - dep loss average 0.0 
+INFO - Train loss average : 0.042399642164459427 after 680 examples
+INFO - Ner loss average 0.042399642164459427 - dep loss average 0.0 
+INFO - Train loss average : 0.042538910337463966 after 690 examples
+INFO - Ner loss average 0.042538910337463966 - dep loss average 0.0 
+INFO - Train loss average : 0.04244766781563937 after 700 examples
+INFO - Ner loss average 0.04244766781563937 - dep loss average 0.0 
+INFO - Train loss average : 0.042146286619482824 after 710 examples
+INFO - Ner loss average 0.042146286619482824 - dep loss average 0.0 
+INFO - Train loss average : 0.04197752620150115 after 720 examples
+INFO - Ner loss average 0.04197752620150115 - dep loss average 0.0 
+INFO - Train loss average : 0.041718391193099294 after 730 examples
+INFO - Ner loss average 0.041718391193099294 - dep loss average 0.0 
+INFO - Train loss average : 0.041698062074971634 after 740 examples
+INFO - Ner loss average 0.041698062074971634 - dep loss average 0.0 
+INFO - Train loss average : 0.04174172806111164 after 750 examples
+INFO - Ner loss average 0.04174172806111164 - dep loss average 0.0 
+INFO - Train loss average : 0.041714647977144186 after 760 examples
+INFO - Ner loss average 0.041714647977144186 - dep loss average 0.0 
+INFO - Train loss average : 0.041566036660874314 after 770 examples
+INFO - Ner loss average 0.041566036660874314 - dep loss average 0.0 
+INFO - Train loss average : 0.04152745529643606 after 780 examples
+INFO - Ner loss average 0.04152745529643606 - dep loss average 0.0 
+INFO - Train loss average : 0.041419018214919216 after 790 examples
+INFO - Ner loss average 0.041419018214919216 - dep loss average 0.0 
+INFO - Train loss average : 0.04140242817629769 after 800 examples
+INFO - Ner loss average 0.04140242817629769 - dep loss average 0.0 
+INFO - Train loss average : 0.041174294378099684 after 810 examples
+INFO - Ner loss average 0.041174294378099684 - dep loss average 0.0 
+INFO - Train loss average : 0.04102848530569534 after 820 examples
+INFO - Ner loss average 0.04102848530569534 - dep loss average 0.0 
+INFO - Train loss average : 0.04097096845893335 after 830 examples
+INFO - Ner loss average 0.04097096845893335 - dep loss average 0.0 
+INFO - Train loss average : 0.040964323505579076 after 840 examples
+INFO - Ner loss average 0.040964323505579076 - dep loss average 0.0 
+INFO - Train loss average : 0.04094017265412463 after 850 examples
+INFO - Ner loss average 0.04094017265412463 - dep loss average 0.0 
+INFO - Train loss average : 0.04070401962861408 after 860 examples
+INFO - Ner loss average 0.04070401962861408 - dep loss average 0.0 
+INFO - Train loss average : 0.04052101611474197 after 870 examples
+INFO - Ner loss average 0.04052101611474197 - dep loss average 0.0 
+INFO - Train loss average : 0.04046725072118782 after 880 examples
+INFO - Ner loss average 0.04046725072118782 - dep loss average 0.0 
+INFO - Train loss average : 0.04032616743947421 after 890 examples
+INFO - Ner loss average 0.04032616743947421 - dep loss average 0.0 
+INFO - Train loss average : 0.04025235651364912 after 900 examples
+INFO - Ner loss average 0.04025235651364912 - dep loss average 0.0 
+INFO - Train loss average : 0.03998035796320547 after 910 examples
+INFO - Ner loss average 0.03998035796320547 - dep loss average 0.0 
+INFO - Train loss average : 0.039942808494885435 after 920 examples
+INFO - Ner loss average 0.039942808494885435 - dep loss average 0.0 
+INFO - Train loss average : 0.03985727652563133 after 930 examples
+INFO - Ner loss average 0.03985727652563133 - dep loss average 0.0 
+INFO - Train loss average : 0.039728070307149 after 940 examples
+INFO - Ner loss average 0.039728070307149 - dep loss average 0.0 
+INFO - Train loss average : 0.03953456733087813 after 950 examples
+INFO - Ner loss average 0.03953456733087813 - dep loss average 0.0 
+INFO - Train loss average : 0.03940420460912719 after 960 examples
+INFO - Ner loss average 0.03940420460912719 - dep loss average 0.0 
+INFO - Train loss average : 0.03926812545954461 after 970 examples
+INFO - Ner loss average 0.03926812545954461 - dep loss average 0.0 
+INFO - Train loss average : 0.03919022947351439 after 980 examples
+INFO - Ner loss average 0.03919022947351439 - dep loss average 0.0 
+INFO - Train loss average : 0.039001264349108264 after 990 examples
+INFO - Ner loss average 0.039001264349108264 - dep loss average 0.0 
+INFO - Train loss average : 0.03900945770862745 after 1000 examples
+INFO - Ner loss average 0.03900945770862745 - dep loss average 0.0 
+INFO - Results for epoch : 2
+INFO - My values ignoring the boundaries.
+pre: 0.9229847996315063  rec: 0.9666184273999036  f1: 0.9442978322337418 
+INFO - Train loss average : 0.020359062310308217 after 10 examples
+INFO - Ner loss average 0.020359062310308217 - dep loss average 0.0 
+INFO - Train loss average : 0.021809975465293972 after 20 examples
+INFO - Ner loss average 0.021809975465293972 - dep loss average 0.0 
+INFO - Train loss average : 0.024904200861540934 after 30 examples
+INFO - Ner loss average 0.024904200861540934 - dep loss average 0.0 
+INFO - Train loss average : 0.02723250418785028 after 40 examples
+INFO - Ner loss average 0.02723250418785028 - dep loss average 0.0 
+INFO - Train loss average : 0.02904480730649084 after 50 examples
+INFO - Ner loss average 0.02904480730649084 - dep loss average 0.0 
+INFO - Train loss average : 0.029322922982585927 after 60 examples
+INFO - Ner loss average 0.029322922982585927 - dep loss average 0.0 
+INFO - Train loss average : 0.028445895774556057 after 70 examples
+INFO - Ner loss average 0.028445895774556057 - dep loss average 0.0 
+INFO - Train loss average : 0.02817735752905719 after 80 examples
+INFO - Ner loss average 0.02817735752905719 - dep loss average 0.0 
+INFO - Train loss average : 0.028347220913403564 after 90 examples
+INFO - Ner loss average 0.028347220913403564 - dep loss average 0.0 
+INFO - Train loss average : 0.029374574180692434 after 100 examples
+INFO - Ner loss average 0.029374574180692434 - dep loss average 0.0 
+INFO - Train loss average : 0.029072895658795127 after 110 examples
+INFO - Ner loss average 0.029072895658795127 - dep loss average 0.0 
+INFO - Train loss average : 0.028824213748642556 after 120 examples
+INFO - Ner loss average 0.028824213748642556 - dep loss average 0.0 
+INFO - Train loss average : 0.02907770960770834 after 130 examples
+INFO - Ner loss average 0.02907770960770834 - dep loss average 0.0 
+INFO - Train loss average : 0.028958292613138578 after 140 examples
+INFO - Ner loss average 0.028958292613138578 - dep loss average 0.0 
+INFO - Train loss average : 0.028624852692397933 after 150 examples
+INFO - Ner loss average 0.028624852692397933 - dep loss average 0.0 
+INFO - Train loss average : 0.028985469021426978 after 160 examples
+INFO - Ner loss average 0.028985469021426978 - dep loss average 0.0 
+INFO - Train loss average : 0.02869747469530386 after 170 examples
+INFO - Ner loss average 0.02869747469530386 - dep loss average 0.0 
+INFO - Train loss average : 0.028709180888512896 after 180 examples
+INFO - Ner loss average 0.028709180888512896 - dep loss average 0.0 
+INFO - Train loss average : 0.028367272654156152 after 190 examples
+INFO - Ner loss average 0.028367272654156152 - dep loss average 0.0 
+INFO - Train loss average : 0.028205442044418307 after 200 examples
+INFO - Ner loss average 0.028205442044418307 - dep loss average 0.0 
+INFO - Train loss average : 0.02817291002942338 after 210 examples
+INFO - Ner loss average 0.02817291002942338 - dep loss average 0.0 
+INFO - Train loss average : 0.02856289834969423 after 220 examples
+INFO - Ner loss average 0.02856289834969423 - dep loss average 0.0 
+INFO - Train loss average : 0.028742627906815515 after 230 examples
+INFO - Ner loss average 0.028742627906815515 - dep loss average 0.0 
+INFO - Train loss average : 0.028586308419471608 after 240 examples
+INFO - Ner loss average 0.028586308419471608 - dep loss average 0.0 
+INFO - Train loss average : 0.028030590529553593 after 250 examples
+INFO - Ner loss average 0.028030590529553593 - dep loss average 0.0 
+INFO - Train loss average : 0.02777369986870326 after 260 examples
+INFO - Ner loss average 0.02777369986870326 - dep loss average 0.0 
+INFO - Train loss average : 0.02732365496361766 after 270 examples
+INFO - Ner loss average 0.02732365496361766 - dep loss average 0.0 
+INFO - Train loss average : 0.027138187858093132 after 280 examples
+INFO - Ner loss average 0.027138187858093132 - dep loss average 0.0 
+INFO - Train loss average : 0.027026170142524845 after 290 examples
+INFO - Ner loss average 0.027026170142524845 - dep loss average 0.0 
+INFO - Train loss average : 0.026796933720276382 after 300 examples
+INFO - Ner loss average 0.026796933720276382 - dep loss average 0.0 
+INFO - Train loss average : 0.026665542528949558 after 310 examples
+INFO - Ner loss average 0.026665542528949558 - dep loss average 0.0 
+INFO - Train loss average : 0.026962989250387183 after 320 examples
+INFO - Ner loss average 0.026962989250387183 - dep loss average 0.0 
+INFO - Train loss average : 0.02687323325433571 after 330 examples
+INFO - Ner loss average 0.02687323325433571 - dep loss average 0.0 
+INFO - Train loss average : 0.02659083477269365 after 340 examples
+INFO - Ner loss average 0.02659083477269365 - dep loss average 0.0 
+INFO - Train loss average : 0.02658075204484963 after 350 examples
+INFO - Ner loss average 0.02658075204484963 - dep loss average 0.0 
+INFO - Train loss average : 0.026679331851644544 after 360 examples
+INFO - Ner loss average 0.026679331851644544 - dep loss average 0.0 
+INFO - Train loss average : 0.026664583919557266 after 370 examples
+INFO - Ner loss average 0.026664583919557266 - dep loss average 0.0 
+INFO - Train loss average : 0.02637776773956016 after 380 examples
+INFO - Ner loss average 0.02637776773956016 - dep loss average 0.0 
+INFO - Train loss average : 0.02620935142189503 after 390 examples
+INFO - Ner loss average 0.02620935142189503 - dep loss average 0.0 
+INFO - Train loss average : 0.026331824487133417 after 400 examples
+INFO - Ner loss average 0.026331824487133417 - dep loss average 0.0 
+INFO - Train loss average : 0.02605689045058836 after 410 examples
+INFO - Ner loss average 0.02605689045058836 - dep loss average 0.0 
+INFO - Train loss average : 0.025847272769758654 after 420 examples
+INFO - Ner loss average 0.025847272769758654 - dep loss average 0.0 
+INFO - Train loss average : 0.025729783871048673 after 430 examples
+INFO - Ner loss average 0.025729783871048673 - dep loss average 0.0 
+INFO - Train loss average : 0.02553723632537929 after 440 examples
+INFO - Ner loss average 0.02553723632537929 - dep loss average 0.0 
+INFO - Train loss average : 0.02575561041685028 after 450 examples
+INFO - Ner loss average 0.02575561041685028 - dep loss average 0.0 
+INFO - Train loss average : 0.025772493172679906 after 460 examples
+INFO - Ner loss average 0.025772493172679906 - dep loss average 0.0 
+INFO - Train loss average : 0.0254491769899416 after 470 examples
+INFO - Ner loss average 0.0254491769899416 - dep loss average 0.0 
+INFO - Train loss average : 0.025630442518013295 after 480 examples
+INFO - Ner loss average 0.025630442518013295 - dep loss average 0.0 
+INFO - Train loss average : 0.02554358253944475 after 490 examples
+INFO - Ner loss average 0.02554358253944475 - dep loss average 0.0 
+INFO - Train loss average : 0.025446288421051576 after 500 examples
+INFO - Ner loss average 0.025446288421051576 - dep loss average 0.0 
+INFO - Train loss average : 0.02533460539085425 after 510 examples
+INFO - Ner loss average 0.02533460539085425 - dep loss average 0.0 
+INFO - Train loss average : 0.025294576015977118 after 520 examples
+INFO - Ner loss average 0.025294576015977118 - dep loss average 0.0 
+INFO - Train loss average : 0.025363538148241854 after 530 examples
+INFO - Ner loss average 0.025363538148241854 - dep loss average 0.0 
+INFO - Train loss average : 0.025629174134788896 after 540 examples
+INFO - Ner loss average 0.025629174134788896 - dep loss average 0.0 
+INFO - Train loss average : 0.025482355542480947 after 550 examples
+INFO - Ner loss average 0.025482355542480947 - dep loss average 0.0 
+INFO - Train loss average : 0.025357948667182686 after 560 examples
+INFO - Ner loss average 0.025357948667182686 - dep loss average 0.0 
+INFO - Train loss average : 0.025520317202838334 after 570 examples
+INFO - Ner loss average 0.025520317202838334 - dep loss average 0.0 
+INFO - Train loss average : 0.025429082830368283 after 580 examples
+INFO - Ner loss average 0.025429082830368283 - dep loss average 0.0 
+INFO - Train loss average : 0.025416519132865023 after 590 examples
+INFO - Ner loss average 0.025416519132865023 - dep loss average 0.0 
+INFO - Train loss average : 0.025324630756804255 after 600 examples
+INFO - Ner loss average 0.025324630756804255 - dep loss average 0.0 
+INFO - Train loss average : 0.025356698421032366 after 610 examples
+INFO - Ner loss average 0.025356698421032366 - dep loss average 0.0 
+INFO - Train loss average : 0.025200596933099142 after 620 examples
+INFO - Ner loss average 0.025200596933099142 - dep loss average 0.0 
+INFO - Train loss average : 0.0252363040768874 after 630 examples
+INFO - Ner loss average 0.0252363040768874 - dep loss average 0.0 
+INFO - Train loss average : 0.025208071539873346 after 640 examples
+INFO - Ner loss average 0.025208071539873346 - dep loss average 0.0 
+INFO - Train loss average : 0.025156446502526075 after 650 examples
+INFO - Ner loss average 0.025156446502526075 - dep loss average 0.0 
+INFO - Train loss average : 0.025182732387188343 after 660 examples
+INFO - Ner loss average 0.025182732387188343 - dep loss average 0.0 
+INFO - Train loss average : 0.02510669038608434 after 670 examples
+INFO - Ner loss average 0.02510669038608434 - dep loss average 0.0 
+INFO - Train loss average : 0.025066835769736347 after 680 examples
+INFO - Ner loss average 0.025066835769736347 - dep loss average 0.0 
+INFO - Train loss average : 0.02503739615482197 after 690 examples
+INFO - Ner loss average 0.02503739615482197 - dep loss average 0.0 
+INFO - Train loss average : 0.024988610399471197 after 700 examples
+INFO - Ner loss average 0.024988610399471197 - dep loss average 0.0 
+INFO - Train loss average : 0.02487627925100395 after 710 examples
+INFO - Ner loss average 0.02487627925100395 - dep loss average 0.0 
+INFO - Train loss average : 0.02482355954214452 after 720 examples
+INFO - Ner loss average 0.02482355954214452 - dep loss average 0.0 
+INFO - Train loss average : 0.02480206400537162 after 730 examples
+INFO - Ner loss average 0.02480206400537162 - dep loss average 0.0 
+INFO - Train loss average : 0.024734441273628633 after 740 examples
+INFO - Ner loss average 0.024734441273628633 - dep loss average 0.0 
+INFO - Train loss average : 0.024744051468481 after 750 examples
+INFO - Ner loss average 0.024744051468481 - dep loss average 0.0 
+INFO - Train loss average : 0.02468330484415147 after 760 examples
+INFO - Ner loss average 0.02468330484415147 - dep loss average 0.0 
+INFO - Train loss average : 0.024596639404408996 after 770 examples
+INFO - Ner loss average 0.024596639404408996 - dep loss average 0.0 
+INFO - Train loss average : 0.024709905907198286 after 780 examples
+INFO - Ner loss average 0.024709905907198286 - dep loss average 0.0 
+INFO - Train loss average : 0.024779981499039747 after 790 examples
+INFO - Ner loss average 0.024779981499039747 - dep loss average 0.0 
+INFO - Train loss average : 0.02465055253524042 after 800 examples
+INFO - Ner loss average 0.02465055253524042 - dep loss average 0.0 
+INFO - Train loss average : 0.0245034785581218 after 810 examples
+INFO - Ner loss average 0.0245034785581218 - dep loss average 0.0 
+INFO - Train loss average : 0.024431467507951665 after 820 examples
+INFO - Ner loss average 0.024431467507951665 - dep loss average 0.0 
+INFO - Train loss average : 0.02432230826255484 after 830 examples
+INFO - Ner loss average 0.02432230826255484 - dep loss average 0.0 
+INFO - Train loss average : 0.024217959011245207 after 840 examples
+INFO - Ner loss average 0.024217959011245207 - dep loss average 0.0 
+INFO - Train loss average : 0.024158221647170755 after 850 examples
+INFO - Ner loss average 0.024158221647170755 - dep loss average 0.0 
+INFO - Train loss average : 0.02406765656088219 after 860 examples
+INFO - Ner loss average 0.02406765656088219 - dep loss average 0.0 
+INFO - Train loss average : 0.0240565072192112 after 870 examples
+INFO - Ner loss average 0.0240565072192112 - dep loss average 0.0 
+INFO - Train loss average : 0.023995890919038424 after 880 examples
+INFO - Ner loss average 0.023995890919038424 - dep loss average 0.0 
+INFO - Train loss average : 0.024018607290789976 after 890 examples
+INFO - Ner loss average 0.024018607290789976 - dep loss average 0.0 
+INFO - Train loss average : 0.023957910747623018 after 900 examples
+INFO - Ner loss average 0.023957910747623018 - dep loss average 0.0 
+INFO - Train loss average : 0.02384561027466079 after 910 examples
+INFO - Ner loss average 0.02384561027466079 - dep loss average 0.0 
+INFO - Train loss average : 0.023711279222239364 after 920 examples
+INFO - Ner loss average 0.023711279222239364 - dep loss average 0.0 
+INFO - Train loss average : 0.02376281999152339 after 930 examples
+INFO - Ner loss average 0.02376281999152339 - dep loss average 0.0 
+INFO - Train loss average : 0.023716037567151325 after 940 examples
+INFO - Ner loss average 0.023716037567151325 - dep loss average 0.0 
+INFO - Train loss average : 0.023729580203837128 after 950 examples
+INFO - Ner loss average 0.023729580203837128 - dep loss average 0.0 
+INFO - Train loss average : 0.02375106724336244 after 960 examples
+INFO - Ner loss average 0.02375106724336244 - dep loss average 0.0 
+INFO - Train loss average : 0.023703470135848136 after 970 examples
+INFO - Ner loss average 0.023703470135848136 - dep loss average 0.0 
+INFO - Train loss average : 0.02371402949154762 after 980 examples
+INFO - Ner loss average 0.02371402949154762 - dep loss average 0.0 
+INFO - Train loss average : 0.02368503203806632 after 990 examples
+INFO - Ner loss average 0.02368503203806632 - dep loss average 0.0 
+INFO - Train loss average : 0.023593019021005603 after 1000 examples
+INFO - Ner loss average 0.023593019021005603 - dep loss average 0.0 
+INFO - Results for epoch : 3
+INFO - My values ignoring the boundaries.
+pre: 0.9634595411198187  rec: 0.9844669561022672  f1: 0.9738499713685816 
+INFO - Train loss average : 0.01580612293910235 after 10 examples
+INFO - Ner loss average 0.01580612293910235 - dep loss average 0.0 
+INFO - Train loss average : 0.030354097776580602 after 20 examples
+INFO - Ner loss average 0.030354097776580602 - dep loss average 0.0 
+INFO - Train loss average : 0.023729643741777787 after 30 examples
+INFO - Ner loss average 0.023729643741777787 - dep loss average 0.0 
+INFO - Train loss average : 0.02131595131068025 after 40 examples
+INFO - Ner loss average 0.02131595131068025 - dep loss average 0.0 
+INFO - Train loss average : 0.020436375665012746 after 50 examples
+INFO - Ner loss average 0.020436375665012746 - dep loss average 0.0 
+INFO - Train loss average : 0.02007087885673779 after 60 examples
+INFO - Ner loss average 0.02007087885673779 - dep loss average 0.0 
+INFO - Train loss average : 0.019933928654063494 after 70 examples
+INFO - Ner loss average 0.019933928654063494 - dep loss average 0.0 
+INFO - Train loss average : 0.019351128370908556 after 80 examples
+INFO - Ner loss average 0.019351128370908556 - dep loss average 0.0 
+INFO - Train loss average : 0.01866767543963053 after 90 examples
+INFO - Ner loss average 0.01866767543963053 - dep loss average 0.0 
+INFO - Train loss average : 0.018933100359281526 after 100 examples
+INFO - Ner loss average 0.018933100359281526 - dep loss average 0.0 
+INFO - Train loss average : 0.019449236820748245 after 110 examples
+INFO - Ner loss average 0.019449236820748245 - dep loss average 0.0 
+INFO - Train loss average : 0.019454171944137972 after 120 examples
+INFO - Ner loss average 0.019454171944137972 - dep loss average 0.0 
+INFO - Train loss average : 0.01908000646642624 after 130 examples
+INFO - Ner loss average 0.01908000646642624 - dep loss average 0.0 
+INFO - Train loss average : 0.018860022982283096 after 140 examples
+INFO - Ner loss average 0.018860022982283096 - dep loss average 0.0 
+INFO - Train loss average : 0.018497144007900108 after 150 examples
+INFO - Ner loss average 0.018497144007900108 - dep loss average 0.0 
+INFO - Train loss average : 0.018063368662842548 after 160 examples
+INFO - Ner loss average 0.018063368662842548 - dep loss average 0.0 
+INFO - Train loss average : 0.01759349719812984 after 170 examples
+INFO - Ner loss average 0.01759349719812984 - dep loss average 0.0 
+INFO - Train loss average : 0.0178090819882022 after 180 examples
+INFO - Ner loss average 0.0178090819882022 - dep loss average 0.0 
+INFO - Train loss average : 0.017387733318058676 after 190 examples
+INFO - Ner loss average 0.017387733318058676 - dep loss average 0.0 
+INFO - Train loss average : 0.016861095607164315 after 200 examples
+INFO - Ner loss average 0.016861095607164315 - dep loss average 0.0 
+INFO - Train loss average : 0.017690190315313103 after 210 examples
+INFO - Ner loss average 0.017690190315313103 - dep loss average 0.0 
+INFO - Train loss average : 0.017486850674983793 after 220 examples
+INFO - Ner loss average 0.017486850674983793 - dep loss average 0.0 
+INFO - Train loss average : 0.017272139826546545 after 230 examples
+INFO - Ner loss average 0.017272139826546545 - dep loss average 0.0 
+INFO - Train loss average : 0.017276154090844407 after 240 examples
+INFO - Ner loss average 0.017276154090844407 - dep loss average 0.0 
+INFO - Train loss average : 0.017811676940880716 after 250 examples
+INFO - Ner loss average 0.017811676940880716 - dep loss average 0.0 
+INFO - Train loss average : 0.018210746209101323 after 260 examples
+INFO - Ner loss average 0.018210746209101323 - dep loss average 0.0 
+INFO - Train loss average : 0.017998244339617452 after 270 examples
+INFO - Ner loss average 0.017998244339617452 - dep loss average 0.0 
+INFO - Train loss average : 0.018275540726608596 after 280 examples
+INFO - Ner loss average 0.018275540726608596 - dep loss average 0.0 
+INFO - Train loss average : 0.018099035071771078 after 290 examples
+INFO - Ner loss average 0.018099035071771078 - dep loss average 0.0 
+INFO - Train loss average : 0.01773229044357625 after 300 examples
+INFO - Ner loss average 0.01773229044357625 - dep loss average 0.0 
+INFO - Train loss average : 0.01780799849131595 after 310 examples
+INFO - Ner loss average 0.01780799849131595 - dep loss average 0.0 
+INFO - Train loss average : 0.018104931466587003 after 320 examples
+INFO - Ner loss average 0.018104931466587003 - dep loss average 0.0 
+INFO - Train loss average : 0.017884287210251912 after 330 examples
+INFO - Ner loss average 0.017884287210251912 - dep loss average 0.0 
+INFO - Train loss average : 0.017715684497756335 after 340 examples
+INFO - Ner loss average 0.017715684497756335 - dep loss average 0.0 
+INFO - Train loss average : 0.017593115581465618 after 350 examples
+INFO - Ner loss average 0.017593115581465618 - dep loss average 0.0 
+INFO - Train loss average : 0.017597916696750975 after 360 examples
+INFO - Ner loss average 0.017597916696750975 - dep loss average 0.0 
+INFO - Train loss average : 0.017853357639428028 after 370 examples
+INFO - Ner loss average 0.017853357639428028 - dep loss average 0.0 
+INFO - Train loss average : 0.01774966079515013 after 380 examples
+INFO - Ner loss average 0.01774966079515013 - dep loss average 0.0 
+INFO - Train loss average : 0.01753698550612451 after 390 examples
+INFO - Ner loss average 0.01753698550612451 - dep loss average 0.0 
+INFO - Train loss average : 0.017564208582189166 after 400 examples
+INFO - Ner loss average 0.017564208582189166 - dep loss average 0.0 
+INFO - Train loss average : 0.017358491386474315 after 410 examples
+INFO - Ner loss average 0.017358491386474315 - dep loss average 0.0 
+INFO - Train loss average : 0.017335527540611413 after 420 examples
+INFO - Ner loss average 0.017335527540611413 - dep loss average 0.0 
+INFO - Train loss average : 0.017589647643035278 after 430 examples
+INFO - Ner loss average 0.017589647643035278 - dep loss average 0.0 
+INFO - Train loss average : 0.01755543772715927 after 440 examples
+INFO - Ner loss average 0.01755543772715927 - dep loss average 0.0 
+INFO - Train loss average : 0.01738925570479801 after 450 examples
+INFO - Ner loss average 0.01738925570479801 - dep loss average 0.0 
+INFO - Train loss average : 0.01731284731940832 after 460 examples
+INFO - Ner loss average 0.01731284731940832 - dep loss average 0.0 
+INFO - Train loss average : 0.017243507716611543 after 470 examples
+INFO - Ner loss average 0.017243507716611543 - dep loss average 0.0 
+INFO - Train loss average : 0.017039010688192018 after 480 examples
+INFO - Ner loss average 0.017039010688192018 - dep loss average 0.0 
+INFO - Train loss average : 0.01690574066882136 after 490 examples
+INFO - Ner loss average 0.01690574066882136 - dep loss average 0.0 
+INFO - Train loss average : 0.016877532873651943 after 500 examples
+INFO - Ner loss average 0.016877532873651943 - dep loss average 0.0 
+INFO - Train loss average : 0.016822006518829286 after 510 examples
+INFO - Ner loss average 0.016822006518829286 - dep loss average 0.0 
+INFO - Train loss average : 0.016816625390940598 after 520 examples
+INFO - Ner loss average 0.016816625390940598 - dep loss average 0.0 
+INFO - Train loss average : 0.01673094791213033 after 530 examples
+INFO - Ner loss average 0.01673094791213033 - dep loss average 0.0 
+INFO - Train loss average : 0.01668420395721181 after 540 examples
+INFO - Ner loss average 0.01668420395721181 - dep loss average 0.0 
+INFO - Train loss average : 0.01669721566606313 after 550 examples
+INFO - Ner loss average 0.01669721566606313 - dep loss average 0.0 
+INFO - Train loss average : 0.01674736762943212 after 560 examples
+INFO - Ner loss average 0.01674736762943212 - dep loss average 0.0 
+INFO - Train loss average : 0.016700393163084394 after 570 examples
+INFO - Ner loss average 0.016700393163084394 - dep loss average 0.0 
+INFO - Train loss average : 0.016678721751367417 after 580 examples
+INFO - Ner loss average 0.016678721751367417 - dep loss average 0.0 
+INFO - Train loss average : 0.01677754803588298 after 590 examples
+INFO - Ner loss average 0.01677754803588298 - dep loss average 0.0 
+INFO - Train loss average : 0.01672786661753586 after 600 examples
+INFO - Ner loss average 0.01672786661753586 - dep loss average 0.0 
+INFO - Train loss average : 0.016879858576394922 after 610 examples
+INFO - Ner loss average 0.016879858576394922 - dep loss average 0.0 
+INFO - Train loss average : 0.016844528878010027 after 620 examples
+INFO - Ner loss average 0.016844528878010027 - dep loss average 0.0 
+INFO - Train loss average : 0.016926180175690364 after 630 examples
+INFO - Ner loss average 0.016926180175690364 - dep loss average 0.0 
+INFO - Train loss average : 0.01692341932484851 after 640 examples
+INFO - Ner loss average 0.01692341932484851 - dep loss average 0.0 
+INFO - Train loss average : 0.016959672735896533 after 650 examples
+INFO - Ner loss average 0.016959672735896533 - dep loss average 0.0 
+INFO - Train loss average : 0.016859992273737478 after 660 examples
+INFO - Ner loss average 0.016859992273737478 - dep loss average 0.0 
+INFO - Train loss average : 0.01684106618701133 after 670 examples
+INFO - Ner loss average 0.01684106618701133 - dep loss average 0.0 
+INFO - Train loss average : 0.016831185478676 after 680 examples
+INFO - Ner loss average 0.016831185478676 - dep loss average 0.0 
+INFO - Train loss average : 0.01673438986054743 after 690 examples
+INFO - Ner loss average 0.01673438986054743 - dep loss average 0.0 
+INFO - Train loss average : 0.01669035199430904 after 700 examples
+INFO - Ner loss average 0.01669035199430904 - dep loss average 0.0 
+INFO - Train loss average : 0.016741077388098963 after 710 examples
+INFO - Ner loss average 0.016741077388098963 - dep loss average 0.0 
+INFO - Train loss average : 0.01671591564016934 after 720 examples
+INFO - Ner loss average 0.01671591564016934 - dep loss average 0.0 
+INFO - Train loss average : 0.01666781935706888 after 730 examples
+INFO - Ner loss average 0.01666781935706888 - dep loss average 0.0 
+INFO - Train loss average : 0.01662450753076858 after 740 examples
+INFO - Ner loss average 0.01662450753076858 - dep loss average 0.0 
+INFO - Train loss average : 0.016557255271511775 after 750 examples
+INFO - Ner loss average 0.016557255271511775 - dep loss average 0.0 
+INFO - Train loss average : 0.01646748436231926 after 760 examples
+INFO - Ner loss average 0.01646748436231926 - dep loss average 0.0 
+INFO - Train loss average : 0.01636571048225228 after 770 examples
+INFO - Ner loss average 0.01636571048225228 - dep loss average 0.0 
+INFO - Train loss average : 0.016255533653095018 after 780 examples
+INFO - Ner loss average 0.016255533653095018 - dep loss average 0.0 
+INFO - Train loss average : 0.016295731886653998 after 790 examples
+INFO - Ner loss average 0.016295731886653998 - dep loss average 0.0 
+INFO - Train loss average : 0.01632544419113401 after 800 examples
+INFO - Ner loss average 0.01632544419113401 - dep loss average 0.0 
+INFO - Train loss average : 0.016368802463208945 after 810 examples
+INFO - Ner loss average 0.016368802463208945 - dep loss average 0.0 
+INFO - Train loss average : 0.016345448373914866 after 820 examples
+INFO - Ner loss average 0.016345448373914866 - dep loss average 0.0 
+INFO - Train loss average : 0.016274481606059595 after 830 examples
+INFO - Ner loss average 0.016274481606059595 - dep loss average 0.0 
+INFO - Train loss average : 0.016187939174380432 after 840 examples
+INFO - Ner loss average 0.016187939174380432 - dep loss average 0.0 
+INFO - Train loss average : 0.016202941836467397 after 850 examples
+INFO - Ner loss average 0.016202941836467397 - dep loss average 0.0 
+INFO - Train loss average : 0.016233175251054912 after 860 examples
+INFO - Ner loss average 0.016233175251054912 - dep loss average 0.0 
+INFO - Train loss average : 0.0162346738540158 after 870 examples
+INFO - Ner loss average 0.0162346738540158 - dep loss average 0.0 
+INFO - Train loss average : 0.016119087603179982 after 880 examples
+INFO - Ner loss average 0.016119087603179982 - dep loss average 0.0 
+INFO - Train loss average : 0.01614711137336098 after 890 examples
+INFO - Ner loss average 0.01614711137336098 - dep loss average 0.0 
+INFO - Train loss average : 0.016181565136098974 after 900 examples
+INFO - Ner loss average 0.016181565136098974 - dep loss average 0.0 
+INFO - Train loss average : 0.016158520732974316 after 910 examples
+INFO - Ner loss average 0.016158520732974316 - dep loss average 0.0 
+INFO - Train loss average : 0.016185334168925612 after 920 examples
+INFO - Ner loss average 0.016185334168925612 - dep loss average 0.0 
+INFO - Train loss average : 0.01611445404522519 after 930 examples
+INFO - Ner loss average 0.01611445404522519 - dep loss average 0.0 
+INFO - Train loss average : 0.016047466535568905 after 940 examples
+INFO - Ner loss average 0.016047466535568905 - dep loss average 0.0 
+INFO - Train loss average : 0.015958600078485784 after 950 examples
+INFO - Ner loss average 0.015958600078485784 - dep loss average 0.0 
+INFO - Train loss average : 0.01598125192902747 after 960 examples
+INFO - Ner loss average 0.01598125192902747 - dep loss average 0.0 
+INFO - Train loss average : 0.016029872308643032 after 970 examples
+INFO - Ner loss average 0.016029872308643032 - dep loss average 0.0 
+INFO - Train loss average : 0.015979540559605158 after 980 examples
+INFO - Ner loss average 0.015979540559605158 - dep loss average 0.0 
+INFO - Train loss average : 0.015914616189797694 after 990 examples
+INFO - Ner loss average 0.015914616189797694 - dep loss average 0.0 
+INFO - Train loss average : 0.01586849779680779 after 1000 examples
+INFO - Ner loss average 0.01586849779680779 - dep loss average 0.0 
+INFO - Results for epoch : 4
+INFO - My values ignoring the boundaries.
+pre: 0.9729344729344729  rec: 0.9884225759768451  f1: 0.9806173725771714 
+INFO - Train loss average : 0.007979943312238901 after 10 examples
+INFO - Ner loss average 0.007979943312238901 - dep loss average 0.0 
+INFO - Train loss average : 0.009370561633841135 after 20 examples
+INFO - Ner loss average 0.009370561633841135 - dep loss average 0.0 
+INFO - Train loss average : 0.011059366843740766 after 30 examples
+INFO - Ner loss average 0.011059366843740766 - dep loss average 0.0 
+INFO - Train loss average : 0.010255089875136037 after 40 examples
+INFO - Ner loss average 0.010255089875136037 - dep loss average 0.0 
+INFO - Train loss average : 0.01158722278662026 after 50 examples
+INFO - Ner loss average 0.01158722278662026 - dep loss average 0.0 
+INFO - Train loss average : 0.01141091757453978 after 60 examples
+INFO - Ner loss average 0.01141091757453978 - dep loss average 0.0 
+INFO - Train loss average : 0.013397438544780016 after 70 examples
+INFO - Ner loss average 0.013397438544780016 - dep loss average 0.0 
+INFO - Train loss average : 0.013114837685134263 after 80 examples
+INFO - Ner loss average 0.013114837685134263 - dep loss average 0.0 
+INFO - Train loss average : 0.013013118518412942 after 90 examples
+INFO - Ner loss average 0.013013118518412942 - dep loss average 0.0 
+INFO - Train loss average : 0.013144290162017569 after 100 examples
+INFO - Ner loss average 0.013144290162017569 - dep loss average 0.0 
+INFO - Train loss average : 0.01288012013431977 after 110 examples
+INFO - Ner loss average 0.01288012013431977 - dep loss average 0.0 
+INFO - Train loss average : 0.013145467854337766 after 120 examples
+INFO - Ner loss average 0.013145467854337766 - dep loss average 0.0 
+INFO - Train loss average : 0.01301942132995464 after 130 examples
+INFO - Ner loss average 0.01301942132995464 - dep loss average 0.0 
+INFO - Train loss average : 0.01274780009449127 after 140 examples
+INFO - Ner loss average 0.01274780009449127 - dep loss average 0.0 
+INFO - Train loss average : 0.01293823861478207 after 150 examples
+INFO - Ner loss average 0.01293823861478207 - dep loss average 0.0 
+INFO - Train loss average : 0.012713296007495956 after 160 examples
+INFO - Ner loss average 0.012713296007495956 - dep loss average 0.0 
+INFO - Train loss average : 0.012756190621225601 after 170 examples
+INFO - Ner loss average 0.012756190621225601 - dep loss average 0.0 
+INFO - Train loss average : 0.012631947585679074 after 180 examples
+INFO - Ner loss average 0.012631947585679074 - dep loss average 0.0 
+INFO - Train loss average : 0.012676121047881775 after 190 examples
+INFO - Ner loss average 0.012676121047881775 - dep loss average 0.0 
+INFO - Train loss average : 0.01302088930940954 after 200 examples
+INFO - Ner loss average 0.01302088930940954 - dep loss average 0.0 
+INFO - Train loss average : 0.012768620249421691 after 210 examples
+INFO - Ner loss average 0.012768620249421691 - dep loss average 0.0 
+INFO - Train loss average : 0.01283007480048003 after 220 examples
+INFO - Ner loss average 0.01283007480048003 - dep loss average 0.0 
+INFO - Train loss average : 0.012946409255939375 after 230 examples
+INFO - Ner loss average 0.012946409255939375 - dep loss average 0.0 
+INFO - Train loss average : 0.0127455333215039 after 240 examples
+INFO - Ner loss average 0.0127455333215039 - dep loss average 0.0 
+INFO - Train loss average : 0.012608562823501415 after 250 examples
+INFO - Ner loss average 0.012608562823501415 - dep loss average 0.0 
+INFO - Train loss average : 0.012356818787632689 after 260 examples
+INFO - Ner loss average 0.012356818787632689 - dep loss average 0.0 
+INFO - Train loss average : 0.012083841740645262 after 270 examples
+INFO - Ner loss average 0.012083841740645262 - dep loss average 0.0 
+INFO - Train loss average : 0.012270111146790441 after 280 examples
+INFO - Ner loss average 0.012270111146790441 - dep loss average 0.0 
+INFO - Train loss average : 0.011959260069676835 after 290 examples
+INFO - Ner loss average 0.011959260069676835 - dep loss average 0.0 
+INFO - Train loss average : 0.01165970014136595 after 300 examples
+INFO - Ner loss average 0.01165970014136595 - dep loss average 0.0 
+INFO - Train loss average : 0.011433833763153562 after 310 examples
+INFO - Ner loss average 0.011433833763153562 - dep loss average 0.0 
+INFO - Train loss average : 0.011612537341352435 after 320 examples
+INFO - Ner loss average 0.011612537341352435 - dep loss average 0.0 
+INFO - Train loss average : 0.011840828497996413 after 330 examples
+INFO - Ner loss average 0.011840828497996413 - dep loss average 0.0 
+INFO - Train loss average : 0.011847103090343914 after 340 examples
+INFO - Ner loss average 0.011847103090343914 - dep loss average 0.0 
+INFO - Train loss average : 0.011992519698521522 after 350 examples
+INFO - Ner loss average 0.011992519698521522 - dep loss average 0.0 
+INFO - Train loss average : 0.011903666348613721 after 360 examples
+INFO - Ner loss average 0.011903666348613721 - dep loss average 0.0 
+INFO - Train loss average : 0.011786663325619885 after 370 examples
+INFO - Ner loss average 0.011786663325619885 - dep loss average 0.0 
+INFO - Train loss average : 0.01183280818551889 after 380 examples
+INFO - Ner loss average 0.01183280818551889 - dep loss average 0.0 
+INFO - Train loss average : 0.011725150254772953 after 390 examples
+INFO - Ner loss average 0.011725150254772953 - dep loss average 0.0 
+INFO - Train loss average : 0.011963780208679964 after 400 examples
+INFO - Ner loss average 0.011963780208679964 - dep loss average 0.0 
+INFO - Train loss average : 0.011814562281914532 after 410 examples
+INFO - Ner loss average 0.011814562281914532 - dep loss average 0.0 
+INFO - Train loss average : 0.01206427709361638 after 420 examples
+INFO - Ner loss average 0.01206427709361638 - dep loss average 0.0 
+INFO - Train loss average : 0.012069397924405652 after 430 examples
+INFO - Ner loss average 0.012069397924405652 - dep loss average 0.0 
+INFO - Train loss average : 0.012120245943250748 after 440 examples
+INFO - Ner loss average 0.012120245943250748 - dep loss average 0.0 
+INFO - Train loss average : 0.012047332131058082 after 450 examples
+INFO - Ner loss average 0.012047332131058082 - dep loss average 0.0 
+INFO - Train loss average : 0.01199911866057411 after 460 examples
+INFO - Ner loss average 0.01199911866057411 - dep loss average 0.0 
+INFO - Train loss average : 0.011936401127418998 after 470 examples
+INFO - Ner loss average 0.011936401127418998 - dep loss average 0.0 
+INFO - Train loss average : 0.011881452197788652 after 480 examples
+INFO - Ner loss average 0.011881452197788652 - dep loss average 0.0 
+INFO - Train loss average : 0.011873295250270345 after 490 examples
+INFO - Ner loss average 0.011873295250270345 - dep loss average 0.0 
+INFO - Train loss average : 0.011741890083823819 after 500 examples
+INFO - Ner loss average 0.011741890083823819 - dep loss average 0.0 
+INFO - Train loss average : 0.011780837521370153 after 510 examples
+INFO - Ner loss average 0.011780837521370153 - dep loss average 0.0 
+INFO - Train loss average : 0.011664832425650765 after 520 examples
+INFO - Ner loss average 0.011664832425650765 - dep loss average 0.0 
+INFO - Train loss average : 0.011659981367641726 after 530 examples
+INFO - Ner loss average 0.011659981367641726 - dep loss average 0.0 
+INFO - Train loss average : 0.01161722275401526 after 540 examples
+INFO - Ner loss average 0.01161722275401526 - dep loss average 0.0 
+INFO - Train loss average : 0.011629890472448261 after 550 examples
+INFO - Ner loss average 0.011629890472448261 - dep loss average 0.0 
+INFO - Train loss average : 0.011574553908836346 after 560 examples
+INFO - Ner loss average 0.011574553908836346 - dep loss average 0.0 
+INFO - Train loss average : 0.011555333075209586 after 570 examples
+INFO - Ner loss average 0.011555333075209586 - dep loss average 0.0 
+INFO - Train loss average : 0.011494605572330204 after 580 examples
+INFO - Ner loss average 0.011494605572330204 - dep loss average 0.0 
+INFO - Train loss average : 0.011531833477142678 after 590 examples
+INFO - Ner loss average 0.011531833477142678 - dep loss average 0.0 
+INFO - Train loss average : 0.011574840816659465 after 600 examples
+INFO - Ner loss average 0.011574840816659465 - dep loss average 0.0 
+INFO - Train loss average : 0.01149664658067374 after 610 examples
+INFO - Ner loss average 0.01149664658067374 - dep loss average 0.0 
+INFO - Train loss average : 0.011495032433688926 after 620 examples
+INFO - Ner loss average 0.011495032433688926 - dep loss average 0.0 
+INFO - Train loss average : 0.011433495508667658 after 630 examples
+INFO - Ner loss average 0.011433495508667658 - dep loss average 0.0 
+INFO - Train loss average : 0.011377019206292971 after 640 examples
+INFO - Ner loss average 0.011377019206292971 - dep loss average 0.0 
+INFO - Train loss average : 0.011327226705929765 after 650 examples
+INFO - Ner loss average 0.011327226705929765 - dep loss average 0.0 
+INFO - Train loss average : 0.01128379537139236 after 660 examples
+INFO - Ner loss average 0.01128379537139236 - dep loss average 0.0 
+INFO - Train loss average : 0.011203146790920535 after 670 examples
+INFO - Ner loss average 0.011203146790920535 - dep loss average 0.0 
+INFO - Train loss average : 0.011191441914664157 after 680 examples
+INFO - Ner loss average 0.011191441914664157 - dep loss average 0.0 
+INFO - Train loss average : 0.011125755869231754 after 690 examples
+INFO - Ner loss average 0.011125755869231754 - dep loss average 0.0 
+INFO - Train loss average : 0.011094183765775856 after 700 examples
+INFO - Ner loss average 0.011094183765775856 - dep loss average 0.0 
+INFO - Train loss average : 0.011116121534518832 after 710 examples
+INFO - Ner loss average 0.011116121534518832 - dep loss average 0.0 
+INFO - Train loss average : 0.011060668878013127 after 720 examples
+INFO - Ner loss average 0.011060668878013127 - dep loss average 0.0 
+INFO - Train loss average : 0.010968180940915473 after 730 examples
+INFO - Ner loss average 0.010968180940915473 - dep loss average 0.0 
+INFO - Train loss average : 0.010952201714944503 after 740 examples
+INFO - Ner loss average 0.010952201714944503 - dep loss average 0.0 
+INFO - Train loss average : 0.011031555364471084 after 750 examples
+INFO - Ner loss average 0.011031555364471084 - dep loss average 0.0 
+INFO - Train loss average : 0.010960359335819559 after 760 examples
+INFO - Ner loss average 0.010960359335819559 - dep loss average 0.0 
+INFO - Train loss average : 0.010900079361756496 after 770 examples
+INFO - Ner loss average 0.010900079361756496 - dep loss average 0.0 
+INFO - Train loss average : 0.01086568771773809 after 780 examples
+INFO - Ner loss average 0.01086568771773809 - dep loss average 0.0 
+INFO - Train loss average : 0.010793467440227595 after 790 examples
+INFO - Ner loss average 0.010793467440227595 - dep loss average 0.0 
+INFO - Train loss average : 0.010770987311479985 after 800 examples
+INFO - Ner loss average 0.010770987311479985 - dep loss average 0.0 
+INFO - Train loss average : 0.010814981573307313 after 810 examples
+INFO - Ner loss average 0.010814981573307313 - dep loss average 0.0 
+INFO - Train loss average : 0.010835924630763901 after 820 examples
+INFO - Ner loss average 0.010835924630763901 - dep loss average 0.0 
+INFO - Train loss average : 0.010858787229464878 after 830 examples
+INFO - Ner loss average 0.010858787229464878 - dep loss average 0.0 
+INFO - Train loss average : 0.010879672036199259 after 840 examples
+INFO - Ner loss average 0.010879672036199259 - dep loss average 0.0 
+INFO - Train loss average : 0.01084813868115067 after 850 examples
+INFO - Ner loss average 0.01084813868115067 - dep loss average 0.0 
+INFO - Train loss average : 0.010849678934958553 after 860 examples
+INFO - Ner loss average 0.010849678934958553 - dep loss average 0.0 
+INFO - Train loss average : 0.010770603035721827 after 870 examples
+INFO - Ner loss average 0.010770603035721827 - dep loss average 0.0 
+INFO - Train loss average : 0.010781439879478553 after 880 examples
+INFO - Ner loss average 0.010781439879478553 - dep loss average 0.0 
+INFO - Train loss average : 0.010770241017312759 after 890 examples
+INFO - Ner loss average 0.010770241017312759 - dep loss average 0.0 
+INFO - Train loss average : 0.01071228401614159 after 900 examples
+INFO - Ner loss average 0.01071228401614159 - dep loss average 0.0 
+INFO - Train loss average : 0.010739940613368143 after 910 examples
+INFO - Ner loss average 0.010739940613368143 - dep loss average 0.0 
+INFO - Train loss average : 0.010714994399993726 after 920 examples
+INFO - Ner loss average 0.010714994399993726 - dep loss average 0.0 
+INFO - Train loss average : 0.010653959966708421 after 930 examples
+INFO - Ner loss average 0.010653959966708421 - dep loss average 0.0 
+INFO - Train loss average : 0.01075025368532961 after 940 examples
+INFO - Ner loss average 0.01075025368532961 - dep loss average 0.0 
+INFO - Train loss average : 0.010777835189809067 after 950 examples
+INFO - Ner loss average 0.010777835189809067 - dep loss average 0.0 
+INFO - Train loss average : 0.0107832751561394 after 960 examples
+INFO - Ner loss average 0.0107832751561394 - dep loss average 0.0 
+INFO - Train loss average : 0.010790567593628026 after 970 examples
+INFO - Ner loss average 0.010790567593628026 - dep loss average 0.0 
+INFO - Train loss average : 0.010717806986569337 after 980 examples
+INFO - Ner loss average 0.010717806986569337 - dep loss average 0.0 
+INFO - Train loss average : 0.010675527958679742 after 990 examples
+INFO - Ner loss average 0.010675527958679742 - dep loss average 0.0 
+INFO - Train loss average : 0.010739256505752564 after 1000 examples
+INFO - Ner loss average 0.010739256505752564 - dep loss average 0.0 
+INFO - Results for epoch : 5

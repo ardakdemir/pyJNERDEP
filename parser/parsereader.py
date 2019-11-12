@@ -140,8 +140,8 @@ def read_conllu(file_name, cols = ['word','xpos','head','deprel']):
             sentence.append([line[FIELD_TO_IDX[x.lower()]] for x in cols])
             if line[FIELD_TO_IDX['word']] not in tok2ind:
                 tok2ind[line[FIELD_TO_IDX['word']]] = len(tok2ind)
-            if line[FIELD_TO_IDX['upos']] not in pos2ind:
-                pos2ind[line[FIELD_TO_IDX['upos']]] = len(pos2ind)
+            if line[FIELD_TO_IDX['xpos']] not in pos2ind:
+                pos2ind[line[FIELD_TO_IDX['xpos']]] = len(pos2ind)
             if line[FIELD_TO_IDX['deprel']] not in dep2ind:
                 dep2ind[line[FIELD_TO_IDX['deprel']]] = len(dep2ind)
     
@@ -292,9 +292,10 @@ class DepDataset(Dataset):
             sent in bert_batch_after_padding])
         bert_seq_ids = torch.LongTensor([[1 for i in range(len(bert_batch_after_padding[0]))]\
             for j in range(len(bert_batch_after_padding))])
-        
-        return tokens,bert_batch_after_padding, torch.tensor(lens),masks, tok_inds, pos, dep_inds, dep_rels,\
+        ner_inds = torch.tensor([])
+        data = torch.tensor(lens),masks, tok_inds, ner_inds, pos, dep_inds, dep_rels,\
         bert_batch_ids,  bert_seq_ids, bert2toks, torch.stack(cap_types)
+        return tokens,bert_batch_after_padding, data 
 
 if __name__=="__main__":
     depdataset = DepDataset("../../datasets/tr_imst-ud-train.conllu", batch_size = 300)

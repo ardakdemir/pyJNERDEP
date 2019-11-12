@@ -14,7 +14,8 @@ START_TAG = "[SOS]"
 END_TAG   = "[EOS]"
 START_IND = 1
 END_IND = 2
-
+ROOT_TAG = "[ROOT]"
+ROOT_IND = 1
 def all_num(token):
     n = "0123456789."
     for c in token:
@@ -23,7 +24,7 @@ def all_num(token):
     return True
 
 def get_orthographic_feat(token):
-    if token==START_TAG or token==END_TAG or token==PAD:
+    if token==START_TAG or token==END_TAG or token==PAD or token==ROOT_TAG:
         return 5
     if "'" in token:
         return 4
@@ -64,6 +65,7 @@ class DataReader():
         self.label_voc = Vocab(self.l2ind)
         self.word_voc = Vocab(self.word2ind)
         self.batched_dataset, self.sentence_lens = group_into_batch(self.dataset,batch_size = self.batch_size)
+        self.for_eval = False
         self.num_cats = len(self.l2ind)
         self.bert_tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
         self.val_index = 0
@@ -97,9 +99,9 @@ torch.tensor([seq_ids],dtype=torch.long), torch.tensor(bert2tok), lab])
 
 
     def get_vocabs(self):
-        l2ind = {PAD : PAD_IND, START_TAG:START_IND, END_TAG: END_IND }
-        word2ix = {PAD : PAD_IND, START_TAG:START_IND, END_TAG: END_IND }
-        pos2ind = {PAD : PAD_IND, START_TAG:START_IND, END_TAG: END_IND }
+        l2ind = {PAD : PAD_IND, START_TAG:START_IND, END_TAG: END_IND, ROOT_TAG:ROOT_IND }
+        word2ix = {PAD : PAD_IND, START_TAG:START_IND, END_TAG: END_IND ,ROOT_TAG:ROOT_IND}
+        pos2ind = {PAD : PAD_IND, START_TAG:START_IND, END_TAG: END_IND ,ROOT_TAG:ROOT_IND}
         print(self.label_counts)
         
         for x in self.label_counts:
@@ -120,11 +122,12 @@ torch.tensor([seq_ids],dtype=torch.long), torch.tensor(bert2tok), lab])
         sent = []
         label_counts = Counter()
         pos_counts = Counter()
+        root = [ROOT_TAG, ROOT_TAG, ROOT_TAG, ROOT_TAG]
         for line in dataset:
             if line.rstrip()=='':
                 if len(sent)>0:
                     sent.append([END_TAG, END_TAG , END_TAG, END_TAG ])
-                    new_dataset.append(sent)
+                    new_dataset.append([root]+sent)
                     sent = []
             else:
                 row = line.rstrip().split()
@@ -134,7 +137,7 @@ torch.tensor([seq_ids],dtype=torch.long), torch.tensor(bert2tok), lab])
                 pos_counts.update([row[-2]])
         if len(sent)>0:
             sent.append([END_TAG, END_TAG, END_TAG , END_TAG ])
-            new_dataset.append(sent)
+            new_dataset.append([root]+sent)
         
         new_dataset, orig_idx = sort_dataset(new_dataset, sort = True)
         
@@ -228,8 +231,9 @@ torch.tensor([seq_ids],dtype=torch.long), torch.tensor(bert2tok), lab])
         """
         if torch.is_tensor(idx):
             idx = idx.tolist()
-        idx = np.random.randint(len(self.batched_dataset))
-        idx = idx%len(self.batched_dataset)
+        if not self.for_eval:
+            idx = np.random.randint(len(self.batched_dataset))
+            idx = idx%len(self.batched_dataset)
         batch = self.batched_dataset[idx]
         lens = self.sentence_lens[idx]
         tok_inds = []
@@ -277,7 +281,9 @@ torch.tensor([seq_ids],dtype=torch.long), torch.tensor(bert2tok), lab])
             sent in bert_batch_after_padding])
         bert_seq_ids = torch.LongTensor([[1 for i in range(len(bert_batch_after_padding[0]))]\
             for j in range(len(bert_batch_after_padding))])
-        data = torch.tensor(lens), masks, tok_inds, ner_inds, pos_inds, bert_batch_ids,  bert_seq_ids, torch.tensor(bert2tokens_padded,dtype=torch.long) , torch.stack(cap_types)
+        dep_rels = torch.tensor([])
+        dep_inds = torch.tensor([])
+        data = torch.tensor(lens), masks, tok_inds, ner_inds,pos_inds, dep_rels,dep_inds, bert_batch_ids,  bert_seq_ids, torch.tensor(bert2tokens_padded,dtype=torch.long) , torch.stack(cap_types)
         return tokens, bert_batch_after_padding, data 
 if __name__ == "__main__":
     data_path = '../datasets/turkish-ner-train.tsv'
