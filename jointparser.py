@@ -63,7 +63,7 @@ class JointParser(nn.Module):
         self.lstm_drop = self.args['lstm_drop']
         self.parser_drop = self.args['parser_drop']
         self.lstm_layers = self.args['lstm_layers']
-        self.lstm_input_dim = self.args['lstm_input_size'] + self.pos_dim
+        self.lstm_input_dim = self.args['lstm_input_size'] 
         self.lstm_hidden = self.args['lstm_hidden']
         
         
@@ -134,8 +134,11 @@ class JointParser(nn.Module):
         ## may consider multi-learning this one as well!!
         ## if dependency epoch we have pos tags so use this information as well
         ## if ner epoch we must get pos_ids from somewhere like a separate model
-        pos_embeds = self.pos_dropout(self.pos_embed(pos_ids))
-        x = torch.cat([bert_out,pos_embeds],dim=2)
+        
+        #pos_embeds = self.pos_dropout(self.pos_embed(pos_ids))
+        #x = torch.cat([bert_out,pos_embeds],dim=2)
+        
+        x = bert_out
         #packed_sequence = pack_padded_sequence(bert_out,sent_lens, batch_first=True) 
         packed_sequence = pack_padded_sequence(x,sent_lens, batch_first=True)
         

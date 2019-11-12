@@ -35,9 +35,11 @@ PAD_IND = 0
 ROOT = "[ROOT]"
 ROOT_IND = 1
 UNK = "[UNK]"
-UNK_IND = 2
+UNK_IND = 3
+END_TAG = "[END]"
+END_IND = 2
 ## not sure if root is needed at this stage
-VOCAB_PREF = {PAD : PAD_IND, ROOT : ROOT_IND}
+VOCAB_PREF = {PAD : PAD_IND, ROOT : ROOT_IND,END_TAG:END_IND}
 
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")

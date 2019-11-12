@@ -7,7 +7,7 @@ from pytorch_transformers import BertTokenizer
 from torch.utils.data import Dataset, DataLoader
 
 
-from parser.parser import Parser, Vocab, PAD, PAD_IND, VOCAB_PREF, ROOT, ROOT_IND, UNK, UNK_IND
+from parser.parser import Parser, Vocab, PAD, PAD_IND, VOCAB_PREF, ROOT, ROOT_IND, UNK, UNK_IND, END_TAG, END_IND
 from parser.utils import sort_dataset, unsort_dataset
 
 import logging
@@ -112,7 +112,7 @@ def group_into_batch(dataset, batch_size):
 
 FIELD_TO_IDX = {'id': 0, 'word': 1, 'lemma': 2, 'upos': 3, 'xpos': 4, 'feats': 5, 'head': 6, 'deprel': 7, 'deps': 8, 'misc': 9}
 
-def read_conllu(file_name, cols = ['word','upos','head','deprel']):
+def read_conllu(file_name, cols = ['word','xpos','head','deprel']):
     """
         Reads a conllu file and generates the vocabularies
     """
@@ -120,9 +120,9 @@ def read_conllu(file_name, cols = ['word','upos','head','deprel']):
     file = open(file_name, encoding = "utf-8").read().rstrip().split("\n")
     dataset = []
     sentence = []
-    tok2ind = {PAD : PAD_IND, ROOT : ROOT_IND,UNK:UNK_IND}
-    pos2ind = {PAD : PAD_IND, ROOT : ROOT_IND}
-    dep2ind = {PAD : PAD_IND, ROOT : ROOT_IND}
+    tok2ind = {PAD : PAD_IND, ROOT : ROOT_IND, UNK:UNK_IND, END_TAG: END_IND}
+    pos2ind = {PAD : PAD_IND, ROOT : ROOT_IND, END_TAG: END_IND, UNK:UNK_IND}
+    dep2ind = {PAD : PAD_IND, ROOT : ROOT_IND, END_TAG : END_IND, UNK:UNK_IND}
     total_word_size = 0
     root = [[ROOT for _ in range(len(cols))]]
     for line in file:
@@ -136,14 +136,15 @@ def read_conllu(file_name, cols = ['word','upos','head','deprel']):
             line = line.split("\t")
             if "-" in line[0]: #skip expanded words
                 continue
-            total_word_size+=1
+            total_word_size += 1
             sentence.append([line[FIELD_TO_IDX[x.lower()]] for x in cols])
-            if line[1] not in tok2ind:
-                tok2ind[line[1]] = len(tok2ind)
-            if line[3] not in pos2ind:
-                pos2ind[line[3]] = len(pos2ind)
-            if line[7] not in dep2ind:
-                dep2ind[line[7]] = len(dep2ind)
+            if line[FIELD_TO_IDX['word']] not in tok2ind:
+                tok2ind[line[FIELD_TO_IDX['word']]] = len(tok2ind)
+            if line[FIELD_TO_IDX['xpos']] not in pos2ind:
+                pos2ind[line[FIELD_TO_IDX['xpos']]] = len(pos2ind)
+            if line[FIELD_TO_IDX['deprel']] not in dep2ind:
+                dep2ind[line[FIELD_TO_IDX['deprel']]] = len(dep2ind)
+    
     if len(sentence):
         sentence = root + sentence
         dataset.append(sentence)

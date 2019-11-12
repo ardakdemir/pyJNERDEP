@@ -239,22 +239,31 @@ torch.tensor([seq_ids],dtype=torch.long), torch.tensor(bert2tok), lab])
         for x in batch:
             toks, feats,poss, labels = zip(*x) ##unzip the batch
             tokens.append(toks)
-            pos_inds.append(self.pos_voc.map(poss))
+            pos_inds.append(self.pos_vocab.map(poss))
+            logging.info(toks)
+            logging.info(self.pos_vocab.w2ind)
+            logging.info(poss)
+            logging.info(self.pos_vocab.map(poss))
             tok_inds.append(self.word_voc.map(toks))
             ner_inds.append(self.get_1d_targets(self.label_voc.map(labels)))
         assert len(tok_inds)== len(ner_inds) == len(tokens) == len(batch) == len(pos_inds)
         tok_inds = torch.LongTensor(tok_inds)
         ner_inds = torch.LongTensor(ner_inds)
-        ner_inds = torch.LongTensor(pos_inds)
+        pos_inds = torch.LongTensor(pos_inds)
         bert_batch_before_padding = []
         bert_lens = []
         max_bert_len = 0
         bert2toks = []
         cap_types = []
+        masks = torch.ones(tok_inds.shape,dtype=torch.bool)
+        i = 0
         for sent, l in zip(batch,lens):
             my_tokens = [x[0] for x in sent]
             cap_types.append(torch.tensor([get_orthographic_feat(x[0]) for x in sent]))
             sentence = " ".join(my_tokens)
+            masks[i,:l] = torch.tensor([0]*l,dtype=torch.bool)    
+            i+=1
+            
             bert_tokens = self.bert_tokenizer.tokenize(sentence)
             bert_lens.append(len(bert_tokens))
             bert_tokens = ["[CLS]"] + bert_tokens
@@ -272,7 +281,7 @@ torch.tensor([seq_ids],dtype=torch.long), torch.tensor(bert2tok), lab])
             sent in bert_batch_after_padding])
         bert_seq_ids = torch.LongTensor([[1 for i in range(len(bert_batch_after_padding[0]))]\
             for j in range(len(bert_batch_after_padding))])
-        data = torch.tensor(lens), tok_inds, ner_inds, pos_inds, bert_batch_ids,  bert_seq_ids, torch.tensor(bert2tokens_padded,dtype=torch.long) , torch.stack(cap_types)
+        data = torch.tensor(lens), masks, tok_inds, ner_inds, pos_inds, bert_batch_ids,  bert_seq_ids, torch.tensor(bert2tokens_padded,dtype=torch.long) , torch.stack(cap_types)
         return tokens, bert_batch_after_padding, data 
 if __name__ == "__main__":
     data_path = '../datasets/turkish-ner-train.tsv'
