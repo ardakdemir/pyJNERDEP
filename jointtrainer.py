@@ -79,24 +79,26 @@ def parse_args():
     parser.add_argument('--lang', type=str, help='Language')
     parser.add_argument('--shorthand', type=str, help="Treebank shorthand")
 
-    parser.add_argument('--lstm_hidden', type=int, default=100)
+    parser.add_argument('--lstm_hidden', type=int, default=256)
     parser.add_argument('--char_hidden_dim', type=int, default=200)
-    parser.add_argument('--biaffine_hidden', type=int, default=200)
+    parser.add_argument('--biaffine_hidden', type=int, default=400)
     parser.add_argument('--composite_deep_biaff_hidden_dim', type=int, default=100)
-    parser.add_argument('--cap_dim', type=int, default=50)
+    parser.add_argument('--cap_dim', type=int, default=32)
     parser.add_argument('--char_emb_dim', type=int, default=100)
     parser.add_argument('--cap_types', type=int, default=6)
-    parser.add_argument('--pos_dim', type=int, default=50)
+    parser.add_argument('--pos_dim', type=int, default=64)
+    parser.add_argument('--dep_dim', type=int, default=128)
     parser.add_argument('--transformed_dim', type=int, default=125)
     
-    parser.add_argument('--lstm_layers', type=int, default=1)
+    parser.add_argument('--lstm_layers', type=int, default=3)
     parser.add_argument('--char_num_layers', type=int, default=1)
     parser.add_argument('--pretrain_max_vocab', type=int, default=-1)
     
-    parser.add_argument('--word_drop', type=float, default=0.3)
-    parser.add_argument('--lstm_drop', type=float, default=0.5)
+    parser.add_argument('--word_drop', type=float, default = 0.33)
+    parser.add_argument('--embed_drop', type=float, default = 0.33)
+    parser.add_argument('--lstm_drop', type=float, default = 0.5)
     parser.add_argument('--crf_drop', type=float, default=0.3)
-    parser.add_argument('--parser_drop', type=float, default=0.35)
+    parser.add_argument('--parser_drop', type=float, default=0.40)
     
     parser.add_argument('--rec_dropout', type=float, default=0, help="Recurrent dropout")
     parser.add_argument('--char_rec_dropout', type=float, default=0, help="Recurrent dropout")
@@ -107,16 +109,17 @@ def parse_args():
 
     parser.add_argument('--sample_train', type=float, default=1.0, help='Subsample training data.')
     parser.add_argument('--optim', type=str, default='adam', help='sgd, adagrad, adam or adamax.')
-    parser.add_argument('--ner_lr', type=float, default=0.01, help='Learning rate for ner lstm')
-    parser.add_argument('--embed_lr', type=float, default=0.1, help='Learning rate for embeddiing')
-    parser.add_argument('--dep_lr', type=float, default=3e-4, help='Learning rate dependency lstm')
-    parser.add_argument('--lr_decay', type=float, default=0.990, help='Learning rate decay')
+    parser.add_argument('--ner_lr', type=float, default=0.002, help='Learning rate for ner lstm')
+    parser.add_argument('--embed_lr', type=float, default=0.002, help='Learning rate for embeddiing')
+    parser.add_argument('--dep_lr', type=float, default=0.002, help='Learning rate dependency lstm')
+    parser.add_argument('--lr_decay', type=float, default=0.999, help='Learning rate decay')
     
     parser.add_argument('--beta2', type=float, default=0.95)
     parser.add_argument('--weight_decay', type=float, default=0.90)
     
-    parser.add_argument('--max_steps', type=int, default=9000)
-    parser.add_argument('--eval_interval', type=int, default=300)
+    parser.add_argument('--max_steps', type=int, default=50000)
+    parser.add_argument('--dep_warmup', type=int, default=10)
+    parser.add_argument('--eval_interval', type=int, default=500)
     parser.add_argument('--max_steps_before_stop', type=int, default=3000)
     parser.add_argument('--batch_size', type=int, default=500)
     parser.add_argument('--max_grad_norm', type=float, default=1.0, help='Gradient clipping.')
@@ -131,6 +134,7 @@ def parse_args():
     parser.add_argument('--seed', type=int, default=1234)
     parser.add_argument('--cuda', type=bool, default=torch.cuda.is_available())
     parser.add_argument('--cpu', action='store_true', help='Ignore CUDA.')
+    parser.add_argument('--hierarchical', type=int, default=0, help=' Choose whether to train a hiearchical or flat model')
     args = parser.parse_args()
     return args
 
@@ -168,7 +172,8 @@ class BaseModel(nn.Module):
         self.cap_types = self.args['cap_types']
         self.cap_dim = args['cap_dim']
         self.pos_dim = self.args['pos_dim']
-        self.word_drop = args['word_drop']
+        self.embed_drop = args['embed_drop']
+        self.lstm_drop = args['lstm_drop']
         self.weight_decay = self.args['weight_decay']
         self.lstm_input_size = self.w_dim + self.cap_dim + self.pos_dim
       
@@ -177,14 +182,15 @@ class BaseModel(nn.Module):
         #self.word_embeds = nn.Embedding(self.vocab_size, self.w_dim)
         
         #self.bilstm  = nn.LSTM(self.lstm_input, self.lstm_hidden, bidirectional=True, num_layers=1, batch_first=True)
-        self.dropout = nn.Dropout(self.word_drop)
+        self.dropout = nn.Dropout(self.lstm_drop)
+        self.embed_dropout = nn.Dropout(self.embed_drop)
         
 
-        self.embed_optimizer = optim.SGD([
+        self.embed_optimizer = optim.AdamW([
         {"params": self.cap_embeds.parameters()},\
         {"params": self.pos_embeds.parameters()}],\
-        lr=self.args['embed_lr'], weight_decay = self.weight_decay, )
-            #betas=(0.9,self.args['beta2']), eps=1e-6 
+        lr=self.args['embed_lr'],betas=(0.9,self.args['beta2']), eps=1e-6 )
+             
         param_optimizer = list(self.bert_model.named_parameters())
         no_decay = ['bias', 'gamma', 'beta']
         optimizer_grouped_parameters = [
@@ -205,12 +211,13 @@ class BaseModel(nn.Module):
             my_hiddens = []
             for i,b2t in enumerate(bert2tok):
                 if i>0 and b2t!=bert2tok[i-1]:
-                    my_hiddens.append(torch.mean(torch.cat(my_token_hids),0).view(1,-1))
-                    my_token_hids = [means[i+1].view(1,-1)] ## we skip the CLS token
+                    my_hiddens.append(torch.mean(torch.stack(my_token_hids),0))
+                    my_token_hids = [means[i+1]] ## we skip the CLS token
                 else:
-                    my_token_hids.append(means[i+1].view(1,-1))
-            my_hiddens.append(torch.mean(torch.cat(my_token_hids),0).view(1,-1))
-            batch_my_hiddens.append(torch.cat(my_hiddens))
+                    my_token_hids.append(means[i+1])
+            my_hiddens.append(torch.mean(torch.stack(my_token_hids),0))
+            sent_hiddens = torch.stack(my_hiddens)
+            batch_my_hiddens.append(sent_hiddens)
         return torch.stack(batch_my_hiddens)
     
     def _get_bert_batch_hidden2(self, hiddens , bert2toks, layers=[-2,-3,-4]):
@@ -231,8 +238,11 @@ class BaseModel(nn.Module):
         
         bert_out = self.bert_model(batch_bert_ids,batch_seq_ids)
         bert_hiddens = self._get_bert_batch_hidden(bert_out[2],bert2toks)
-        cap_embedding = self.dropout(self.cap_embeds(cap_inds))
-        pos_embedding = self.dropout(self.pos_embeds(pos_ids))
+        
+        cap_embedding = self.embed_dropout(self.cap_embeds(cap_inds))
+        pos_embedding = self.embed_dropout(self.pos_embeds(pos_ids))
+        bert_hiddens = self.dropout(bert_hiddens)
+        
         concat = torch.cat((bert_hiddens,cap_embedding,pos_embedding),dim=2) 
         #bilstms are separate for each task
         #padded = pack_padded_sequence(concat,sent_lens,batch_first=True)
@@ -304,7 +314,7 @@ class JointTrainer:
         return loss 
     
         
-    def dep_forward(self, dep_batch, task = "DEP"):
+    def dep_forward(self, dep_batch, task = "DEP", training = True):
         bert_feats = self.forward(dep_batch)
         inputs = []
         data = dep_batch[2]
@@ -313,26 +323,36 @@ class JointTrainer:
         sent_lens, masks, _, _, pos, dep_inds, dep_rels, \
             _ , _ , _ , _  = inputs
         tokens = dep_batch[0]
+        
         if task=="NER":
-            dep_embeds = self.jointmodel.depparser(masks,bert_feats, dep_inds, dep_rels, pos, sent_lens, training=True, task=task)
-            print(dep_embeds.shape)
-            return torch.cat([bert_feats, dep_embeds],dim=2)
+            dep_out = self.jointmodel.depparser(masks,bert_feats, dep_inds, dep_rels, pos, sent_lens, training=True, task=task)
+            return dep_out
         #logging.info("Head predictions ")
         #logging.info(preds[0][-1])
         #logging.info(dep_inds[-1])
         else:
-            preds, loss, deprel_loss, depind_loss, acc, head_acc = self.jointmodel.depparser(masks,bert_feats, dep_inds, dep_rels, pos, sent_lens, training=True, task=task)
-            return preds, loss, deprel_loss, depind_loss, acc , head_acc 
+            preds, loss, deprel_loss, depind_loss, acc, head_acc = self.jointmodel.depparser(masks,bert_feats, dep_inds, dep_rels, pos, sent_lens, training=training, task=task)
+            return  loss, preds, deprel_loss, depind_loss, acc , head_acc 
+    
     def ner_update(self,batch):
         
         self.jointmodel.base_model.embed_optimizer.zero_grad()
         self.jointmodel.base_model.bert_optimizer.zero_grad()
         self.jointmodel.nermodel.ner_optimizer.zero_grad()
         
+        if self.args['hierarchical']==1: 
+            self.jointmodel.depparser.optimizer.zero_grad()
+        
         #batch = self.nertrainreader[i]
         sent_lens = batch[2][0].to(self.device)
         ner_inds = batch[2][3].to(self.device)
-        bert_feats = self.forward(batch, task="NER") 
+        
+        ## if hierarchical dep embeddings are appended to the bert outputs
+        if self.args['hierarchical']==1: 
+            bert_feats = self.dep_forward(batch, task="NER")
+
+        else:
+            bert_feats = self.forward(batch, task="NER") 
         crf_scores = self.jointmodel.nermodel(bert_feats, sent_lens)
         
 
@@ -343,10 +363,14 @@ class JointTrainer:
          
         clip_grad_norm_(self.jointmodel.nermodel.parameters(),self.args['max_grad_norm'])
         clip_grad_norm_(self.jointmodel.base_model.parameters(),self.args['max_grad_norm'])
+        if self.args['hierarchical']==1: 
+            clip_grad_norm_(self.jointmodel.depparser.parameters(),self.args['max_grad_norm'])
         
         self.jointmodel.base_model.embed_optimizer.step()
         self.jointmodel.base_model.bert_optimizer.step()
         self.jointmodel.nermodel.ner_optimizer.step()
+        if self.args['hierarchical']==1: 
+            self.jointmodel.depparser.optimizer.step()
     
         return loss.item()
     
@@ -369,7 +393,7 @@ class JointTrainer:
         self.jointmodel.base_model.bert_optimizer.step()
         self.jointmodel.depparser.optimizer.step()
         
-        return dep_loss.item(), deprel_loss.item(), depind_loss.item(), acc
+        return dep_loss.item(), deprel_loss.item(), depind_loss.item(), acc, head_acc
     
     def train(self):
         logging.info("Training on {} ".format(self.args['device']))
@@ -391,49 +415,71 @@ class JointTrainer:
         print("Dep vocab for dependency dataset")
         print(self.deptraindataset.vocabs['dep_vocab'].w2ind)
         for e in range(epoch):
-            if e>0:
-                self.update_lr()
             train_loss = 0
             ner_losses = 0
             dep_losses = 0
             depind_losses = 0
             deprel_losses = 0
             deprel_acc = 0
+            uas_epoch = 0
             self.nertrainreader.for_eval = False
+            self.jointmodel.train()
             for i in tqdm(range(self.args['eval_interval'])):
-                 
-                ner_batch = self.nertrainreader[i]
-                #logging.info(ner_batch[0])
-                dep_out = self.dep_forward(ner_batch,task="NER")
-                ner_loss = self.ner_update(ner_batch)
-                ner_losses += ner_loss
-                train_loss +=ner_loss
+    
+                if e >= self.args['dep_warmup']:
+                    
+                    ner_batch = self.nertrainreader[i]
+                    #logging.info(ner_batch[0])
+                    ner_loss = self.ner_update(ner_batch)
+                    ner_losses += ner_loss
+                    train_loss +=ner_loss
                 
-                #dep_batch = self.deptraindataset[0]
-                #dep_loss,deprel_loss,depind_loss, acc = self.dep_update(dep_batch)
-                #dep_losses += dep_loss
-                #train_loss +=dep_loss
-                #deprel_losses += deprel_loss
-                #depind_losses += depind_loss
-                #deprel_acc += acc
-                if i%10 == 9:
-                    logging.info("Train loss average : {} after {} examples".format(train_loss/(i+1),i+1))
-                    logging.info("Ner loss average {} - dep loss average {} ".format(ner_losses/(i+1),dep_losses/(i+1)))    
-                    #logging.info("Deprel losses {} depind losses {}".format(deprel_losses/(i+1),depind_losses/(i+1)))
-                    #logging.info("Deprel prediction accuracy {} ".format(deprel_acc/(i+1)))
+                dep_batch = self.deptraindataset[i]
+                dep_loss, deprel_loss, depind_loss, acc, uas = self.dep_update(dep_batch)
+                dep_losses += dep_loss
+                train_loss +=dep_loss
+                deprel_losses += deprel_loss
+                depind_losses += depind_loss
+                deprel_acc += acc
+                uas_epoch += uas
             logging.info("Results for epoch : {}".format(e+1))
+            logging.info("Unlabeled attachment score : {} ".format(uas_epoch/(i+1)))
             self.jointmodel.eval()
-            #dep_pre, dep_rec, dep_f1 = self.dep_evaluate()
-            ner_pre, ner_rec, ner_f1 = self.ner_evaluate()
-            #print("Dependency Results -- f1 : {} ".format(dep_f1))
-            #if dep_f1 > best_dep_f1:
-            #    self.save_model(self.args['save_dep_name'])
-            #    best_dep_f1 = dep_f1
-            #if ner_f1 > best_ner_f1:
-                #self.save_model(self.args['save_ner_name'])
-                #best_ner_f1 = ner_f1
-            #if ner_f1 > best_ner_f1 and dep_f1 > best_dep_f1:
-            #    self.save_model(self.args['save_name'])
+            dep_pre, dep_rec, dep_f1 = self.dep_evaluate()
+            ner_f1 = 0
+            if e >= self.args['dep_warmup']:
+                ner_pre, ner_rec, ner_f1 = self.ner_evaluate()
+                logging.info("NER Results -- f1 : {} ".format(ner_f1))
+            logging.info("Dependency Results -- f1 : {} ".format(dep_f1))
+            
+            if dep_f1 > best_dep_f1:
+                self.save_model(self.args['save_dep_name'])
+                best_dep_f1 = dep_f1
+                best_dep_epoch = e
+            
+            else:
+                logging.info("Best LAS of {} achieved at {}".format(best_dep_f1, best_dep_epoch))
+                for param_group in self.jointmodel.depparser.optimizer.param_groups:
+                    param_group['lr']*=self.args['lr_decay']
+                
+                for param_group in self.jointmodel.base_model.embed_optimizer.param_groups:
+                    param_group['lr']*=self.args['lr_decay']
+            
+            if ner_f1 > best_ner_f1:
+                best_ner_epoch = e
+                self.save_model(self.args['save_ner_name'])
+                best_ner_f1 = ner_f1
+            
+            else: 
+                logging.info("Best F-1 for NER  of {} achieved at {}".format(best_ner_f1, best_ner_epoch))
+                for param_group in self.jointmodel.nermodel.ner_optimizer.param_groups:
+                    param_group['lr']*=self.args['lr_decay']
+                for param_group in self.jointmodel.base_model.embed_optimizer.param_groups:
+                    param_group['lr']*=self.args['lr_decay']
+            
+            
+            if ner_f1 > best_ner_f1 and dep_f1 > best_dep_f1:
+                self.save_model(self.args['save_name'])
             self.jointmodel.train()
     
     
@@ -457,13 +503,14 @@ class JointTrainer:
         #for x in tqdm(range(len(self.depvaldataset)),desc = "Evaluation"):
         rel_accs = 0
         head_accs = 0
+        self.depvaldataset.for_eval=True
         for x in tqdm(range(len(self.depvaldataset)),desc = "Evaluation"):
             #batch = dataset[x]
             batch = self.depvaldataset[x]
             sent_lens = batch[2][0]
             tokens = batch[0]
             
-            loss, preds, _ , _, rel_acc , head_acc = self.dep_forward(batch)
+            loss, preds, _ , _, rel_acc , head_acc = self.dep_forward(batch,training=False)
             rel_accs += rel_acc
             head_accs += head_acc
             heads, dep_rels , output = self.jointmodel.depparser.decode(preds[0], preds[1], sent_lens,verbose=True)
@@ -498,7 +545,7 @@ class JointTrainer:
         preds = []
         truths = []
         ## for each batch
-        dataset = self.nertrainreader
+        dataset = self.nervalreader
         dataset.for_eval = True
         for i in tqdm(range(len(dataset))):
             d = dataset[i]
@@ -506,7 +553,10 @@ class JointTrainer:
             sent_lens = d[2][0]
             ner_inds = d[2][3]
             with torch.no_grad():
-                bert_out = self.forward(d,task="NER")
+                if self.args['hierarchical'] == 0:
+                    bert_out = self.forward(d,task="NER")
+                else:
+                    bert_out = self.dep_forward(d,task="NER")
                 crf_scores = self.jointmodel.nermodel(bert_out, sent_lens,train=False)
                 paths, scores = self.jointmodel.nermodel.batch_viterbi_decode(crf_scores, sent_lens)
                 for i in range(crf_scores.shape[0]):
@@ -516,7 +566,7 @@ class JointTrainer:
                     truths.append(truth) 
         
         content = generate_pred_content(sents, preds, truths, label_voc = self.nertrainreader.label_voc)
-        orig_idx = self.nervalreader.orig_idx
+        orig_idx = dataset.orig_idx
         content = unsort_dataset(content,orig_idx)
         
         field_names = ["token","truth", "ner_tag"]
@@ -534,11 +584,16 @@ class JointTrainer:
         return my_pre, my_rec, my_f1
 
 
+
+
 if __name__ == '__main__':
     args = parse_args()
     print(args)
     vars(args)['device'] = device
     args = vars(args)
-    logging.basicConfig(level=logging.DEBUG,handlers= [logging.FileHandler(args['log_file'],'w','utf-8')], format='%(levelname)s - %(message)s')
+    if not os.path.isdir(args['save_dir']):
+        os.mkdir(args['save_dir'])
+    log_path = os.path.join(args['save_dir'],args['log_file'])
+    logging.basicConfig(level=logging.DEBUG,handlers= [logging.FileHandler(log_path, 'w', 'utf-8')], format='%(levelname)s - %(message)s')
     jointtrainer = JointTrainer(args)
     jointtrainer.train()

@@ -35,8 +35,10 @@ class JointNer(nn.Module):
         
         #self.vocab_size = vocab_size
         self.lstm_drop = self.args['lstm_drop'] 
-        
-        self.lstm_input_dim = self.args['lstm_input_size']
+        if self.args['hierarchical']==1:        
+            self.lstm_input_dim = self.args['lstm_input_size']+self.args['dep_dim']
+        if self.args['hierarchical']==0:        
+            self.lstm_input_dim = self.args['lstm_input_size']
         self.lstm_hidden = self.args['lstm_hidden']
         self.lstm_layers = self.args['lstm_layers']
         self.lr = self.args['ner_lr']
@@ -57,7 +59,7 @@ class JointNer(nn.Module):
         self.ner_optimizer = optim.AdamW([{"params": self.nerlstm.parameters()},\
         {"params": self.highwaylstm.parameters()},\
         {"params":self.crf.parameters()}],\
-        lr=self.lr, weight_decay = self.weight_decay, betas=(0.9,self.args['beta2']), eps=1e-6)
+        lr=self.lr,  betas=(0.9,self.args['beta2']), eps=1e-6)
 
     def batch_viterbi_decode(self,feats,sent_lens):
         paths = []
@@ -114,7 +116,8 @@ class JointNer(nn.Module):
 
         padded = pack_padded_sequence(bert_out,sent_lens, batch_first=True)
         #lstm_out,_ = self.nerlstm(padded)
-        highway_out, _ = self.highwaylstm(bert_out,sent_lens)
+        #bert_out = self.dropout(bert_out)
+        highway_out, _ = self.highwaylstm(bert_out, sent_lens)
         #unpacked , _ = pad_packed_sequence(lstm_out, batch_first=True)
         return self.dropout(highway_out)
         

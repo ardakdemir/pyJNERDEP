@@ -237,7 +237,8 @@ class DepDataset(Dataset):
         #print(idx)
         if not self.for_eval:
             idx = np.random.randint(len(self.dataset))
-            idx = idx% len(self.dataset)
+        idx = idx% len(self.dataset)
+        
         batch = self.dataset[idx]
         lens = self.sent_lens[idx]
         ## create the bert tokens and pad each sentence to match the longest

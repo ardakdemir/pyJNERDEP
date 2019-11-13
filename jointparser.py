@@ -57,7 +57,7 @@ class JointParser(nn.Module):
         self.pos_dim = self.args['pos_dim']
         
         self.pos_embed = nn.Embedding(self.args['pos_vocab_size'], self.args['pos_dim'], padding_idx=0)
-        self.dep_embed = nn.Embedding(self.num_cat, self.args['pos_dim'], padding_idx=0)
+        self.dep_embed = nn.Embedding(self.num_cat, self.args['dep_dim'], padding_idx=0)
        
         self.dep_lr = self.args['dep_lr']
         self.weight_decay = self.args['weight_decay']
@@ -90,7 +90,7 @@ class JointParser(nn.Module):
             {"params":self.unlabeled.parameters()},\
             {"params": self.pos_embed.parameters()},\
             {"params": self.dep_embed.parameters()}],\
-             lr=self.dep_lr,weight_decay=self.weight_decay, betas=(0.9,self.args['beta2']), eps=1e-6)    
+             lr=self.dep_lr, weight_decay=0.03, betas=(0.9,self.args['beta2']), eps=1e-6)    
     
     
     def decode(self,edge_preds, label_preds, sent_lens, verbose=False):
@@ -141,8 +141,8 @@ class JointParser(nn.Module):
         
         #pos_embeds = self.pos_dropout(self.pos_embed(pos_ids))
         #x = torch.cat([bert_out,pos_embeds],dim=2)
-        
         x = bert_out
+        #x = self.lstm_dropout(bert_out)
         #packed_sequence = pack_padded_sequence(bert_out,sent_lens, batch_first=True) 
         packed_sequence = pack_padded_sequence(x,sent_lens, batch_first=True)
         
@@ -214,21 +214,30 @@ class JointParser(nn.Module):
             
             dep_ind_preds = torch.gather(rel_scores,2,arc_scores.unsqueeze(2)).squeeze(2)
             dep_embeddings = self.dep_embed(dep_ind_preds)
-            return dep_embeddings
+            dep_embeddings = self.pos_dropout(dep_embeddings)
+            return torch.cat([x,dep_embeddings],dim=2)
         
         else:
             with torch.no_grad():
                 #set [PAD] [ROOT] predictions to -infinity
-                mask = torch.zeros(deprel_scores.size(),dtype=torch.long).to(self.device)
-                mask[:,:,:,:2] = 1 
+                mask = torch.zeros(deprel_scores.size(),dtype=torch.long).to(self.args['device'])
+                mask[:,:,:,:4] = 1 
                 mask = mask.bool()
+                
                 deprel_save = deprel_scores.clone()
                 deprel_save = deprel_save.masked_fill(mask,-float('inf'))
-                preds = []
-                preds.append(torch.argmax(unlabeled_scores,dim = 2).detach().cpu().numpy())
+                preds.append(F.log_softmax(unlabeled_scores,2).detach().cpu().numpy())
                 preds.append(torch.argmax(deprel_save,dim = 3).detach().cpu().numpy())
                 #preds.append(deprel_save)
-            return preds, 0
+                
+                arc_scores = torch.argmax(unlabeled_scores,dim=2)
+                dep_scores = torch.argmax(deprel_save,dim=3) 
+                dep_ind_preds = torch.gather(dep_scores, 2, arc_scores.unsqueeze(2)).squeeze(2)
+                head_eq = sum(sum(arc_scores[:,1:].detach().cpu().numpy()==heads[:,1:].detach().cpu().numpy()))
+                rel_eq = sum(sum(dep_ind_preds.detach().cpu().numpy()==dep_rels.detach().cpu().numpy()))
+                acc = rel_eq*1.0/sum(sent_lens).item()
+                head_acc = head_eq/sum(sent_lens).item()
+            return preds,0, 0, 0, acc , head_acc
         
     
 
