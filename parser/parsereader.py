@@ -78,21 +78,29 @@ def pad_trunc_batch(batch, max_len, pad = PAD, pad_ind = PAD_IND, bert = False,b
     return padded_batch, sent_lens
 
 def group_into_batch(dataset, batch_size):
+    
     """
+   
         Batch size is given in word length so that some batches do not contain
         too many examples!!!
 
-        Do not naively batch by number of sentences!!
+        Do not naively batch by number of sentences!! 
+    
     """
+    
     batched_dataset = []
     sentence_lens = []
     current_len = 0
     i = 0
+    
     ## they are already in sorted order
     current = []
     max_len = 0
     for x in dataset:
-        if current_len + len(x) > batch_size:
+        current.append(x)
+        max_len = max(len(x),max_len) ##
+        current_len +=len(x)
+        if current_len  > batch_size:
             #print(current)
             current, lens  = pad_trunc_batch(current, max_len)
             batched_dataset.append(current)
@@ -100,9 +108,6 @@ def group_into_batch(dataset, batch_size):
             current = []
             current_len = 0
             max_len = 0
-        max_len = max(len(x),max_len) ##
-        current.append(x)
-        current_len +=len(x)
     if len(current) > 0:
         current,lens  = pad_trunc_batch(current, max_len)
         sentence_lens.append(lens)

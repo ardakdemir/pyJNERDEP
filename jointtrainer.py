@@ -403,7 +403,8 @@ class JointTrainer:
         self.jointmodel.train()
         best_ner_f1 = 0
         best_dep_f1 = 0
-
+        best_ner_epoch = 0
+        best_dep_epoch = 0
         if self.args['load_model']==1: 
             save_path = os.path.join(self.args['save_dir'],self.args['save_name'])
             logging.info("Model loaded %s"%save_path)
@@ -447,6 +448,7 @@ class JointTrainer:
             self.jointmodel.eval()
             dep_pre, dep_rec, dep_f1 = self.dep_evaluate()
             ner_f1 = 0
+            logging.info("Losses -- train {}  dependency {} ner {} ".format(train_loss,dep_losses,ner_losses))
             if e >= self.args['dep_warmup']:
                 ner_pre, ner_rec, ner_f1 = self.ner_evaluate()
                 logging.info("NER Results -- f1 : {} ".format(ner_f1))
@@ -579,9 +581,9 @@ class JointTrainer:
         #logging.info("{} {} {} ".format(prec,rec,f1))
         my_pre, my_rec, my_f1 = self.nerevaluator.conll_eval(out_file)
         logging.info("My values ignoring the boundaries.\npre: {}  rec: {}  f1: {} ".format(my_pre,my_rec,my_f1))
-        print(" NER results : pre: {}  rec: {}  f1: {}".format(my_pre,my_rec,my_f1))
+        logging.info("NER f1 : {} ".format(f1))
         #self.model.train()
-        return my_pre, my_rec, my_f1
+        return prec, rec, f1
 
 
 

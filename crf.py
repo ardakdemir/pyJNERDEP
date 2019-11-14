@@ -28,8 +28,9 @@ class CRF(nn.Module):
         self.emission = nn.Linear(hidden_dim, self.tagset_size)
         self.transition = nn.Parameter(torch.randn(self.tagset_size, self.tagset_size))
         self.transition.data.zero_()
-        #self.transition.data[START_IND,:] = torch.tensor(-10000)
-        #self.transition.data[:,END_IND]  = torch.tensor(-10000)
+        self.transition.data[START_IND,:] = torch.tensor(-10000)
+        self.transition.data[START_IND,START_IND] = torch.tensor(0)
+        self.transition.data[:,END_IND]  = torch.tensor(-10000)
 
     def forward(self, feats):
         """
@@ -93,7 +94,7 @@ class CRFLoss(nn.Module):
         
         ## forward score : initialize from start tag
         forward_scores = torch.zeros(batch_size,self.tagset_size).to(self.device)
-        #forward_scores[:batch_size] = scores[:,0,:,START_IND]
+        forward_scores[:batch_size] = scores[:,0,:,START_IND]
         
         ## burada  hangisi  dogru emin   degilim index1-> index2 or  opposite?
         ## i think  opposite  is correct
@@ -102,7 +103,7 @@ class CRFLoss(nn.Module):
         
         ## forward score unsqueeze 2ydi 1 yaptim cunku ilk index next tag olarak 
         ## kurguluyorum
-        for i in range(scores.size()[1]):
+        for i in range(1,scores.size()[1]):
             batch_size_t = sum([1 if lengths[x]>i else 0 for x in range(lengths.size()[0])])
             forward_scores[:batch_size_t] =\
                 self._log_sum_exp(scores[:batch_size_t,i,:,:]\
