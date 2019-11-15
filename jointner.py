@@ -64,10 +64,11 @@ class JointNer(nn.Module):
     def batch_viterbi_decode(self,feats,sent_lens):
         paths = []
         scores = []
+        sent_lens = sent_lens - 1
         for i in range(feats.size()[0]):
             feat = feats[i]
             sent_len = sent_lens[i]
-            path,score = self._viterbi_decode(feat,sent_len)
+            path,score = self._viterbi_decode(feat[1:],sent_len)
             paths.append(path)
             scores.append(score)
         return paths, scores
@@ -77,8 +78,8 @@ class JointNer(nn.Module):
         end_ind = END_IND
         #feats = feats[:,end_ind+1:,end_ind+1:]
         parents = [[start_ind for x in range(feats.size()[1])]]
-        layer_scores = feats[1,:,start_ind] 
-        for feat in feats[2:sent_len,:,:]:
+        layer_scores = feats[0,:,start_ind] 
+        for feat in feats[1:sent_len,:,:]:
             #layer_scores =feat[:,:start_ind,:start_ind] + layer_scores.unsqueeze(1).expand(1,layer_scores.shape[1],layer_scores.shape[2])
             layer_scores =feat + layer_scores.unsqueeze(0).expand(layer_scores.shape[0],layer_scores.shape[0])
             layer_scores, parent = torch.max(layer_scores,dim=1)
@@ -92,9 +93,7 @@ class JointNer(nn.Module):
         for p in range(len(parents)-1,0,-1):
             path.append(parents[p][parent].item())
             parent = parents[p][parent]
-        path.append(start_ind)
-        path.reverse()
-        
+        path.reverse() 
         return path, path_score.item()
     
     
@@ -145,4 +144,6 @@ class JointNer(nn.Module):
         else:
             with torch.no_grad():    
                 crf_scores = self.crf(feats)
+        
+        
         return crf_scores

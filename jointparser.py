@@ -194,7 +194,9 @@ class JointParser(nn.Module):
             deprel_loss = self.dep_rel_crit(head_scores,dep_rels)
             depind_loss = self.dep_ind_crit(unlabeled_scores[:,1:].transpose(1,2),heads_[:,1:])
             loss = deprel_loss + depind_loss
-
+            loss = loss/torch.sum(sent_lens)
+            deprel_loss = deprel_loss/torch.sum(sent_lens)
+            depind_loss = depind_loss/torch.sum(sent_lens)
             return preds, loss, deprel_loss, depind_loss, acc , head_acc
         
         elif task=="NER" and training:   

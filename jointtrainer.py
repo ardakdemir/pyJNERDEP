@@ -50,7 +50,7 @@ def generate_pred_content(tokens, preds, truths=None, label_voc=None):
     sents = []
     if truths:
         for sent,pred,truth in zip(tokens,preds,truths):
-            l = list(zip(sent[1:-1], label_voc.unmap(truth[1:-1]),label_voc.unmap(pred[1:-1])))
+            l = list(zip(sent[1:-1], label_voc.unmap(truth[:-1]),label_voc.unmap(pred[:-1])))
             sents.append(l)
     else:
         for sent,pred in zip(tokens,preds):
@@ -68,8 +68,8 @@ def parse_args():
     
     
     parser.add_argument('--log_file', type=str, default='jointtraining.log', help='Input file for data loader.')
-    parser.add_argument('--ner_train_file', type=str, default='../../datasets/train_pos.tsv', help='training file for ner')
-    parser.add_argument('--dep_train_file', type=str, default="../../datasets/tr_imst-ud-train.conllu", help='training file for dep')
+    parser.add_argument('--ner_train_file', type=str, default='../../datasets/traindev_pos.tsv', help='training file for ner')
+    parser.add_argument('--dep_train_file', type=str, default="../../datasets/tr_imst-ud-traindev.conllu", help='training file for dep')
     parser.add_argument('--ner_val_file', type=str, default="../../datasets/test_pos.tsv", help='validation file for ner')
     parser.add_argument('--dep_val_file', type=str, default="../../datasets/tr_imst-ud-test.conllu", help='validation file for dep')
     parser.add_argument('--ner_output_file', type=str, default="joint_ner_out.txt", help='Output file for named entity recognition')
@@ -78,7 +78,7 @@ def parse_args():
     parser.add_argument('--mode', default='train', choices=['train', 'predict'])
     parser.add_argument('--lang', type=str, help='Language')
     parser.add_argument('--shorthand', type=str, help="Treebank shorthand")
-
+    
     parser.add_argument('--lstm_hidden', type=int, default=256)
     parser.add_argument('--char_hidden_dim', type=int, default=200)
     parser.add_argument('--biaffine_hidden', type=int, default=400)
@@ -90,15 +90,15 @@ def parse_args():
     parser.add_argument('--dep_dim', type=int, default=128)
     parser.add_argument('--transformed_dim', type=int, default=125)
     
-    parser.add_argument('--lstm_layers', type=int, default=3)
+    parser.add_argument('--lstm_layers', type=int, default=4)
     parser.add_argument('--char_num_layers', type=int, default=1)
     parser.add_argument('--pretrain_max_vocab', type=int, default=-1)
     
-    parser.add_argument('--word_drop', type=float, default = 0.33)
-    parser.add_argument('--embed_drop', type=float, default = 0.33)
+    parser.add_argument('--word_drop', type=float, default = 0.40)
+    parser.add_argument('--embed_drop', type=float, default = 0.40)
     parser.add_argument('--lstm_drop', type=float, default = 0.5)
     parser.add_argument('--crf_drop', type=float, default=0.3)
-    parser.add_argument('--parser_drop', type=float, default=0.40)
+    parser.add_argument('--parser_drop', type=float, default=0.50)
     
     parser.add_argument('--rec_dropout', type=float, default=0, help="Recurrent dropout")
     parser.add_argument('--char_rec_dropout', type=float, default=0, help="Recurrent dropout")
@@ -135,6 +135,7 @@ def parse_args():
     parser.add_argument('--cuda', type=bool, default=torch.cuda.is_available())
     parser.add_argument('--cpu', action='store_true', help='Ignore CUDA.')
     parser.add_argument('--hierarchical', type=int, default=0, help=' Choose whether to train a hiearchical or flat model')
+    parser.add_argument('--ner_only', type=int, default=0, help=' Choose whether to train a ner only model')
     args = parser.parse_args()
     return args
 
@@ -310,7 +311,7 @@ class JointTrainer:
         bert_feats = self.forward(batch, task="NER") 
         crf_scores = self.jointmodel.nermodel(bert_feats, sent_lens)
         loss = self.jointmodel.nermodel.loss(crf_scores, ner_inds, sent_lens)
-        loss = loss/ self.args['batch_size']
+        loss = loss/ torch.sum(sent_lens)
         return loss 
     
         
@@ -354,10 +355,9 @@ class JointTrainer:
         else:
             bert_feats = self.forward(batch, task="NER") 
         crf_scores = self.jointmodel.nermodel(bert_feats, sent_lens)
-        
-
         loss = self.jointmodel.nermodel.loss(crf_scores, ner_inds, sent_lens)
-        loss = loss/ sum(sent_lens).item()
+        logging.info("Loss value : {}".format(loss.item()))
+        loss = loss/ sum(sent_lens-1)
         loss.backward()
         pos_inds = batch[2][4]
          
@@ -381,9 +381,6 @@ class JointTrainer:
         self.jointmodel.depparser.optimizer.zero_grad()
         
         dep_loss,_,deprel_loss, depind_loss, acc, head_acc = self.dep_forward(dep_batch)
-        dep_loss = dep_loss/self.args['batch_size']
-        deprel_loss /=self.args['batch_size']
-        depind_loss /= self.args['batch_size']
         dep_loss.backward()
         
         clip_grad_norm_(self.jointmodel.base_model.parameters(),self.args['max_depgrad_norm'])
@@ -434,19 +431,21 @@ class JointTrainer:
                     ner_loss = self.ner_update(ner_batch)
                     ner_losses += ner_loss
                     train_loss +=ner_loss
-                
-                dep_batch = self.deptraindataset[i]
-                dep_loss, deprel_loss, depind_loss, acc, uas = self.dep_update(dep_batch)
-                dep_losses += dep_loss
-                train_loss +=dep_loss
-                deprel_losses += deprel_loss
-                depind_losses += depind_loss
-                deprel_acc += acc
-                uas_epoch += uas
+                if not self.args['ner_only']:           
+                    dep_batch = self.deptraindataset[i]
+                    dep_loss, deprel_loss, depind_loss, acc, uas = self.dep_update(dep_batch)
+                    dep_losses += dep_loss
+                    train_loss +=dep_loss
+                    deprel_losses += deprel_loss
+                    depind_losses += depind_loss
+                    deprel_acc += acc
+                    uas_epoch += uas
             logging.info("Results for epoch : {}".format(e+1))
             logging.info("Unlabeled attachment score : {} ".format(uas_epoch/(i+1)))
             self.jointmodel.eval()
-            dep_pre, dep_rec, dep_f1 = self.dep_evaluate()
+            dep_f1 = 0
+            if not self.args['ner_only']:
+                dep_pre, dep_rec, dep_f1 = self.dep_evaluate()
             ner_f1 = 0
             logging.info("Losses -- train {}  dependency {} ner {} ".format(train_loss,dep_losses,ner_losses))
             if e >= self.args['dep_warmup']:
@@ -552,8 +551,8 @@ class JointTrainer:
         for i in tqdm(range(len(dataset))):
             d = dataset[i]
             tokens = d[0]
-            sent_lens = d[2][0]
-            ner_inds = d[2][3]
+            sent_lens = d[2][0] - 1
+            ner_inds = d[2][3][:,1:]
             with torch.no_grad():
                 if self.args['hierarchical'] == 0:
                     bert_out = self.forward(d,task="NER")
@@ -577,7 +576,10 @@ class JointTrainer:
         conll_writer(out_file,content,field_names,"ner")
         conll_file = os.path.join(self.args['save_dir'],self.args['conll_file_name'])
         convert2IOB2new(out_file,conll_file)
-        prec, rec, f1 = evaluate_conll_file(open(conll_file,encoding='utf-8').readlines())
+        try:
+            prec, rec, f1 = evaluate_conll_file(open(conll_file,encoding='utf-8').readlines())
+        except:
+            f1 = 0
         #logging.info("{} {} {} ".format(prec,rec,f1))
         my_pre, my_rec, my_f1 = self.nerevaluator.conll_eval(out_file)
         logging.info("My values ignoring the boundaries.\npre: {}  rec: {}  f1: {} ".format(my_pre,my_rec,my_f1))

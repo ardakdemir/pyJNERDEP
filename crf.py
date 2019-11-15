@@ -29,7 +29,6 @@ class CRF(nn.Module):
         self.transition = nn.Parameter(torch.randn(self.tagset_size, self.tagset_size))
         self.transition.data.zero_()
         self.transition.data[START_IND,:] = torch.tensor(-10000)
-        self.transition.data[START_IND,START_IND] = torch.tensor(0)
         self.transition.data[:,END_IND]  = torch.tensor(-10000)
 
     def forward(self, feats):
@@ -38,6 +37,7 @@ class CRF(nn.Module):
         :param feats: output of word RNN/BLSTM, a tensor of dimensions (batch_size, timesteps, hidden_dim)
         :return: CRF scores, a tensor of dimensions (batch_size, timesteps, tagset_size, tagset_size)
         """
+        #feats = feats[:,1:]
         self.batch_size = feats.size()[0]
         self.timesteps = feats.size()[1]
 
@@ -81,7 +81,10 @@ class CRFLoss(nn.Module):
         """
 
         ## this calculation assumes that the first target, i.e target[0]
-        ## no it does not!
+        ## no it does no!
+        lengths = lengths - 1
+        targets = targets[:,1:]
+        scores = scores[:,1:]
         targets = targets.unsqueeze(2)
         batch_size = scores.size()[0]
         #scores_ =  scores.view(scores.size()[0],scores.size()[1],-1)
