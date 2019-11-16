@@ -35,8 +35,13 @@ class JointNer(nn.Module):
         
         #self.vocab_size = vocab_size
         self.lstm_drop = self.args['lstm_drop'] 
-        if self.args['hierarchical']==1:        
-            self.lstm_input_dim = self.args['lstm_input_size']+self.args['dep_dim']
+       
+        if self.args['hierarchical']==1:             
+            if self.args['dep_inner']==1:
+                self.lstm_input_dim = self.args['lstm_input_size']+self.args['lstm_hidden']*2
+            else:
+                self.lstm_input_dim = self.args['lstm_input_size']+self.args['dep_dim']
+        
         if self.args['hierarchical']==0:        
             self.lstm_input_dim = self.args['lstm_input_size']
         self.lstm_hidden = self.args['lstm_hidden']

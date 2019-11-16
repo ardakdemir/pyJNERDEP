@@ -152,7 +152,8 @@ class JointParser(nn.Module):
         unpacked = self.lstm_dropout(highway_out)
         #unpacked, _ = pad_packed_sequence(lstm_out,batch_first=True)
         #unpacked = self.lstm_dropout(unpacked)
-        
+        if task=="NER" and training and self.args['dep_inner']:
+            return torch.cat([x,unpacked],dim=2)
         unlabeled_scores = self.unlabeled(unpacked,unpacked).squeeze(3)
         deprel_scores  = self.dep_rel(unpacked,unpacked) 
         
@@ -200,6 +201,10 @@ class JointParser(nn.Module):
             return preds, loss, deprel_loss, depind_loss, acc , head_acc
         
         elif task=="NER" and training:   
+            
+            if self.args['dep_inner']:
+                return torch.cat([x,unpacked],dim=2)
+            
             mask = torch.zeros(deprel_scores.size(),dtype=torch.long).to(self.device)
             mask[:,:,:,:4] = 1 
             mask = mask.bool()
@@ -217,6 +222,7 @@ class JointParser(nn.Module):
             dep_ind_preds = torch.gather(rel_scores,2,arc_scores.unsqueeze(2)).squeeze(2)
             dep_embeddings = self.dep_embed(dep_ind_preds)
             dep_embeddings = self.pos_dropout(dep_embeddings)
+            
             return torch.cat([x,dep_embeddings],dim=2)
         
         else:

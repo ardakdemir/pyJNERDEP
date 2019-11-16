@@ -94,8 +94,8 @@ def parse_args():
     parser.add_argument('--char_num_layers', type=int, default=1)
     parser.add_argument('--pretrain_max_vocab', type=int, default=-1)
     
-    parser.add_argument('--word_drop', type=float, default = 0.40)
-    parser.add_argument('--embed_drop', type=float, default = 0.40)
+    parser.add_argument('--word_drop', type=float, default = 0.50)
+    parser.add_argument('--embed_drop', type=float, default = 0.50)
     parser.add_argument('--lstm_drop', type=float, default = 0.5)
     parser.add_argument('--crf_drop', type=float, default=0.3)
     parser.add_argument('--parser_drop', type=float, default=0.50)
@@ -135,7 +135,9 @@ def parse_args():
     parser.add_argument('--cuda', type=bool, default=torch.cuda.is_available())
     parser.add_argument('--cpu', action='store_true', help='Ignore CUDA.')
     parser.add_argument('--hierarchical', type=int, default=0, help=' Choose whether to train a hiearchical or flat model')
+    parser.add_argument('--dep_inner', type=int, default=0, help=' Choose whether to give a dependency input or rel prediction output')
     parser.add_argument('--ner_only', type=int, default=0, help=' Choose whether to train a ner only model')
+    parser.add_argument('--dep_only', type=int, default=0, help=' Choose whether to train a dep only model')
     args = parser.parse_args()
     return args
 
@@ -356,7 +358,9 @@ class JointTrainer:
             bert_feats = self.forward(batch, task="NER") 
         crf_scores = self.jointmodel.nermodel(bert_feats, sent_lens)
         loss = self.jointmodel.nermodel.loss(crf_scores, ner_inds, sent_lens)
-        logging.info("Loss value : {}".format(loss.item()))
+        if loss > 1000:
+            logging.info("Problematic batch!!")
+            logging.info(batch[0])
         loss = loss/ sum(sent_lens-1)
         loss.backward()
         pos_inds = batch[2][4]
@@ -400,9 +404,10 @@ class JointTrainer:
         self.jointmodel.train()
         best_ner_f1 = 0
         best_dep_f1 = 0
+        best_uas_f1 = 0
         best_ner_epoch = 0
         best_dep_epoch = 0
-        if self.args['load_model']==1: 
+        if self.args['load_model'] == 1: 
             save_path = os.path.join(self.args['save_dir'],self.args['save_name'])
             logging.info("Model loaded %s"%save_path)
             self.jointmodel.load_state_dict(torch.load(save_path))
@@ -412,7 +417,9 @@ class JointTrainer:
         print(self.nertrainreader.pos_vocab.w2ind)
         print("Dep vocab for dependency dataset")
         print(self.deptraindataset.vocabs['dep_vocab'].w2ind)
+
         for e in range(epoch):
+        
             train_loss = 0
             ner_losses = 0
             dep_losses = 0
@@ -420,17 +427,20 @@ class JointTrainer:
             deprel_losses = 0
             deprel_acc = 0
             uas_epoch = 0
+            
             self.nertrainreader.for_eval = False
             self.jointmodel.train()
+            
             for i in tqdm(range(self.args['eval_interval'])):
     
-                if e >= self.args['dep_warmup']:
+                if not self.args['dep_only'] and e >= self.args['dep_warmup']:
                     
                     ner_batch = self.nertrainreader[i]
                     #logging.info(ner_batch[0])
                     ner_loss = self.ner_update(ner_batch)
                     ner_losses += ner_loss
                     train_loss +=ner_loss
+            
                 if not self.args['ner_only']:           
                     dep_batch = self.deptraindataset[i]
                     dep_loss, deprel_loss, depind_loss, acc, uas = self.dep_update(dep_batch)
@@ -441,23 +451,26 @@ class JointTrainer:
                     deprel_acc += acc
                     uas_epoch += uas
             logging.info("Results for epoch : {}".format(e+1))
-            logging.info("Unlabeled attachment score : {} ".format(uas_epoch/(i+1)))
             self.jointmodel.eval()
             dep_f1 = 0
+            uas_f1 = 0
             if not self.args['ner_only']:
-                dep_pre, dep_rec, dep_f1 = self.dep_evaluate()
+                dep_pre, dep_rec, dep_f1, uas_f1 = self.dep_evaluate()
             ner_f1 = 0
             logging.info("Losses -- train {}  dependency {} ner {} ".format(train_loss,dep_losses,ner_losses))
-            if e >= self.args['dep_warmup']:
+            if e >= self.args['dep_warmup'] and not self.args['dep_only']:
                 ner_pre, ner_rec, ner_f1 = self.ner_evaluate()
                 logging.info("NER Results -- f1 : {} ".format(ner_f1))
-            logging.info("Dependency Results -- f1 : {} ".format(dep_f1))
             
+            logging.info("Dependency Results -- LAS f1 : {}  UAS f1 :  {} ".format(dep_f1,uas_f1))
+            
+            if uas_f1 > best_uas_f1:
+                best_uas_f1 = uas_f1
+
             if dep_f1 > best_dep_f1:
                 self.save_model(self.args['save_dep_name'])
                 best_dep_f1 = dep_f1
                 best_dep_epoch = e
-            
             else:
                 logging.info("Best LAS of {} achieved at {}".format(best_dep_f1, best_dep_epoch))
                 for param_group in self.jointmodel.depparser.optimizer.param_groups:
@@ -482,8 +495,10 @@ class JointTrainer:
             if ner_f1 > best_ner_f1 and dep_f1 > best_dep_f1:
                 self.save_model(self.args['save_name'])
             self.jointmodel.train()
-    
-    
+
+        logging.info("Best results : ")
+        logging.info("NER : {}  LAS : {} UAS : {}".format(best_ner_f1,best_dep_f1,best_uas_f1))
+
     def save_model(self,save_name,weights = True): 
         save_name = os.path.join(self.args['save_dir'],save_name)
         if weights:
@@ -530,14 +545,12 @@ class JointTrainer:
         pred_file = os.path.join(self.args['save_dir'],pred_file)
         conll_writer(pred_file, data, field_names,task_name = "dep")
         print("Predictions can be observed from {}".format(pred_file))
-        p, r, f1 = score(pred_file, gold_file,verbose=False)
+        p, r, f1, uas_f1 = score(pred_file, gold_file,verbose=False)
         #p,r, f1 = 0,0,0
-        logging.info("LAS Precision : {}  Recall {} F1 {}".format(p,r,f1))
-        print("Dependency output:")
-        print("LAS Precision : {}  Recall {} F1 {}".format(p,r,f1))
+        logging.info("LAS F1 {}  ====    UAS F1 {}".format(f1, uas_f1))
         #self.parser.train() 
         
-        return p, r, f1
+        return p, r, f1, uas_f1
     
     
     def ner_evaluate(self):

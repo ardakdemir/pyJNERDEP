@@ -15,7 +15,11 @@ import time
 import random
 
 def get_orthographic_feat(token):
-    if token==ROOT or token==UNK or token==PAD:
+    if token==START_TAG or token==END_TAG or token==PAD or token==ROOT_TAG:
+        return 5
+    if "'" in token:
+        return 4
+    if all_num(token):
         return 3
     if token.isupper():
         return 2
