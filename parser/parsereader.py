@@ -14,8 +14,23 @@ import logging
 import time
 import random
 
+PAD = "[PAD]"
+PAD_IND = 0
+START_TAG = "[SOS]"
+END_TAG   = "[EOS]"
+START_IND = 1
+END_IND = 2
+ROOT_TAG = "[ROOT]"
+ROOT_IND = 1
+def all_num(token):
+    n = "0123456789."
+    for c in token:
+        if c not in n:
+            return False
+    return True
+
 def get_orthographic_feat(token):
-    if token==START_TAG or token==END_TAG or token==PAD or token==ROOT_TAG:
+    if token=="[SOS]" or token==END_TAG or token==PAD or token==ROOT:
         return 5
     if "'" in token:
         return 4

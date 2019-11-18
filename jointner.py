@@ -116,13 +116,16 @@ class JointNer(nn.Module):
     
     
 
-    def _get_feats(self, bert_out, sent_lens):
+    def _get_feats(self, bert_out, sent_lens, task="NER"):
 
         padded = pack_padded_sequence(bert_out,sent_lens, batch_first=True)
         #lstm_out,_ = self.nerlstm(padded)
         #bert_out = self.dropout(bert_out)
         highway_out, _ = self.highwaylstm(bert_out, sent_lens)
         #unpacked , _ = pad_packed_sequence(lstm_out, batch_first=True)
+        if task == "NERDEP":
+            feats = torch.cat([bert_out,self.dropout(highway_out)],dim=2)
+            return feats
         return self.dropout(highway_out)
         
         #return self.dropout(unpacked)
@@ -141,13 +144,14 @@ class JointNer(nn.Module):
             scores.append(score)
         return paths, scores
 
-    def forward(self, bert_out, sent_lens, train=True):
-        feats = self._get_feats(bert_out,sent_lens)
+    def forward(self, bert_out, sent_lens, train=True, task = "NER"):
+        feats = self._get_feats(bert_out,sent_lens, task=task)
+        if task == "NERDEP":
+            return feats
         if train:
             crf_scores = self.crf(feats)
-        
         else:
-            with torch.no_grad():    
+            with torch.no_grad():
                 crf_scores = self.crf(feats)
         
         

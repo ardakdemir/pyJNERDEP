@@ -65,8 +65,12 @@ class JointParser(nn.Module):
         self.lstm_drop = self.args['lstm_drop']
         self.parser_drop = self.args['parser_drop']
         self.lstm_layers = self.args['lstm_layers']
-        self.lstm_input_dim = self.args['lstm_input_size'] 
         self.lstm_hidden = self.args['lstm_hidden']
+        if self.args['model_type'] == 'NERDEP': 
+            ## output of the ner layer
+            self.lstm_input_dim = self.args['lstm_input_size'] + 2 * self.lstm_hidden
+        else:
+            self.lstm_input_dim = self.args['lstm_input_size']
         
         
         self.parserlstm  = nn.LSTM(self.lstm_input_dim,self.lstm_hidden, bidirectional=True, num_layers=self.lstm_layers, batch_first=True)
@@ -159,7 +163,7 @@ class JointParser(nn.Module):
         
         preds = []
         acc = 0
-        if task=="DEP" and training:
+        if (task=="NERDEP" or task=="DEP") and training:
             diag = torch.eye(heads.size()[1]).to(self.device)
             diag = diag.bool()
             ## set self-edge scores to negative infinity
@@ -200,7 +204,7 @@ class JointParser(nn.Module):
             depind_loss = depind_loss/torch.sum(sent_lens)
             return preds, loss, deprel_loss, depind_loss, acc , head_acc
         
-        elif task=="NER" and training:   
+        elif task=="DEPNER" and training:   
             
             if self.args['dep_inner']:
                 return torch.cat([x,unpacked],dim=2)
