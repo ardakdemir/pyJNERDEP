@@ -88,6 +88,7 @@ def parse_args():
     parser.add_argument('--cap_types', type=int, default=6)
     parser.add_argument('--pos_dim', type=int, default=64)
     parser.add_argument('--dep_dim', type=int, default=128)
+    parser.add_argument('--ner_dim', type=int, default=128)
     parser.add_argument('--transformed_dim', type=int, default=125)
     
     parser.add_argument('--lstm_layers', type=int, default=4)
@@ -118,8 +119,8 @@ def parse_args():
     parser.add_argument('--weight_decay', type=float, default=0.90)
     
     parser.add_argument('--max_steps', type=int, default=50000)
-    parser.add_argument('--dep_warmup', type=int, default=10)
-    parser.add_argument('--ner_warmup', type=int, default=10)
+    parser.add_argument('--dep_warmup', type=int, default=-1)
+    parser.add_argument('--ner_warmup', type=int, default=-1)
     parser.add_argument('--eval_interval', type=int, default=500)
     parser.add_argument('--max_steps_before_stop', type=int, default=3000)
     parser.add_argument('--batch_size', type=int, default=500)
@@ -135,9 +136,9 @@ def parse_args():
     parser.add_argument('--seed', type=int, default=1234)
     parser.add_argument('--cuda', type=bool, default=torch.cuda.is_available())
     parser.add_argument('--cpu', action='store_true', help='Ignore CUDA.')
-    parser.add_argument('--hierarchical', type=int, default=0, help=' Choose whether to train a hiearchical or flat model')
-    parser.add_argument('--dep_inner', type=int, default=0, help=' Choose whether to give a dependency input or rel prediction output')
+    parser.add_argument('--inner', type=int, default=1, help=' Choose whether to give a dependency input or rel prediction output')
     parser.add_argument('--model_type', default='FLAT', help=' Choose model type to be trained')
+    
     parser.add_argument('--ner_only', type=int, default=0, help=' Choose whether to train a ner only model')
     parser.add_argument('--dep_only', type=int, default=0, help=' Choose whether to train a dep only model')
     parser.add_argument('--depner', type=int, default=0, help=' Hierarchical model type : dep helping ner')
@@ -278,8 +279,13 @@ class JointTrainer:
         self.jointmodel.to(self.device)
         self.nerevaluator = Evaluate("NER")
         
-        self.update_funcs = {"DEPNER": self.depner_update, "NERDEP": self.nerdep_update, "FLAT": self.flat_update}
+        self.update_funcs = {"DEPNER": self.depner_update, "NERDEP": self.nerdep_update, "FLAT": self.flat_update, "DEP": self.dep_update_caller, "NER": self.ner_update_caller}
+    
 
+    def plot_f1(self, f1_array, model_name= "FLAT" , task = "NER"):
+        plt.plot([i+1 for i in range(len(f1_arrat)], f1_array)
+        plt.title("{} F1-Score for the {} model on the development set".format(task, model_name))
+        plt.savefig("{}-{}-devf1.png".format(model_name,task))
     def update_lr(self):
         for param_group in self.jointmodel.base_model.embed_optimizer.param_groups:
             param_group['lr']*=self.args['lr_decay']
@@ -332,7 +338,6 @@ class JointTrainer:
             sent_lens = dep_batch[2][0].to(self.device)
             ner_inds = dep_batch[2][3].to(self.device)
             bert_feats = self.jointmodel.nermodel(bert_feats, sent_lens, task = task)
-            logging.info(bert_feats.shape)
         else:
             bert_feats = self.forward(dep_batch)
         inputs = []
@@ -359,7 +364,7 @@ class JointTrainer:
         self.jointmodel.base_model.bert_optimizer.zero_grad()
         self.jointmodel.nermodel.ner_optimizer.zero_grad()
         
-        if self.args['hierarchical']==1: 
+        if self.args['model_type']=='DEPNER': 
             self.jointmodel.depparser.optimizer.zero_grad()
         
         #batch = self.nertrainreader[i]
@@ -367,7 +372,7 @@ class JointTrainer:
         ner_inds = batch[2][3].to(self.device)
         
         ## if hierarchical dep embeddings are appended to the bert outputs
-        if self.args['hierarchical']==1: 
+        if self.args['model_type']=='DEPNER': 
             bert_feats = self.dep_forward(batch, task="DEPNER")
 
         else:
@@ -384,17 +389,22 @@ class JointTrainer:
          
         clip_grad_norm_(self.jointmodel.nermodel.parameters(),self.args['max_grad_norm'])
         clip_grad_norm_(self.jointmodel.base_model.parameters(),self.args['max_grad_norm'])
-        if self.args['hierarchical']==1: 
+        if self.args['model_type']=='DEPNER': 
             clip_grad_norm_(self.jointmodel.depparser.parameters(),self.args['max_grad_norm'])
         
         self.jointmodel.base_model.embed_optimizer.step()
         self.jointmodel.base_model.bert_optimizer.step()
         self.jointmodel.nermodel.ner_optimizer.step()
-        if self.args['hierarchical']==1: 
+        if self.args['model_type']=='DEPNER': 
             self.jointmodel.depparser.optimizer.step()
     
         return loss.item()
     
+    def dep_update_caller(self,index,epoch):
+        dep_batch = self.deptraindataset[index]
+        dep_loss, deprel_loss, depind_loss, acc, uas = self.dep_update(dep_batch)
+        return 0, dep_loss
+
     def dep_update(self,dep_batch, task = "DEP"):
         
         self.jointmodel.base_model.embed_optimizer.zero_grad()
@@ -417,7 +427,10 @@ class JointTrainer:
 
         return dep_loss.item(), deprel_loss.item(), depind_loss.item(), acc, head_acc
     
-    
+    def ner_update_caller(self, index, epoch):
+        ner_batch = self.nertrainreader[index]
+        ner_loss = self.ner_update(ner_batch)
+        return ner_loss, 0
     def nerdep_update(self, index, epoch):
         
         dep_loss = 0
@@ -467,6 +480,8 @@ class JointTrainer:
         best_uas_f1 = 0
         best_ner_epoch = 0
         best_dep_epoch = 0
+        dep_val_f1 = []
+        ner_val_f1 = []
         if self.args['load_model'] == 1: 
             save_path = os.path.join(self.args['save_dir'],self.args['save_name'])
             logging.info("Model loaded %s"%save_path)
@@ -513,7 +528,8 @@ class JointTrainer:
                 logging.info("NER Results -- f1 : {} ".format(ner_f1))
             
             logging.info("Dependency Results -- LAS f1 : {}  UAS f1 :  {} ".format(dep_f1,uas_f1))
-            
+            ner_val_f1.append(ner_f1)
+            dep_val_f1.append(dep_f1)
             if uas_f1 > best_uas_f1:
                 best_uas_f1 = uas_f1
 
@@ -548,7 +564,9 @@ class JointTrainer:
 
         logging.info("Best results : ")
         logging.info("NER : {}  LAS : {} UAS : {}".format(best_ner_f1, best_dep_f1, best_uas_f1))
-        
+        self.plot_f1(ner_val_f1, self.args['model_type'], "NER")
+        self.plot_f1(dep_val_f1, self.args['model_type'], "DEP")
+
     def train(self):
         logging.info("Training on {} ".format(self.args['device']))
         logging.info("Dependency pos vocab : {} ".format(self.deptraindataset.vocabs['pos_vocab'].w2ind))
@@ -560,6 +578,8 @@ class JointTrainer:
         best_uas_f1 = 0
         best_ner_epoch = 0
         best_dep_epoch = 0
+        dep_val_loss = []
+        ner_val_loss = []
         if self.args['load_model'] == 1: 
             save_path = os.path.join(self.args['save_dir'],self.args['save_name'])
             logging.info("Model loaded %s"%save_path)
@@ -679,7 +699,10 @@ class JointTrainer:
             batch = self.depvaldataset[x]
             sent_lens = batch[2][0]
             tokens = batch[0]    
-            loss, preds, _ , _, rel_acc , head_acc = self.dep_forward(batch,training=False,task = self.args['model_type'])
+            if self.args['model_type'] == "NERDEP":
+                loss, preds, _ , _, rel_acc , head_acc = self.dep_forward(batch,training=False,task = self.args['model_type'])
+            else:
+                loss, preds, _ , _, rel_acc , head_acc = self.dep_forward(batch,training=False,task = "DEP")
             rel_accs += rel_acc
             head_accs += head_acc
             heads, dep_rels , output = self.jointmodel.depparser.decode(preds[0], preds[1], sent_lens,verbose=True)
@@ -720,11 +743,12 @@ class JointTrainer:
             sent_lens = d[2][0] - 1
             ner_inds = d[2][3][:,1:]
             with torch.no_grad():
-                if self.args['hierarchical'] == 0:
+                if self.args['model_type'] != "DEPNER":
                     bert_out = self.forward(d)
                 else:
-                    bert_out = self.dep_forward(d)
+                    bert_out = self.dep_forward(d,task="DEPNER")
                 crf_scores = self.jointmodel.nermodel(bert_out, sent_lens,train=False)
+
                 paths, scores = self.jointmodel.nermodel.batch_viterbi_decode(crf_scores, sent_lens)
                 for i in range(crf_scores.shape[0]):
                     truth = ner_inds[i].detach().cpu().numpy()//self.args['ner_cats']##converting 1d labels

@@ -68,7 +68,10 @@ class JointParser(nn.Module):
         self.lstm_hidden = self.args['lstm_hidden']
         if self.args['model_type'] == 'NERDEP': 
             ## output of the ner layer
-            self.lstm_input_dim = self.args['lstm_input_size'] + 2 * self.lstm_hidden
+            if self.args['inner']:
+                self.lstm_input_dim = self.args['lstm_input_size'] + 2 * self.lstm_hidden
+            else:
+                self.lstm_input_dim = self.args['ner_dim'] + self.args['lstm_input_size']
         else:
             self.lstm_input_dim = self.args['lstm_input_size']
         
@@ -156,7 +159,7 @@ class JointParser(nn.Module):
         unpacked = self.lstm_dropout(highway_out)
         #unpacked, _ = pad_packed_sequence(lstm_out,batch_first=True)
         #unpacked = self.lstm_dropout(unpacked)
-        if task=="NER" and training and self.args['dep_inner']:
+        if task=="DEPNER" and training and self.args['inner']:
             return torch.cat([x,unpacked],dim=2)
         unlabeled_scores = self.unlabeled(unpacked,unpacked).squeeze(3)
         deprel_scores  = self.dep_rel(unpacked,unpacked) 
@@ -206,7 +209,7 @@ class JointParser(nn.Module):
         
         elif task=="DEPNER" and training:   
             
-            if self.args['dep_inner']:
+            if self.args['inner']:
                 return torch.cat([x,unpacked],dim=2)
             
             mask = torch.zeros(deprel_scores.size(),dtype=torch.long).to(self.device)

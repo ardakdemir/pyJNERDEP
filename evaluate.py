@@ -56,3 +56,4 @@ class Evaluate():
             pre = c/p_tot
         #print("Precision : ", pre , "  Recall : ", rec)
         return c, p_tot, t
+

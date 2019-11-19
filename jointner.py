@@ -36,18 +36,18 @@ class JointNer(nn.Module):
         #self.vocab_size = vocab_size
         self.lstm_drop = self.args['lstm_drop'] 
        
-        if self.args['hierarchical']==1:             
-            if self.args['dep_inner']==1:
+        if self.args['model_type']=="DEPNER":             
+            if self.args['inner']==1:
                 self.lstm_input_dim = self.args['lstm_input_size']+self.args['lstm_hidden']*2
             else:
                 self.lstm_input_dim = self.args['lstm_input_size']+self.args['dep_dim']
-        
-        if self.args['hierarchical']==0:        
+        else:
             self.lstm_input_dim = self.args['lstm_input_size']
         self.lstm_hidden = self.args['lstm_hidden']
         self.lstm_layers = self.args['lstm_layers']
         self.lr = self.args['ner_lr']
         self.weight_decay = self.args['weight_decay']
+        self.ner_embeds = nn.Embedding(self.num_cat,self.args['ner_dim'])
         #self.cap_embeds  = nn.Embedding(self.cap_types,self.cap_dim)
         #self.word_embeds = nn.Embedding(self.vocab_size, self.w_dim)
         
@@ -63,7 +63,8 @@ class JointNer(nn.Module):
     
         self.ner_optimizer = optim.AdamW([{"params": self.nerlstm.parameters()},\
         {"params": self.highwaylstm.parameters()},\
-        {"params":self.crf.parameters()}],\
+        {"params":self.crf.parameters()},\
+        {"params":self.ner_embeds.parameters()}],\
         lr=self.lr,  betas=(0.9,self.args['beta2']), eps=1e-6)
 
     def batch_viterbi_decode(self,feats,sent_lens):
@@ -124,7 +125,13 @@ class JointNer(nn.Module):
         highway_out, _ = self.highwaylstm(bert_out, sent_lens)
         #unpacked , _ = pad_packed_sequence(lstm_out, batch_first=True)
         if task == "NERDEP":
-            feats = torch.cat([bert_out,self.dropout(highway_out)],dim=2)
+            if self.args['inner']:
+                feats = torch.cat([bert_out,self.dropout(highway_out)],dim=2)
+            else:
+                scores = self.crf(self.dropout(highway_out))
+                ner_indexes = torch.argmax(scores,dim=2)
+                ner_embeddings = self.ner_embeds(ner_indexes)
+                feats = torch.cat([bert_out,self.dropout(ner_embeddins)],dim=2)
             return feats
         return self.dropout(highway_out)
         
