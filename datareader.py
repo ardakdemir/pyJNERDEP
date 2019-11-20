@@ -99,9 +99,9 @@ torch.tensor([seq_ids],dtype=torch.long), torch.tensor(bert2tok), lab])
 
 
     def get_vocabs(self):
-        l2ind = {PAD : PAD_IND, START_TAG:START_IND, END_TAG: END_IND, ROOT_TAG:ROOT_IND }
-        word2ix = {PAD : PAD_IND, START_TAG:START_IND, END_TAG: END_IND ,ROOT_TAG:ROOT_IND}
-        pos2ind = {PAD : PAD_IND, START_TAG:START_IND, END_TAG: END_IND ,ROOT_TAG:ROOT_IND}
+        l2ind = {PAD : PAD_IND, START_TAG:START_IND, END_TAG: END_IND, ROOT_TAG:PAD_IND }
+        word2ix = {PAD : PAD_IND, START_TAG:START_IND, END_TAG: END_IND ,ROOT_TAG:PAD_IND}
+        pos2ind = {PAD : PAD_IND, START_TAG:START_IND, END_TAG: END_IND ,ROOT_TAG:PAD_IND}
         print(self.label_counts)
         
         for x in self.label_counts:
@@ -128,6 +128,7 @@ torch.tensor([seq_ids],dtype=torch.long), torch.tensor(bert2tok), lab])
                 if len(sent)>0:
                     sent.append([END_TAG, END_TAG , END_TAG, END_TAG ])
                     new_dataset.append([root]+sent)
+                    #new_dataset.append(sent)
                     sent = []
             else:
                 row = line.rstrip().split()
@@ -138,7 +139,7 @@ torch.tensor([seq_ids],dtype=torch.long), torch.tensor(bert2tok), lab])
         if len(sent)>0:
             sent.append([END_TAG, END_TAG, END_TAG , END_TAG ])
             new_dataset.append([root]+sent)
-        
+            #new_dataset.append(sent)
         new_dataset, orig_idx = sort_dataset(new_dataset, sort = True)
         
         return new_dataset, orig_idx, label_counts, pos_counts

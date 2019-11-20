@@ -95,11 +95,11 @@ def parse_args():
     parser.add_argument('--char_num_layers', type=int, default=1)
     parser.add_argument('--pretrain_max_vocab', type=int, default=-1)
     
-    parser.add_argument('--word_drop', type=float, default = 0.50)
-    parser.add_argument('--embed_drop', type=float, default = 0.50)
+    parser.add_argument('--word_drop', type=float, default = 0.3)
+    parser.add_argument('--embed_drop', type=float, default = 0.3)
     parser.add_argument('--lstm_drop', type=float, default = 0.5)
-    parser.add_argument('--crf_drop', type=float, default=0.3)
-    parser.add_argument('--parser_drop', type=float, default=0.50)
+    parser.add_argument('--crf_drop', type=float, default=0.5)
+    parser.add_argument('--parser_drop', type=float, default=0.5)
     
     parser.add_argument('--rec_dropout', type=float, default=0, help="Recurrent dropout")
     parser.add_argument('--char_rec_dropout', type=float, default=0, help="Recurrent dropout")
@@ -246,7 +246,6 @@ class BaseModel(nn.Module):
         
         bert_out = self.bert_model(batch_bert_ids,batch_seq_ids)
         bert_hiddens = self._get_bert_batch_hidden(bert_out[2],bert2toks)
-        
         cap_embedding = self.embed_dropout(self.cap_embeds(cap_inds))
         pos_embedding = self.embed_dropout(self.pos_embeds(pos_ids))
         bert_hiddens = self.dropout(bert_hiddens)
@@ -283,7 +282,7 @@ class JointTrainer:
     
 
     def plot_f1(self, f1_array, model_name= "FLAT" , task = "NER"):
-        plt.plot([i+1 for i in range(len(f1_arrat)], f1_array)
+        plt.plot([i+1 for i in range(len(f1_array))], f1_array)
         plt.title("{} F1-Score for the {} model on the development set".format(task, model_name))
         plt.savefig("{}-{}-devf1.png".format(model_name,task))
     def update_lr(self):
@@ -377,8 +376,11 @@ class JointTrainer:
 
         else:
             bert_feats = self.forward(batch) 
+        logging.info("Token lengths : {} sent_lens : {} bert_lens : {}".format(len(batch[0][-1]),sent_lens[-1],bert_feats.shape))
+        logging.info(batch[0][-1])
         crf_scores = self.jointmodel.nermodel(bert_feats, sent_lens)
         loss = self.jointmodel.nermodel.loss(crf_scores, ner_inds, sent_lens)
+        logging.info("Loss {}".format(loss/sum(sent_lens)))
         if loss > 1000:
             logging.info("Problematic batch!!")
             logging.info(batch[0])
@@ -418,6 +420,8 @@ class JointTrainer:
         
         clip_grad_norm_(self.jointmodel.base_model.parameters(),self.args['max_depgrad_norm'])
         clip_grad_norm_(self.jointmodel.depparser.parameters(),self.args['max_depgrad_norm'])
+        if task == "NERDEP":    
+            clip_grad_norm_(self.jointmodel.nermodel.parameters(),self.args['max_grad_norm'])
         
         self.jointmodel.base_model.embed_optimizer.step()
         self.jointmodel.base_model.bert_optimizer.step()
@@ -492,7 +496,8 @@ class JointTrainer:
         print(self.nertrainreader.pos_vocab.w2ind)
         print("Dep vocab for dependency dataset")
         print(self.deptraindataset.vocabs['dep_vocab'].w2ind)
-        
+        print("NER label vocab")
+        print(self.nertrainreader.label_voc.w2ind)
         ## get the updating function depending on the model type
         model_func = self.update_funcs[self.args['model_type']]
         
@@ -566,7 +571,10 @@ class JointTrainer:
         logging.info("NER : {}  LAS : {} UAS : {}".format(best_ner_f1, best_dep_f1, best_uas_f1))
         self.plot_f1(ner_val_f1, self.args['model_type'], "NER")
         self.plot_f1(dep_val_f1, self.args['model_type'], "DEP")
-
+        logging.info("NER val f1s ")
+        logging.info(ner_val_f1)
+        logging.info("DEP val f1s ")
+        logging.info(dep_val_f1)
     def train(self):
         logging.info("Training on {} ".format(self.args['device']))
         logging.info("Dependency pos vocab : {} ".format(self.deptraindataset.vocabs['pos_vocab'].w2ind))

@@ -125,15 +125,18 @@ class JointNer(nn.Module):
         highway_out, _ = self.highwaylstm(bert_out, sent_lens)
         #unpacked , _ = pad_packed_sequence(lstm_out, batch_first=True)
         if task == "NERDEP":
-            if self.args['inner']:
+            if self.args['inner']==1:
                 feats = torch.cat([bert_out,self.dropout(highway_out)],dim=2)
+
             else:
-                scores = self.crf(self.dropout(highway_out))
+                scores = self.crf.emission(self.dropout(torch.relu(highway_out)))
                 ner_indexes = torch.argmax(scores,dim=2)
-                ner_embeddings = self.ner_embeds(ner_indexes)
-                feats = torch.cat([bert_out,self.dropout(ner_embeddins)],dim=2)
+                logging.info("DEP icin")
+                logging.info(ner_indexes[-1])
+                ner_embeddings = self.ner_embeds(ner_indexes) 
+                feats = torch.cat([bert_out,self.dropout(ner_embeddings)],dim=2)
             return feats
-        return self.dropout(highway_out)
+        return self.dropout(torch.relu(highway_out))
         
         #return self.dropout(unpacked)
         #return unpacked
@@ -156,7 +159,11 @@ class JointNer(nn.Module):
         if task == "NERDEP":
             return feats
         if train:
+            label_scores = self.crf.emission(feats)
             crf_scores = self.crf(feats)
+            ner_indexes = torch.argmax(label_scores,dim=2)
+            logging.info("NER Icindeki")
+            logging.info(ner_indexes[-1])
         else:
             with torch.no_grad():
                 crf_scores = self.crf(feats)

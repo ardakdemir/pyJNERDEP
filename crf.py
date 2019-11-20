@@ -12,7 +12,7 @@ from torch import autograd
 import logging
 
 
-from datareader import DataReader, START_TAG, END_TAG, PAD_IND, END_IND, START_IND
+from datareader import DataReader, START_TAG, END_TAG, PAD_IND, END_IND, START_IND, ROOT_IND
 class CRF(nn.Module):
     """
     Conditional Random Field.
@@ -29,6 +29,7 @@ class CRF(nn.Module):
         self.transition = nn.Parameter(torch.randn(self.tagset_size, self.tagset_size))
         self.transition.data.zero_()
         self.transition.data[START_IND,:] = torch.tensor(-10000)
+        #self.transition.data[ROOT_IND,:] = torch.tensor(1000)
         self.transition.data[:,END_IND]  = torch.tensor(-10000)
 
     def forward(self, feats):
@@ -42,7 +43,7 @@ class CRF(nn.Module):
         self.timesteps = feats.size()[1]
 
         emission_scores = self.emission(feats)  # (batch_size, timesteps, tagset_size)
-        emission_scores = emission_scores.unsqueeze(2).expand(self.batch_size, self.timesteps, self.tagset_size,
+        emission_scores = emission_scores.unsqueeze(3).expand(self.batch_size, self.timesteps, self.tagset_size,
                                                               self.tagset_size)  # (batch_size, timesteps, tagset_size, tagset_size)
 
         crf_scores = emission_scores + self.transition.unsqueeze(0).unsqueeze(
@@ -51,6 +52,7 @@ class CRF(nn.Module):
 
 
 class CRFLoss(nn.Module):
+    
     def __init__(self,args,START_TAG = "[SOS]", END_TAG   = "[EOS]",device='cpu'):
         super(CRFLoss, self).__init__()
         self.device = device
@@ -60,6 +62,7 @@ class CRFLoss(nn.Module):
         print("Tag set size : {}".format(self.tagset_size))
         self.START_TAG = START_TAG
         self.END_TAG = END_TAG
+    
     def _log_sum_exp(self,tensor, dim):
         """
         Calculates the log-sum-exponent of a tensor's dimension in a numerically stable way.
@@ -82,13 +85,15 @@ class CRFLoss(nn.Module):
 
         ## this calculation assumes that the first target, i.e target[0]
         ## no it does no!
-        lengths = lengths - 1
+        logging.info("Targets")
+        logging.info(targets[-1]//8)
+        lengths = lengths - 1 
         targets = targets[:,1:]
         scores = scores[:,1:]
         targets = targets.unsqueeze(2)
         batch_size = scores.size()[0]
         #scores_ =  scores.view(scores.size()[0],scores.size()[1],-1)
-        score_before_sum = torch.gather(scores.view(scores.size()[0],scores.size()[1],-1), 2 , targets).squeeze(2)
+        score_before_sum = torch.gather(scores.reshape(scores.size()[0],scores.size()[1],-1), 2 , targets).squeeze(2)
 
         score_before_sums = pack_padded_sequence(score_before_sum,lengths, batch_first = True)
         #print(score_before_sum[0])
@@ -114,7 +119,6 @@ class CRFLoss(nn.Module):
         all_scores = forward_scores[:,END_IND].sum()
         loss = all_scores - gold_score
         #loss = loss/batch_size
-        #print(all_scores)
-        #print(gold_score)
+        logging.info("Loss {}".format(loss.item()))
         return loss
 

@@ -79,7 +79,6 @@ class JointParser(nn.Module):
         self.parserlstm  = nn.LSTM(self.lstm_input_dim,self.lstm_hidden, bidirectional=True, num_layers=self.lstm_layers, batch_first=True)
         self.highwaylstm = HighwayLSTM(self.lstm_input_dim,self.lstm_hidden, bidirectional=True,num_layers=self.lstm_layers,batch_first=True,dropout=self.lstm_drop,pad=True )
         
-        
         self.pos_dropout = nn.Dropout(self.pos_drop)
         self.lstm_dropout = nn.Dropout(self.lstm_drop)
         self.parser_dropout = nn.Dropout(self.parser_drop)
@@ -156,13 +155,13 @@ class JointParser(nn.Module):
         #lstm_out, hidden = self.parserlstm(packed_sequence)
         highway_out,_ = self.highwaylstm(x,sent_lens)
         #logging.info(highway_out.shape)
-        unpacked = self.lstm_dropout(highway_out)
+        unpacked = self.lstm_dropout(torch.relu(highway_out))
         #unpacked, _ = pad_packed_sequence(lstm_out,batch_first=True)
         #unpacked = self.lstm_dropout(unpacked)
         if task=="DEPNER" and training and self.args['inner']:
             return torch.cat([x,unpacked],dim=2)
-        unlabeled_scores = self.unlabeled(unpacked,unpacked).squeeze(3)
-        deprel_scores  = self.dep_rel(unpacked,unpacked) 
+        unlabeled_scores = torch.relu(self.unlabeled(unpacked,unpacked).squeeze(3))
+        deprel_scores  = torch.relu(self.dep_rel(unpacked,unpacked))
         
         preds = []
         acc = 0
