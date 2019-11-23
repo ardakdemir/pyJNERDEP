@@ -136,6 +136,7 @@ def parse_args():
     parser.add_argument('--weight_decay', type=float, default=5e-4)
     
     parser.add_argument('--max_steps', type=int, default=15000)
+    parser.add_argument('--early_stop', type=int, default=10)
     parser.add_argument('--dep_warmup', type=int, default=-1)
     parser.add_argument('--lr_patience', type=int, default=2)
     parser.add_argument('--ner_warmup', type=int, default=-1)
@@ -288,11 +289,12 @@ class JointTrainer:
             logging.info(args)
             for arg in args:
                 self.args[arg]=args[arg]
-                return -self.train2()
-        ner_space = {"ner_lr":hp.uniform('a',0.01,5e-4),"lr_decay": hp.uniform('b',0.1,0.9),"lstm_drop":hp.uniform('c',0.1,0.5)}
+                print(arg,args[arg],self.args[arg])
+            return -self.run_training()
+        ner_space = {"ner_lr":hp.uniform('a',0.001,5e-4),"lr_decay": hp.uniform('b',0.1,0.9),"lstm_drop":hp.uniform('c',0.1,0.5), 'lstm_hidden':200+hp.randint('d',200)}
         space = ner_space
         if self.args['model_type']=="DEP":
-            dep_space = {"dep_lr":hp.uniform('a',0.01,5e-4),"lr_decay": hp.uniform('b',0.1,0.9),"lstm_drop":hp.uniform('c',0.3,0.5)}
+            dep_space = {"dep_lr":hp.uniform('a',0.001,5e-4),"lr_decay": hp.uniform('b',0.1,0.9),"lstm_drop":hp.uniform('c',0.3,0.5), 'lstm_hidden':200+hp.randint('d',200)}
             space = dep_space
         trials = Trials()
         best = fmin(objective,space,algo=tpe.suggest,max_evals=self.args['max_evals'] ,trials=trials)
@@ -309,6 +311,7 @@ class JointTrainer:
         logging.info("Results for the hyperoptimization {}".format(best))
         logging.info("Results for the hyperoptimization {}".format(val))
         return val
+
     def __init__(self,args):
         self.args = args
         #args2 = {'bert_dim' : 100,'pos_dim' : 12, 'pos_vocab_size': 23,'lstm_hidden' : 10,'device':device}
@@ -318,6 +321,19 @@ class JointTrainer:
         ## feature extraction
         self.device = self.args['device']
         print("Joint Trainer initialized on {}".format(self.device))
+        
+        self.update_funcs = {"DEPNER": self.depner_update, "NERDEP": self.nerdep_update, "FLAT": self.flat_update, "DEP": self.dep_update_caller, "NER": self.ner_update_caller}
+
+        self.best_global_ner_f1 = 0
+        self.best_global_dep_f1 = 0
+
+    def run_training(self):
+        self.init_models()
+        score = self.train2()
+        return score 
+    def init_models(self):
+        logging.info("Initializing the model  from start with the following configuration")
+        logging.info(self.args)
         self.jointmodel=JointModel(self.args)
         self.jointmodel.base_model.pos_vocab = self.pos_vocab
         self.nertrainreader.pos_vocab = self.pos_vocab
@@ -325,39 +341,37 @@ class JointTrainer:
         self.jointmodel.depparser.vocabs = self.deptraindataset.vocabs 
         self.jointmodel.to(self.device)
         self.nerevaluator = Evaluate("NER")
-        
-        self.update_funcs = {"DEPNER": self.depner_update, "NERDEP": self.nerdep_update, "FLAT": self.flat_update, "DEP": self.dep_update_caller, "NER": self.ner_update_caller}
-    
-
     def plot_f1(self, f1_array, model_name= "FLAT" , task = "NER"):
         today =  date.today()
+        plt.figure(model_name)
         plt.plot([i+1 for i in range(len(f1_array))], f1_array,label=task)
+        plt.legend()
         plt.title("{} F1-Score for the {} model on the development set".format(task, model_name))
         plt.savefig(os.path.join(self.args['save_dir'],"{}_{}_{}_{}devf1.png".format(model_name,task,today.day,today.month)))
         plt.show()
 
-    def lr_updater(self,epoch_diffs):
+    def lr_updater(self,ner_patience, dep_patience):
         t = 0
         ams = 0
-        if "NER" in epoch_diffs:
-            if epoch_diffs["NER"] > self.args['lr_patience']*5:
-                #self.jointmodel.nermodel.ner_optimizer['amsgrad']=True
-                ams = 1
-            if epoch_diffs["NER"]>self.args['lr_patience']:
-                self.update_lr(task="NER")
-                t=1
-        if "DEP" in epoch_diffs:
-            if epoch_diffs["DEP"] > self.args['lr_patience']*5:
-                #self.jointmodel.depparser.optimizer['amsgrad']=True
-                ams = 1
-            if epoch_diffs["DEP"]>self.args['lr_patience']:
-                self.update_lr(task="DEP")
-                t=1
+        if ner_patience > self.args['lr_patience']*5:
+            #self.jointmodel.nermodel.ner_optimizer['amsgrad']=True
+            ams = 1
+        if ner_patience>self.args['lr_patience']:
+            self.update_lr(task="NER")
+            t=1
+            ner_patience = 0
+        if dep_patience > self.args['lr_patience']*5:
+            #self.jointmodel.depparser.optimizer['amsgrad']=True
+            ams = 1
+        if dep_patience>self.args['lr_patience']:
+            self.update_lr(task="DEP")
+            t=1
+            dep_patience = 0
        #if ams!=0:
             #self.jointmodel.base_model.embed_optimizer['amsgrad']=True
         if t!=0:
             self.update_base_lr()
-            
+        return ner_patience, dep_patience
                 
     def update_base_lr(self): 
         for param_group in self.jointmodel.base_model.embed_optimizer.param_groups:
@@ -561,11 +575,14 @@ class JointTrainer:
         logging.info("Dependency dep vocab : {} ".format(self.deptraindataset.vocabs['dep_vocab'].w2ind))
         epoch = self.args['max_steps']//self.args['eval_interval']
         self.jointmodel.train()
+
         best_ner_f1 = 0
         best_dep_f1 = 0
         best_uas_f1 = 0
         best_ner_epoch = 0
         best_dep_epoch = 0
+        ner_patience = 0
+        dep_patience = 0
         dep_val_f1 = []
         ner_val_f1 = []
         if self.args['load_model'] == 1: 
@@ -596,11 +613,11 @@ class JointTrainer:
             self.nertrainreader.for_eval = False
             self.jointmodel.train()
             logging.info("Learning rate")
-            print("NER learning rates")
+            logging.info("NER learning rates")
             for param_group in self.jointmodel.nermodel.ner_optimizer.param_groups:
                 logging.info(param_group['lr'])
                 print(param_group['lr'])
-            print("DEP learning rates")
+            logging.info("DEP learning rates")
             for param_group in self.jointmodel.depparser.optimizer.param_groups:
                 logging.info(param_group['lr'])
                 print(param_group['lr'])
@@ -633,25 +650,34 @@ class JointTrainer:
             
             if uas_f1 > best_uas_f1:
                 best_uas_f1 = uas_f1
-            epoch_diffs = {"NER":0,"DEP":0}
             if model_type!="NER": 
                 if dep_f1 > best_dep_f1:
-                    self.save_model(self.args['save_dep_name'])
+                    if dep_f1 > self.best_global_dep_f1:
+                        self.save_model(self.args['save_dep_name'])
+                        self.best_global_dep_f1 = dep_f1
                     best_dep_f1 = dep_f1
                     best_dep_epoch = e+1 
                 else:
                     logging.info("Best LAS of {} achieved at {}".format(best_dep_f1, best_dep_epoch))
-                    epoch_diffs['DEP'] = (e+1)-best_dep_epoch 
+                    dep_patience += 1
+                    if (e+1) - best_dep_epoch > self.args['early_stop']:
+                        break
             if model_type!="DEP": 
                 if ner_f1 > best_ner_f1:
                     best_ner_epoch = e+1
-                    self.save_model(self.args['save_ner_name'])
+                    if ner_f1 > self.best_global_ner_f1:
+                        self.save_model(self.args['save_ner_name'])
+                        self.best_global_ner_f1 = ner_f1
                     best_ner_f1 = ner_f1
                 else: 
                     logging.info("Best F-1 for NER  of {} achieved at {}".format(best_ner_f1, best_ner_epoch))
-                    epoch_diffs['NER']  = (e+1)  - best_ner_epoch
-            self.lr_updater(epoch_diffs)
+                    ner_patience +=1
+                    if (e+1) - best_ner_epoch > self.args['early_stop']:
+                        break
+            ner_patience, dep_patience = self.lr_updater(ner_patience,dep_patience)
+            
             if ner_f1 > best_ner_f1 and dep_f1 > best_dep_f1:
+
                 self.save_model(self.args['save_name'])
             self.jointmodel.train()
 
@@ -897,4 +923,5 @@ if __name__ == '__main__':
         print(best_params)
         logging.info(best_params)
     else:
-        jointtrainer.train2()
+        jointtrainer.init_models
+        score = jointtrainer.train2()

@@ -64,8 +64,8 @@ class JointParser(nn.Module):
         self.pos_drop = self.args['word_drop']
         self.lstm_drop = self.args['lstm_drop']
         self.parser_drop = self.args['parser_drop']
-        self.lstm_layers = self.args['lstm_layers']
-        self.lstm_hidden = self.args['lstm_hidden']
+        self.lstm_layers = int(self.args['lstm_layers'])
+        self.lstm_hidden = int(self.args['lstm_hidden'])
         if self.args['model_type'] == 'NERDEP': 
             ## output of the ner layer
             if self.args['inner']:
@@ -75,7 +75,7 @@ class JointParser(nn.Module):
         else:
             self.lstm_input_dim = self.args['lstm_input_size']
         
-        
+        self.lstm_input_dim = int(self.lstm_input_dim)
         self.parserlstm  = nn.LSTM(self.lstm_input_dim,self.lstm_hidden, bidirectional=True, num_layers=self.lstm_layers, batch_first=True)
         self.highwaylstm = HighwayLSTM(self.lstm_input_dim,self.lstm_hidden, bidirectional=True,num_layers=self.lstm_layers,batch_first=True,dropout=self.lstm_drop,pad=True )
         
@@ -96,7 +96,7 @@ class JointParser(nn.Module):
             {"params":self.unlabeled.parameters()},\
             {"params": self.pos_embed.parameters()},\
             {"params": self.dep_embed.parameters()}],\
-             lr=self.dep_lr, weight_decay=0.03, betas=(0.9,self.args['beta2']), eps=1e-6)    
+             lr=self.dep_lr, betas=(0.9,self.args['beta2']), eps=1e-6)    
     
     
     def decode(self,edge_preds, label_preds, sent_lens, verbose=False):

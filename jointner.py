@@ -38,14 +38,16 @@ class JointNer(nn.Module):
        
         if self.args['model_type']=="DEPNER":             
             if self.args['inner']==1:
-                self.lstm_input_dim = self.args['lstm_input_size']+self.args['lstm_hidden']*2
+                self.lstm_input_dim = int(self.args['lstm_input_size']+self.args['lstm_hidden']*2)
             else:
-                self.lstm_input_dim = self.args['lstm_input_size']+self.args['dep_dim']
+                self.lstm_input_dim = int(self.args['lstm_input_size']+self.args['dep_dim'])
         else:
-            self.lstm_input_dim = self.args['lstm_input_size']
-        self.lstm_hidden = self.args['lstm_hidden']
-        self.lstm_layers = self.args['lstm_layers']
+            self.lstm_input_dim = int(self.args['lstm_input_size'])
+        self.lstm_hidden = int(self.args['lstm_hidden'])
+        self.lstm_layers = int(self.args['lstm_layers'])
         self.lr = self.args['ner_lr']
+        logging.info("NER icindeki lr nedir")
+        logging.info(self.lr)
         self.weight_decay = self.args['weight_decay']
         self.rec_dropout = self.args['rec_dropout']
         self.ner_embeds = nn.Embedding(self.num_cat,self.args['ner_dim'])
