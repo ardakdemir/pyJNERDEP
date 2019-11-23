@@ -30,16 +30,18 @@ import sys
 import logging
 import time
 
-PAD = "[PAD]"
-PAD_IND = 0
-ROOT = "[ROOT]"
-ROOT_IND = 1
 UNK = "[UNK]"
 UNK_IND = 3
-END_TAG = "[EOS]"
+PAD = "[PAD]"
+PAD_IND = 0
+START_TAG = "[SOS]"
+END_TAG   = "[EOS]"
+START_IND = 1
 END_IND = 2
+ROOT_TAG = "[ROOT]"
+ROOT_IND = 1
 ## not sure if root is needed at this stage
-VOCAB_PREF = {PAD : PAD_IND, ROOT : ROOT_IND,END_TAG:END_IND}
+VOCAB_PREF = {PAD : PAD_IND, START_TAG : START_IND, END_TAG:END_IND}
 
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")

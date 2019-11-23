@@ -32,12 +32,12 @@ import time
 
 PAD = "[PAD]"
 PAD_IND = 0
-ROOT = "[ROOT]"
-ROOT_IND = 1
+START_TAG = "[SOS]"
+START_IND = 1
 UNK = "[UNK]"
 UNK_IND = 2
 ## not sure if root is needed at this stage
-VOCAB_PREF = {PAD : PAD_IND, ROOT : ROOT_IND}
+VOCAB_PREF = {PAD : PAD_IND, START_TAG : START_IND}
 
 
 #device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -160,8 +160,8 @@ class JointParser(nn.Module):
         #unpacked = self.lstm_dropout(unpacked)
         if task=="DEPNER" and training and self.args['inner']:
             return torch.cat([x,unpacked],dim=2)
-        unlabeled_scores = torch.relu(self.unlabeled(unpacked,unpacked).squeeze(3))
-        deprel_scores  = torch.relu(self.dep_rel(unpacked,unpacked))
+        unlabeled_scores = self.unlabeled(unpacked,unpacked).squeeze(3)
+        deprel_scores  = self.dep_rel(unpacked,unpacked)
         
         preds = []
         acc = 0
@@ -186,7 +186,9 @@ class JointParser(nn.Module):
                 arc_scores = torch.argmax(unlabeled_scores,dim=2)
                 dep_scores = torch.argmax(deprel_save,dim=3) 
                 dep_ind_preds = torch.gather(dep_scores, 2, arc_scores.unsqueeze(2)).squeeze(2)
-                
+                #logging.info("Skorlar unlabeled deprel")
+                #logging.info(unlabeled_scores[-1])
+                #logging.info(deprel_scores[-1])
                 #logging.info("Input nasil birseydi : ")
                 #logging.info(x.shape)
                 #logging.info("Dep preds nasil birsey")

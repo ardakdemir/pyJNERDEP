@@ -45,9 +45,21 @@ class CRF(nn.Module):
         emission_scores = self.emission(feats)  # (batch_size, timesteps, tagset_size)
         emission_scores = emission_scores.unsqueeze(3).expand(self.batch_size, self.timesteps, self.tagset_size,
                                                               self.tagset_size)  # (batch_size, timesteps, tagset_size, tagset_size)
-
-        crf_scores = emission_scores + self.transition.unsqueeze(0).unsqueeze(
-            0)  # (batch_size, timesteps, tagset_size, tagset_size)
+        #emission_scores[:,1:,:,:] = emission_scores[:,1:,:,:]+self.transition.unsqueeze(0).unsqueeze(0)
+        #emission_scores[0,2] = emission_scores[0,2] +  self.transition
+        crf_scores = torch.cat([emission_scores[:,0,:,:].unsqueeze(1),emission_scores[:,1:,:,:]+self.transition.unsqueeze(0).unsqueeze(0)],dim=1)
+        #logging.info("Crf scores nasil gozukuyor bakalim")
+        #logging.info(emission_scores[0,0])
+        #logging.info(emission_scores[0,2])
+        #logging.info("Transitions")
+        #logging.info(self.transition)
+        #logging.info(crf_scores[0,0])
+        #logging.info(crf_scores[0,2])
+        #logging.info(emission_scores[0,1]+self.transition)
+        #crf_scores = emission_scores[:,1:,:,:] + self.transition.unsqueeze(0).unsqueeze(0)
+            # (batch_size, timesteps, tagset_size, tagset_size)
+        #mask[:,1:-1,:3,:] = 1
+        #crf_scores = crf_scores.masked_fill(mask,-100)
         return crf_scores
 
 
@@ -85,11 +97,11 @@ class CRFLoss(nn.Module):
 
         ## this calculation assumes that the first target, i.e target[0]
         ## no it does no!
-        logging.info("Targets")
-        logging.info(targets[-1]//8)
-        lengths = lengths - 1 
-        targets = targets[:,1:]
-        scores = scores[:,1:]
+        #logging.info("Targets")
+        #logging.info(targets[-1]//(scores.size()[2]))
+        lengths = lengths   
+        targets = targets[:,:]
+        scores = scores[:,:]
         targets = targets.unsqueeze(2)
         batch_size = scores.size()[0]
         #scores_ =  scores.view(scores.size()[0],scores.size()[1],-1)
@@ -102,8 +114,7 @@ class CRFLoss(nn.Module):
         
         ## forward score : initialize from start tag
         forward_scores = torch.zeros(batch_size,self.tagset_size).to(self.device)
-        forward_scores[:batch_size] = scores[:,0,:,START_IND]
-        
+        forward_scores[:batch_size] = self._log_sum_exp(scores[:,0,:,:],dim=2)
         ## burada  hangisi  dogru emin   degilim index1-> index2 or  opposite?
         ## i think  opposite  is correct
         #forward_scores[:batch_size] = scores[:,0,:,self.tag2ind[self.START_TAG]]
@@ -119,6 +130,5 @@ class CRFLoss(nn.Module):
         all_scores = forward_scores[:,END_IND].sum()
         loss = all_scores - gold_score
         #loss = loss/batch_size
-        logging.info("Loss {}".format(loss.item()))
         return loss
 

@@ -99,10 +99,13 @@ torch.tensor([seq_ids],dtype=torch.long), torch.tensor(bert2tok), lab])
 
 
     def get_vocabs(self):
-        l2ind = {PAD : PAD_IND, START_TAG:START_IND, END_TAG: END_IND, ROOT_TAG:PAD_IND }
-        word2ix = {PAD : PAD_IND, START_TAG:START_IND, END_TAG: END_IND ,ROOT_TAG:PAD_IND}
-        pos2ind = {PAD : PAD_IND, START_TAG:START_IND, END_TAG: END_IND ,ROOT_TAG:PAD_IND}
-        print(self.label_counts)
+        l2ind = {PAD : PAD_IND, START_TAG:START_IND, END_TAG: END_IND }
+        word2ix = {PAD : PAD_IND, START_TAG:START_IND, END_TAG: END_IND}
+        pos2ind = {PAD : PAD_IND, START_TAG:START_IND, END_TAG: END_IND}
+        #l2ind = {PAD : PAD_IND, START_TAG:START_IND, END_TAG: END_IND, ROOT_TAG:PAD_IND }
+        #word2ix = {PAD : PAD_IND, START_TAG:START_IND, END_TAG: END_IND ,ROOT_TAG:PAD_IND}
+        #pos2ind = {PAD : PAD_IND, START_TAG:START_IND, END_TAG: END_IND ,ROOT_TAG:PAD_IND}
+        #print(self.label_counts)
         
         for x in self.label_counts:
             l2ind[x] = len(l2ind)
@@ -122,12 +125,13 @@ torch.tensor([seq_ids],dtype=torch.long), torch.tensor(bert2tok), lab])
         sent = []
         label_counts = Counter()
         pos_counts = Counter()
-        root = [ROOT_TAG, ROOT_TAG, ROOT_TAG, ROOT_TAG]
+        root = [START_TAG, START_TAG, START_TAG, START_TAG]
         for line in dataset:
-            if line.rstrip()=='':
+            if len(line.rstrip().split())<3:
                 if len(sent)>0:
                     sent.append([END_TAG, END_TAG , END_TAG, END_TAG ])
-                    new_dataset.append([root]+sent)
+                    if len(sent)>2:
+                        new_dataset.append([root]+sent)
                     #new_dataset.append(sent)
                     sent = []
             else:
@@ -140,6 +144,7 @@ torch.tensor([seq_ids],dtype=torch.long), torch.tensor(bert2tok), lab])
             sent.append([END_TAG, END_TAG, END_TAG , END_TAG ])
             new_dataset.append([root]+sent)
             #new_dataset.append(sent)
+        print("Number of sentences : {} ".format(len(new_dataset)))
         new_dataset, orig_idx = sort_dataset(new_dataset, sort = True)
         
         return new_dataset, orig_idx, label_counts, pos_counts
@@ -248,6 +253,11 @@ torch.tensor([seq_ids],dtype=torch.long), torch.tensor(bert2tok), lab])
             tok_inds.append(self.word_voc.map(toks))
             ner_inds.append(self.get_1d_targets(self.label_voc.map(labels)))
         assert len(tok_inds)== len(ner_inds) == len(tokens) == len(batch) == len(pos_inds)
+        for toks in tokens:
+            if toks[0]!="[SOS]":
+                logging.info("Problemli batch")
+                logging.info(tokens)
+                break
         tok_inds = torch.LongTensor(tok_inds)
         ner_inds = torch.LongTensor(ner_inds)
         pos_inds = torch.LongTensor(pos_inds)

@@ -47,6 +47,7 @@ class JointNer(nn.Module):
         self.lstm_layers = self.args['lstm_layers']
         self.lr = self.args['ner_lr']
         self.weight_decay = self.args['weight_decay']
+        self.rec_dropout = self.args['rec_dropout']
         self.ner_embeds = nn.Embedding(self.num_cat,self.args['ner_dim'])
         #self.cap_embeds  = nn.Embedding(self.cap_types,self.cap_dim)
         #self.word_embeds = nn.Embedding(self.vocab_size, self.w_dim)
@@ -70,11 +71,11 @@ class JointNer(nn.Module):
     def batch_viterbi_decode(self,feats,sent_lens):
         paths = []
         scores = []
-        sent_lens = sent_lens - 1
+        sent_lens = sent_lens
         for i in range(feats.size()[0]):
             feat = feats[i]
             sent_len = sent_lens[i]
-            path,score = self._viterbi_decode(feat[1:],sent_len)
+            path,score = self._viterbi_decode(feat[:],sent_len)
             paths.append(path)
             scores.append(score)
         return paths, scores
@@ -83,9 +84,10 @@ class JointNer(nn.Module):
         start_ind = START_IND
         end_ind = END_IND
         #feats = feats[:,end_ind+1:,end_ind+1:]
-        parents = [[start_ind for x in range(feats.size()[1])]]
-        layer_scores = feats[0,:,start_ind] 
-        for feat in feats[1:sent_len,:,:]:
+        parents = [[torch.tensor(start_ind) for x in range(feats.size()[1])]]
+        layer_scores = feats[1,:,start_ind] 
+
+        for feat in feats[2:sent_len,:,:]:
             #layer_scores =feat[:,:start_ind,:start_ind] + layer_scores.unsqueeze(1).expand(1,layer_scores.shape[1],layer_scores.shape[2])
             layer_scores =feat + layer_scores.unsqueeze(0).expand(layer_scores.shape[0],layer_scores.shape[0])
             layer_scores, parent = torch.max(layer_scores,dim=1)
@@ -96,14 +98,18 @@ class JointNer(nn.Module):
         path_score = layer_scores[end_ind]
         parent = path[0]
         #parents.reverse()
-        for p in range(len(parents)-1,0,-1):
+        for p in range(len(parents)-1,-1,-1):
             path.append(parents[p][parent].item())
             parent = parents[p][parent]
         path.reverse() 
         return path, path_score.item()
     
-    
-
+    def soft_embedding(self,scores):
+        embeds =  torch.stack([self.ner_embeds(torch.tensor(i,dtype=torch.long).to(self.device)) for i in range(self.num_cat)])      
+        merge_dim = len(scores.shape)-1
+        probs = F.softmax(scores,dim=merge_dim).unsqueeze(len(scores.shape))
+        soft_embed = torch.sum(probs*embeds,dim=merge_dim)
+        return soft_embed
     def argmax(self,vec):
         # return the argmax as a python int
         _, idx = torch.max(vec, 1)
@@ -126,15 +132,20 @@ class JointNer(nn.Module):
         #unpacked , _ = pad_packed_sequence(lstm_out, batch_first=True)
         if task == "NERDEP":
             if self.args['inner']==1:
-                feats = torch.cat([bert_out,self.dropout(highway_out)],dim=2)
+                feats = torch.cat([bert_out,self.dropout(torch.relu(highway_out))],dim=2)
 
             else:
                 scores = self.crf.emission(self.dropout(torch.relu(highway_out)))
+                for i,s in enumerate(sent_lens):
+                    scores[i,1:s,[PAD_IND, START_IND, END_IND] ] = -100
+                soft_embeds = self.soft_embedding(scores,self.ner_embeds.weight)
+                
                 ner_indexes = torch.argmax(scores,dim=2)
                 logging.info("DEP icin")
                 logging.info(ner_indexes[-1])
+                logging.info("Soft embeds nasil seyler : {} ".format(soft_embeds.shape))
                 ner_embeddings = self.ner_embeds(ner_indexes) 
-                feats = torch.cat([bert_out,self.dropout(ner_embeddings)],dim=2)
+                feats = torch.cat([bert_out,self.dropout(soft_embeds)],dim=2)
             return feats
         return self.dropout(torch.relu(highway_out))
         
@@ -159,11 +170,20 @@ class JointNer(nn.Module):
         if task == "NERDEP":
             return feats
         if train:
-            label_scores = self.crf.emission(feats)
+            
+            with torch.no_grad():
+                label_scores = self.crf.emission(feats)
+            for i,s in enumerate(sent_lens):
+                label_scores[i,1:s,[PAD_IND, START_IND, END_IND] ] = -100
             crf_scores = self.crf(feats)
+            soft_embeds = self.soft_embedding(label_scores)
+            #logging.info("Soft embeds nasil seyler")
+            #logging.info(soft_embeds[0,0,:10])
+            #logging.info(label_scores[0,0])
+            #logging.info(self.ner_embeds.weight[:,:10])
             ner_indexes = torch.argmax(label_scores,dim=2)
-            logging.info("NER Icindeki")
-            logging.info(ner_indexes[-1])
+            #logging.info("Transitions nasil?")
+            #logging.info(self.crf.transition.data)
         else:
             with torch.no_grad():
                 crf_scores = self.crf(feats)

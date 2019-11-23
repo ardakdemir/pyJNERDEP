@@ -7,13 +7,15 @@ from pytorch_transformers import BertTokenizer
 from torch.utils.data import Dataset, DataLoader
 
 
-from parser.parser import Parser, Vocab, PAD, PAD_IND, VOCAB_PREF, ROOT, ROOT_IND, UNK, UNK_IND, END_TAG, END_IND
+from parser.parser import Parser, Vocab, VOCAB_PREF
 from parser.utils import sort_dataset, unsort_dataset
 
 import logging
 import time
 import random
 
+UNK = "[UNK]"
+UNK_IND = 3
 PAD = "[PAD]"
 PAD_IND = 0
 START_TAG = "[SOS]"
@@ -30,7 +32,7 @@ def all_num(token):
     return True
 
 def get_orthographic_feat(token):
-    if token=="[SOS]" or token==END_TAG or token==PAD or token==ROOT:
+    if token=="[SOS]" or token==END_TAG or token==PAD :
         return 5
     if "'" in token:
         return 4
@@ -144,11 +146,11 @@ def read_conllu(file_name, cols = ['word','xpos','head','deprel']):
     file = open(file_name, encoding = "utf-8").read().rstrip().split("\n")
     dataset = []
     sentence = []
-    tok2ind = {PAD : PAD_IND, ROOT : ROOT_IND, UNK:UNK_IND, END_TAG: END_IND}
-    pos2ind = {PAD : PAD_IND, ROOT : ROOT_IND, END_TAG: END_IND, UNK:UNK_IND}
-    dep2ind = {PAD : PAD_IND, ROOT : ROOT_IND, END_TAG : END_IND, UNK:UNK_IND}
+    tok2ind = {PAD : PAD_IND, START_TAG : START_IND, UNK:UNK_IND, END_TAG: END_IND}
+    pos2ind = {PAD : PAD_IND, START_TAG : START_IND, END_TAG: END_IND, UNK:UNK_IND}
+    dep2ind = {PAD : PAD_IND, START_TAG : START_IND, END_TAG : END_IND, UNK:UNK_IND}
     total_word_size = 0
-    root = [[ROOT for _ in range(len(cols))]]
+    root = [[START_TAG for _ in range(len(cols))]]
     for line in file:
         if line.startswith("#"):
             continue
@@ -278,7 +280,7 @@ class DepDataset(Dataset):
             tokens.append(t)
             pos.append(self.vocabs['pos_vocab'].map(p))
             dep_rels.append(self.vocabs['dep_vocab'].map(d_r))
-            dep_inds.append([0 if d=="[PAD]" or d=="[ROOT]" else int(d) for d in d_i])
+            dep_inds.append([0 if d=="[PAD]" or d=="[SOS]" else int(d) for d in d_i])
             tok_inds.append(self.vocabs['tok_vocab'].map(t))
         assert len(tok_inds)== len(pos) == len(dep_rels) == len(dep_inds)
         tok_inds = torch.LongTensor(tok_inds)
