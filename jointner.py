@@ -46,8 +46,6 @@ class JointNer(nn.Module):
         self.lstm_hidden = int(self.args['lstm_hidden'])
         self.lstm_layers = int(self.args['lstm_layers'])
         self.lr = self.args['ner_lr']
-        logging.info("NER icindeki lr nedir")
-        logging.info(self.lr)
         self.weight_decay = self.args['weight_decay']
         self.rec_dropout = self.args['rec_dropout']
         self.ner_embeds = nn.Embedding(self.num_cat,self.args['ner_dim'])
@@ -110,6 +108,10 @@ class JointNer(nn.Module):
         embeds =  torch.stack([self.ner_embeds(torch.tensor(i,dtype=torch.long).to(self.device)) for i in range(self.num_cat)])      
         merge_dim = len(scores.shape)-1
         probs = F.softmax(scores,dim=merge_dim).unsqueeze(len(scores.shape))
+        
+        logging.info("NER index probs")
+        logging.info(probs[-1])
+        logging.info("Probs shape {}".format(probs.shape))
         soft_embed = torch.sum(probs*embeds,dim=merge_dim)
         return soft_embed
     def argmax(self,vec):
@@ -140,13 +142,9 @@ class JointNer(nn.Module):
                 scores = self.crf.emission(self.dropout(torch.relu(highway_out)))
                 for i,s in enumerate(sent_lens):
                     scores[i,1:s,[PAD_IND, START_IND, END_IND] ] = -100
-                soft_embeds = self.soft_embedding(scores,self.ner_embeds.weight)
+                soft_embeds = self.soft_embedding(scores)
                 
                 ner_indexes = torch.argmax(scores,dim=2)
-                logging.info("DEP icin")
-                logging.info(ner_indexes[-1])
-                logging.info("Soft embeds nasil seyler : {} ".format(soft_embeds.shape))
-                ner_embeddings = self.ner_embeds(ner_indexes) 
                 feats = torch.cat([bert_out,self.dropout(soft_embeds)],dim=2)
             return feats
         return self.dropout(torch.relu(highway_out))
@@ -178,7 +176,7 @@ class JointNer(nn.Module):
             for i,s in enumerate(sent_lens):
                 label_scores[i,1:s,[PAD_IND, START_IND, END_IND] ] = -100
             crf_scores = self.crf(feats)
-            soft_embeds = self.soft_embedding(label_scores)
+            #soft_embeds = self.soft_embedding(label_scores)
             #logging.info("Soft embeds nasil seyler")
             #logging.info(soft_embeds[0,0,:10])
             #logging.info(label_scores[0,0])

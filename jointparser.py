@@ -132,6 +132,22 @@ class JointParser(nn.Module):
         return trees, dep_rels, outputs
     
     
+    def soft_embedding(self,unlabeled_score,deprel_scores):
+        embeds =  torch.stack([self.dep_embed(torch.tensor(i,dtype=torch.long).to(self.device)) for i in range(deprel_scores.shape[-1])])      
+        head_probs = F.softmax(unlabeled_score,dim = 2)##(batch,word,word)
+        rel_probs = F.softmax(deprel_scores, dim = 3 )##(batch,word,word,deprel)
+        rel_probs = torch.sum(head_probs.unsqueeze(3)*rel_probs,dim=2)
+        embeds = embeds.unsqueeze(0).unsqueeze(0)
+        logging.info("Dep vocab")
+        logging.info(self.vocabs['dep_vocab'].w2ind)
+        logging.info("DEP index probs last sequence shape {}".format(rel_probs[-1].shape))
+        #logging.info(rel_probs[-1])
+        logging.info("DEP prob shapes {}".format(rel_probs.shape))
+        max_inds = torch.argmax(rel_probs,dim=2)
+        logging.info("DEP max rel indexes shape : {}".format(max_inds.shape))
+        logging.info(max_inds[-1])
+        soft_embed = torch.sum(rel_probs.unsqueeze(3)*embeds,dim=2)
+        return soft_embed
     def forward(self, masks, bert_out,  heads, dep_rels, pos_ids, sent_lens, training=True, task="DEP"):
         """
             heads and dep_rels are used during training
@@ -228,7 +244,10 @@ class JointParser(nn.Module):
             preds.append(rel_scores.detach().cpu().numpy())
             
             dep_ind_preds = torch.gather(rel_scores,2,arc_scores.unsqueeze(2)).squeeze(2)
-            dep_embeddings = self.dep_embed(dep_ind_preds)
+            
+            #dep_embeddings = self.dep_embed(dep_ind_preds)
+            dep_embeddings = self.soft_embedding(unlabeled_scores, deprel_scores)
+
             dep_embeddings = self.pos_dropout(dep_embeddings)
             
             return torch.cat([x,dep_embeddings],dim=2)

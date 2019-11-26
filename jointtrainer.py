@@ -128,19 +128,19 @@ def parse_args():
     parser.add_argument('--sample_train', type=float, default=1.0, help='Subsample training data.')
     parser.add_argument('--optim', type=str, default='adam', help='sgd, adagrad, adam or adamax.')
     parser.add_argument('--ner_lr', type=float, default=0.0015, help='Learning rate for ner lstm')
-    parser.add_argument('--embed_lr', type=float, default=0.0015, help='Learning rate for embeddiing')
+    parser.add_argument('--embed_lr', type=float, default=0.015, help='Learning rate for embeddiing')
     parser.add_argument('--dep_lr', type=float, default=0.0015, help='Learning rate dependency lstm')
-    parser.add_argument('--lr_decay', type=float, default=0.5, help='Learning rate decay')
-    
+    parser.add_argument('--lr_decay', type=float, default=0.9, help='Learning rate decay')
+    parser.add_argument('--min_lr', type=float,default = 2e-8,help='minimum value for learning rate')
     parser.add_argument('--beta2', type=float, default=0.95)
     parser.add_argument('--weight_decay', type=float, default=5e-4)
     
     parser.add_argument('--max_steps', type=int, default=15000)
-    parser.add_argument('--early_stop', type=int, default=10)
+    parser.add_argument('--early_stop', type=int, default=50)
     parser.add_argument('--dep_warmup', type=int, default=-1)
-    parser.add_argument('--lr_patience', type=int, default=2)
+    parser.add_argument('--lr_patience', type=int, default=5)
     parser.add_argument('--ner_warmup', type=int, default=-1)
-    parser.add_argument('--eval_interval', type=int, default=500)
+    parser.add_argument('--eval_interval', type=int, default=100)
     parser.add_argument('--max_steps_before_stop', type=int, default=3000)
     parser.add_argument('--batch_size', type=int, default=500)
     parser.add_argument('--max_grad_norm', type=float, default=1.0, help='Gradient clipping.')
@@ -375,14 +375,14 @@ class JointTrainer:
                 
     def update_base_lr(self): 
         for param_group in self.jointmodel.base_model.embed_optimizer.param_groups:
-            param_group['lr']*=self.args['lr_decay']
+            param_group['lr'] = max(self.args['min_lr'],param_group['lr']*self.args['lr_decay'])
     def update_lr(self,task="NER"):
         if task=="NER":
             for param_group in self.jointmodel.nermodel.ner_optimizer.param_groups:
-                param_group['lr']*=self.args['lr_decay']
+                param_group['lr'] = max(self.args['min_lr'],param_group['lr']*self.args['lr_decay'])
         else: 
             for param_group in self.jointmodel.depparser.optimizer.param_groups:
-                param_group['lr']*=self.args['lr_decay']
+                param_group['lr'] = max(self.args['min_lr'],param_group['lr']*self.args['lr_decay'])
     def getdatasets(self):
         
         self.nertrainreader = DataReader(self.args['ner_train_file'],"NER",batch_size = self.args['batch_size'])
@@ -423,6 +423,8 @@ class JointTrainer:
 
         ## get the output of ner layer
         if task == "NERDEP":
+            logging.info("Dependency Tokens ")
+            logging.info(dep_batch[0][-1])
             bert_feats = self.forward(dep_batch)
             sent_lens = dep_batch[2][0].to(self.device)
             ner_inds = dep_batch[2][3].to(self.device)
@@ -549,7 +551,8 @@ class JointTrainer:
         ner_loss = 0
         if epoch >= self.args['dep_warmup']:
             ner_batch = self.nertrainreader[index]
-            #logging.info(ner_batch[0])
+            logging.info("NER Kelimeleri")
+            logging.info(ner_batch[0][-1])
             ner_loss = self.ner_update(ner_batch)
 
         dep_batch = self.deptraindataset[index]
@@ -560,10 +563,21 @@ class JointTrainer:
     def flat_update(self, index, epoch):
         
         ner_batch = self.nertrainreader[index]
-        #logging.info(ner_batch[0])
+        #logging.info("NER batch: ")
+        #logging.info(ner_batch[0][-1])
+        #logging.info(ner_batch[2][0][-1])
+        #logging.info(ner_batch[2][3][-1])
+        #logging.info("NER POS tag inds ")
+        #logging.info(ner_batch[2][4][-1])
         ner_loss = self.ner_update(ner_batch)
 
         dep_batch = self.deptraindataset[index]
+        #logging.info("DEP batch: ")
+        #logging.info(dep_batch[0][-1])
+        #logging.info(dep_batch[2][0][-1])
+        #logging.info(dep_batch[2][5][-1])
+        #logging.info("DEP POS tag inds ")
+        #logging.info(dep_batch[2][4][-1])
         dep_loss, deprel_loss, depind_loss, acc, uas = self.dep_update(dep_batch)
 
         return ner_loss, dep_loss
@@ -589,6 +603,14 @@ class JointTrainer:
             save_path = os.path.join(self.args['save_dir'],self.args['save_name'])
             logging.info("Model loaded %s"%save_path)
             self.jointmodel.load_state_dict(torch.load(save_path))
+        logging.info("Pos tag vocab for dependency dataset")
+        logging.info(self.deptraindataset.vocabs['pos_vocab'].w2ind)
+        logging.info("Pos tag vocab for named entity dataset")
+        logging.info(self.nertrainreader.pos_vocab.w2ind)
+        logging.info("Dep vocab for dependency dataset")
+        logging.info(self.deptraindataset.vocabs['dep_vocab'].w2ind)
+        logging.info("NER label vocab")
+        logging.info(self.nertrainreader.label_voc.w2ind)
         print("Pos tag vocab for dependency dataset")
         print(self.deptraindataset.vocabs['pos_vocab'].w2ind)
         print("Pos tag vocab for named entity dataset")
@@ -612,7 +634,7 @@ class JointTrainer:
             
             self.nertrainreader.for_eval = False
             self.jointmodel.train()
-            logging.info("Learning rate")
+            logging.info("Learning rates")
             logging.info("NER learning rates")
             for param_group in self.jointmodel.nermodel.ner_optimizer.param_groups:
                 logging.info(param_group['lr'])
@@ -661,6 +683,7 @@ class JointTrainer:
                     logging.info("Best LAS of {} achieved at {}".format(best_dep_f1, best_dep_epoch))
                     dep_patience += 1
                     if (e+1) - best_dep_epoch > self.args['early_stop']:
+                        logging.info("Early stopping!!")
                         break
             if model_type!="DEP": 
                 if ner_f1 > best_ner_f1:
@@ -673,6 +696,7 @@ class JointTrainer:
                     logging.info("Best F-1 for NER  of {} achieved at {}".format(best_ner_f1, best_ner_epoch))
                     ner_patience +=1
                     if (e+1) - best_ner_epoch > self.args['early_stop']:
+                        logging.info("Early stopping!!")
                         break
             ner_patience, dep_patience = self.lr_updater(ner_patience,dep_patience)
             
@@ -905,7 +929,17 @@ class JointTrainer:
         return prec, rec, f1
 
 
-
+def main(args):
+    
+    jointtrainer = JointTrainer(args)
+    
+    if args['hyper']==1:
+        best_params = jointtrainer.hyperparamoptimize() 
+        print(best_params)
+        logging.info(best_params)
+    else:
+        jointtrainer.init_models()
+        score = jointtrainer.train2()
 
 if __name__ == '__main__':
     args = parse_args()
@@ -916,12 +950,4 @@ if __name__ == '__main__':
         os.mkdir(args['save_dir'])
     log_path = os.path.join(args['save_dir'],args['log_file'])
     logging.basicConfig(level=logging.DEBUG,handlers= [logging.FileHandler(log_path, 'w', 'utf-8')], format='%(levelname)s - %(message)s')
-    jointtrainer = JointTrainer(args)
-    
-    if args['hyper']==1:
-        best_params = jointtrainer.hyperparamoptimize() 
-        print(best_params)
-        logging.info(best_params)
-    else:
-        jointtrainer.init_models
-        score = jointtrainer.train2()
+    main(args)
