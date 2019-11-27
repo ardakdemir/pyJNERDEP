@@ -54,6 +54,12 @@ START_IND = 1
 END_IND = 2
 ROOT_TAG = "[ROOT]"
 ROOT_IND = 1
+
+def embedding_initializer(dim,num_labels):
+    embed = nn.Embedding(num_labels,dim)
+    nn.init.uniform_(embed.weight,-np.sqrt(6/(dim+num_labels)),np.sqrt(6/(dim+num_labels)))
+    return embed
+
 def generate_pred_content(tokens, preds, truths=None, lens=None, label_voc=None):
 
     ## this is where the start token and  end token get eliminated!!
@@ -89,6 +95,8 @@ def parse_args():
     parser.add_argument('--dep_train_file', type=str, default="../../datasets/tr_imst-ud-traindev.conllu", help='training file for dep')
     parser.add_argument('--ner_val_file', type=str, default="../../datasets/test_pos.tsv", help='validation file for ner')
     parser.add_argument('--dep_val_file', type=str, default="../../datasets/tr_imst-ud-test.conllu", help='validation file for dep')
+    parser.add_argument('--ner_test_file', type=str, default="../../datasets/test_pos.tsv", help='test file for ner')
+    parser.add_argument('--dep_test_file', type=str, default="../../datasets/tr_imst-ud-test.conllu", help='test file for dep')
     parser.add_argument('--ner_output_file', type=str, default="joint_ner_out.txt", help='Output file for named entity recognition')
     parser.add_argument('--dep_output_file', type=str, default="joint_dep_out.txt", help='Output file for dependency parsing')
     parser.add_argument('--conll_file_name', type=str, default='conll_ner_output', help='Output file name in conll bio format')
@@ -112,11 +120,11 @@ def parse_args():
     parser.add_argument('--char_num_layers', type=int, default=1)
     parser.add_argument('--pretrain_max_vocab', type=int, default=-1)
     
-    parser.add_argument('--word_drop', type=float, default = 0.2)
-    parser.add_argument('--embed_drop', type=float, default = 0.2)
-    parser.add_argument('--lstm_drop', type=float, default = 0.5)
+    parser.add_argument('--word_drop', type=float, default = 0.4)
+    parser.add_argument('--embed_drop', type=float, default = 0.4)
+    parser.add_argument('--lstm_drop', type=float, default = 0.2)
     parser.add_argument('--crf_drop', type=float, default=0.3)
-    parser.add_argument('--parser_drop', type=float, default=0.5)
+    parser.add_argument('--parser_drop', type=float, default=0.2)
     
     parser.add_argument('--rec_dropout', type=float, default=0.2, help="Recurrent dropout")
     parser.add_argument('--char_rec_dropout', type=float, default=0, help="Recurrent dropout")
@@ -130,15 +138,17 @@ def parse_args():
     parser.add_argument('--ner_lr', type=float, default=0.0015, help='Learning rate for ner lstm')
     parser.add_argument('--embed_lr', type=float, default=0.015, help='Learning rate for embeddiing')
     parser.add_argument('--dep_lr', type=float, default=0.0015, help='Learning rate dependency lstm')
-    parser.add_argument('--lr_decay', type=float, default=0.9, help='Learning rate decay')
+    parser.add_argument('--lr_decay', type=float, default=0.6, help='Learning rate decay')
     parser.add_argument('--min_lr', type=float,default = 2e-8,help='minimum value for learning rate')
     parser.add_argument('--beta2', type=float, default=0.95)
     parser.add_argument('--weight_decay', type=float, default=5e-4)
     
-    parser.add_argument('--max_steps', type=int, default=15000)
+    parser.add_argument('--max_steps', type=int, default=2000)
+    parser.add_argument('--repeat', type=int, default=10)
+    parser.add_argument('--multiple', type=int, default=0)
     parser.add_argument('--early_stop', type=int, default=50)
     parser.add_argument('--dep_warmup', type=int, default=-1)
-    parser.add_argument('--lr_patience', type=int, default=5)
+    parser.add_argument('--lr_patience', type=int, default=3)
     parser.add_argument('--ner_warmup', type=int, default=-1)
     parser.add_argument('--eval_interval', type=int, default=100)
     parser.add_argument('--max_steps_before_stop', type=int, default=3000)
@@ -151,11 +161,13 @@ def parse_args():
     parser.add_argument('--save_ner_name', type=str, default='best_ner_model.pkh', help="File name to save the model")
     parser.add_argument('--save_dep_name', type=str, default='best_dep_model.pkh', help="File name to save the model")
     parser.add_argument('--load_model', type=int, default=0, help='Binary for loading previous model')
+    parser.add_argument('--load_path', type=str, default='best_joint_model.pkh', help="File name to load the model")
 
     parser.add_argument('--seed', type=int, default=1234)
     parser.add_argument('--cuda', type=bool, default=torch.cuda.is_available())
     parser.add_argument('--cpu', action='store_true', help='Ignore CUDA.')
-    parser.add_argument('--inner', type=int, default=1, help=' Choose whether to give a dependency input or rel prediction output')
+    parser.add_argument('--inner', type=int, default=1, help=' Choose whether to give a hidden output or prediction embedding')
+    parser.add_argument('--soft', type=int, default=1, help=' Choose whether to give max prediction or weighted average prediction ')
     parser.add_argument('--model_type', default='FLAT', help=' Choose model type to be trained')
     parser.add_argument('--hyper', type=int,default=0, help=' Hyperparam optimization mode')
     parser.add_argument('--max_evals', type=int,default=50, help=' Hyperparam optimization mode')
@@ -206,10 +218,13 @@ class BaseModel(nn.Module):
         self.weight_decay = self.args['weight_decay']
         self.lstm_input_size = self.w_dim + self.cap_dim + self.pos_dim
       
-        self.cap_embeds  = nn.Embedding(self.cap_types, self.cap_dim)
-        self.pos_embeds  = nn.Embedding(self.args['pos_vocab_size'], self.pos_dim)
+        #self.cap_embeds  = nn.Embedding(self.cap_types, self.cap_dim)
+        #self.pos_embeds  = nn.Embedding(self.args['pos_vocab_size'], self.pos_dim)
+        self.cap_embeds = embedding_initializer(self.cap_dim, self.cap_types)
+        self.pos_embeds = embedding_initializer(self.pos_dim, self.args['pos_vocab_size'])
         #self.word_embeds = nn.Embedding(self.vocab_size, self.w_dim)
-        
+        logging.info("Embedding initialized : ")
+        logging.info(self.cap_embeds.weight.data)
         #self.bilstm  = nn.LSTM(self.lstm_input, self.lstm_hidden, bidirectional=True, num_layers=1, batch_first=True)
         self.dropout = nn.Dropout(self.lstm_drop)
         self.embed_dropout = nn.Dropout(self.embed_drop)
@@ -326,21 +341,62 @@ class JointTrainer:
 
         self.best_global_ner_f1 = 0
         self.best_global_dep_f1 = 0
+    
+    def run_multiple(self):
+        ner_results = []
+        dep_results = []
+        for i in range(self.args['repeat']):
+            self.init_models()
+            ner_f1, dep_las = self.train2()
+            ner_results.append(ner_f1)
+            dep_results.append(dep_las)
+            logging.info("Results for repeat {}".format(i))
+            logging.info("NER {}  DEP {} ".format(ner_f1,dep_las))
+        logging.info("All results for ner ")
+        logging.info(ner_results)
+        logging.info("All results for dep")
+        logging.info(dep_results)
+        logging.info("Average results === NER : {}  DEP  : ".format(sum(ner_results)/self.args['repeat'],sum(dep_results)/self.args['repeat']))
+
+    def predict(self):
+        assert(self.args['load_model']==1),'Model must be loaded in predict mode' 
+        self.init_models()
+        logging.info("Results for NER on {}".format(self.args['ner_test_file']))
+        logging.info("Results for DEP on {}".format(self.args['dep_test_file']))
+        ner_pre, ner_rec, ner_f1 = self.ner_evaluate()
+        dep_pre, dep_rec, dep_f1, uas_f1 = self.dep_evaluate()
+        
 
     def run_training(self):
         self.init_models()
-        score = self.train2()
-        return score 
+        ner_f1, dep_las = self.train2()
+        return ner_f1+dep_las
+    
+    
     def init_models(self):
         logging.info("Initializing the model  from start with the following configuration")
         logging.info(self.args)
+    
         self.jointmodel=JointModel(self.args)
+
+        if self.args['load_model'] == 1: 
+            load_path = self.args['load_path']
+            #save_path = os.path.join(self.args['save_dir'],self.args['save_name'])
+            logging.info("Model loaded %s"%load_path)
+            self.jointmodel.load_state_dict(torch.load(load_path))
+            
         self.jointmodel.base_model.pos_vocab = self.pos_vocab
+        
         self.nertrainreader.pos_vocab = self.pos_vocab
         self.nervalreader.pos_vocab = self.pos_vocab
+        
         self.jointmodel.depparser.vocabs = self.deptraindataset.vocabs 
         self.jointmodel.to(self.device)
         self.nerevaluator = Evaluate("NER")
+    
+        
+    
+    
     def plot_f1(self, f1_array, model_name= "FLAT" , task = "NER"):
         today =  date.today()
         plt.figure(model_name)
@@ -423,8 +479,6 @@ class JointTrainer:
 
         ## get the output of ner layer
         if task == "NERDEP":
-            logging.info("Dependency Tokens ")
-            logging.info(dep_batch[0][-1])
             bert_feats = self.forward(dep_batch)
             sent_lens = dep_batch[2][0].to(self.device)
             ner_inds = dep_batch[2][3].to(self.device)
@@ -443,6 +497,7 @@ class JointTrainer:
         #logging.info("Nedir dep indler")
         #logging.info(dep_batch[2][5][-1])
         if task=="DEPNER":
+
             dep_out = self.jointmodel.depparser(masks,bert_feats, dep_inds, dep_rels, pos, sent_lens, training=True, task=task)
             return dep_out
         #logging.info("Head predictions ")
@@ -551,13 +606,12 @@ class JointTrainer:
         ner_loss = 0
         if epoch >= self.args['dep_warmup']:
             ner_batch = self.nertrainreader[index]
-            logging.info("NER Kelimeleri")
-            logging.info(ner_batch[0][-1])
             ner_loss = self.ner_update(ner_batch)
 
         dep_batch = self.deptraindataset[index]
         dep_loss, deprel_loss, depind_loss, acc, uas = self.dep_update(dep_batch)
-        
+        #logging.info("rel loss {}".format(deprel_loss))
+        #logging.info("ind loss {}".format(depind_loss))
         return ner_loss, dep_loss
 
     def flat_update(self, index, epoch):
@@ -599,10 +653,6 @@ class JointTrainer:
         dep_patience = 0
         dep_val_f1 = []
         ner_val_f1 = []
-        if self.args['load_model'] == 1: 
-            save_path = os.path.join(self.args['save_dir'],self.args['save_name'])
-            logging.info("Model loaded %s"%save_path)
-            self.jointmodel.load_state_dict(torch.load(save_path))
         logging.info("Pos tag vocab for dependency dataset")
         logging.info(self.deptraindataset.vocabs['pos_vocab'].w2ind)
         logging.info("Pos tag vocab for named entity dataset")
@@ -660,7 +710,6 @@ class JointTrainer:
             if  (model_type !="NER" and model_type!="NERDEP") or (model_type=="NERDEP" and  e> self.args['ner_warmup']):
                 dep_pre, dep_rec, dep_f1, uas_f1 = self.dep_evaluate()
             ner_f1 = 0
-            logging.info("Losses -- train {}  dependency {} ner {} ".format(train_loss, dep_losses, ner_losses))
             
             if (model_type=="DEPNER" and e >= self.args['dep_warmup']) or (model_type!="DEPNER" and model_type!="DEP"):
                 ner_pre, ner_rec, ner_f1 = self.ner_evaluate()
@@ -670,6 +719,7 @@ class JointTrainer:
             ner_val_f1.append(ner_f1)
             dep_val_f1.append(dep_f1)
             
+            logging.info("Losses -- train {}  dependency {} ner {} ".format(train_loss, dep_losses, ner_losses))
             if uas_f1 > best_uas_f1:
                 best_uas_f1 = uas_f1
             if model_type!="NER": 
@@ -680,7 +730,7 @@ class JointTrainer:
                     best_dep_f1 = dep_f1
                     best_dep_epoch = e+1 
                 else:
-                    logging.info("Best LAS of {} achieved at {}".format(best_dep_f1, best_dep_epoch))
+                    logging.info("Best LAS of {} achieved at {} with {} UAS".format(best_dep_f1, best_dep_epoch, best_uas_f1))
                     dep_patience += 1
                     if (e+1) - best_dep_epoch > self.args['early_stop']:
                         logging.info("Early stopping!!")
@@ -707,14 +757,14 @@ class JointTrainer:
 
         logging.info("Best results : ")
         logging.info("NER : {}  LAS : {} UAS : {}".format(best_ner_f1, best_dep_f1, best_uas_f1))
-        self.plot_f1(ner_val_f1, self.args['model_type'], "NER")
-        self.plot_f1(dep_val_f1, self.args['model_type'], "DEP")
+        #self.plot_f1(ner_val_f1, self.args['model_type'], "NER")
+        #self.plot_f1(dep_val_f1, self.args['model_type'], "DEP")
         logging.info("NER val f1s ")
         logging.info(ner_val_f1)
         logging.info("DEP val f1s ")
         logging.info(dep_val_f1)
         
-        return best_ner_f1+best_dep_f1
+        return best_ner_f1, best_dep_f1
     def train(self):
         logging.info("Training on {} ".format(self.args['device']))
         logging.info("Dependency pos vocab : {} ".format(self.deptraindataset.vocabs['pos_vocab'].w2ind))
@@ -938,8 +988,14 @@ def main(args):
         print(best_params)
         logging.info(best_params)
     else:
-        jointtrainer.init_models()
-        score = jointtrainer.train2()
+        if args['mode']=='predict':
+            jointtrainer.predict()
+        else:
+            if args['multiple']==1:
+                jointtrainer.run_multiple()
+            else:
+                jointtrainer.init_models()
+                score = jointtrainer.train2()
 
 if __name__ == '__main__':
     args = parse_args()

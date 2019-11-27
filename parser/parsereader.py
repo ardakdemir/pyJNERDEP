@@ -214,6 +214,7 @@ class DepDataset(Dataset):
         self.dataset, self.orig_idx, self.vocabs\
         ,self.total_word_size = read_conllu(self.file_name)
         self.average_length = self.total_word_size/len(self.dataset)
+        print("DEP training number of sents : {}".format(len(self.dataset)))
         print("Dataset size before batching {} and number of words : {}".format(len(self.dataset),self.total_word_size))
         self.dataset, self.sent_lens = group_into_batch(self.dataset, batch_size)
         print("{} batches created for {}.".format(len(self.dataset), self.file_name))

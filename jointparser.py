@@ -25,7 +25,7 @@ from hlstm import HighwayLSTM
 from parser.parsereader import *
 from parser.biaffine import *
 from parser.decoder import *
-
+#from jointtrainer import embedding_initializer
 import sys
 import logging
 import time
@@ -39,6 +39,10 @@ UNK_IND = 2
 ## not sure if root is needed at this stage
 VOCAB_PREF = {PAD : PAD_IND, START_TAG : START_IND}
 
+def embedding_initializer(dim,num_labels,padding_idx=0):
+    embed = nn.Embedding(num_labels,dim,padding_idx=padding_idx)
+    nn.init.uniform_(embed.weight,-np.sqrt(6/(dim+num_labels)),np.sqrt(6/(dim+num_labels)))
+    return embed
 
 #device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 """
@@ -57,11 +61,12 @@ class JointParser(nn.Module):
         self.pos_dim = self.args['pos_dim']
         
         self.pos_embed = nn.Embedding(self.args['pos_vocab_size'], self.args['pos_dim'], padding_idx=0)
-        self.dep_embed = nn.Embedding(self.num_cat, self.args['dep_dim'], padding_idx=0)
+        #self.dep_embed = nn.Embedding(self.num_cat, self.args['dep_dim'], padding_idx=0)
        
+        self.dep_embed = embedding_initializer(self.args['dep_dim'],self.num_cat,padding_idx=0)
         self.dep_lr = self.args['dep_lr']
         self.weight_decay = self.args['weight_decay']
-        self.pos_drop = self.args['word_drop']
+        self.pos_drop = self.args['embed_drop']
         self.lstm_drop = self.args['lstm_drop']
         self.parser_drop = self.args['parser_drop']
         self.lstm_layers = int(self.args['lstm_layers'])
@@ -138,14 +143,14 @@ class JointParser(nn.Module):
         rel_probs = F.softmax(deprel_scores, dim = 3 )##(batch,word,word,deprel)
         rel_probs = torch.sum(head_probs.unsqueeze(3)*rel_probs,dim=2)
         embeds = embeds.unsqueeze(0).unsqueeze(0)
-        logging.info("Dep vocab")
-        logging.info(self.vocabs['dep_vocab'].w2ind)
-        logging.info("DEP index probs last sequence shape {}".format(rel_probs[-1].shape))
+        #logging.info("Dep vocab")
+        #logging.info(self.vocabs['dep_vocab'].w2ind)
+        #logging.info("DEP index probs last sequence shape {}".format(rel_probs[-1].shape))
         #logging.info(rel_probs[-1])
-        logging.info("DEP prob shapes {}".format(rel_probs.shape))
+        #logging.info("DEP prob shapes {}".format(rel_probs.shape))
         max_inds = torch.argmax(rel_probs,dim=2)
-        logging.info("DEP max rel indexes shape : {}".format(max_inds.shape))
-        logging.info(max_inds[-1])
+        #logging.info("DEP max rel indexes shape : {}".format(max_inds.shape))
+        #logging.info(max_inds[-1])
         soft_embed = torch.sum(rel_probs.unsqueeze(3)*embeds,dim=2)
         return soft_embed
     def forward(self, masks, bert_out,  heads, dep_rels, pos_ids, sent_lens, training=True, task="DEP"):
@@ -246,8 +251,14 @@ class JointParser(nn.Module):
             dep_ind_preds = torch.gather(rel_scores,2,arc_scores.unsqueeze(2)).squeeze(2)
             
             #dep_embeddings = self.dep_embed(dep_ind_preds)
-            dep_embeddings = self.soft_embedding(unlabeled_scores, deprel_scores)
+            if self.args['soft'] == 1:
+                dep_embeddings = self.soft_embedding(unlabeled_scores, deprel_scores)
+            else:
+                #logging.info("Hard embeddings ")
+                #logging.info(dep_ind_preds.shape)
 
+                dep_embeddings = self.dep_embed(dep_ind_preds)
+                #logging.info(dep_embeddings.shape)
             dep_embeddings = self.pos_dropout(dep_embeddings)
             
             return torch.cat([x,dep_embeddings],dim=2)

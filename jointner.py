@@ -19,11 +19,15 @@ from crf import CRF, CRFLoss
 import unidecode
 import logging
 from pytorch_transformers import *
-
+#from jointtrainer import embedding_initializer
 from datareader import DataReader, START_TAG, END_TAG, PAD_IND, START_IND, END_IND
 from hlstm import HighwayLSTM
 
 
+def embedding_initializer(dim,num_labels):
+    embed = nn.Embedding(num_labels,dim)
+    nn.init.uniform_(embed.weight,-np.sqrt(6/(dim+num_labels)),np.sqrt(6/(dim+num_labels)))
+    return embed
 class JointNer(nn.Module):
     def __init__(self,args):
         super(JointNer,self).__init__()
@@ -35,7 +39,7 @@ class JointNer(nn.Module):
         
         #self.vocab_size = vocab_size
         self.lstm_drop = self.args['lstm_drop'] 
-       
+        self.embed_drop = self.args['embed_drop']
         if self.args['model_type']=="DEPNER":             
             if self.args['inner']==1:
                 self.lstm_input_dim = int(self.args['lstm_input_size']+self.args['lstm_hidden']*2)
@@ -48,7 +52,8 @@ class JointNer(nn.Module):
         self.lr = self.args['ner_lr']
         self.weight_decay = self.args['weight_decay']
         self.rec_dropout = self.args['rec_dropout']
-        self.ner_embeds = nn.Embedding(self.num_cat,self.args['ner_dim'])
+        #self.ner_embeds = nn.Embedding(self.num_cat,self.args['ner_dim'])
+        self.ner_embeds = embedding_initializer(self.args['ner_dim'],self.num_cat)
         #self.cap_embeds  = nn.Embedding(self.cap_types,self.cap_dim)
         #self.word_embeds = nn.Embedding(self.vocab_size, self.w_dim)
         
@@ -60,6 +65,7 @@ class JointNer(nn.Module):
         self.crf_loss = CRFLoss(args,device =self.device)
         
         self.dropout = nn.Dropout(self.lstm_drop)
+        self.embed_dropout = nn.Dropout(self.embed_drop)
         self.drop_replacement = nn.Parameter(torch.randn(self.lstm_input_dim) / np.sqrt(self.lstm_input_dim))
     
         self.ner_optimizer = optim.AdamW([{"params": self.nerlstm.parameters()},\
@@ -109,9 +115,9 @@ class JointNer(nn.Module):
         merge_dim = len(scores.shape)-1
         probs = F.softmax(scores,dim=merge_dim).unsqueeze(len(scores.shape))
         
-        logging.info("NER index probs")
-        logging.info(probs[-1])
-        logging.info("Probs shape {}".format(probs.shape))
+        #logging.info("NER index probs")
+        #logging.info(probs[-1])
+        #logging.info("Probs shape {}".format(probs.shape))
         soft_embed = torch.sum(probs*embeds,dim=merge_dim)
         return soft_embed
     def argmax(self,vec):
@@ -142,10 +148,18 @@ class JointNer(nn.Module):
                 scores = self.crf.emission(self.dropout(torch.relu(highway_out)))
                 for i,s in enumerate(sent_lens):
                     scores[i,1:s,[PAD_IND, START_IND, END_IND] ] = -100
-                soft_embeds = self.soft_embedding(scores)
-                
-                ner_indexes = torch.argmax(scores,dim=2)
-                feats = torch.cat([bert_out,self.dropout(soft_embeds)],dim=2)
+                if self.args['soft'] == 1:
+                    soft_embeds = self.soft_embedding(scores)
+                    ner_embeds = soft_embeds
+                else:
+                    #logging.info("Hard embeds")
+                    ner_indexes = torch.argmax(scores,dim=2)
+                    ner_embeds = self.ner_embeds(ner_indexes)
+
+                #logging.info("Max indexes nedir??")
+                #logging.info(ner_indexes[-1])
+                #logging.info(ner_embeds.shape)
+                feats = torch.cat([bert_out,self.embed_dropout(ner_embeds)],dim=2)
             return feats
         return self.dropout(torch.relu(highway_out))
         
