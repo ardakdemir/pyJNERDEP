@@ -20,7 +20,32 @@ class Evaluate():
             if px!=0:
                 p_tot+=1
         return c,t,p_tot
+    
+    def conll_eval(self,pred_file):
+        true_pos = 1
+        preds = 1
+        truths = 1
+        pred_file = open(pred_file, encoding = 'utf-8').readlines()
+        for line in pred_file:
+            ls = line.split()
+            if len(ls)>2:
+                if ls[-1]!="O" and  ls[-2]!="O":
+                    if ls[-1][2:]==ls[-2][2:]:
+                        true_pos +=1
+                        preds +=1
+                        truths +=1
+                    else:
+                        preds +=1
+                        truths +=1
+                elif ls[-2]=="O" and ls[-1]!="O":
+                    preds +=1
+                elif ls[-1]=="O" and ls[-2]!="O":
+                    truths +=1
 
+        prec = true_pos/preds
+        rec = true_pos/truths
+        f1 = 2 * (prec*rec) / (prec+rec)
+        return prec, rec, f1 
     def f_1(self,preds,labels):
         c, t, p_tot = self.countNonZeroMatch(preds, labels, 0)
         rec = 0
@@ -31,3 +56,4 @@ class Evaluate():
             pre = c/p_tot
         #print("Precision : ", pre , "  Recall : ", rec)
         return c, p_tot, t
+

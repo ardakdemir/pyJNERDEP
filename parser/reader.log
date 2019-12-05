@@ -1,0 +1,224 @@
+INFO - Sorting dataset is set to True
+DEBUG - Starting new HTTPS connection (1): s3.amazonaws.com:443
+DEBUG - https://s3.amazonaws.com:443 "HEAD /models.huggingface.co/bert/bert-base-uncased-vocab.txt HTTP/1.1" 200 0
+INFO - loading file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt from cache at /home/aakdemir/.cache/torch/pytorch_transformers/26bc1ad6c0ac742e9b52263248f6d0f00068293b33709fae12320c0e35ccfbbb.542ce4285a40d23a559526243235df47c5f75c197f04f37d1a0c124c32c9a084
+INFO - Sorting dataset is set to True
+DEBUG - Starting new HTTPS connection (1): s3.amazonaws.com:443
+DEBUG - https://s3.amazonaws.com:443 "HEAD /models.huggingface.co/bert/bert-base-uncased-vocab.txt HTTP/1.1" 200 0
+INFO - loading file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt from cache at /home/aakdemir/.cache/torch/pytorch_transformers/26bc1ad6c0ac742e9b52263248f6d0f00068293b33709fae12320c0e35ccfbbb.542ce4285a40d23a559526243235df47c5f75c197f04f37d1a0c124c32c9a084
+DEBUG - Starting new HTTPS connection (1): s3.amazonaws.com:443
+DEBUG - https://s3.amazonaws.com:443 "HEAD /models.huggingface.co/bert/bert-base-uncased-config.json HTTP/1.1" 200 0
+INFO - loading configuration file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-config.json from cache at /home/aakdemir/.cache/torch/pytorch_transformers/4dad0251492946e18ac39290fcfe91b89d370fee250efe9521476438fe8ca185.bf3b9ea126d8c0001ee8a1e8b92229871d06d36d8808208cc2449280da87785c
+INFO - Model config {
+  "attention_probs_dropout_prob": 0.1,
+  "finetuning_task": null,
+  "hidden_act": "gelu",
+  "hidden_dropout_prob": 0.1,
+  "hidden_size": 768,
+  "initializer_range": 0.02,
+  "intermediate_size": 3072,
+  "layer_norm_eps": 1e-12,
+  "max_position_embeddings": 512,
+  "num_attention_heads": 12,
+  "num_hidden_layers": 12,
+  "num_labels": 2,
+  "output_attentions": false,
+  "output_hidden_states": true,
+  "pruned_heads": {},
+  "torchscript": false,
+  "type_vocab_size": 2,
+  "vocab_size": 30522
+}
+
+DEBUG - Starting new HTTPS connection (1): s3.amazonaws.com:443
+DEBUG - https://s3.amazonaws.com:443 "HEAD /models.huggingface.co/bert/bert-base-uncased-pytorch_model.bin HTTP/1.1" 200 0
+INFO - loading weights file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-pytorch_model.bin from cache at /home/aakdemir/.cache/torch/pytorch_transformers/aa1ef1aede4482d0dbcd4d52baad8ae300e60902e88fcb0bebdec09afd232066.36ca03ab34a1a5d5fa7bc3d03d55c4fa650fed07220e2eeebc06ce58d0e9a157
+INFO - Average Train Loss  7.711996078491211 after 11 sentences 
+INFO - Dep rel losses 3.8155773878097534
+INFO - Average Train Loss  6.506427486737569 after 89 sentences 
+INFO - Dep rel losses 3.1514220436414084
+INFO - Average Train Loss  6.011742375113747 after 187 sentences 
+INFO - Dep rel losses 2.8738143010572954
+INFO - Average Train Loss  5.680297702550888 after 303 sentences 
+INFO - Dep rel losses 2.707260623574257
+INFO - Average Train Loss  5.39995391028268 after 434 sentences 
+INFO - Dep rel losses 2.5664254483722506
+INFO - Average Train Loss  5.144457005537474 after 583 sentences 
+INFO - Dep rel losses 2.4593318677865543
+INFO - Average Train Loss  4.916089042540519 after 752 sentences 
+INFO - Dep rel losses 2.358008776941607
+INFO - Average Train Loss  4.6972446673446235 after 950 sentences 
+INFO - Dep rel losses 2.2646920366419687
+INFO - Average Train Loss  4.494387126550442 after 1178 sentences 
+INFO - Dep rel losses 2.17682100796118
+INFO - Average Train Loss  4.306622186432714 after 1439 sentences 
+INFO - Dep rel losses 2.093408808760021
+INFO - Average Train Loss  4.1213237912047145 after 1743 sentences 
+INFO - Dep rel losses 2.011795338462381
+INFO - Average Train Loss  3.944957205227443 after 2091 sentences 
+INFO - Dep rel losses 1.9344528509037835
+INFO - Average Train Loss  3.772899100037872 after 2493 sentences 
+INFO - Dep rel losses 1.8589455221520095
+INFO - Average Train Loss  3.607291261355082 after 2972 sentences 
+INFO - Dep rel losses 1.785339725740028
+INFO - Average Train Loss  3.420216667610155 after 3639 sentences 
+INFO - Dep rel losses 1.6978409582040679
+INFO - Final train loss of epoch 1 :  3.397457215648431
+INFO - Evaluating performance on ../../../datasets/tr_imst-ud-dev.conllu
+INFO - LAS Precision : 0.2950754170412546  Recall 0.2950754170412546 F1 0.2950754170412546
+INFO - Average Train Loss  5.497608184814453 after 11 sentences 
+INFO - Dep rel losses 2.2285764813423157
+INFO - Average Train Loss  4.577200353145599 after 89 sentences 
+INFO - Dep rel losses 1.865177869796753
+INFO - Average Train Loss  4.155272169546648 after 187 sentences 
+INFO - Dep rel losses 1.6694117188453674
+INFO - Average Train Loss  3.94526743888855 after 303 sentences 
+INFO - Dep rel losses 1.6181786395609379
+INFO - Average Train Loss  3.7542316573006764 after 434 sentences 
+INFO - Dep rel losses 1.5530133077076502
+INFO - Average Train Loss  3.6079331911527195 after 583 sentences 
+INFO - Dep rel losses 1.5033846658009749
+INFO - Average Train Loss  3.4844703558952577 after 752 sentences 
+INFO - Dep rel losses 1.4689480527754752
+INFO - Average Train Loss  3.361139413383272 after 950 sentences 
+INFO - Dep rel losses 1.4321330537398655
+INFO - Average Train Loss  3.2464173363476263 after 1178 sentences 
+INFO - Dep rel losses 1.3963191785463474
+INFO - Average Train Loss  3.133298962012581 after 1439 sentences 
+INFO - Dep rel losses 1.3616268012834631
+INFO - Average Train Loss  3.0203901155322206 after 1743 sentences 
+INFO - Dep rel losses 1.3227695144859015
+INFO - Average Train Loss  2.907578362950257 after 2091 sentences 
+INFO - Dep rel losses 1.2848949868764197
+INFO - Average Train Loss  2.793370862476161 after 2493 sentences 
+INFO - Dep rel losses 1.2423822987275046
+INFO - Average Train Loss  2.684876078005993 after 2972 sentences 
+INFO - Dep rel losses 1.2033877783652507
+INFO - Average Train Loss  2.551611515837656 after 3639 sentences 
+INFO - Dep rel losses 1.148875885341369
+INFO - Final train loss of epoch 2 :  2.5347197573710156
+INFO - Evaluating performance on ../../../datasets/tr_imst-ud-dev.conllu
+INFO - LAS Precision : 0.3440215762661073  Recall 0.3440215762661073 F1 0.3440215762661073
+INFO - Average Train Loss  4.5304553508758545 after 11 sentences 
+INFO - Dep rel losses 1.5757784247398376
+INFO - Average Train Loss  3.6978392402331033 after 89 sentences 
+INFO - Dep rel losses 1.3424046337604523
+INFO - Average Train Loss  3.421713417226618 after 187 sentences 
+INFO - Dep rel losses 1.2571384473280474
+INFO - Average Train Loss  3.2972896695137024 after 303 sentences 
+INFO - Dep rel losses 1.257727101445198
+INFO - Average Train Loss  3.1516062645685103 after 434 sentences 
+INFO - Dep rel losses 1.2159615215801058
+INFO - Average Train Loss  3.051844839866345 after 583 sentences 
+INFO - Dep rel losses 1.1991363076063304
+INFO - Average Train Loss  2.9545134459772417 after 752 sentences 
+INFO - Dep rel losses 1.1730639088538386
+INFO - Average Train Loss  2.85667665137185 after 950 sentences 
+INFO - Dep rel losses 1.145209063258436
+INFO - Average Train Loss  2.7660434464129007 after 1178 sentences 
+INFO - Dep rel losses 1.1228236606935176
+INFO - Average Train Loss  2.674305884734444 after 1439 sentences 
+INFO - Dep rel losses 1.0996785364721133
+INFO - Average Train Loss  2.583438151022967 after 1743 sentences 
+INFO - Dep rel losses 1.0718230716153687
+INFO - Average Train Loss  2.4879486337304115 after 2091 sentences 
+INFO - Dep rel losses 1.0429723326648985
+INFO - Average Train Loss  2.392481090592556 after 2493 sentences 
+INFO - Dep rel losses 1.010740873266439
+INFO - Average Train Loss  2.298784535491105 after 2972 sentences 
+INFO - Dep rel losses 0.97972100611889
+INFO - Average Train Loss  2.1848360658951207 after 3639 sentences 
+INFO - Dep rel losses 0.9347986279868744
+INFO - Final train loss of epoch 3 :  2.1702888047882727
+INFO - Evaluating performance on ../../../datasets/tr_imst-ud-dev.conllu
+INFO - LAS Precision : 0.395265208270902  Recall 0.395265208270902 F1 0.395265208270902
+INFO - Average Train Loss  3.9278756380081177 after 11 sentences 
+INFO - Dep rel losses 1.2334147691726685
+INFO - Average Train Loss  3.199181934197744 after 89 sentences 
+INFO - Dep rel losses 1.0636027654012044
+INFO - Average Train Loss  2.990859866142273 after 187 sentences 
+INFO - Dep rel losses 1.026738621971824
+INFO - Average Train Loss  2.8663695454597473 after 303 sentences 
+INFO - Dep rel losses 1.0166487898677588
+INFO - Average Train Loss  2.764588191395714 after 434 sentences 
+INFO - Dep rel losses 1.0010595889318556
+INFO - Average Train Loss  2.6808404372288632 after 583 sentences 
+INFO - Dep rel losses 0.988213347700926
+INFO - Average Train Loss  2.601672557092482 after 752 sentences 
+INFO - Dep rel losses 0.9726849236795979
+INFO - Average Train Loss  2.518697107831637 after 950 sentences 
+INFO - Dep rel losses 0.9540098326073753
+INFO - Average Train Loss  2.4412843672240654 after 1178 sentences 
+INFO - Dep rel losses 0.93980684512999
+INFO - Average Train Loss  2.362357520538828 after 1439 sentences 
+INFO - Dep rel losses 0.9234301674625148
+INFO - Average Train Loss  2.2849865135024574 after 1743 sentences 
+INFO - Dep rel losses 0.9016522467136383
+INFO - Average Train Loss  2.1989064535924365 after 2091 sentences 
+INFO - Dep rel losses 0.8783825651875564
+INFO - Average Train Loss  2.113740650845356 after 2493 sentences 
+INFO - Dep rel losses 0.8522988868052842
+INFO - Average Train Loss  2.031588786027648 after 2972 sentences 
+INFO - Dep rel losses 0.8276725063721339
+INFO - Average Train Loss  1.9309144877422024 after 3639 sentences 
+INFO - Dep rel losses 0.790343306696331
+INFO - Final train loss of epoch 4 :  1.918090754090906
+INFO - Evaluating performance on ../../../datasets/tr_imst-ud-dev.conllu
+INFO - LAS Precision : 0.4318249925082409  Recall 0.4318249925082409 F1 0.4318249925082409
+INFO - Average Train Loss  3.3914722204208374 after 11 sentences 
+INFO - Dep rel losses 0.9842493832111359
+INFO - Average Train Loss  2.910021940867106 after 89 sentences 
+INFO - Dep rel losses 0.9854138096173605
+INFO - Average Train Loss  2.697548497806896 after 187 sentences 
+INFO - Dep rel losses 0.911747005852786
+INFO - Average Train Loss  2.6059340834617615 after 303 sentences 
+INFO - Dep rel losses 0.9116854835301638
+INFO - Average Train Loss  2.505087741783687 after 434 sentences 
+INFO - Dep rel losses 0.8861591603074755
+INFO - Average Train Loss  2.426091418816493 after 583 sentences 
+INFO - Dep rel losses 0.8736668527126312
+INFO - Average Train Loss  2.3490121806821516 after 752 sentences 
+INFO - Dep rel losses 0.8547121026823598
+INFO - Average Train Loss  2.2796917110681534 after 950 sentences 
+INFO - Dep rel losses 0.8424099062879881
+INFO - Average Train Loss  2.2066662660459193 after 1178 sentences 
+INFO - Dep rel losses 0.8275699055776363
+INFO - Average Train Loss  2.1333688588246056 after 1439 sentences 
+INFO - Dep rel losses 0.8131042252416196
+INFO - Average Train Loss  2.0670816956781874 after 1743 sentences 
+INFO - Dep rel losses 0.7977723210465675
+INFO - Average Train Loss  1.9864835441112518 after 2091 sentences 
+INFO - Dep rel losses 0.7758685621832099
+INFO - Average Train Loss  1.9100892123628834 after 2493 sentences 
+INFO - Dep rel losses 0.7524798939951131
+INFO - Average Train Loss  1.832846516009533 after 2972 sentences 
+INFO - Dep rel losses 0.7302365043398106
+INFO - Average Train Loss  1.7399140513488944 after 3639 sentences 
+INFO - Dep rel losses 0.6972174801876847
+INFO - Final train loss of epoch 5 :  1.7284486899738545
+INFO - Evaluating performance on ../../../datasets/tr_imst-ud-dev.conllu
+INFO - LAS Precision : 0.4548996104285286  Recall 0.4548996104285286 F1 0.4548996104285286
+INFO - Average Train Loss  2.9934505224227905 after 11 sentences 
+INFO - Dep rel losses 0.7846793532371521
+INFO - Average Train Loss  2.7143463293711343 after 89 sentences 
+INFO - Dep rel losses 0.8947479327519735
+INFO - Average Train Loss  2.4680288271470503 after 187 sentences 
+INFO - Dep rel losses 0.7985802021893588
+INFO - Average Train Loss  2.372747018933296 after 303 sentences 
+INFO - Dep rel losses 0.7930381335318089
+INFO - Average Train Loss  2.2817320965585255 after 434 sentences 
+INFO - Dep rel losses 0.771810694819405
+INFO - Average Train Loss  2.2027633006756124 after 583 sentences 
+INFO - Dep rel losses 0.7592013008319415
+INFO - Average Train Loss  2.134628515089712 after 752 sentences 
+INFO - Dep rel losses 0.7455882487758514
+INFO - Average Train Loss  2.0706630084249706 after 950 sentences 
+INFO - Dep rel losses 0.7362458739015791
+INFO - Average Train Loss  2.002003236514766 after 1178 sentences 
+INFO - Dep rel losses 0.7229004182466646
+INFO - Average Train Loss  1.9348047531169394 after 1439 sentences 
+INFO - Dep rel losses 0.7131001738750417
+INFO - Average Train Loss  1.8699703876878702 after 1743 sentences 
+INFO - Dep rel losses 0.6968764145584667
+INFO - Average Train Loss  1.7982569549764906 after 2091 sentences 
+INFO - Dep rel losses 0.6802958747638124
