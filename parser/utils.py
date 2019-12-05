@@ -1,4 +1,5 @@
 import parser.conll_ud_eval as ud_eval
+import os
 import logging
 dep_dict = {'id': 0, 'word': 1, 'lemma': 2, 'upos': 3, 'xpos': 4, 'feats': 5, 'head': 6, 'deprel': 7, 'deps': 8, 'misc': 9}
 ner_dict = {"token": 0 , "morp": 1 ,"truth":2, "ner_tag":3}
@@ -179,7 +180,8 @@ def conll_writer(file_name, content, field_names, task_name,verbose=False):
     out.close()
 
 def ud_scores(system_conllu_file, gold_conllu_file):
-    cropped = 'cropped'
+    
+    cropped = os.path.join(system_conllu_file[:system_conllu_file.rfind("/")],'cropped')
     get_conll_file_for_eval(gold_conllu_file,cropped)
     gold_ud = ud_eval.load_conllu_file(cropped)
     system_ud = ud_eval.load_conllu_file(system_conllu_file)

@@ -176,7 +176,10 @@ class JointParser(nn.Module):
         #lstm_out, hidden = self.parserlstm(packed_sequence)
         highway_out,_ = self.highwaylstm(x,sent_lens)
         #logging.info(highway_out.shape)
-        unpacked = self.lstm_dropout(torch.relu(highway_out))
+        if self.args['relu']==1:
+            unpacked = self.lstm_dropout(torch.relu(highway_out))
+        else:
+            unpacked = self.lstm_dropout(highway_out)
         #unpacked, _ = pad_packed_sequence(lstm_out,batch_first=True)
         #unpacked = self.lstm_dropout(unpacked)
         if task=="DEPNER" and training and self.args['inner']:

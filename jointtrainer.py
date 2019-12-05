@@ -120,11 +120,11 @@ def parse_args():
     parser.add_argument('--char_num_layers', type=int, default=1)
     parser.add_argument('--pretrain_max_vocab', type=int, default=-1)
     
-    parser.add_argument('--word_drop', type=float, default = 0.4)
-    parser.add_argument('--embed_drop', type=float, default = 0.4)
-    parser.add_argument('--lstm_drop', type=float, default = 0.2)
+    parser.add_argument('--word_drop', type=float, default = 0.3)
+    parser.add_argument('--embed_drop', type=float, default = 0.3)
+    parser.add_argument('--lstm_drop', type=float, default = 0.3)
     parser.add_argument('--crf_drop', type=float, default=0.3)
-    parser.add_argument('--parser_drop', type=float, default=0.2)
+    parser.add_argument('--parser_drop', type=float, default=0.3)
     
     parser.add_argument('--rec_dropout', type=float, default=0.2, help="Recurrent dropout")
     parser.add_argument('--char_rec_dropout', type=float, default=0, help="Recurrent dropout")
@@ -139,11 +139,11 @@ def parse_args():
     parser.add_argument('--embed_lr', type=float, default=0.015, help='Learning rate for embeddiing')
     parser.add_argument('--dep_lr', type=float, default=0.0015, help='Learning rate dependency lstm')
     parser.add_argument('--lr_decay', type=float, default=0.6, help='Learning rate decay')
-    parser.add_argument('--min_lr', type=float,default = 2e-8,help='minimum value for learning rate')
+    parser.add_argument('--min_lr', type=float,default = 2e-6,help='minimum value for learning rate')
     parser.add_argument('--beta2', type=float, default=0.95)
     parser.add_argument('--weight_decay', type=float, default=5e-4)
     
-    parser.add_argument('--max_steps', type=int, default=2000)
+    parser.add_argument('--max_steps', type=int, default=20000)
     parser.add_argument('--repeat', type=int, default=10)
     parser.add_argument('--multiple', type=int, default=0)
     parser.add_argument('--early_stop', type=int, default=50)
@@ -168,6 +168,7 @@ def parse_args():
     parser.add_argument('--cpu', action='store_true', help='Ignore CUDA.')
     parser.add_argument('--inner', type=int, default=1, help=' Choose whether to give a hidden output or prediction embedding')
     parser.add_argument('--soft', type=int, default=1, help=' Choose whether to give max prediction or weighted average prediction ')
+    parser.add_argument('--relu', type=int, default=1, help=' Choose whether to apply relu or not')
     parser.add_argument('--model_type', default='FLAT', help=' Choose model type to be trained')
     parser.add_argument('--hyper', type=int,default=0, help=' Hyperparam optimization mode')
     parser.add_argument('--max_evals', type=int,default=50, help=' Hyperparam optimization mode')
@@ -356,7 +357,7 @@ class JointTrainer:
         logging.info(ner_results)
         logging.info("All results for dep")
         logging.info(dep_results)
-        logging.info("Average results === NER : {}  DEP  : ".format(sum(ner_results)/self.args['repeat'],sum(dep_results)/self.args['repeat']))
+        logging.info("Average results === NER : {}  DEP  : {}".format(sum(ner_results)/self.args['repeat'],sum(dep_results)/self.args['repeat']))
 
     def predict(self):
         assert(self.args['load_model']==1),'Model must be loaded in predict mode' 
@@ -399,7 +400,7 @@ class JointTrainer:
     
     def plot_f1(self, f1_array, model_name= "FLAT" , task = "NER"):
         today =  date.today()
-        plt.figure(model_name)
+        plt.figure(model_name+task)
         plt.plot([i+1 for i in range(len(f1_array))], f1_array,label=task)
         plt.legend()
         plt.title("{} F1-Score for the {} model on the development set".format(task, model_name))
@@ -917,14 +918,14 @@ class JointTrainer:
         print("Head prediction accuracy {}  rel prediction accuracy {}".format(head_accs,rel_accs))
         data = unsort_dataset(data,orig_idx)
         pred_file = os.path.join(self.args['save_dir'],pred_file)
-        conll_writer(pred_file, data, field_names,task_name = "dep")
+        conll_writer(pred_file, data, field_names, task_name = "dep")
         print("Predictions can be observed from {}".format(pred_file))
         p, r, f1, uas_f1 = score(pred_file, gold_file,verbose=False)
         #p,r, f1 = 0,0,0
-        logging.info("LAS F1 {}  ====    UAS F1 {}".format(f1, uas_f1))
+        logging.info("LAS F1 {}  ====    UAS F1 {}".format(f1*100, uas_f1*100))
         #self.parser.train() 
         
-        return p, r, f1, uas_f1
+        return p, r, f1*100, uas_f1*100
     
     
     def ner_evaluate(self):

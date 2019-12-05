@@ -132,20 +132,25 @@ class JointNer(nn.Module):
         return max_score + torch.log(torch.sum(torch.exp(scores-max_score)))
     
     
-
+    def _get_hlstm_out(self,highway_out):
+        if self.args['relu'] == 1:
+            return self.dropout(torch.relu(highway_out))
+        else:
+            return self.dropout(highway_out)
     def _get_feats(self, bert_out, sent_lens, task="NER"):
 
         padded = pack_padded_sequence(bert_out,sent_lens, batch_first=True)
         #lstm_out,_ = self.nerlstm(padded)
         #bert_out = self.dropout(bert_out)
         highway_out, _ = self.highwaylstm(bert_out, sent_lens)
+        hlstm_out = self._get_hlstm_out(highway_out)
         #unpacked , _ = pad_packed_sequence(lstm_out, batch_first=True)
         if task == "NERDEP":
             if self.args['inner']==1:
-                feats = torch.cat([bert_out,self.dropout(torch.relu(highway_out))],dim=2)
+                feats = torch.cat([bert_out,hlstm_out],dim=2)
 
             else:
-                scores = self.crf.emission(self.dropout(torch.relu(highway_out)))
+                scores = self.crf.emission(hlstm_out)
                 for i,s in enumerate(sent_lens):
                     scores[i,1:s,[PAD_IND, START_IND, END_IND] ] = -100
                 if self.args['soft'] == 1:
@@ -161,7 +166,7 @@ class JointNer(nn.Module):
                 #logging.info(ner_embeds.shape)
                 feats = torch.cat([bert_out,self.embed_dropout(ner_embeds)],dim=2)
             return feats
-        return self.dropout(torch.relu(highway_out))
+        return self.dropout(hlstm_out)
         
         #return self.dropout(unpacked)
         #return unpacked
