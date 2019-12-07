@@ -11,6 +11,7 @@ import torch
 from skimage import io, transform
 import torch.nn as nn
 import torch.optim as optim
+import json
 import torch.nn.functional as F
 import numpy as np
 from tqdm import tqdm
@@ -80,6 +81,15 @@ def generate_pred_content(tokens, preds, truths=None, lens=None, label_voc=None)
             sents.append(list(zip(sent[s_ind:end_ind],label_voc.unmap(pred[1:-1]))))
     
     return sents
+
+def read_config(args):
+    config_file = args['config_file']
+    with open(config_file) as json_file:
+        data = json.load(json_file)
+        print(data)
+        for d in data:
+            args[d] = data[d]
+    return args
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--data_dir', type=str, default='data/depparse', help='Root dir for models.')
@@ -93,14 +103,16 @@ def parse_args():
     parser.add_argument('--log_file', type=str, default='jointtraining.log', help='Input file for data loader.')
     parser.add_argument('--ner_train_file', type=str, default='../../datasets/traindev_pos.tsv', help='training file for ner')
     parser.add_argument('--dep_train_file', type=str, default="../../datasets/tr_imst-ud-traindev.conllu", help='training file for dep')
-    parser.add_argument('--ner_val_file', type=str, default="../../datasets/test_pos.tsv", help='validation file for ner')
-    parser.add_argument('--dep_val_file', type=str, default="../../datasets/tr_imst-ud-test.conllu", help='validation file for dep')
+    parser.add_argument('--ner_val_file', type=str, default="../../datasets/dev_pos.tsv", help='validation file for ner')
+    parser.add_argument('--dep_val_file', type=str, default="../../datasets/tr_imst-ud-train.conllu", help='validation file for dep')
     parser.add_argument('--ner_test_file', type=str, default="../../datasets/test_pos.tsv", help='test file for ner')
     parser.add_argument('--dep_test_file', type=str, default="../../datasets/tr_imst-ud-test.conllu", help='test file for dep')
     parser.add_argument('--ner_output_file', type=str, default="joint_ner_out.txt", help='Output file for named entity recognition')
     parser.add_argument('--dep_output_file', type=str, default="joint_dep_out.txt", help='Output file for dependency parsing')
     parser.add_argument('--conll_file_name', type=str, default='conll_ner_output', help='Output file name in conll bio format')
+    parser.add_argument('--config_file', type=str, default='config.json', help='Output file name in conll bio format')
     parser.add_argument('--mode', default='train', choices=['train', 'predict'])
+    parser.add_argument('--load_config', default=0, type = int)
     parser.add_argument('--lang', type=str, help='Language')
     parser.add_argument('--shorthand', type=str, help="Treebank shorthand")
     
@@ -178,6 +190,11 @@ def parse_args():
     parser.add_argument('--depner', type=int, default=0, help=' Hierarchical model type : dep helping ner')
     parser.add_argument('--nerdep', type=int, default=0, help=' Hierarchical model type : ner helping dep')
     args = parser.parse_args()
+    
+    vars(args)['device'] = device
+    args = vars(args)
+    if args['load_config']==1:
+        args = read_config(args)
     return args
 
 
@@ -443,11 +460,15 @@ class JointTrainer:
     def getdatasets(self):
         
         self.nertrainreader = DataReader(self.args['ner_train_file'],"NER",batch_size = self.args['batch_size'])
-        self.nervalreader = DataReader(self.args['ner_val_file'],"NER", batch_size = self.args['batch_size'])
+        self.deptraindataset = DepDataset(self.args['dep_train_file'],batch_size = self.args['batch_size'])
+        if self.args['mode'] == 'predict':
+            self.nervalreader = DataReader(self.args['ner_test_file'],"NER", batch_size = self.args['batch_size'])
+            self.depvaldataset  = DepDataset(self.args['dep_test_file'], batch_size = self.args['batch_size'], vocabs = self.deptraindataset.vocabs, for_eval=True)
+        else:
+            self.nervalreader = DataReader(self.args['ner_val_file'],"NER", batch_size = self.args['batch_size'])
+            self.depvaldataset  = DepDataset(self.args['dep_val_file'], batch_size = self.args['batch_size'], vocabs = self.deptraindataset.vocabs, for_eval=True)
         self.nervalreader.label_voc = self.nertrainreader.label_voc
         
-        self.deptraindataset = DepDataset(self.args['dep_train_file'],batch_size = self.args['batch_size'])
-        self.depvaldataset  = DepDataset(self.args['dep_val_file'], batch_size = self.args['batch_size'], vocabs = self.deptraindataset.vocabs, for_eval=True)
         self.args['vocab_size'] = len(self.nertrainreader.word_voc)
         self.args['pos_vocab_size'] = len(self.deptraindataset.vocabs['pos_vocab'])
         self.pos_vocab = self.deptraindataset.vocabs['pos_vocab']
@@ -876,6 +897,9 @@ class JointTrainer:
         if weights:
             logging.info("Saving best model to {}".format(save_name))
             torch.save(self.jointmodel.state_dict(), save_name)
+        config_path = os.path.joint(self.args['save_dir'],self.args['config_file'])
+        with open(config_path,'w') as outfile:
+            json.dump(self.args,outfile)
 
     def dep_evaluate(self): 
         
@@ -923,6 +947,7 @@ class JointTrainer:
         p, r, f1, uas_f1 = score(pred_file, gold_file,verbose=False)
         #p,r, f1 = 0,0,0
         logging.info("LAS F1 {}  ====    UAS F1 {}".format(f1*100, uas_f1*100))
+        print("LAS F1 {}  ====    UAS F1 {}".format(f1*100, uas_f1*100))
         #self.parser.train() 
         
         return p, r, f1*100, uas_f1*100
@@ -1001,8 +1026,6 @@ def main(args):
 if __name__ == '__main__':
     args = parse_args()
     print(args)
-    vars(args)['device'] = device
-    args = vars(args)
     if not os.path.isdir(args['save_dir']):
         os.mkdir(args['save_dir'])
     log_path = os.path.join(args['save_dir'],args['log_file'])
