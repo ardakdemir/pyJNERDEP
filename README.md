@@ -7,6 +7,46 @@ We also share the trained models using drive links together with all the data us
 
 
 The entry point for the project is the jointtrainer.py which controls both training, prediction and evaluation steps through the arguments. 
+
+## Setup
+
+To ease the work required to setup the required environment, we provide a docker file that contains all the setting for running the source code. The docker is available under : https://hub.docker.com/r/aakdemir/pytorch-cuda/tags with the version 0.1. 
+
+Start by cloning the source code (hier2 branch) to your machine (or by downloading and unzipping it).
+
+
+### Using the docker image
+
+Make sure that docker is installed and running on your local device. Check docker [homepage](https://docs.docker.com/docker-for-windows/install/) for details.
+
+Next run the following code to mount /tmp/data of your local machine: 
+
+```
+docker run aakdemir/pytorch-cuda:0.1 -v ~/pjNERDEP:/work bin/bash
+```
+
+This code will start a container which mounts the local directory ~/pyJNERDEP to the /work directory inside the container.
+Make sure that you obtain and place the datasets inside ~/pyJNERDEP so that container can have access to them.
+By default, the code runs using GPU whenever available.
+
+A more generic way of initiating the container is as follows:
+
+```
+docker run aakdemir/pytorch-cuda:0.1 -v [path_to_the_datasets_in_local]:[path_in_container_for_data] -v [path_to_the_source_code_inside_local]:[path_in_container_for_source_code] bin/bash
+```
+
+The docker contains all the requirements and have cuda installed to allow running in GPU mode without trouble.
+
+### Setup using pip
+
+We highly recommend to create a virtual environment (virtualenv or anaconda etc.) for setup.
+Assuming that you are inside a virtual environment run the following code from the source code directory:
+
+```
+pip3 install -r requirements.txt
+```
+
+
 ## Training Mode
 
 Training a hierarchical model with dependency parser as the low-level task.
@@ -30,13 +70,17 @@ Below are some important parameters and their descriptions.
     - DEP : DEP only model
     - NER : NER only model
     - FLAT : FLAT model where task-specific components only share the three embeddings
+- save_dir : denotes the directory to save all the training related files and log files. Important information are logged by default to jointtraining.log file.
 
+
+#### Multitask Model 1 (hier_repr)
 Training a hierarchical model where the HLSTM output of the DEP-component is concatenated to the common layer output and given to the NER component (corresponds to DEP_low_repr and NER_high_repr models in the paper).
 
 ```
     python jointtrainer.py --model_type DEPNER 
 ```
 
+#### Multitask Model 2 (hier_pred)
 Training a hierarchical model where the soft embeddings of the NER label predictions are concatenated to the common layer output (DEP_high_pred and NER_low_pred models in the paper). In addition warmup is set to 10, so that the NER component will be trained for 10 epochs before starting the multitask learning.
 
 ```
@@ -44,7 +88,7 @@ Training a hierarchical model where the soft embeddings of the NER label predict
 ```
 
 
-Training a flat model
+#### Multitask Model 3 (flat)
 
 ```
     python jointtrainer.py --model_type FLAT 
@@ -62,7 +106,7 @@ We provide all these files using external links.
 
 Example runs.
 
-Example run for the DEP only model:
+### Example run for the DEP only model:
 
 
 
@@ -71,7 +115,7 @@ python jointtrainer.py --mode predict --load_model 1 --load_path dep_only_6788.p
 ```
 
 
-Example run using the config file that stores the experiment specific model configuration
+### Example run using the config file that stores the experiment specific model configuration
 ```
 python jointtrainer.py --mode predict --load_model 1 --load_path dep_only_6788.pkh --ner_train_file traindev_pos.tsv --dep_train_file tr_imst_ud_traindev.conllu --model_type NER --load_config 1 --config_file ner_9382_config.json  --save_dir predicts 
 ```
