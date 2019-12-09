@@ -92,7 +92,20 @@ Training a hierarchical model where the soft embeddings of the NER label predict
 
 ```
     python jointtrainer.py --model_type FLAT 
+   
 ```
+
+#### Single Models (DEP_only and NER_only)
+These two models are conventional DNN based models attempting a single task.
+
+```
+python jointtrainer.py --model_type DEP
+```
+
+```
+python jointtrainer.py --model_type NER
+```
+
 
 ## Inference Mode
 
