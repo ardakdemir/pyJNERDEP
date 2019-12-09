@@ -22,7 +22,7 @@ Make sure that docker is installed and running on your local device. Check docke
 Next run the following code to mount /tmp/data of your local machine: 
 
 ```
-docker run aakdemir/pytorch-cuda:0.1 -v ~/pjNERDEP:/work bin/bash
+docker run -it --rm -v ~/pjNERDEP:/work aakdemir/pytorch-cuda:0.1  bin/bash
 ```
 
 This code will start a container which mounts the local directory ~/pyJNERDEP to the /work directory inside the container.
@@ -32,7 +32,7 @@ By default, the code runs using GPU whenever available.
 A more generic way of initiating the container is as follows:
 
 ```
-docker run aakdemir/pytorch-cuda:0.1 -v [path_to_the_datasets_in_local]:[path_in_container_for_data] -v [path_to_the_source_code_inside_local]:[path_in_container_for_source_code] bin/bash
+docker run -it --rm -v [path_to_the_datasets_in_local]:[path_in_container_for_data] -v [path_to_the_source_code_inside_local]:[path_in_container_for_source_code]  aakdemir/pytorch-cuda:0.1 bin/bash
 ```
 
 The docker contains all the requirements and have cuda installed to allow running in GPU mode without trouble.
