@@ -939,7 +939,6 @@ class JointTrainer:
         #print(len(data))
         head_accs /= len(self.depvaldataset)
         rel_accs /= len(self.depvaldataset)
-        print("Head prediction accuracy {}  rel prediction accuracy {}".format(head_accs,rel_accs))
         data = unsort_dataset(data,orig_idx)
         pred_file = os.path.join(self.args['save_dir'],pred_file)
         conll_writer(pred_file, data, field_names, task_name = "dep")
@@ -947,6 +946,7 @@ class JointTrainer:
         p, r, f1, uas_f1 = score(pred_file, gold_file,verbose=False)
         #p,r, f1 = 0,0,0
         logging.info("LAS F1 {}  ====    UAS F1 {}".format(f1*100, uas_f1*100))
+        print("Dependency results")
         print("LAS F1 {}  ====    UAS F1 {}".format(f1*100, uas_f1*100))
         #self.parser.train() 
         
