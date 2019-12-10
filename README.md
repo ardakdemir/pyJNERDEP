@@ -10,10 +10,9 @@ The entry point for the project is the jointtrainer.py which controls both train
 
 ## Setup
 
-To ease the work required to setup the required environment, we provide a docker file that contains all the setting for running the source code. The docker is available under : https://hub.docker.com/r/aakdemir/pytorch-cuda/tags with the version 0.1. 
+To ease the work required to for doing the setup, we provide a docker file that contains all the setting for running the source code. The docker image is available under : https://hub.docker.com/r/aakdemir/pytorch-cuda/tags with the version 0.1. 
 
 Start by cloning the source code (hier2 branch) to your machine (or by downloading and unzipping it).
-
 
 ### Using the docker image
 
@@ -25,7 +24,7 @@ Next run the following code to mount /tmp/data of your local machine:
 docker run -it --rm -v ~/pjNERDEP:/work aakdemir/pytorch-cuda:0.1  bin/bash
 ```
 
-This code will start a container which mounts the local directory ~/pyJNERDEP to the /work directory inside the container.
+This code will download the docker image and start a container which mounts the local directory ~/pyJNERDEP to the /work directory inside the container.
 Make sure that you obtain and place the datasets inside ~/pyJNERDEP so that container can have access to them.
 By default, the code runs using GPU whenever available.
 
