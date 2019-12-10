@@ -31,8 +31,7 @@ Make sure that docker is installed and running on your local device. Check docke
 Next run the following code to mount /tmp/data of your local machine: 
 
 ```
-docker run -it --rm -v ~/pjNERDEP:/work aakdemir/pytorch-cuda:0.1  bin/bash
-```
+docker run -it --rm -v ~/pjNERDEP:/work aakdemir/pytorch-cuda:0.1
 
 This code will download the docker image and start a container which mounts the local directory ~/pyJNERDEP to the /work directory inside the container.
 Make sure that you obtain and place the datasets inside ~/pyJNERDEP so that container can have access to them.
@@ -41,7 +40,7 @@ By default, the code runs using GPU whenever available.
 A more generic way of initiating the container is as follows:
 
 ```
-docker run -it --rm -v [path_to_the_datasets_in_local]:[path_in_container_for_data] -v [path_to_the_source_code_inside_local]:[path_in_container_for_source_code]  aakdemir/pytorch-cuda:0.1 bin/bash
+docker run -it --rm -v [path_to_the_datasets_in_local]:[path_in_container_for_data] -v [path_to_the_source_code_inside_local]:[path_in_container_for_source_code]  aakdemir/pytorch-cuda:0.1
 ```
 
 The docker contains all the requirements and have cuda installed to allow running in GPU mode without trouble.
@@ -62,7 +61,7 @@ Training a hierarchical model with dependency parser as the low-level task.
 By default all the files will be stored under the current directory.
 Change the '--save_dir' parameters accordingly. All the information about the training process is logged into the file jointtraining.log by default.
 
-***Note.*** Use --ner_train_file --ner_test_file --ner_val_file --dep_val_file --dep_train_file --dep_test_file flags to denote the paths to the datasets. Input files must be in specific conll formats. Example data is included  under the example_data directory.
+
 
 By default, the model looks at '~/datasets' folder for all the datasets and the default setting is the 'FLAT' model where task specific components only share the common layer.
 
@@ -81,6 +80,18 @@ Below are some important parameters and their descriptions.
     - FLAT : FLAT model where task-specific components only share the three embeddings
 - --save_dir : denotes the directory to save all the training related files and log files. Important information are logged by default to jointtraining.log file.
 
+
+***Note.*** Use --ner_train_file --ner_test_file --ner_val_file --dep_val_file --dep_train_file --dep_test_file flags to denote the paths to the datasets. Input files must be in specific conll formats. Example data is included  under the example_data directory.
+
+***Note2*** The models require a relatively large memory size and it is not suitable for running the models on many local devices. If you would like to run on your local device be sure to train a smaller version of the models by changing the following parameters :
+
+--batch_size
+
+--lstm_hidden
+
+--biaffine_hidden
+
+--lstm_layers
 
 #### Multitask Model 1 (hier_repr)
 Training a hierarchical model where the HLSTM output of the DEP-component is concatenated to the common layer output and given to the NER component (corresponds to DEP_low_repr and NER_high_repr models in the paper).
