@@ -897,7 +897,7 @@ class JointTrainer:
         if weights:
             logging.info("Saving best model to {}".format(save_name))
             torch.save(self.jointmodel.state_dict(), save_name)
-        config_path = os.path.joint(self.args['save_dir'],self.args['config_file'])
+        config_path = os.path.join(self.args['save_dir'],self.args['config_file'])
         with open(config_path,'w') as outfile:
             json.dump(self.args,outfile)
 
