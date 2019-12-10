@@ -75,7 +75,7 @@ Below are some important parameters and their descriptions.
 - --inner : If set to 1 the inner representation of the low-level component is fed as input to the high-level task (corresponds to the hier_repr setting explained in the paper). If set to 0, corresponds to hier_pred model. By default, it is 0.
 - --soft : If set to 1 weighted average of embeddings are used as input to the high-level component (soft version of hier_pred). If set to 0 hard embedding variation is used.
 - --relu : Binary parameter to determine whether to use relu activation to the HLSTM outputs.  
-- --warmup : Denotes the number of epochs that the low-level task will be trained before starting the multi-task learning (warming up the low-level weights). Only used for hierarchical models (DEPNER and NERDEP).
+- --dep_warmup/ner_warmup : Denotes the number of epochs that the low-level task will be trained before starting the multi-task learning (warming up the low-level weights). Only used for hierarchical models (DEPNER and NERDEP).
 - --model_type : Categorical parameter with five values.
     - DEPNER : DEP is the low-level task
     - NERDEP : NER is the low-level task
@@ -108,7 +108,7 @@ Training a hierarchical model where the HLSTM output of the DEP-component is con
 Training a hierarchical model where the soft embeddings of the NER label predictions are concatenated to the common layer output (DEP_high_pred and NER_low_pred models in the paper). In addition warmup is set to 10, so that the NER component will be trained for 10 epochs before starting the multitask learning.
 
 ```
-    python jointtrainer.py --model_type NERDEP --inner 0 --soft 1 --warmup 10
+    python jointtrainer.py --model_type NERDEP --inner 0 --soft 1 --ner_warmup 10
 ```
 
 
