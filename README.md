@@ -8,6 +8,17 @@ We also share the trained models using drive links together with all the data us
 
 The entry point for the project is the jointtrainer.py which controls both training, prediction and evaluation steps through the arguments. 
 
+## Datasets and Trained Models
+
+In order to train your own models using the same datasets or replicate the results, we share the trained models reported on the paper together with the datasets using external links.
+Below are the required documents for training new models and replicating the results: 
+
+- .pkh files containing the saved model parameters [link](https://drive.google.com/drive/folders/1I2YSW6Vzw6CrIgJlKfIm3uFod1ETd7SR?usp=sharing)
+- *_config.json files for models that use different parameter combinations than default (NER_only model with lstm size 229) [link](https://drive.google.com/drive/folders/1I2YSW6Vzw6CrIgJlKfIm3uFod1ETd7SR?usp=sharing)
+- training and test files are under the 'ner_datasets' and 'dep_dataseets' folders of the link(training files are required to get the vocabularies for each task and pos tags) [link](https://drive.google.com/drive/folders/1ugT4tk8FlxxOQdjp4m9pXc_6_Xhdlo2-?usp=sharing)
+
+We provide all these files using external links.
+
 ## Setup
 
 To ease the work required to for doing the setup, we provide a docker file that contains all the setting for running the source code. The docker image is available under : https://hub.docker.com/r/aakdemir/pytorch-cuda/tags with the version 0.1. 
@@ -112,7 +123,7 @@ In order to replicate the results the users need to obtain the following files i
 
 - .pkh files containing the saved model parameters [link](https://drive.google.com/drive/folders/1I2YSW6Vzw6CrIgJlKfIm3uFod1ETd7SR?usp=sharing)
 - *_config.json files for models that use different parameter combinations than default (NER_only model with lstm size 229) [link](https://drive.google.com/drive/folders/1I2YSW6Vzw6CrIgJlKfIm3uFod1ETd7SR?usp=sharing)
-- training and test files (training files are required to get the vocabularies for each task and pos tags) [link](https://drive.google.com/drive/folders/1ugT4tk8FlxxOQdjp4m9pXc_6_Xhdlo2-?usp=sharing)
+- training and test files are under the 'ner_datasets' and 'dep_dataseets' folders of the link(training files are required to get the vocabularies for each task and pos tags) [link](https://drive.google.com/drive/folders/1ugT4tk8FlxxOQdjp4m9pXc_6_Xhdlo2-?usp=sharing)
 
 We provide all these files using external links.
 
