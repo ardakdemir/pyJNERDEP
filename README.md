@@ -17,7 +17,6 @@ Below are the required documents for training new models and replicating the res
 - *_config.json files for models that use different parameter combinations than default (NER_only model with lstm size 229) [link](https://drive.google.com/drive/folders/1I2YSW6Vzw6CrIgJlKfIm3uFod1ETd7SR?usp=sharing)
 - training and test files are under the 'ner_datasets' and 'dep_dataseets' folders of the link(training files are required to get the vocabularies for each task and pos tags) [link](https://drive.google.com/drive/folders/1ugT4tk8FlxxOQdjp4m9pXc_6_Xhdlo2-?usp=sharing)
 
-We provide all these files using external links.
 
 ## Setup
 
