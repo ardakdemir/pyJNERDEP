@@ -33,6 +33,8 @@ Next run the following code to mount /tmp/data of your local machine:
 ```
 docker run -it --rm -v ~/pjNERDEP:/work aakdemir/pytorch-cuda:0.1
 
+```
+
 This code will download the docker image and start a container which mounts the local directory ~/pyJNERDEP to the /work directory inside the container.
 Make sure that you obtain and place the datasets inside ~/pyJNERDEP so that container can have access to them.
 By default, the code runs using GPU whenever available.
@@ -41,6 +43,7 @@ A more generic way of initiating the container is as follows:
 
 ```
 docker run -it --rm -v [path_to_the_datasets_in_local]:[path_in_container_for_data] -v [path_to_the_source_code_inside_local]:[path_in_container_for_source_code]  aakdemir/pytorch-cuda:0.1
+
 ```
 
 The docker contains all the requirements and have cuda installed to allow running in GPU mode without trouble.
@@ -52,6 +55,7 @@ Assuming that you are inside a virtual environment run the following code from t
 
 ```
 pip3 install -r requirements.txt
+
 ```
 
 
