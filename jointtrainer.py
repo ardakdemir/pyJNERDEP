@@ -244,7 +244,7 @@ class BaseModel(nn.Module):
         self.lstm_input_size = self.w_dim + self.cap_dim + self.pos_dim
         if self.args['word_embed_type']=="random_init":
             print("Ner vocab size {}".format(len(self.args['ner_vocab'])))
-            self.word_embedding = embedding_initializer(self.w_dim,len(self.args['ner_vocab']))
+            self.word_embeds = embedding_initializer(self.w_dim,len(self.args['ner_vocab']))
         #self.cap_embeds  = nn.Embedding(self.cap_types, self.cap_dim)
         #self.pos_embeds  = nn.Embedding(self.args['pos_vocab_size'], self.pos_dim)
         self.cap_embeds = embedding_initializer(self.cap_dim, self.cap_types)
@@ -314,16 +314,19 @@ class BaseModel(nn.Module):
             return bert_hiddens
         elif type == 'random_init':
             word_inds = word_embed_input
-
-    def forward(self,pos_ids, batch_bert_ids, batch_seq_ids, bert2toks, cap_inds, sent_lens):
+            word_embeds = self.word_embeds(word_inds)
+            word_embeds = self.dropout(word_embeds)
+            #print("Word embeddings shape {}".format(word_embeds.shape))
+            return word_embeds
+    def forward(self,tok_inds, pos_ids, batch_bert_ids, batch_seq_ids, bert2toks, cap_inds, sent_lens):
         
-        bert_out = self.bert_model(batch_bert_ids,batch_seq_ids)
-        bert_hiddens = self._get_bert_batch_hidden(bert_out[2],bert2toks)
         cap_embedding = self.embed_dropout(self.cap_embeds(cap_inds))
         pos_embedding = self.embed_dropout(self.pos_embeds(pos_ids))
-        bert_hiddens = self.dropout(bert_hiddens)
-        
-        concat = torch.cat((bert_hiddens,cap_embedding,pos_embedding),dim=2) 
+        word_embed = self.get_word_embedding(tok_inds,type="random_init")   
+        #bert_out = self.bert_model(batch_bert_ids,batch_seq_ids)
+        #bert_hiddens = self._get_bert_batch_hidden(bert_out[2],bert2toks)
+        #bert_hiddens = self.dropout(bert_hiddens)
+        concat = torch.cat((word_embed,cap_embedding,pos_embedding),dim=2) 
         #bilstms are separate for each task
         #padded = pack_padded_sequence(concat,sent_lens,batch_first=True)
         #lstm_out,_ = self.bilstm(padded)
@@ -528,7 +531,7 @@ class JointTrainer:
             inputs.append(d.to(self.device))
         sent_lens, masks, tok_inds, ner_inds, pos_inds,_, _,\
              bert_batch_ids,  bert_seq_ids, bert2toks, cap_inds = inputs
-        features = self.jointmodel.base_model(pos_inds, bert_batch_ids, bert_seq_ids, bert2toks, cap_inds, sent_lens) 
+        features = self.jointmodel.base_model(tok_inds, pos_inds, bert_batch_ids, bert_seq_ids, bert2toks, cap_inds, sent_lens) 
         return features
     
     def ner_loss(self,batch):
