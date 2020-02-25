@@ -67,6 +67,7 @@ class DataReader():
         self.batched_dataset, self.sentence_lens = group_into_batch(self.dataset,batch_size = self.batch_size)
         self.for_eval = False
         self.num_cats = len(self.l2ind)
+
         self.bert_tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
         self.val_index = 0
 
@@ -252,6 +253,11 @@ torch.tensor([seq_ids],dtype=torch.long), torch.tensor(bert2tok), lab])
             pos_inds.append(self.pos_vocab.map(poss))
             tok_inds.append(self.word_voc.map(toks))
             ner_inds.append(self.get_1d_targets(self.label_voc.map(labels)))
+            #if self.for_eval:
+                #print("DEV LABELS {} \n DEV INDS {} ".format(labels,ner_inds))
+                #print(labels)
+                #print("DEV vocab : {}".format(self.label_voc.w2ind))
+                #print(ner_inds)
         assert len(tok_inds)== len(ner_inds) == len(tokens) == len(batch) == len(pos_inds)
         for toks in tokens:
             if toks[0]!="[SOS]":

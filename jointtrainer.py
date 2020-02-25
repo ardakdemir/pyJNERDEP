@@ -11,6 +11,7 @@ import torch
 from skimage import io, transform
 import torch.nn as nn
 import torch.optim as optim
+import copy
 import json
 import torch.nn.functional as F
 import numpy as np
@@ -55,7 +56,7 @@ START_IND = 1
 END_IND = 2
 ROOT_TAG = "[ROOT]"
 ROOT_IND = 1
-
+special_labels = [PAD,START_TAG,END_TAG,ROOT_TAG]
 def embedding_initializer(dim,num_labels):
     embed = nn.Embedding(num_labels,dim)
     nn.init.uniform_(embed.weight,-np.sqrt(6/(dim+num_labels)),np.sqrt(6/(dim+num_labels)))
@@ -73,7 +74,12 @@ def generate_pred_content(tokens, preds, truths=None, lens=None, label_voc=None)
                 s_ind = 1
             if sent[sent_len-1]==END_TAG:
                 e_ind = 1
-            l = list(zip(sent[s_ind:sent_len-e_ind], label_voc.unmap(truth[s_ind:sent_len-e_ind]),label_voc.unmap(pred[1:-1])))
+            preds = label_voc.unmap(pred[1:-1] )
+            preds = list(map(lambda x : x if x not in special_labels else "O",preds))
+            truth_unmapped = label_voc.unmap(truth[s_ind:sent_len-e_ind])
+            #print("Unmapped truths")
+            #print(truth_unmapped)
+            l = list(zip(sent[s_ind:sent_len-e_ind], truth_unmapped,preds))
             sents.append(l)
     else:
         for sent,pred in zip(tokens,preds):
@@ -127,6 +133,7 @@ def parse_args():
     parser.add_argument('--dep_dim', type=int, default=128)
     parser.add_argument('--ner_dim', type=int, default=128)
     parser.add_argument('--transformed_dim', type=int, default=125)
+    parser.add_argument('--word_embed_type', default='bert', choices = ['bert','random_init'],help='Word embedding type to be used')
     
     parser.add_argument('--lstm_layers', type=int, default=3)
     parser.add_argument('--char_num_layers', type=int, default=1)
@@ -155,7 +162,7 @@ def parse_args():
     parser.add_argument('--beta2', type=float, default=0.95)
     parser.add_argument('--weight_decay', type=float, default=5e-4)
     
-    parser.add_argument('--max_steps', type=int, default=20000)
+    parser.add_argument('--max_steps', type=int, default=2000)
     parser.add_argument('--repeat', type=int, default=10)
     parser.add_argument('--multiple', type=int, default=0)
     parser.add_argument('--early_stop', type=int, default=50)
@@ -235,7 +242,9 @@ class BaseModel(nn.Module):
         self.lstm_drop = args['lstm_drop']
         self.weight_decay = self.args['weight_decay']
         self.lstm_input_size = self.w_dim + self.cap_dim + self.pos_dim
-      
+        if self.args['word_embed_type']=="random_init":
+            print("Ner vocab size {}".format(len(self.args['ner_vocab'])))
+            self.word_embedding = embedding_initializer(self.w_dim,len(self.args['ner_vocab']))
         #self.cap_embeds  = nn.Embedding(self.cap_types, self.cap_dim)
         #self.pos_embeds  = nn.Embedding(self.args['pos_vocab_size'], self.pos_dim)
         self.cap_embeds = embedding_initializer(self.cap_dim, self.cap_types)
@@ -295,6 +304,16 @@ class BaseModel(nn.Module):
             my_hiddens.append(torch.mean(torch.cat(my_token_hids),0).view(1,-1))
             batch_my_hiddens.append(torch.cat(my_hiddens))
         return torch.stack(batch_my_hiddens)
+    
+    def get_word_embedding(self,word_embed_input, type="bert"):
+        if type == "bert":
+            batch_bert_ids, batch_seq_ids, bert2toks = word_embed_input
+            bert_out = self.bert_model(batch_bert_ids,batch_seq_ids)
+            bert_hiddens = self._get_bert_batch_hidden(bert_out[2],bert2toks)
+            bert_hiddens = self.dropout(bert_hiddens)
+            return bert_hiddens
+        elif type == 'random_init':
+            word_inds = word_embed_input
 
     def forward(self,pos_ids, batch_bert_ids, batch_seq_ids, bert2toks, cap_inds, sent_lens):
         
@@ -351,6 +370,8 @@ class JointTrainer:
         #self.args  = {**self.args,**args2}
         self.getdatasets()
         self.args['ner_cats'] = len(self.nertrainreader.label_voc)
+        print("Word vocabulary size  : {}".format(len(self.nertrainreader.word_voc)))
+        self.args['ner_vocab'] = self.nertrainreader.word_voc.w2ind
         ## feature extraction
         self.device = self.args['device']
         print("Joint Trainer initialized on {}".format(self.device))
@@ -467,8 +488,24 @@ class JointTrainer:
         else:
             self.nervalreader = DataReader(self.args['ner_val_file'],"NER", batch_size = self.args['batch_size'])
             self.depvaldataset  = DepDataset(self.args['dep_val_file'], batch_size = self.args['batch_size'], vocabs = self.deptraindataset.vocabs, for_eval=True)
+        #self.nervalreader.label_voc = self.nertrainreader.label_voc
+        diff =set(self.nertrainreader.label_voc.w2ind) - set(self.nervalreader.label_voc.w2ind)
+        print("Diff {}".format(diff))
+        diff =set(self.nervalreader.label_voc.w2ind) - set(self.nertrainreader.label_voc.w2ind)
+        print("Dep Diff {}".format(diff))
+        print("Labels for test set")
+        print(self.nervalreader.label_voc.w2ind)
+        print("Labels for training set")
+        print(self.nertrainreader.label_voc.w2ind)
         self.nervalreader.label_voc = self.nertrainreader.label_voc
-        
+        self.nervalreader.pos_voc = self.nertrainreader.pos_voc
+        self.nervalreader.num_cats = self.nertrainreader.num_cats
+        print("Labels for test set")
+        print(self.nervalreader.label_voc.w2ind)
+        print("Labels for training set")
+        print(self.nertrainreader.label_voc.w2ind)
+        print("Ind to words test {} ".format(self.nervalreader.label_voc.ind2w))
+        print("Ind to words train {} ".format(self.nertrainreader.label_voc.ind2w))
         self.args['vocab_size'] = len(self.nertrainreader.word_voc)
         self.args['pos_vocab_size'] = len(self.deptraindataset.vocabs['pos_vocab'])
         self.pos_vocab = self.deptraindataset.vocabs['pos_vocab']
@@ -476,6 +513,14 @@ class JointTrainer:
         assert self.args['dep_cats'] == self.deptraindataset.num_rels, 'Dependency types do not match'
         assert self.args['pos_vocab_size'] == self.deptraindataset.num_pos," Pos vocab size do not match "
 
+        print("Training pos vocab : {}".format(self.nertrainreader.pos_voc.w2ind))
+        print("Testing  pos vocab : {}".format(self.nervalreader.pos_voc.w2ind))
+
+        print("Training vocab size : {}".format(len(self.nertrainreader.word_voc)))
+        print("Test vocab size : {}".format(len(self.nervalreader.word_voc)))
+        diff = set(self.nervalreader.word_voc.w2ind) - set(self.nertrainreader.word_voc.w2ind)
+        print("{} words not in training set ".format(len(diff)))
+        logging.info("First ten {} ".format(list(diff)[:10]))
     def forward(self, batch):
         tokens, bert_batch_after_padding, data = batch
         inputs = []
@@ -683,14 +728,6 @@ class JointTrainer:
         logging.info(self.deptraindataset.vocabs['dep_vocab'].w2ind)
         logging.info("NER label vocab")
         logging.info(self.nertrainreader.label_voc.w2ind)
-        print("Pos tag vocab for dependency dataset")
-        print(self.deptraindataset.vocabs['pos_vocab'].w2ind)
-        print("Pos tag vocab for named entity dataset")
-        print(self.nertrainreader.pos_vocab.w2ind)
-        print("Dep vocab for dependency dataset")
-        print(self.deptraindataset.vocabs['dep_vocab'].w2ind)
-        print("NER label vocab")
-        print(self.nertrainreader.label_voc.w2ind)
         ## get the updating function depending on the model type
         model_func = self.update_funcs[self.args['model_type']]
         model_type = self.args['model_type']
@@ -707,14 +744,14 @@ class JointTrainer:
             self.nertrainreader.for_eval = False
             self.jointmodel.train()
             logging.info("Learning rates")
-            logging.info("NER learning rates")
+            #print("NER learning rates")
             for param_group in self.jointmodel.nermodel.ner_optimizer.param_groups:
                 logging.info(param_group['lr'])
-                print(param_group['lr'])
-            logging.info("DEP learning rates")
+                #print(param_group['lr'])
+            #print("DEP learning rates")
             for param_group in self.jointmodel.depparser.optimizer.param_groups:
                 logging.info(param_group['lr'])
-                print(param_group['lr'])
+                #print(param_group['lr'])
 
             for i in tqdm(range(self.args['eval_interval'])):
                 
@@ -898,8 +935,10 @@ class JointTrainer:
             logging.info("Saving best model to {}".format(save_name))
             torch.save(self.jointmodel.state_dict(), save_name)
         config_path = os.path.join(self.args['save_dir'],self.args['config_file'])
+        arg = copy.deepcopy(self.args)
+        del arg['device']
         with open(config_path,'w') as outfile:
-            json.dump(self.args,outfile)
+            json.dump(arg,outfile)
 
     def dep_evaluate(self): 
         
@@ -967,6 +1006,7 @@ class JointTrainer:
             tokens = d[0]
             sent_lens = d[2][0] 
             ner_inds = d[2][3][:,:]
+            #print(ner_inds)
             with torch.no_grad():
                 if self.args['model_type'] != "DEPNER":
                     bert_out = self.forward(d)
@@ -991,10 +1031,10 @@ class JointTrainer:
 
         conll_writer(out_file,content,field_names,"ner")
         conll_file = os.path.join(self.args['save_dir'],self.args['conll_file_name'])
-        convert2IOB2new(out_file,conll_file)
+        #convert2IOB2new(out_file,conll_file)
         prec, rec, f1 = 0, 0, 0
         try:
-            prec, rec, f1 = evaluate_conll_file(open(conll_file,encoding='utf-8').readlines())
+           prec, rec, f1 = evaluate_conll_file(open(out_file,encoding='utf-8').readlines())
         except:
             f1 = 0
         #logging.info("{} {} {} ".format(prec,rec,f1))

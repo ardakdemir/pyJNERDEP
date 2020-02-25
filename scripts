@@ -1,0 +1,4 @@
+
+
+## Czech ner command
+python jointtrainer.py --model_type NER --ner_train_file ~/datasets/czech_data/pos-bio-named_ent_train.txt --ner_val_file ~/datasets/czech_data/pos-bio-named_ent_dtest.txt --ner_test_file ~/datasets/czech_data/pos-bio-named_ent_etest.txt 
