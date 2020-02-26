@@ -13,6 +13,7 @@ import torch.nn as nn
 import torch.optim as optim
 import copy
 import json
+import pickle
 import torch.nn.functional as F
 import numpy as np
 from tqdm import tqdm
@@ -62,6 +63,46 @@ def embedding_initializer(dim,num_labels):
     nn.init.uniform_(embed.weight,-np.sqrt(6/(dim+num_labels)),np.sqrt(6/(dim+num_labels)))
     return embed
 
+def get_pretrained_word_embeddings(w2ind, embedding_path):
+    vocab_size = len(w2ind)
+    load_path = embedding_path+"_cached.pk"
+    print("Getting pretrained embeddings")
+    start = time.time()
+    if os.path.exists(load_path):
+        print("Loading embeddings from {}".format(load_path))
+        emb_dict = pickle.load(open(load_path,'rb'))
+        #embed = nn.Embedding(embed_mat.shape[0],embed_mat.shape[1])
+        dim = len(list(emb_dict.values())[0])
+        #embed.weight.data.copy_(torch.from_numpy(embed_mat))
+    else:
+        print("Generating embedding from scratch")
+        s = time.time()
+        embeddings = open(embedding_path,encoding='utf-8').read().strip().split("\n")
+        print("First line of embeddings")
+        print(embeddings[0])
+        print("Number of words in embeddings {} ".format(len(embeddings)))
+        if len(embeddings[0].split())==2:## with header
+            embeddings = embeddings[1:]
+        dim = len(embeddings[0].split())-1 ## embedding dimension
+        emb_dict = {l.split()[0]: [float(x) for x in l.split()[1:] ] for l in embeddings[:-1]} ## last index problematic
+        e = time.time()
+        print("Read all embeddings in {} seconds".format(round(e-s,4)))
+        print("Saving embedding dictionary to {}".format(load_path))
+
+        pickle.dump(emb_dict,open(load_path,'wb'))
+    embed = nn.Embedding(vocab_size,dim)
+    nn.init.uniform_(embed.weight,-np.sqrt(6/(dim+vocab_size)),np.sqrt(6/(dim+vocab_size)))
+    c = 0
+    for word in list(w2ind.keys()):
+        if emb_dict.get(word) is not None:
+            ind = w2ind[word]
+            logging.info("Found embedding for {} ".format(word))
+            embed.weight.data[ind].copy_(torch.tensor(emb_dict[word],requires_grad=True))
+            c +=1
+    print("Initialized {} out of {} words from fastext".format(c,vocab_size))
+    end = time.time()
+    print("Word embeddings initialized in {} seconds ".format(round(end-start,4)))
+    return embed 
 def generate_pred_content(tokens, preds, truths=None, lens=None, label_voc=None):
 
     ## this is where the start token and  end token get eliminated!!
@@ -99,7 +140,8 @@ def read_config(args):
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--data_dir', type=str, default='data/depparse', help='Root dir for models.')
-    parser.add_argument('--wordvec_dir', type=str, default='extern_data/word2vec', help='Directory of word vectors')
+    parser.add_argument('--wordvec_dir', type=str, default='../word_vecs', help='Directory of word vectors')
+    parser.add_argument('--word_vec_file_path', type=str, default= '../word_vecs/cc.cs.300.vec')
     parser.add_argument('--train_file', type=str, default=None, help='Input file for data loader.')
     parser.add_argument('--eval_file', type=str, default=None, help='Input file for data loader.')
     parser.add_argument('--output_file', type=str, default=None, help='Output CoNLL-U file.')
@@ -130,10 +172,11 @@ def parse_args():
     parser.add_argument('--char_emb_dim', type=int, default=100)
     parser.add_argument('--cap_types', type=int, default=6)
     parser.add_argument('--pos_dim', type=int, default=64)
+    parser.add_argument('--word_embed_dim', type=int, default=300)
     parser.add_argument('--dep_dim', type=int, default=128)
     parser.add_argument('--ner_dim', type=int, default=128)
     parser.add_argument('--transformed_dim', type=int, default=125)
-    parser.add_argument('--word_embed_type', default='bert', choices = ['bert','random_init'],help='Word embedding type to be used')
+    parser.add_argument('--word_embed_type', default='bert', choices = ['bert','random_init','fastext'],help='Word embedding type to be used')
     
     parser.add_argument('--lstm_layers', type=int, default=3)
     parser.add_argument('--char_num_layers', type=int, default=1)
@@ -241,26 +284,41 @@ class BaseModel(nn.Module):
         self.embed_drop = args['embed_drop']
         self.lstm_drop = args['lstm_drop']
         self.weight_decay = self.args['weight_decay']
-        self.lstm_input_size = self.w_dim + self.cap_dim + self.pos_dim
         if self.args['word_embed_type']=="random_init":
             print("Ner vocab size {}".format(len(self.args['ner_vocab'])))
+            self.w_dim = self.args["word_embed_dim"]
             self.word_embeds = embedding_initializer(self.w_dim,len(self.args['ner_vocab']))
+
+        if self.args['word_embed_type']=="fastext":
+            print("Ner vocab size {}".format(len(self.args['ner_vocab'])))
+            self.word_embeds = get_pretrained_word_embeddings(self.args['ner_vocab'],self.args['word_vec_file_path'])
+            print("Initialized word embeddings from fastext")
+            print("Vector for Praha : {}".format(self.word_embeds.weight[self.args['ner_vocab']["Praha"]]))
+            self.w_dim = len(self.word_embeds.weight[0])
         #self.cap_embeds  = nn.Embedding(self.cap_types, self.cap_dim)
         #self.pos_embeds  = nn.Embedding(self.args['pos_vocab_size'], self.pos_dim)
         self.cap_embeds = embedding_initializer(self.cap_dim, self.cap_types)
         self.pos_embeds = embedding_initializer(self.pos_dim, self.args['pos_vocab_size'])
         #self.word_embeds = nn.Embedding(self.vocab_size, self.w_dim)
+        self.lstm_input_size = self.w_dim + self.cap_dim + self.pos_dim
         logging.info("Embedding initialized : ")
         logging.info(self.cap_embeds.weight.data)
         #self.bilstm  = nn.LSTM(self.lstm_input, self.lstm_hidden, bidirectional=True, num_layers=1, batch_first=True)
         self.dropout = nn.Dropout(self.lstm_drop)
         self.embed_dropout = nn.Dropout(self.embed_drop)
         
-
-        self.embed_optimizer = optim.AdamW([
-        {"params": self.cap_embeds.parameters()},\
-        {"params": self.pos_embeds.parameters()}],\
-        lr=self.args['embed_lr'],betas=(0.9,self.args['beta2']), eps=1e-6 )
+        if self.args['word_embed_type']=='random_init':
+            self.embed_optimizer = optim.AdamW([
+            {"params": self.cap_embeds.parameters()},\
+            {"params": self.word_embeds.parameters()},\
+            {"params": self.pos_embeds.parameters()}],\
+            lr=self.args['embed_lr'],betas=(0.9,self.args['beta2']), eps=1e-6 )
+        else :
+            self.embed_optimizer = optim.AdamW([
+            {"params": self.cap_embeds.parameters()},\
+            {"params": self.word_embeds.parameters()},\
+            {"params": self.pos_embeds.parameters()}],\
+            lr=self.args['embed_lr'],betas=(0.9,self.args['beta2']), eps=1e-6 )
              
         param_optimizer = list(self.bert_model.named_parameters())
         no_decay = ['bias', 'gamma', 'beta']
@@ -312,12 +370,13 @@ class BaseModel(nn.Module):
             bert_hiddens = self._get_bert_batch_hidden(bert_out[2],bert2toks)
             bert_hiddens = self.dropout(bert_hiddens)
             return bert_hiddens
-        elif type == 'random_init':
+        elif type == 'random_init' or type=='fastext':
             word_inds = word_embed_input
             word_embeds = self.word_embeds(word_inds)
             word_embeds = self.dropout(word_embeds)
             #print("Word embeddings shape {}".format(word_embeds.shape))
             return word_embeds
+        
     def forward(self,tok_inds, pos_ids, batch_bert_ids, batch_seq_ids, bert2toks, cap_inds, sent_lens):
         
         cap_embedding = self.embed_dropout(self.cap_embeds(cap_inds))
@@ -523,6 +582,7 @@ class JointTrainer:
         print("Test vocab size : {}".format(len(self.nervalreader.word_voc)))
         diff = set(self.nervalreader.word_voc.w2ind) - set(self.nertrainreader.word_voc.w2ind)
         print("{} words not in training set ".format(len(diff)))
+        self.nervalreader.word_voc.w2ind = self.nertrainreader.word_voc.w2ind
         logging.info("First ten {} ".format(list(diff)[:10]))
     def forward(self, batch):
         tokens, bert_batch_after_padding, data = batch
