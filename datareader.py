@@ -53,7 +53,7 @@ def pad_trunc(sent,max_len, pad_len, pad_ind):
 
 class DataReader():
 
-    def __init__(self,file_path, task_name, batch_size = 3000):
+    def __init__(self,file_path, task_name, batch_size = 3000,tokenizer = None):
         self.file_path = file_path
         self.task_name = task_name
         self.batch_size = batch_size
@@ -67,8 +67,11 @@ class DataReader():
         self.batched_dataset, self.sentence_lens = group_into_batch(self.dataset,batch_size = self.batch_size)
         self.for_eval = False
         self.num_cats = len(self.l2ind)
-
-        self.bert_tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
+        if tokenizer is None:    
+            self.bert_tokenizer = BertTokenizer.from_pretrained('bert-base-cased', do_lower_case=False)
+            tokenizer.add_tokens(['[SOS]','[EOS]', '[ROOT]'])
+        else:
+            self.bert_tokenizer = tokenizer
         self.val_index = 0
 
     def get_ind2sent(self,sent):
@@ -138,6 +141,9 @@ torch.tensor([seq_ids],dtype=torch.long), torch.tensor(bert2tok), lab])
             else:
                 row = line.rstrip().split()
                 row[0] = row[0].replace("\ufeff","")
+                row[0] = row[0].replace('\u200f',"")
+                row[0] = row[0].replace('\t','')
+                row[0] = row[0].replace(' ','')
                 sent.append(row)
                 label_counts.update([row[-1]])
                 pos_counts.update([row[-2]])
@@ -280,14 +286,26 @@ torch.tensor([seq_ids],dtype=torch.long), torch.tensor(bert2tok), lab])
             sentence = " ".join(my_tokens)
             masks[i,:l] = torch.tensor([0]*l,dtype=torch.bool)    
             i+=1
-            
-            bert_tokens = self.bert_tokenizer.tokenize(sentence)
-            bert_lens.append(len(bert_tokens))
+            #sentence = " ".join(my_tokens)
+            #bert_tokens = self.bert_tokenizer.tokenize(sentence)
+            #bert_tokens = ["[CLS]"] + bert_tokens
+            #b2tok, ind = bert2token(my_tokens, bert_tokens, bert_ind = 1)
+            bert_tokens = []
+            b2tok = []
+            for j, token in enumerate(my_tokens):
+                btok = self.bert_tokenizer.tokenize(token)
+                
+                if len(btok)==0:
+                    b2tok = b2tok + [j]
+                    bert_tokens = bert_tokens + ['[UNK]']
+                b2tok = b2tok + [j for _ in range(len(btok))]
+                bert_tokens = bert_tokens + btok
             bert_tokens = ["[CLS]"] + bert_tokens
+            bert_lens.append(len(bert_tokens))
+            ind = b2tok[-1]+1
             max_bert_len = max(max_bert_len,len(bert_tokens))
             ## bert_ind = 0 since we did not put [CLS] yet
-            b2tok, ind = bert2token(my_tokens, bert_tokens, bert_ind = 1)
-            assert ind == len(my_tokens), "Bert ids do not match token size"
+            assert ind == len(my_tokens), "Bert ids do not match token size {} {} ".format(ind , len(my_tokens))
             bert_batch_before_padding.append(bert_tokens)
             bert2toks.append(b2tok)
         bert_batch_after_padding, bert_lens = \
@@ -296,6 +314,7 @@ torch.tensor([seq_ids],dtype=torch.long), torch.tensor(bert2tok), lab])
         bert2tokens_padded, _ = pad_trunc_batch(bert2toks,max_len = max_bert_len, bert = True, b2t=True)
         bert_batch_ids = torch.LongTensor([self.bert_tokenizer.convert_tokens_to_ids(sent) for \
             sent in bert_batch_after_padding])
+        assert all([len(x)==len(bert_batch_ids[0]) for x in bert_batch_ids])
         bert_seq_ids = torch.LongTensor([[1 for i in range(len(bert_batch_after_padding[0]))]\
             for j in range(len(bert_batch_after_padding))])
         dep_rels = torch.tensor([])

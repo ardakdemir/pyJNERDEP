@@ -52,16 +52,37 @@ def bert2token(my_tokens, bert_tokens, bert_ind = 1):
     bert_ind = bert_ind
     for ind in range(len(my_tokens)):
         my_token = my_tokens[ind]
-
-        while len(token_sum)!=len(my_token) and bert_ind<len(bert_tokens):
-            token = bert_tokens[bert_ind]
-            if token.startswith("#"):
-                token_sum+=token[2:]
-            else:
-                token_sum+=token
+        #token_sum = bert_tokens[bert_ind]
+        #bert_ind = bert_ind +1
+        #inds.append(ind)
+        b_len = len(bert_tokens)
+        if bert_tokens[bert_ind]=='[UNK]':
             inds.append(ind)
             bert_ind+=1
-        assert len(token_sum)==len(my_token), logging.info("{} {} {} {}".format(my_token, token_sum,my_tokens,bert_tokens))
+            continue
+        while bert_ind < b_len and  len(token_sum)!=len(my_token):
+            if bert_tokens[bert_ind].startswith("##"):
+                token_sum +=bert_tokens[bert_ind][2:]
+            elif bert_tokens[bert_ind].endswith("##"):
+                token_sum+=bert_tokens[bert_ind][:-2]
+            else:
+                token_sum +=bert_tokens[bert_ind]
+            bert_ind = bert_ind +1
+            inds.append(ind)
+        #while len(token_sum)!=len(my_token) and bert_ind<len(bert_tokens):
+        #    token = bert_tokens[bert_ind]
+        #    if token.startswith("##"):
+        #        token_sum+=token[2:]
+        #    else:
+        #        token_sum+=token
+        #    inds.append(ind)
+        #    bert_ind+=1
+        #logging.info("my {} bert {}".format(token_sum,my_token))
+        if len(token_sum)!=len(my_token):
+            
+            logging.info("Problem\n bert {} \n my {}".format(bert_tokens,my_tokens))
+            logging.info('index : {} my token  {}  bert token {} '.format(ind, my_token,token_sum))
+            raise AssertionError
         token_sum=""
 
     return inds, ind+1
@@ -96,6 +117,10 @@ def pad_trunc_batch(batch, max_len, pad = PAD, pad_ind = PAD_IND, bert = False,b
                 if not b2t:
                     padded_sent = padded_sent + ["[SEP]"]
             padded_batch.append(padded_sent)
+    if not all([len(x)==len(padded_batch[0]) for x in padded_batch]):
+        print("Problematic batch")
+        logging.info("Problematicv batch")
+        logging.info(padded_batch)
     return padded_batch, sent_lens
 
 def group_into_batch(dataset, batch_size):
@@ -133,22 +158,24 @@ def group_into_batch(dataset, batch_size):
         current,lens  = pad_trunc_batch(current, max_len)
         sentence_lens.append(lens)
         batched_dataset.append(current)
+
     return batched_dataset, sentence_lens
 
 
 FIELD_TO_IDX = {'id': 0, 'word': 1, 'lemma': 2, 'upos': 3, 'xpos': 4, 'feats': 5, 'head': 6, 'deprel': 7, 'deps': 8, 'misc': 9}
 
-def read_conllu(file_name, cols = ['word','xpos','head','deprel']):
+def read_conllu(file_name, cols = ['word','xpos','head','deprel'], get_ner=False):
     """
         Reads a conllu file and generates the vocabularies
     """
-    assert file_name.endswith("conllu"), "File must a .conllu type"
+    assert file_name.endswith("conllu") or 'conllu' in file_name, "File must a .conllu type"
     file = open(file_name, encoding = "utf-8").read().rstrip().split("\n")
     dataset = []
     sentence = []
     tok2ind = {PAD : PAD_IND, START_TAG : START_IND, UNK:UNK_IND, END_TAG: END_IND}
     pos2ind = {PAD : PAD_IND, START_TAG : START_IND, END_TAG: END_IND, UNK:UNK_IND}
     dep2ind = {PAD : PAD_IND, START_TAG : START_IND, END_TAG : END_IND, UNK:UNK_IND}
+    #ner2ind = {PAD : PAD_IND, START_TAG : START_IND, END_TAG : END_IND, UNK:UNK_IND}
     total_word_size = 0
     root = [[START_TAG for _ in range(len(cols))]]
     for line in file:
@@ -163,13 +190,21 @@ def read_conllu(file_name, cols = ['word','xpos','head','deprel']):
             if "-" in line[0]: #skip expanded words
                 continue
             total_word_size += 1
-            sentence.append([line[FIELD_TO_IDX[x.lower()]] for x in cols])
+            fields = [line[FIELD_TO_IDX[x.lower()]] for x in cols]
+            if 'misc' in fields and get_ner:
+                j = json.loads(fields[-1])
+                ner_tag =  j["NER_TAG"]
+                fields[-1] =  ner_tag
+            sentence.append(fields)
             if line[FIELD_TO_IDX['word']] not in tok2ind:
                 tok2ind[line[FIELD_TO_IDX['word']]] = len(tok2ind)
             if line[FIELD_TO_IDX['xpos']] not in pos2ind:
                 pos2ind[line[FIELD_TO_IDX['xpos']]] = len(pos2ind)
             if line[FIELD_TO_IDX['deprel']] not in dep2ind:
                 dep2ind[line[FIELD_TO_IDX['deprel']]] = len(dep2ind)
+            #if line[FIELD_TO_IDX['misc']] not in ner2ind:
+            #    ner2ind[line[FIELD_TO_IDX['misc']]] = len(ner2ind)
+
     
     if len(sentence):
         sentence = root + sentence
@@ -182,7 +217,8 @@ def read_conllu(file_name, cols = ['word','xpos','head','deprel']):
         assert all([len(d)>=len(d_) for d,d_ in zip(dataset,dataset[1:])]),\
             "Dataset is not sorted properly"
     tok_vocab = Vocab(tok2ind)
-
+    if 'misc' in cols and get_ner:
+        ner_vocab = Vocab(ner2ind)
     dep_vocab = Vocab(dep2ind)
     pos_vocab = Vocab(pos2ind)
     vocabs = {"tok_vocab": tok_vocab, "dep_vocab": dep_vocab, "pos_vocab": pos_vocab}
@@ -205,7 +241,7 @@ class DepDataset(Dataset):
         Not the number of samples!!
 
     """
-    def __init__(self, data_file, for_eval = False, vocabs = None,  transform = None, batch_size = 500):
+    def __init__(self, data_file, for_eval = False, vocabs = None,  transform = None, batch_size = 500, tokenizer = None, type="dep"):
         self.file_name = data_file
         self.for_eval = for_eval
         self.batch_size = batch_size
@@ -221,11 +257,16 @@ class DepDataset(Dataset):
         print("{} words inside the batches".format(sum([sum(l) for l in self.sent_lens])))
         if for_eval :
             self.vocabs = vocabs
-        self.bert_tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
+        if tokenizer is None:
+            self.bert_tokenizer = BertTokenizer.from_pretrained('bert-base-cased', do_lower_case=False)
+        else:
+            self.bert_tokenizer = tokenizer
         self.data_len = len(self.dataset)
         self.index = 0
         self.num_rels = len(self.vocabs['dep_vocab'].w2ind)
         self.num_pos  = len(self.vocabs['pos_vocab'].w2ind)
+        if type == 'joint':
+            self.num_ner = len(self.vocabs['ner_vocab'].w2ind)
 
     def __len__(self):
         return len(self.dataset)
@@ -300,13 +341,24 @@ class DepDataset(Dataset):
             cap = [get_orthographic_feat(x[0]) for x in sent]
             cap_types.append(torch.tensor(cap))
             masks[i,:l] = torch.tensor([0]*l,dtype=torch.bool)    
-            sentence = " ".join(my_tokens)
-            bert_tokens = self.bert_tokenizer.tokenize(sentence)
-            bert_lens.append(len(bert_tokens))
+            #sentence = " ".join(my_tokens)
+            #bert_tokens = self.bert_tokenizer.tokenize(sentence)
+            #bert_tokens = ["[CLS]"] + bert_tokens
+            #b2tok, ind = bert2token(my_tokens, bert_tokens, bert_ind = 1)
+            bert_tokens = []
+            b2tok = []
+            for j, token in enumerate(my_tokens):
+                btok = self.bert_tokenizer.tokenize(token)
+                if len(btok)==0:
+                    bert_tokens = bert_tokens + ['[UNK]']
+                    b2tok = b2tok + [j]
+                bert_tokens = bert_tokens + btok
+                b2tok = b2tok + [j for _ in range(len(btok))]
             bert_tokens = ["[CLS]"] + bert_tokens
+            bert_lens.append(len(bert_tokens))
+            ind = b2tok[-1]+1
             max_bert_len = max(max_bert_len,len(bert_tokens))
             ## bert_ind = 0 since we did not put [CLS] yet
-            b2tok, ind = bert2token(my_tokens, bert_tokens, bert_ind = 1)
             assert ind == len(my_tokens), "Bert ids do not match token size"
             bert_batch_before_padding.append(bert_tokens)
             bert2toks.append(b2tok)

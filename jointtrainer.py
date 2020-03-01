@@ -96,7 +96,6 @@ def get_pretrained_word_embeddings(w2ind, embedding_path):
     for word in list(w2ind.keys()):
         if emb_dict.get(word) is not None:
             ind = w2ind[word]
-            logging.info("Found embedding for {} ".format(word))
             embed.weight.data[ind].copy_(torch.tensor(emb_dict[word],requires_grad=True))
             c +=1
     print("Initialized {} out of {} words from fastext".format(c,vocab_size))
@@ -146,6 +145,7 @@ def parse_args():
     parser.add_argument('--eval_file', type=str, default=None, help='Input file for data loader.')
     parser.add_argument('--output_file', type=str, default=None, help='Output CoNLL-U file.')
     parser.add_argument('--gold_file', type=str, default=None, help='Output CoNLL-U file.')
+    parser.add_argument('--ner_result_out_file', type=str, default="ner_results", help='Output CoNLL-U file.')
     
     
     parser.add_argument('--log_file', type=str, default='jointtraining.log', help='Input file for data loader.')
@@ -178,6 +178,7 @@ def parse_args():
     parser.add_argument('--transformed_dim', type=int, default=125)
     parser.add_argument('--word_embed_type', default='bert', choices = ['bert','random_init','fastext'],help='Word embedding type to be used')
     
+    parser.add_argument('--fix_embed', default=False, action = 'store_true',help='Word embedding type to be used')
     parser.add_argument('--lstm_layers', type=int, default=3)
     parser.add_argument('--char_num_layers', type=int, default=1)
     parser.add_argument('--pretrain_max_vocab', type=int, default=-1)
@@ -250,11 +251,11 @@ def parse_args():
 
 class JointModel(nn.Module):
 
-    def __init__(self,args):
+    def __init__(self,args,tokenizer):
         super(JointModel,self).__init__()
         self.args = args
         #base model for generating bert output
-        self.base_model = BaseModel(self.args)
+        self.base_model = BaseModel(self.args,tokenizer)
         
         self.args['lstm_input_size'] = self.base_model.lstm_input_size  
         
@@ -268,13 +269,12 @@ class JointModel(nn.Module):
 
 class BaseModel(nn.Module):
     
-    def __init__(self,args):
+    def __init__(self,args,tokenizer):
 
         super(BaseModel,self).__init__()
-        
-        self.bert_tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
-        self.bert_model = BertModel.from_pretrained('bert-base-uncased',output_hidden_states=True)
-        
+        self.bert_tokenizer = tokenizer
+        self.bert_model = BertModel.from_pretrained('bert-base-cased',output_hidden_states=True)
+        self.bert_model.resize_token_embeddings(len(tokenizer))
         self.w_dim = self.bert_model.encoder.layer[11].output.dense.out_features
         #self.vocab_size = args['vocab_size']
         self.args = args        
@@ -288,26 +288,33 @@ class BaseModel(nn.Module):
             print("Ner vocab size {}".format(len(self.args['ner_vocab'])))
             self.w_dim = self.args["word_embed_dim"]
             self.word_embeds = embedding_initializer(self.w_dim,len(self.args['ner_vocab']))
+            if self.args['fix_embed']:
+
+                self.word_embeds.weight.requires_grad = False
+                print("Fixing the pretrained embeddings ")
 
         if self.args['word_embed_type']=="fastext":
             print("Ner vocab size {}".format(len(self.args['ner_vocab'])))
             self.word_embeds = get_pretrained_word_embeddings(self.args['ner_vocab'],self.args['word_vec_file_path'])
             print("Initialized word embeddings from fastext")
-            print("Vector for Praha : {}".format(self.word_embeds.weight[self.args['ner_vocab']["Praha"]]))
             self.w_dim = len(self.word_embeds.weight[0])
+            print("Embeddings fixed? {} ".format(self.args['fix_embed']))
+            if self.args['fix_embed']:
+                self.word_embeds.weight.requires_grad = False
+            print("Requires grad {}".format(self.word_embeds.weight.requires_grad))
         #self.cap_embeds  = nn.Embedding(self.cap_types, self.cap_dim)
         #self.pos_embeds  = nn.Embedding(self.args['pos_vocab_size'], self.pos_dim)
         self.cap_embeds = embedding_initializer(self.cap_dim, self.cap_types)
         self.pos_embeds = embedding_initializer(self.pos_dim, self.args['pos_vocab_size'])
         #self.word_embeds = nn.Embedding(self.vocab_size, self.w_dim)
         self.lstm_input_size = self.w_dim + self.cap_dim + self.pos_dim
-        logging.info("Embedding initialized : ")
+        logging.info("Cap Embedding initialized : ")
         logging.info(self.cap_embeds.weight.data)
         #self.bilstm  = nn.LSTM(self.lstm_input, self.lstm_hidden, bidirectional=True, num_layers=1, batch_first=True)
         self.dropout = nn.Dropout(self.lstm_drop)
         self.embed_dropout = nn.Dropout(self.embed_drop)
         
-        if self.args['word_embed_type']=='random_init':
+        if self.args['word_embed_type']=='random_init' or self.args['word_embed_type']=='fastext':
             self.embed_optimizer = optim.AdamW([
             {"params": self.cap_embeds.parameters()},\
             {"params": self.word_embeds.parameters()},\
@@ -316,7 +323,6 @@ class BaseModel(nn.Module):
         else :
             self.embed_optimizer = optim.AdamW([
             {"params": self.cap_embeds.parameters()},\
-            {"params": self.word_embeds.parameters()},\
             {"params": self.pos_embeds.parameters()}],\
             lr=self.args['embed_lr'],betas=(0.9,self.args['beta2']), eps=1e-6 )
              
@@ -335,6 +341,7 @@ class BaseModel(nn.Module):
     def _get_bert_batch_hidden(self, hiddens , bert2toks, layers=[-2,-3,-4]):
         meanss = torch.mean(torch.stack([hiddens[i] for i in layers]),0)
         batch_my_hiddens = []
+
         for means,bert2tok in zip(meanss,bert2toks):
             my_token_hids = []
             my_hiddens = []
@@ -347,7 +354,12 @@ class BaseModel(nn.Module):
             my_hiddens.append(torch.mean(torch.stack(my_token_hids),0))
             sent_hiddens = torch.stack(my_hiddens)
             batch_my_hiddens.append(sent_hiddens)
-        return torch.stack(batch_my_hiddens)
+        try:
+            return torch.stack(batch_my_hiddens)
+        except:
+            print("Problem in batch")
+            for x in batch_my_hiddens:
+                print("Shape {} ".format(x.shape))
     
     def _get_bert_batch_hidden2(self, hiddens , bert2toks, layers=[-2,-3,-4]):
         meanss = torch.mean(torch.stack([hiddens[i] for i in layers]),0)
@@ -367,13 +379,14 @@ class BaseModel(nn.Module):
         if type == "bert":
             batch_bert_ids, batch_seq_ids, bert2toks = word_embed_input
             bert_out = self.bert_model(batch_bert_ids,batch_seq_ids)
+            #print(bert2toks)
             bert_hiddens = self._get_bert_batch_hidden(bert_out[2],bert2toks)
             bert_hiddens = self.dropout(bert_hiddens)
             return bert_hiddens
         elif type == 'random_init' or type=='fastext':
             word_inds = word_embed_input
             word_embeds = self.word_embeds(word_inds)
-            word_embeds = self.dropout(word_embeds)
+            word_embeds = self.embed_dropout(word_embeds)
             #print("Word embeddings shape {}".format(word_embeds.shape))
             return word_embeds
         
@@ -381,7 +394,11 @@ class BaseModel(nn.Module):
         
         cap_embedding = self.embed_dropout(self.cap_embeds(cap_inds))
         pos_embedding = self.embed_dropout(self.pos_embeds(pos_ids))
-        word_embed = self.get_word_embedding(tok_inds,type="random_init")   
+        if self.args['word_embed_type']=='bert':
+            word_embed = self.get_word_embedding([batch_bert_ids,batch_seq_ids,bert2toks],type=self.args['word_embed_type'])    
+        if self.args['word_embed_type'] in ['fastext','random_init']:
+            #print("Before weights of fourth word{}".format(self.word_embeds.weight.data[tok_inds[0,3]]))
+            word_embed = self.get_word_embedding(tok_inds,type=self.args['word_embed_type'])    
         #bert_out = self.bert_model(batch_bert_ids,batch_seq_ids)
         #bert_hiddens = self._get_bert_batch_hidden(bert_out[2],bert2toks)
         #bert_hiddens = self.dropout(bert_hiddens)
@@ -430,10 +447,15 @@ class JointTrainer:
         self.args = args
         #args2 = {'bert_dim' : 100,'pos_dim' : 12, 'pos_vocab_size': 23,'lstm_hidden' : 10,'device':device}
         #self.args  = {**self.args,**args2}
+        self.bert_tokenizer = BertTokenizer.from_pretrained('bert-base-cased', do_lower_case=False)
+        self.bert_tokenizer.add_tokens(['[SOS]','[EOS]','[ROOT]','[PAD]'])
+        
         self.getdatasets()
         self.args['ner_cats'] = len(self.nertrainreader.label_voc)
         print("Word vocabulary size  : {}".format(len(self.nertrainreader.word_voc)))
         self.args['ner_vocab'] = self.nertrainreader.word_voc.w2ind
+        
+        
         ## feature extraction
         self.device = self.args['device']
         print("Joint Trainer initialized on {}".format(self.device))
@@ -478,7 +500,7 @@ class JointTrainer:
         logging.info("Initializing the model  from start with the following configuration")
         logging.info(self.args)
     
-        self.jointmodel=JointModel(self.args)
+        self.jointmodel=JointModel(self.args,self.bert_tokenizer)
 
         if self.args['load_model'] == 1: 
             load_path = self.args['load_path']
@@ -540,16 +562,27 @@ class JointTrainer:
         else: 
             for param_group in self.jointmodel.depparser.optimizer.param_groups:
                 param_group['lr'] = max(self.args['min_lr'],param_group['lr']*self.args['lr_decay'])
+    
+
+    ## for finnish-hungarian-czech datasets dep and ner are together dayoo!!!!
+    def get_joint_dataset():
+        self.nerdeptraindataset = DepDataset(self.args['dep_train_file'],batch_size = self.args['batch_size'], tokenizer = self.bert_tokenizer)
+        if self.args['mode'] == 'predict':
+            self.nerdepvaldataset  = DepDataset(self.args['dep_test_file'], batch_size = self.args['batch_size'], vocabs = self.deptraindataset.vocabs, for_eval=True,tokenizer=self.bert_tokenizer)
+        else:
+            self.nerdepvaldataset  = DepDataset(self.args['dep_val_file'], batch_size = self.args['batch_size'], vocabs = self.deptraindataset.vocabs, for_eval=True,tokenizer=self.bert_tokenizer)
+
+    
     def getdatasets(self):
         
-        self.nertrainreader = DataReader(self.args['ner_train_file'],"NER",batch_size = self.args['batch_size'])
-        self.deptraindataset = DepDataset(self.args['dep_train_file'],batch_size = self.args['batch_size'])
+        self.nertrainreader = DataReader(self.args['ner_train_file'],"NER",batch_size = self.args['batch_size'],tokenizer=self.bert_tokenizer)
+        self.deptraindataset = DepDataset(self.args['dep_train_file'],batch_size = self.args['batch_size'], tokenizer = self.bert_tokenizer)
         if self.args['mode'] == 'predict':
-            self.nervalreader = DataReader(self.args['ner_test_file'],"NER", batch_size = self.args['batch_size'])
-            self.depvaldataset  = DepDataset(self.args['dep_test_file'], batch_size = self.args['batch_size'], vocabs = self.deptraindataset.vocabs, for_eval=True)
+            self.nervalreader = DataReader(self.args['ner_test_file'],"NER", batch_size = self.args['batch_size'],tokenizer=self.bert_tokenizer)
+            self.depvaldataset  = DepDataset(self.args['dep_test_file'], batch_size = self.args['batch_size'], vocabs = self.deptraindataset.vocabs, for_eval=True,tokenizer=self.bert_tokenizer)
         else:
-            self.nervalreader = DataReader(self.args['ner_val_file'],"NER", batch_size = self.args['batch_size'])
-            self.depvaldataset  = DepDataset(self.args['dep_val_file'], batch_size = self.args['batch_size'], vocabs = self.deptraindataset.vocabs, for_eval=True)
+            self.nervalreader = DataReader(self.args['ner_val_file'],"NER", batch_size = self.args['batch_size'], tokenizer=self.bert_tokenizer)
+            self.depvaldataset  = DepDataset(self.args['dep_val_file'], batch_size = self.args['batch_size'], vocabs = self.deptraindataset.vocabs, for_eval=True,tokenizer=self.bert_tokenizer)
         #self.nervalreader.label_voc = self.nertrainreader.label_voc
         diff =set(self.nertrainreader.label_voc.w2ind) - set(self.nervalreader.label_voc.w2ind)
         print("Diff {}".format(diff))
@@ -583,7 +616,6 @@ class JointTrainer:
         diff = set(self.nervalreader.word_voc.w2ind) - set(self.nertrainreader.word_voc.w2ind)
         print("{} words not in training set ".format(len(diff)))
         self.nervalreader.word_voc.w2ind = self.nertrainreader.word_voc.w2ind
-        logging.info("First ten {} ".format(list(diff)[:10]))
     def forward(self, batch):
         tokens, bert_batch_after_padding, data = batch
         inputs = []
@@ -682,7 +714,6 @@ class JointTrainer:
         self.jointmodel.nermodel.ner_optimizer.step()
         if self.args['model_type']=='DEPNER': 
             self.jointmodel.depparser.optimizer.step()
-    
         return loss.item()
     
     def dep_update_caller(self,index,epoch):
@@ -716,6 +747,7 @@ class JointTrainer:
     
     def ner_update_caller(self, index, epoch):
         ner_batch = self.nertrainreader[index]
+        ind = ner_batch[2][2].to(self.device)
         ner_loss = self.ner_update(ner_batch)
         return ner_loss, 0
     def nerdep_update(self, index, epoch):
@@ -769,6 +801,7 @@ class JointTrainer:
 
     def train2(self):
         logging.info("Training on {} ".format(self.args['device']))
+        
         logging.info("Dependency pos vocab : {} ".format(self.deptraindataset.vocabs['pos_vocab'].w2ind))
         logging.info("Dependency dep vocab : {} ".format(self.deptraindataset.vocabs['dep_vocab'].w2ind))
         epoch = self.args['max_steps']//self.args['eval_interval']
@@ -777,6 +810,8 @@ class JointTrainer:
         best_ner_f1 = 0
         best_dep_f1 = 0
         best_uas_f1 = 0
+        best_model_nerpre = 0
+        best_model_nerrec = 0
         best_ner_epoch = 0
         best_dep_epoch = 0
         ner_patience = 0
@@ -794,6 +829,7 @@ class JointTrainer:
         ## get the updating function depending on the model type
         model_func = self.update_funcs[self.args['model_type']]
         model_type = self.args['model_type']
+        logging.info("Training on : {} type ".format(self.args['word_embed_type']))
         for e in range(epoch):
         
             train_loss = 0
@@ -815,9 +851,8 @@ class JointTrainer:
             for param_group in self.jointmodel.depparser.optimizer.param_groups:
                 logging.info(param_group['lr'])
                 #print(param_group['lr'])
-
             for i in tqdm(range(self.args['eval_interval'])):
-                
+                  
                 ner_loss, dep_loss = model_func(i,e)
                 ner_losses += ner_loss
                 dep_losses += dep_loss
@@ -835,7 +870,7 @@ class JointTrainer:
             
             if (model_type=="DEPNER" and e >= self.args['dep_warmup']) or (model_type!="DEPNER" and model_type!="DEP"):
                 ner_pre, ner_rec, ner_f1 = self.ner_evaluate()
-                logging.info("NER Results -- f1 : {} ".format(ner_f1))
+                logging.info("NER Results -- pre : {}  rec : {} f1 : {}  ".format(ner_pre,ner_rec,ner_f1))
             
             logging.info("Dependency Results -- LAS f1 : {}  UAS f1 :  {} ".format(dep_f1,uas_f1))
             ner_val_f1.append(ner_f1)
@@ -864,6 +899,8 @@ class JointTrainer:
                         self.save_model(self.args['save_ner_name'])
                         self.best_global_ner_f1 = ner_f1
                     best_ner_f1 = ner_f1
+                    best_model_nerpre = ner_pre
+                    best_model_nerrec = ner_rec
                 else: 
                     logging.info("Best F-1 for NER  of {} achieved at {}".format(best_ner_f1, best_ner_epoch))
                     ner_patience +=1
@@ -879,13 +916,16 @@ class JointTrainer:
 
         logging.info("Best results : ")
         logging.info("NER : {}  LAS : {} UAS : {}".format(best_ner_f1, best_dep_f1, best_uas_f1))
+        logging.info("Best NER results : pre : {} rec : {}  f1 : {} ".format(best_model_nerpre, best_model_nerrec, best_ner_f1))
         #self.plot_f1(ner_val_f1, self.args['model_type'], "NER")
         #self.plot_f1(dep_val_f1, self.args['model_type'], "DEP")
         logging.info("NER val f1s ")
         logging.info(ner_val_f1)
         logging.info("DEP val f1s ")
         logging.info(dep_val_f1)
-        
+        o_f  =  self.args['ner_result_out_file']
+        with open(o_f,"a") as o:
+            o.write("NER Results on {} embed_type : {} fixed : {} \n pre : {} rec : {} f1 : {}\n".format(self.args['ner_val_file'],self.args['word_embed_type'],self.args['fix_embed'],best_model_nerpre,best_model_nerrec,best_ner_f1))
         return best_ner_f1, best_dep_f1
     def train(self):
         logging.info("Training on {} ".format(self.args['device']))

@@ -10,3 +10,20 @@ python jointtrainer.py --model_type NER --ner_train_file ~/datasets/czech_data/p
 
 
 python jointtrainer.py --model_type NER --ner_train_file ~/datasets/czech_data/pos-bio-named_ent_train.txt --ner_val_file ~/datasets/czech_data/pos-bio-named_ent_dtest.txt --ner_test_file ~/datasets/czech_data/pos-bio-named_ent_etest.txt  --word_embed_type random_init
+
+
+## ARABIC
+
+python jointtrainer.py --model_type NER --ner_train_file ~/datasets/arabic_data/sentsplitted_conll_all.dev.features.txt --ner_val_file ~/datasets/arabic_data/sentsplitted_conll_all.test.features.txt --word_embed_type random_init
+
+
+
+TO-DO
+
+Make sure fastext is working correctly!! Why is the performance lower than random_init???!?
+
+Get meaningful results for all dependency datasets as well!
+
+Modularize the word_embed component (modify the code of bert and word_embed parts accordingly)
+Run experiments for all settings!! 
+
