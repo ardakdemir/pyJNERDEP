@@ -10,6 +10,8 @@ from __future__ import division
 import torch
 from skimage import io, transform
 import torch.nn as nn
+import fasttext
+import fasttext.util
 import torch.optim as optim
 import copy
 import json
@@ -161,7 +163,7 @@ def parse_args():
     parser.add_argument('--config_file', type=str, default='config.json', help='Output file name in conll bio format')
     parser.add_argument('--mode', default='train', choices=['train', 'predict'])
     parser.add_argument('--load_config', default=0, type = int)
-    parser.add_argument('--lang', type=str, help='Language')
+    parser.add_argument('--lang', type=str, help='Language',choices =['ar','tr','cs','fi','hu'])
     parser.add_argument('--shorthand', type=str, help="Treebank shorthand")
     
     parser.add_argument('--lstm_hidden', type=int, default=400)

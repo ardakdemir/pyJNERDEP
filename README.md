@@ -31,7 +31,7 @@ Make sure that docker is installed and running on your local device. Check docke
 Next run the following code to mount /tmp/data of your local machine: 
 
 ```
-docker run -it --rm -v ~/pjNERDEP:/work aakdemir/pytorch-cuda:0.1
+docker run -it --rm -v ~/pyjNERDEP:/work aakdemir/pytorch-cuda:0.1
 
 ```
 
