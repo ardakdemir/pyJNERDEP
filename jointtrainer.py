@@ -65,41 +65,46 @@ def embedding_initializer(dim,num_labels):
     nn.init.uniform_(embed.weight,-np.sqrt(6/(dim+num_labels)),np.sqrt(6/(dim+num_labels)))
     return embed
 
-def get_pretrained_word_embeddings(w2ind, embedding_path):
+def get_pretrained_word_embeddings(w2ind, embedding_path,lang='tr'):
     vocab_size = len(w2ind)
     load_path = embedding_path+"_cached.pk"
     print("Getting pretrained embeddings")
     start = time.time()
-    if os.path.exists(load_path):
+    from_model = True
+    if os.path.exists(load_path) and not from_model :
         print("Loading embeddings from {}".format(load_path))
         emb_dict = pickle.load(open(load_path,'rb'))
         #embed = nn.Embedding(embed_mat.shape[0],embed_mat.shape[1])
         dim = len(list(emb_dict.values())[0])
         #embed.weight.data.copy_(torch.from_numpy(embed_mat))
     else:
-        print("Generating embedding from scratch")
-        s = time.time()
-        embeddings = open(embedding_path,encoding='utf-8').read().strip().split("\n")
-        print("First line of embeddings")
-        print(embeddings[0])
-        print("Number of words in embeddings {} ".format(len(embeddings)))
-        if len(embeddings[0].split())==2:## with header
-            embeddings = embeddings[1:]
-        dim = len(embeddings[0].split())-1 ## embedding dimension
-        emb_dict = {l.split()[0]: [float(x) for x in l.split()[1:] ] for l in embeddings[:-1]} ## last index problematic
-        e = time.time()
-        print("Read all embeddings in {} seconds".format(round(e-s,4)))
-        print("Saving embedding dictionary to {}".format(load_path))
+        print("Generating embedding from scratch using fasttext model (not .txt file)")
+        fasttext.util.download_model(lang, if_exists='ignore')
+        ft = fasttext.load_model('cc.{}.300.bin'.format(lang))
+		s = time.time()
+        #embeddings = open(embedding_path,encoding='utf-8').read().strip().split("\n")
+        #print("First line of embeddings")
+        #print(embeddings[0])
+        #print("Number of words in embeddings {} ".format(len(embeddings)))
+        #if len(embeddings[0].split())==2:## with header
+        #    embeddings = embeddings[1:]
+        #dim = len(embeddings[0].split())-1 ## embedding dimension
+        #emb_dict = {l.split()[0]: [float(x) for x in l.split()[1:] ] for l in embeddings[:-1]} ## last index problematic
+        #e = time.time()
+        #print("Read all embeddings in {} seconds".format(round(e-s,4)))
+        #print("Saving embedding dictionary to {}".format(load_path))
 
-        pickle.dump(emb_dict,open(load_path,'wb'))
+        #pickle.dump(emb_dict,open(load_path,'wb'))
     embed = nn.Embedding(vocab_size,dim)
     nn.init.uniform_(embed.weight,-np.sqrt(6/(dim+vocab_size)),np.sqrt(6/(dim+vocab_size)))
     c = 0
     for word in list(w2ind.keys()):
-        if emb_dict.get(word) is not None:
-            ind = w2ind[word]
-            embed.weight.data[ind].copy_(torch.tensor(emb_dict[word],requires_grad=True))
-            c +=1
+        #if emb_dict.get(word) is not None:
+        #    ind = w2ind[word]
+        #embed.weight.data[ind].copy_(torch.tensor(emb_dict[word],requires_grad=True))
+        #    embed.weight.data[ind].copy_(ft_vec)
+        #    c +=1
+        ft_vec = torch.tensor(ft.get_word_vector(word),requires_grad=True)
     print("Initialized {} out of {} words from fastext".format(c,vocab_size))
     end = time.time()
     print("Word embeddings initialized in {} seconds ".format(round(end-start,4)))
@@ -163,7 +168,7 @@ def parse_args():
     parser.add_argument('--config_file', type=str, default='config.json', help='Output file name in conll bio format')
     parser.add_argument('--mode', default='train', choices=['train', 'predict'])
     parser.add_argument('--load_config', default=0, type = int)
-    parser.add_argument('--lang', type=str, help='Language',choices =['ar','tr','cs','fi','hu'])
+    parser.add_argument('--lang', default='tr',type=str, help='Language',choices =['ar','tr','cs','fi','hu'])
     parser.add_argument('--shorthand', type=str, help="Treebank shorthand")
     
     parser.add_argument('--lstm_hidden', type=int, default=400)
@@ -297,7 +302,7 @@ class BaseModel(nn.Module):
 
         if self.args['word_embed_type']=="fastext":
             print("Ner vocab size {}".format(len(self.args['ner_vocab'])))
-            self.word_embeds = get_pretrained_word_embeddings(self.args['ner_vocab'],self.args['word_vec_file_path'])
+            self.word_embeds = get_pretrained_word_embeddings(self.args['ner_vocab'],self.args['word_vec_file_path'],self.args['lang'])
             print("Initialized word embeddings from fastext")
             self.w_dim = len(self.word_embeds.weight[0])
             print("Embeddings fixed? {} ".format(self.args['fix_embed']))
