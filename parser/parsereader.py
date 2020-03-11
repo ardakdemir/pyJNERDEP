@@ -87,11 +87,11 @@ def bert2token(my_tokens, bert_tokens, bert_ind = 1):
 
     return inds, ind+1
 
-def pad_trunc_batch(batch, max_len, pad = PAD, pad_ind = PAD_IND, bert = False,b2t=False):
+def pad_trunc_batch(batch, max_len,batch_size = None , pad = PAD, pad_ind = PAD_IND, bert = False,b2t=False):
     padded_batch = []
     sent_lens = []
     for sent in batch:
-        sent_lens.append(len(sent))
+        sent_lens.append(min([len(sent),max_len,batch_size if batch_size is not None else 512]))
         if len(sent)>=max_len:
             if bert:
                 if b2t:
@@ -99,12 +99,15 @@ def pad_trunc_batch(batch, max_len, pad = PAD, pad_ind = PAD_IND, bert = False,b
                 else:
                     padded_batch.append(sent + ["[SEP]"])
             else:
-                padded_batch.append(sent)
+                ## Changed this!!! 
+                padded_batch.append(sent[:batch_size])
         else:
             l = len(sent)
             if not bert:
                 index_len = len(sent[0])
             padded_sent = sent
+            if not bert:
+                max_len = min(max_len,batch_size if batch_size is not None else 512)
             for i in range(max_len-l):
                 if bert:
                     if b2t:
@@ -148,14 +151,14 @@ def group_into_batch(dataset, batch_size):
         current_len +=len(x)
         if current_len  > batch_size:
             #print(current)
-            current, lens  = pad_trunc_batch(current, max_len)
+            current, lens  = pad_trunc_batch(current, max_len,batch_size)
             batched_dataset.append(current)
             sentence_lens.append(lens)
             current = []
             current_len = 0
             max_len = 0
     if len(current) > 0:
-        current,lens  = pad_trunc_batch(current, max_len)
+        current,lens  = pad_trunc_batch(current, max_len,batch_size)
         sentence_lens.append(lens)
         batched_dataset.append(current)
 
@@ -164,7 +167,7 @@ def group_into_batch(dataset, batch_size):
 
 FIELD_TO_IDX = {'id': 0, 'word': 1, 'lemma': 2, 'upos': 3, 'xpos': 4, 'feats': 5, 'head': 6, 'deprel': 7, 'deps': 8, 'misc': 9}
 
-def read_conllu(file_name, cols = ['word','xpos','head','deprel'], get_ner=False):
+def read_conllu(file_name, cols = ['word','xpos','head','deprel'], get_ner=False,batch_size=None):
     """
         Reads a conllu file and generates the vocabularies
     """
@@ -181,27 +184,38 @@ def read_conllu(file_name, cols = ['word','xpos','head','deprel'], get_ner=False
     for line in file:
         if line.startswith("#"):
             continue
+
         elif line=="":
             sentence = root + sentence
-            dataset.append(sentence)
+            if batch_size is not None:
+                if len(sentence) < batch_size:
+                    dataset.append(sentence)
+            else:
+                dataset.append(sentence)
             sentence = []
         else:
             line = line.split("\t")
-            if "-" in line[0]: #skip expanded words
+            if "-" in line[0] or  "." in line[0]: #skip expanded words
                 continue
+
             total_word_size += 1
             fields = [line[FIELD_TO_IDX[x.lower()]] for x in cols]
+            if fields[-1] == "_":
+                print("Problemliii")
+                print(" ".join(line).encode("utf-8"))
+                fields[-1] = line[-2].split(":")[-1]
+                fields[-2] = int(line[-2].split(":")[0])
             if 'misc' in fields and get_ner:
                 j = json.loads(fields[-1])
                 ner_tag =  j["NER_TAG"]
                 fields[-1] =  ner_tag
             sentence.append(fields)
-            if line[FIELD_TO_IDX['word']] not in tok2ind:
-                tok2ind[line[FIELD_TO_IDX['word']]] = len(tok2ind)
-            if line[FIELD_TO_IDX['xpos']] not in pos2ind:
-                pos2ind[line[FIELD_TO_IDX['xpos']]] = len(pos2ind)
-            if line[FIELD_TO_IDX['deprel']] not in dep2ind:
-                dep2ind[line[FIELD_TO_IDX['deprel']]] = len(dep2ind)
+            if fields[0] not in tok2ind:
+                tok2ind[fields[0]] = len(tok2ind)
+            if fields[1] not in pos2ind:
+                pos2ind[fields[1]] = len(pos2ind)
+            if fields[-1] not in dep2ind:
+                dep2ind[fields[-1]] = len(dep2ind)
             #if line[FIELD_TO_IDX['misc']] not in ner2ind:
             #    ner2ind[line[FIELD_TO_IDX['misc']]] = len(ner2ind)
 
@@ -248,7 +262,7 @@ class DepDataset(Dataset):
         if for_eval and not vocabs:
             raise AssertionError("Evaluation mode requires vocab")
         self.dataset, self.orig_idx, self.vocabs\
-        ,self.total_word_size = read_conllu(self.file_name)
+        ,self.total_word_size = read_conllu(self.file_name,batch_size=self.batch_size)
         self.average_length = self.total_word_size/len(self.dataset)
         print("DEP training number of sents : {}".format(len(self.dataset)))
         print("Dataset size before batching {} and number of words : {}".format(len(self.dataset),self.total_word_size))

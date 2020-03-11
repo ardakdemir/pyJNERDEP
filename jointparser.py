@@ -278,7 +278,6 @@ class JointParser(nn.Module):
                 preds.append(F.log_softmax(unlabeled_scores,2).detach().cpu().numpy())
                 preds.append(torch.argmax(deprel_save,dim = 3).detach().cpu().numpy())
                 #preds.append(deprel_save)
-                
                 arc_scores = torch.argmax(unlabeled_scores,dim=2)
                 dep_scores = torch.argmax(deprel_save,dim=3) 
                 dep_ind_preds = torch.gather(dep_scores, 2, arc_scores.unsqueeze(2)).squeeze(2)

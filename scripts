@@ -27,3 +27,9 @@ Get meaningful results for all dependency datasets as well!
 Modularize the word_embed component (modify the code of bert and word_embed parts accordingly)
 Run experiments for all settings!! 
 
+
+CHANGED 2 THINGS
+
+Now I am truncating sentences in pad_trunc_batch before generating bert_tokens !!
+
+I also changed ignore index of Dep inds of [PAD] from 0 to 4 I am not sure this will work correctly!!!

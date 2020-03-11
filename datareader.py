@@ -124,14 +124,15 @@ torch.tensor([seq_ids],dtype=torch.long), torch.tensor(bert2tok), lab])
         return pos2ind, l2ind, word2ix, vocab_size
 
     def get_dataset(self):
-        dataset = open(self.file_path,encoding='utf-8').readlines()
+        print("Reading from {} ".format(self.file_path))
+        dataset = open(self.file_path,encoding='utf-8').read().split("\n")
         new_dataset = []
         sent = []
         label_counts = Counter()
         pos_counts = Counter()
         root = [START_TAG, START_TAG, START_TAG, START_TAG]
         for line in dataset:
-            if len(line.rstrip().split())<3:
+            if len(line.split())<3:
                 if len(sent)>0:
                     sent.append([END_TAG, END_TAG , END_TAG, END_TAG ])
                     if len(sent)>2:
@@ -151,7 +152,7 @@ torch.tensor([seq_ids],dtype=torch.long), torch.tensor(bert2tok), lab])
             sent.append([END_TAG, END_TAG, END_TAG , END_TAG ])
             new_dataset.append([root]+sent)
             #new_dataset.append(sent)
-        print("Number of sentences : {} ".format(len(new_dataset)))
+        print("Number of sentences for {}  : {} ".format(self.file_path,len(new_dataset)))
         new_dataset, orig_idx = sort_dataset(new_dataset, sort = True)
         
         return new_dataset, orig_idx, label_counts, pos_counts

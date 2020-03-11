@@ -1,0 +1,36 @@
+{'data_dir': 'data/depparse', 'data_folder': '~/datasets', 'wordvec_dir': '../word_vecs', 'train_file': None, 'eval_file': None, 'output_file': None, 'gold_file': None, 'ner_result_out_file': 'ner_results', 'log_file': 'FLAT_log_random_init_arabic', 'ner_train_file': '../../datasets/traindev_pos.tsv', 'dep_train_file': '../../datasets/tr_imst-ud-traindev.conllu', 'ner_val_file': '../../datasets/dev_pos.tsv', 'dep_val_file': '../../datasets/tr_imst-ud-train.conllu', 'ner_test_file': '../../datasets/test_pos.tsv', 'dep_test_file': '../../datasets/tr_imst-ud-test.conllu', 'ner_output_file': 'joint_ner_out.txt', 'dep_output_file': 'joint_dep_out.txt', 'conll_file_name': 'conll_ner_output', 'config_file': 'config.json', 'mode': 'predict', 'load_config': 0, 'lang': 'ar', 'shorthand': None, 'lstm_hidden': 400, 'char_hidden_dim': 200, 'biaffine_hidden': 400, 'composite_deep_biaff_hidden_dim': 100, 'cap_dim': 32, 'char_emb_dim': 100, 'cap_types': 6, 'pos_dim': 64, 'word_embed_dim': 300, 'dep_dim': 128, 'ner_dim': 128, 'transformed_dim': 125, 'word_embed_type': 'random_init', 'fix_embed': False, 'lstm_layers': 3, 'char_num_layers': 1, 'pretrain_max_vocab': -1, 'word_drop': 0.3, 'embed_drop': 0.3, 'lstm_drop': 0.3, 'crf_drop': 0.3, 'parser_drop': 0.3, 'rec_dropout': 0.2, 'char_rec_dropout': 0, 'char': True, 'pretrain': True, 'linearization': True, 'distance': True, 'sample_train': 1.0, 'optim': 'adam', 'ner_lr': 0.0015, 'embed_lr': 0.015, 'dep_lr': 0.0015, 'lr_decay': 0.6, 'min_lr': 2e-06, 'beta2': 0.95, 'weight_decay': 0.0005, 'max_steps': 2000, 'repeat': 10, 'multiple': 0, 'early_stop': 50, 'dep_warmup': -1, 'lr_patience': 3, 'ner_warmup': -1, 'eval_interval': 100, 'max_steps_before_stop': 3000, 'batch_size': 500, 'max_grad_norm': 1.0, 'max_depgrad_norm': 5.0, 'log_step': 20, 'save_dir': '../model_save_dir', 'save_name': 'best_joint_model.pkh', 'save_ner_name': 'best_ner_model.pkh', 'save_dep_name': 'best_dep_model.pkh', 'load_model': 1, 'load_path': '../model_save_dir/ar_best_ner_model.pkh', 'seed': 1234, 'cuda': True, 'cpu': False, 'inner': 1, 'soft': 1, 'relu': 1, 'model_type': 'FLAT', 'hyper': 0, 'max_evals': 50, 'ner_only': 0, 'dep_only': 0, 'depner': 0, 'nerdep': 0, 'device': device(type='cuda', index=0)}
+Number of sentences : 27465 
+Dataset size : 27465
+DEP training number of sents : 4660
+Dataset size before batching 4660 and number of words : 48093
+104 batches created for ../../datasets/tr_imst-ud-traindev.conllu.
+52753 words inside the batches
+Number of sentences : 2828 
+Dataset size : 2828
+DEP training number of sents : 975
+Dataset size before batching 975 and number of words : 10004
+22 batches created for ../../datasets/tr_imst-ud-test.conllu.
+10979 words inside the batches
+Diff set()
+Dep Diff set()
+Labels for test set
+{'[PAD]': 0, '[SOS]': 1, '[EOS]': 2, 'O': 3, 'I-LOC': 4, 'I-PER': 5, 'I-ORG': 6}
+Labels for training set
+{'[PAD]': 0, '[SOS]': 1, '[EOS]': 2, 'O': 3, 'I-ORG': 4, 'I-LOC': 5, 'I-PER': 6}
+Labels for test set
+{'[PAD]': 0, '[SOS]': 1, '[EOS]': 2, 'O': 3, 'I-ORG': 4, 'I-LOC': 5, 'I-PER': 6}
+Labels for training set
+{'[PAD]': 0, '[SOS]': 1, '[EOS]': 2, 'O': 3, 'I-ORG': 4, 'I-LOC': 5, 'I-PER': 6}
+Ind to words test ['[PAD]', '[SOS]', '[EOS]', 'O', 'I-ORG', 'I-LOC', 'I-PER'] 
+Ind to words train ['[PAD]', '[SOS]', '[EOS]', 'O', 'I-ORG', 'I-LOC', 'I-PER'] 
+Training pos vocab : {'[PAD]': 0, '[SOS]': 1, '[EOS]': 2, 'Noun': 3, 'Prop': 4, 'Reflex': 5, 'Adj': 6, 'Conj': 7, 'NNum': 8, 'Punc': 9, 'Verb': 10, 'Zero': 11, 'Ness': 12, '[UNK]': 13, 'PCNom': 14, 'With': 15, 'Det': 16, 'Adverb': 17, 'Without': 18, 'Rel': 19, 'Agt': 20, 'Quant': 21, 'Demons': 22, 'Ques': 23, 'Pers': 24, 'PCDat': 25, 'PCAbl': 26, 'Neg': 27, 'Dup': 28, 'AsIf': 29, 'PCIns': 30, 'Since': 31, 'Interj': 32, 'PCGen': 33, 'Ly': 34, 'PCAcc': 35}
+Testing  pos vocab : {'[PAD]': 0, '[SOS]': 1, '[EOS]': 2, 'Noun': 3, 'Prop': 4, 'Reflex': 5, 'Adj': 6, 'Conj': 7, 'NNum': 8, 'Punc': 9, 'Verb': 10, 'Zero': 11, 'Ness': 12, '[UNK]': 13, 'PCNom': 14, 'With': 15, 'Det': 16, 'Adverb': 17, 'Without': 18, 'Rel': 19, 'Agt': 20, 'Quant': 21, 'Demons': 22, 'Ques': 23, 'Pers': 24, 'PCDat': 25, 'PCAbl': 26, 'Neg': 27, 'Dup': 28, 'AsIf': 29, 'PCIns': 30, 'Since': 31, 'Interj': 32, 'PCGen': 33, 'Ly': 34, 'PCAcc': 35}
+Training vocab size : 62164
+Test vocab size : 13275
+4143 words not in training set 
+Word vocabulary size  : 62164
+Joint Trainer initialized on cuda:0
+Ner vocab size 62164
+end index : 2
+start index : 1
+Tag set size : 7

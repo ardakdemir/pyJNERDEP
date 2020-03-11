@@ -33,7 +33,7 @@ import time
 UNK = "[UNK]"
 UNK_IND = 3
 PAD = "[PAD]"
-PAD_IND = 0
+PAD_IND = 4
 START_TAG = "[SOS]"
 END_TAG   = "[EOS]"
 START_IND = 1
@@ -69,7 +69,7 @@ class Parser(nn.Module):
         self.dep_rel = DeepBiaffineScorer(2*self.lstm_hidden,2*self.lstm_hidden, self.biaffine_hidden, self.num_cat,pairwise=True)
         
         self.dep_rel_crit = nn.CrossEntropyLoss(ignore_index=0, reduction= 'sum')## ignore paddings
-        self.dep_ind_crit = nn.CrossEntropyLoss(ignore_index=-1, reduction = 'sum')## ignore paddings at -1 including root
+        self.dep_ind_crit = nn.CrossEntropyLoss(ignore_index=PAD_IND, reduction = 'sum')## ignore paddings at -1 including root
     def decode(self,edge_preds, label_preds, sent_lens,verbose=False):
         trees = []
         dep_rels = []
@@ -171,8 +171,12 @@ class Parser(nn.Module):
         head_scores = torch.gather(deprel_scores,2,heads.unsqueeze(2).\
             unsqueeze(3).expand(-1,-1,1,self.num_cat)).squeeze(2).transpose(1,2)
             #.view(batch_size, self.num_cat,word_size)
-        heads_ = heads.masked_fill(masks,-1)
         
+        # UPDATED IGNORE INDEX!!!
+        heads_ = heads.masked_fill(masks,PAD_IND)
+        #heads_  = heads.masked_fill(masks,-1)
+
+
         deprel_loss = self.dep_rel_crit(head_scores,dep_rels)
         depind_loss = self.dep_ind_crit(unlabeled_scores[:,1:].transpose(1,2),heads_[:,1:])
         loss = deprel_loss + depind_loss

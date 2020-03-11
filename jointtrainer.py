@@ -65,13 +65,14 @@ def embedding_initializer(dim,num_labels):
     nn.init.uniform_(embed.weight,-np.sqrt(6/(dim+num_labels)),np.sqrt(6/(dim+num_labels)))
     return embed
 
-def get_pretrained_word_embeddings(w2ind, embedding_path,lang='tr'):
+def get_pretrained_word_embeddings(w2ind,lang='tr',word_vec_root="../word_vecs"):
     vocab_size = len(w2ind)
-    load_path = embedding_path+"_cached.pk"
+    #load_path = embedding_path+"_cached.pk"
     print("Getting pretrained embeddings")
     start = time.time()
     from_model = True
-    if os.path.exists(load_path) and not from_model :
+    if not from_model :
+        load_path = ''
         print("Loading embeddings from {}".format(load_path))
         emb_dict = pickle.load(open(load_path,'rb'))
         #embed = nn.Embedding(embed_mat.shape[0],embed_mat.shape[1])
@@ -80,8 +81,9 @@ def get_pretrained_word_embeddings(w2ind, embedding_path,lang='tr'):
     else:
         print("Generating embedding from scratch using fasttext model (not .txt file)")
         fasttext.util.download_model(lang, if_exists='ignore')
-        ft = fasttext.load_model('cc.{}.300.bin'.format(lang))
-		s = time.time()
+        ft = fasttext.load_model(os.path.join(word_vec_root,'cc.{}.300.bin'.format(lang)))
+        s= time.time()
+        dim = 300
         #embeddings = open(embedding_path,encoding='utf-8').read().strip().split("\n")
         #print("First line of embeddings")
         #print(embeddings[0])
@@ -104,7 +106,10 @@ def get_pretrained_word_embeddings(w2ind, embedding_path,lang='tr'):
         #embed.weight.data[ind].copy_(torch.tensor(emb_dict[word],requires_grad=True))
         #    embed.weight.data[ind].copy_(ft_vec)
         #    c +=1
-        ft_vec = torch.tensor(ft.get_word_vector(word),requires_grad=True)
+        c += 1
+        vec = ft.get_word_vector(word)
+        print("Fastext vec shape {}".format(vec.shape))
+        ft_vec = torch.tensor(vec,requires_grad=True)
     print("Initialized {} out of {} words from fastext".format(c,vocab_size))
     end = time.time()
     print("Word embeddings initialized in {} seconds ".format(round(end-start,4)))
@@ -146,8 +151,8 @@ def read_config(args):
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--data_dir', type=str, default='data/depparse', help='Root dir for models.')
+    parser.add_argument('--data_folder', type=str, default='~/datasets', help='Root directory for all datasets')
     parser.add_argument('--wordvec_dir', type=str, default='../word_vecs', help='Directory of word vectors')
-    parser.add_argument('--word_vec_file_path', type=str, default= '../word_vecs/cc.cs.300.vec')
     parser.add_argument('--train_file', type=str, default=None, help='Input file for data loader.')
     parser.add_argument('--eval_file', type=str, default=None, help='Input file for data loader.')
     parser.add_argument('--output_file', type=str, default=None, help='Output CoNLL-U file.')
@@ -197,7 +202,7 @@ def parse_args():
     parser.add_argument('--parser_drop', type=float, default=0.3)
     
     parser.add_argument('--rec_dropout', type=float, default=0.2, help="Recurrent dropout")
-    parser.add_argument('--char_rec_dropout', type=float, default=0, help="Recurrent dropout")
+    parser.add_argument('--char_rec_dropout', type=float, default=0, help="Char Recurrent dropout")
     parser.add_argument('--no_char', dest='char', action='store_false', help="Turn off character model.")
     parser.add_argument('--no_pretrain', dest='pretrain', action='store_false', help="Turn off pretrained embeddings.")
     parser.add_argument('--no_linearization', dest='linearization', action='store_false', help="Turn off linearization term.")
@@ -226,7 +231,7 @@ def parse_args():
     parser.add_argument('--max_grad_norm', type=float, default=1.0, help='Gradient clipping.')
     parser.add_argument('--max_depgrad_norm', type=float, default=5.0, help='Gradient clipping.')
     parser.add_argument('--log_step', type=int, default=20, help='Print log every k steps.')
-    parser.add_argument('--save_dir', type=str, default='..', help='Root dir for saving models.')
+    parser.add_argument('--save_dir', type=str, default='../model_save_dir', help='Root dir for saving models.')
     parser.add_argument('--save_name', type=str, default='best_joint_model.pkh', help="File name to save the model")
     parser.add_argument('--save_ner_name', type=str, default='best_ner_model.pkh', help="File name to save the model")
     parser.add_argument('--save_dep_name', type=str, default='best_dep_model.pkh', help="File name to save the model")
@@ -302,7 +307,7 @@ class BaseModel(nn.Module):
 
         if self.args['word_embed_type']=="fastext":
             print("Ner vocab size {}".format(len(self.args['ner_vocab'])))
-            self.word_embeds = get_pretrained_word_embeddings(self.args['ner_vocab'],self.args['word_vec_file_path'],self.args['lang'])
+            self.word_embeds = get_pretrained_word_embeddings(self.args['ner_vocab'],self.args['lang'],self.args['wordvec_dir'])
             print("Initialized word embeddings from fastext")
             self.w_dim = len(self.word_embeds.weight[0])
             print("Embeddings fixed? {} ".format(self.args['fix_embed']))
@@ -406,6 +411,7 @@ class BaseModel(nn.Module):
         if self.args['word_embed_type'] in ['fastext','random_init']:
             #print("Before weights of fourth word{}".format(self.word_embeds.weight.data[tok_inds[0,3]]))
             word_embed = self.get_word_embedding(tok_inds,type=self.args['word_embed_type'])    
+            print("word indexes {}".format(tok_inds.shape))
         #bert_out = self.bert_model(batch_bert_ids,batch_seq_ids)
         #bert_hiddens = self._get_bert_batch_hidden(bert_out[2],bert2toks)
         #bert_hiddens = self.dropout(bert_hiddens)
@@ -709,6 +715,7 @@ class JointTrainer:
         #loss = loss/ sum(sent_lens-1)
         loss = loss/ sum(sent_lens)
         loss.backward()
+        print(loss.item())
         pos_inds = batch[2][4]
          
         clip_grad_norm_(self.jointmodel.nermodel.parameters(),self.args['max_grad_norm'])

@@ -29,3 +29,17 @@ NER Results on ../../datasets/myner_turkish-test.txt embed_type : random_init fi
  pre : 89.0795631825273 rec : 82.63386396526772 f1 : 85.73573573573574
 NER Results on ../../datasets/myner_turkish-test.txt embed_type : fastext fixed : False 
  pre : 86.5955826351866 rec : 82.27206946454415 f1 : 84.37847866419295
+NER Results on /home/aakdemir/datasets/arabic_data/sentsplitted_conll_all.test.features.txt embed_type : bert fixed : False 
+ pre : 47.70295783511643 rec : 39.61327410504312 f1 : 43.283369022127054
+NER Results on /home/aakdemir/datasets/arabic_data/sentsplitted_conll_all.test.features.txt embed_type : random_init fixed : False 
+ pre : 49.90125082290981 rec : 19.80663705252156 f1 : 28.357650579872807
+NER Results on /home/aakdemir/datasets/arabic_data/sentsplitted_conll_all.test.features.txt embed_type : fastext fixed : False 
+ pre : 51.63535142658316 rec : 19.38855500391952 f1 : 28.191489361702132
+NER Results on ../../datasets/dev_pos.tsv embed_type : bert fixed : False 
+ pre : 94.12186379928316 rec : 94.18938307030129 f1 : 94.15561133022588
+NER Results on ../../datasets/dev_pos.tsv embed_type : random_init fixed : False 
+ pre : 88.30188679245283 rec : 83.93113342898135 f1 : 86.06105185730048
+NER Results on ../../datasets/dev_pos.tsv embed_type : bert fixed : False 
+ pre : 86.41894113778362 rec : 87.04869161974163 f1 : 86.73267326732673
+NER Results on ../../datasets/dev_pos.tsv embed_type : random_init fixed : False 
+ pre : 89.41176470588236 rec : 78.03908578999669 f1 : 83.33922886452069

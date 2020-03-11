@@ -181,26 +181,51 @@ def conll_writer(file_name, content, field_names, task_name,verbose=False):
 
 def ud_scores(system_conllu_file, gold_conllu_file):
     
-    cropped = os.path.join(system_conllu_file[:system_conllu_file.rfind("/")],'cropped')
-    get_conll_file_for_eval(gold_conllu_file,cropped)
+    cropped = os.path.join(system_conllu_file[:system_conllu_file.rfind("/")],'new_cropped')
+    print("Storing cropped at {} ".format(cropped))
+    get_conll_file_for_eval( gold_conllu_file,cropped,system_conllu_file=system_conllu_file)
     gold_ud = ud_eval.load_conllu_file(cropped)
     system_ud = ud_eval.load_conllu_file(system_conllu_file)
     evaluation = ud_eval.evaluate(gold_ud, system_ud)
     #print(evaluation)
     return evaluation
 
-def get_conll_file_for_eval(conll_u,out_file="cropped"):
+
+## getting rid of extremely long inputs and cropps comments
+def get_conll_file_for_eval(conll_u,out_file="cropped",system_conllu_file=None):
     conll = open(conll_u,encoding='utf-8').readlines()
+    system_conll = open(system_conllu_file,encoding='utf-8').read().split("\n\n")
+    lens = [len(c.split('\n')) for c in system_conll]
+    #print("Length of system sentences")
+    #print(lens)
     out = open(out_file,"w",encoding="utf-8")
+    s = ""
+    sent = []
+    i = 0
     for line in conll:
         if line.startswith("#"):
             continue
         elif line.split()==[]:
-            out.write("\n")
-        elif "-" in line.split()[0]:
+            gold = "".join([x for x in sent[:lens[i]]])
+            gold_sent = gold.split("\n")
+            my_sent = system_conll[i].split("\n")
+            skip = False
+            for ind, w in enumerate(my_sent):
+                if w.split()[1]!= gold_sent[ind].split()[1]:
+                    #print("Skipping {}\n" .format(gold.encode("utf-8")))
+                    #print("My sent :\n {} ".format(system_conll[i].encode('utf-8')))
+                    #print("{} =====   is not equal to ======  {} ".format(w.encode('utf-8'),gold_sent[ind].encode("utf-8")))
+                    skip=True
+                    break
+            if not skip:
+                s+="{}\n".format(gold)
+                i+=1
+            sent = []
+        elif "-" in line.split()[0] or "." in line.split()[0]:
             continue
         else:
-            out.write(line)
+            sent.append(line)
+    out.write(s)
     out.close()
 def sort_dataset(dataset,desc=True, sort = True):
     
