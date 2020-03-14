@@ -167,7 +167,7 @@ def group_into_batch(dataset, batch_size):
 
 FIELD_TO_IDX = {'id': 0, 'word': 1, 'lemma': 2, 'upos': 3, 'xpos': 4, 'feats': 5, 'head': 6, 'deprel': 7, 'deps': 8, 'misc': 9}
 
-def read_conllu(file_name, cols = ['word','xpos','head','deprel'], get_ner=False,batch_size=None):
+def read_conllu(file_name, cols = ['word','upos','head','deprel'], get_ner=False,batch_size=None):
     """
         Reads a conllu file and generates the vocabularies
     """
@@ -264,7 +264,7 @@ class DepDataset(Dataset):
         self.dataset, self.orig_idx, self.vocabs\
         ,self.total_word_size = read_conllu(self.file_name,batch_size=self.batch_size)
         self.average_length = self.total_word_size/len(self.dataset)
-        print("DEP training number of sents : {}".format(len(self.dataset)))
+        print("DEP dataset number of sents : {}".format(len(self.dataset)))
         print("Dataset size before batching {} and number of words : {}".format(len(self.dataset),self.total_word_size))
         self.dataset, self.sent_lens = group_into_batch(self.dataset, batch_size)
         print("{} batches created for {}.".format(len(self.dataset), self.file_name))

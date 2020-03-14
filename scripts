@@ -33,3 +33,6 @@ CHANGED 2 THINGS
 Now I am truncating sentences in pad_trunc_batch before generating bert_tokens !!
 
 I also changed ignore index of Dep inds of [PAD] from 0 to 4 I am not sure this will work correctly!!!
+
+
+For Finnish we have to limit the batch_size to around 100 to prevent bert overflow

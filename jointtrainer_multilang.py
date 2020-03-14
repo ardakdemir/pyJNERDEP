@@ -15,6 +15,9 @@ import fasttext.util
 import torch.optim as optim
 import copy
 import json
+from gensim.models import KeyedVectors
+from gensim.test.utils import datapath
+import gensim
 import pickle
 import torch.nn.functional as F
 import numpy as np
@@ -66,12 +69,37 @@ def embedding_initializer(dim,num_labels):
     nn.init.uniform_(embed.weight,-np.sqrt(6/(dim+num_labels)),np.sqrt(6/(dim+num_labels)))
     return embed
 
-def get_pretrained_word_embeddings(w2ind,lang='tr',word_vec_root="../word_vecs"):
+def load_word2vec(word2vec_path):
+    a = open(word2vec_path,encoding='utf-8').read().strip("\n").split("]")
+    d = {}
+    for x in a:
+        if len(x.split("\t"))>1:
+            vec = x.split("\t")[-1]
+            vec = [float(x) for x in vec.replace("\n","").replace("[","").replace("]","").split()]
+            d[x.split("\t")[1]]= vec
+    return d
+def get_pretrained_word_embeddings(w2ind,lang='tr',dim='768',word_vec_root="../word_vecs",load_w2v=False):
     vocab_size = len(w2ind)
     #load_path = embedding_path+"_cached.pk"
     print("Getting pretrained embeddings")
     start = time.time()
     from_model = True
+    pretrained_type = 'fastext' if not load_w2v else 'word2vec'
+    if pretrained_type=='word2vec': 
+        word_vec_path = os.path.join(word_vec_root,lang,"w2v_{}_{}".format(lang,dim))
+        gensim_model = KeyedVectors.load(word_vec_path)
+        #word_vec_path = os.path.join(word_vec_root,lang,"{}.{}.tsv".format(lang,dim))
+        embed = nn.Embedding(vocab_size,dim)
+        nn.init.uniform_(embed.weight,-np.sqrt(6/(dim+vocab_size)),np.sqrt(6/(dim+vocab_size)))
+        c = 0
+        for word in list(w2ind.keys()):
+            if word in gensim_model.wv.vocab:
+                ind = w2ind[word]
+                vec = gensim_model.wv[word]
+                embed.weight.data[ind].copy_(torch.tensor(vec,requires_grad=True))
+                c +=1
+        print("Found {} out of {} words in word2vec for {} ".format(c,len(w2ind),lang))
+        return embed
     if not from_model :
         load_path = ''
         print("Loading embeddings from {}".format(load_path))
@@ -81,10 +109,15 @@ def get_pretrained_word_embeddings(w2ind,lang='tr',word_vec_root="../word_vecs")
         #embed.weight.data.copy_(torch.from_numpy(embed_mat))
     else:
         print("Generating embedding from scratch using fasttext model (not .txt file)")
-        fasttext.util.download_model(lang, if_exists='ignore')
-        ft = fasttext.load_model(os.path.join(word_vec_root,'cc.{}.300.bin'.format(lang)))
+
+        fastext_path =os.path.join(word_vec_root,lang,'fasttext_{}_{}.bin'.format(lang,dim))
+        if not os.path.exists(fastext_path):
+              
+            fasttext.util.download_model(lang, if_exists='ignore')
+            ft = fasttext.load_model('cc.{}.300.bin'.format(lang))
+        else:
+            ft = fasttext.load_model(fastext_path)
         s= time.time()
-        dim = 300
         #embeddings = open(embedding_path,encoding='utf-8').read().strip().split("\n")
         #print("First line of embeddings")
         #print(embeddings[0])
@@ -98,9 +131,9 @@ def get_pretrained_word_embeddings(w2ind,lang='tr',word_vec_root="../word_vecs")
         #print("Saving embedding dictionary to {}".format(load_path))
 
         #pickle.dump(emb_dict,open(load_path,'wb'))
+    c = 0
     embed = nn.Embedding(vocab_size,dim)
     nn.init.uniform_(embed.weight,-np.sqrt(6/(dim+vocab_size)),np.sqrt(6/(dim+vocab_size)))
-    c = 0
     for word in list(w2ind.keys()):
         #if emb_dict.get(word) is not None:
         #    ind = w2ind[word]
@@ -108,9 +141,10 @@ def get_pretrained_word_embeddings(w2ind,lang='tr',word_vec_root="../word_vecs")
         #    embed.weight.data[ind].copy_(ft_vec)
         #    c +=1
         c += 1
+        ind = w2ind[word]
         vec = ft.get_word_vector(word)
-        print("Fastext vec shape {}".format(vec.shape))
         ft_vec = torch.tensor(vec,requires_grad=True)
+        embed.weight.data[ind].copy_(ft_vec)
     print("Initialized {} out of {} words from fastext".format(c,vocab_size))
     end = time.time()
     print("Word embeddings initialized in {} seconds ".format(round(end-start,4)))
@@ -185,11 +219,11 @@ def parse_args():
     parser.add_argument('--char_emb_dim', type=int, default=100)
     parser.add_argument('--cap_types', type=int, default=6)
     parser.add_argument('--pos_dim', type=int, default=64)
-    parser.add_argument('--word_embed_dim', type=int, default=300)
+    parser.add_argument('--word_embed_dim', type=int, default=768)
     parser.add_argument('--dep_dim', type=int, default=128)
     parser.add_argument('--ner_dim', type=int, default=128)
     parser.add_argument('--transformed_dim', type=int, default=125)
-    parser.add_argument('--word_embed_type', default='bert', choices = ['bert','random_init','fastext'],help='Word embedding type to be used')
+    parser.add_argument('--word_embed_type', default='bert', choices = ['bert','random_init','fastext','word2vec'],help='Word embedding type to be used')
     
     parser.add_argument('--fix_embed', default=False, action = 'store_true',help='Word embedding type to be used')
     parser.add_argument('--lstm_layers', type=int, default=3)
@@ -219,14 +253,15 @@ def parse_args():
     parser.add_argument('--beta2', type=float, default=0.95)
     parser.add_argument('--weight_decay', type=float, default=5e-4)
     
-    parser.add_argument('--max_steps', type=int, default=1000)
+    parser.add_argument('--max_steps', type=int, default=None)
+    parser.add_argument('--epochs', type=int, default=20)
     parser.add_argument('--repeat', type=int, default=10)
     parser.add_argument('--multiple', type=int, default=0)
     parser.add_argument('--early_stop', type=int, default=50)
     parser.add_argument('--dep_warmup', type=int, default=-1)
     parser.add_argument('--lr_patience', type=int, default=3)
     parser.add_argument('--ner_warmup', type=int, default=-1)
-    parser.add_argument('--eval_interval', type=int, default=100)
+    parser.add_argument('--eval_interval', type=int, default=None)
     parser.add_argument('--max_steps_before_stop', type=int, default=3000)
     parser.add_argument('--batch_size', type=int, default=500)
     parser.add_argument('--max_grad_norm', type=float, default=1.0, help='Gradient clipping.')
@@ -298,18 +333,20 @@ class BaseModel(nn.Module):
         self.lstm_drop = args['lstm_drop']
         self.weight_decay = self.args['weight_decay']
         if self.args['word_embed_type']=="random_init":
-            print("Ner vocab size {}".format(len(self.args['ner_vocab'])))
+            print("Whole vocab size {}".format(len(self.args['vocab'])))
             self.w_dim = self.args["word_embed_dim"]
-            self.word_embeds = embedding_initializer(self.w_dim,len(self.args['ner_vocab']))
+            self.word_embeds = embedding_initializer(self.w_dim,len(self.args['vocab']))
             if self.args['fix_embed']:
 
                 self.word_embeds.weight.requires_grad = False
                 print("Fixing the pretrained embeddings ")
 
-        if self.args['word_embed_type']=="fastext":
-            print("Ner vocab size {}".format(len(self.args['ner_vocab'])))
-            self.word_embeds = get_pretrained_word_embeddings(self.args['ner_vocab'],self.args['lang'],self.args['wordvec_dir'])
-            print("Initialized word embeddings from fastext")
+        if self.args['word_embed_type'] in ["fastext",'word2vec']:
+            print("Whole vocab size {}".format(len(self.args['vocab'])))
+            load_w2v = True if self.args['word_embed_type']=='word2vec' else False
+            self.word_embeds = get_pretrained_word_embeddings(self.args['vocab'],self.args['lang'],self.args['word_embed_dim'],self.args['wordvec_dir'],load_w2v=load_w2v)
+
+            print("Initialized word embeddings from {}".format(self.args['word_embed_type']))
             self.w_dim = len(self.word_embeds.weight[0])
             print("Embeddings fixed? {} ".format(self.args['fix_embed']))
             if self.args['fix_embed']:
@@ -325,10 +362,11 @@ class BaseModel(nn.Module):
         self.dropout = nn.Dropout(self.lstm_drop)
         self.embed_dropout = nn.Dropout(self.embed_drop)
         
-        if self.args['word_embed_type']=='random_init' or self.args['word_embed_type']=='fastext':
+        if self.args['word_embed_type'] in ['random_init','fastext','word2vec']:
             self.embed_optimizer = optim.AdamW([
             {"params": self.cap_embeds.parameters()},\
-            {"params": self.word_embeds.parameters()},\
+            {"params": self.word_embeds.parameters(),'lr':self.args['embed_lr']if self.args['word_embed_type']=='random_init'\
+            else 2e-3},\
             {"params": self.pos_embeds.parameters()}],\
             lr=self.args['embed_lr'],betas=(0.9,self.args['beta2']), eps=1e-6 )
         else :
@@ -395,7 +433,7 @@ class BaseModel(nn.Module):
             bert_hiddens = self._get_bert_batch_hidden(bert_out[2],bert2toks)
             bert_hiddens = self.dropout(bert_hiddens)
             return bert_hiddens
-        elif type == 'random_init' or type=='fastext':
+        else :
             word_inds = word_embed_input
             word_embeds = self.word_embeds(word_inds)
             word_embeds = self.embed_dropout(word_embeds)
@@ -408,9 +446,10 @@ class BaseModel(nn.Module):
         pos_embedding = self.embed_dropout(self.pos_embeds(pos_ids))
         if self.args['word_embed_type']=='bert':
             word_embed = self.get_word_embedding([batch_bert_ids,batch_seq_ids,bert2toks],type=self.args['word_embed_type'])    
-        if self.args['word_embed_type'] in ['fastext','random_init']:
+        if self.args['word_embed_type'] in ['fastext','random_init','word2vec']:
             #print("Before weights of fourth word{}".format(self.word_embeds.weight.data[tok_inds[0,3]]))
             word_embed = self.get_word_embedding(tok_inds,type=self.args['word_embed_type'])    
+            print("Word embedding output dim shape {}".format(word_embed.shape))
         #bert_out = self.bert_model(batch_bert_ids,batch_seq_ids)
         #bert_hiddens = self._get_bert_batch_hidden(bert_out[2],bert2toks)
         #bert_hiddens = self.dropout(bert_hiddens)
@@ -461,11 +500,23 @@ class JointTrainer:
         #self.args  = {**self.args,**args2}
         self.bert_tokenizer = BertTokenizer.from_pretrained('bert-base-cased', do_lower_case=False)
         self.bert_tokenizer.add_tokens(['[SOS]','[EOS]','[ROOT]','[PAD]'])
-        
+        self.exp_name = "{}_{}_{}".format(self.args['model_type'],self.args['word_embed_type'],self.args['lang']) 
+        print("Experiment name {} ".format(self.exp_name))
         self.getdatasets()
+        print("Ner dataset contains {} batches".format(len(self.nertrainreader)))
+        print("Dep dataset contains {}  batches ".format(len(self.deptraindataset)))
+        if  self.args['eval_interval'] is None:
+            if self.args['model_type'] not in ['DEP','NER']:
+                self.args['eval_interval'] = min(len(self.nertrainreader),len(self.deptraindataset))
+            elif self.args['model_type'] == 'DEP':
+                self.args['eval_interval'] = len(self.deptraindataset)
+                
+            elif self.args['model_type'] == 'NER':
+                self.args['eval_interval'] = len(self.nertrainreader)
+            print("Eval interval is set to {} ".format(self.args['eval_interval']))
         self.args['ner_cats'] = len(self.nertrainreader.label_voc)
         print("Word vocabulary size  : {}".format(len(self.nertrainreader.word_voc)))
-        self.args['ner_vocab'] = self.nertrainreader.word_voc.w2ind
+        self.args['vocab'] = self.whole_vocab.w2ind
         
         
         ## feature extraction
@@ -517,6 +568,7 @@ class JointTrainer:
             load_path = self.args['load_path']
             #save_path = os.path.join(self.args['save_dir'],self.args['save_name'])
             logging.info("Model loaded %s"%load_path)
+            print("Model will be loaded from {} ".format(load_path))
             self.jointmodel.load_state_dict(torch.load(load_path))
             
         self.jointmodel.base_model.pos_vocab = self.pos_vocab
@@ -592,6 +644,8 @@ class JointTrainer:
         ner_train_name = os.path.join(self.args['data_folder'],"myner_{}-train.txt".format(lang))
         ner_dev_name = os.path.join(self.args['data_folder'],"myner_{}-dev.txt".format(lang))
         ner_test_name = os.path.join(self.args['data_folder'],"myner_{}-test.txt".format(lang))
+
+
         self.nertrainreader = DataReader(ner_train_name,"NER",batch_size = self.args['batch_size'],tokenizer=self.bert_tokenizer)
         self.deptraindataset = DepDataset(dep_train_name,batch_size = self.args['batch_size'], tokenizer = self.bert_tokenizer)
         if self.args['mode'] == 'predict':
@@ -608,11 +662,42 @@ class JointTrainer:
         print("DEP REL VOCABS")
         print(self.deptraindataset.vocabs['dep_vocab'].w2ind)
         print(self.depvaldataset.vocabs['dep_vocab'].w2ind)
+        
+        def merge_vocabs(voc1,voc2):
+            for v in voc2.w2ind : 
+                if v not in voc1.w2ind:
+                    voc1.w2ind[v] = len(voc1.w2ind)
+            return voc1
+        print('Before merging')
+        print("Dependency pos tags ")
+        print(self.deptraindataset.vocabs['pos_vocab'].w2ind)
+        print("NER pos tags")
+        print(self.nertrainreader.pos_voc.w2ind)
+        
+        
+        merged_pos = merge_vocabs(self.nertrainreader.pos_voc,self.deptraindataset.vocabs['pos_vocab'])
+        merged_tok = merge_vocabs(self.nertrainreader.word_voc,self.deptraindataset.vocabs['tok_vocab'])
+        self.nertrainreader.word_voc = merged_tok
+        self.deptraindataset.vocabs['tok_vocab'] = merged_tok
+        self.nertrainreader.pos_voc = merged_pos
+        self.deptraindataset.vocabs['pos_vocab'] = merged_pos
+        self.whole_vocab = merged_tok
+        print("After merging")
+        print("Dependency pos tags ")
+        print(self.deptraindataset.vocabs['pos_vocab'].w2ind)
+        print("NER pos tags")
+        print(self.nertrainreader.pos_voc.w2ind)
+        print("NER vocab size {} ".format(len(self.nertrainreader.word_voc.w2ind)))
+        print("DEP vocab size {} ".format(len(self.deptraindataset.vocabs['tok_vocab'].w2ind)))
+
+        self.depvaldataset.vocabs = self.deptraindataset.vocabs
+        self.nervalreader.word_voc = merged_tok
         self.nervalreader.label_voc = self.nertrainreader.label_voc
         self.nervalreader.pos_voc = self.nertrainreader.pos_voc
         self.nervalreader.num_cats = self.nertrainreader.num_cats
         self.args['vocab_size'] = len(self.nertrainreader.word_voc)
         self.args['pos_vocab_size'] = len(self.deptraindataset.vocabs['pos_vocab'])
+        self.deptraindataset.num_pos = len(self.deptraindataset.vocabs['pos_vocab'])
         self.pos_vocab = self.deptraindataset.vocabs['pos_vocab']
         self.args['dep_cats'] = len(self.deptraindataset.vocabs['dep_vocab'])
         assert self.args['dep_cats'] == self.deptraindataset.num_rels, 'Dependency types do not match'
@@ -646,7 +731,7 @@ class JointTrainer:
         return loss 
     
         
-    def dep_forward(self, dep_batch, task = "DEP", training = True):
+    def dep_forward(self, dep_batch, task = "DEP", training = True,word_embed_type='bert'):
         logging.info("Eval data ")
         ## get the output of ner layer
         if task == "NERDEP":
@@ -711,7 +796,6 @@ class JointTrainer:
         #loss = loss/ sum(sent_lens-1)
         loss = loss/ sum(sent_lens)
         loss.backward()
-        print(loss.item())
         pos_inds = batch[2][4]
          
         clip_grad_norm_(self.jointmodel.nermodel.parameters(),self.args['max_grad_norm'])
@@ -814,11 +898,15 @@ class JointTrainer:
         
         logging.info("Dependency pos vocab : {} ".format(self.deptraindataset.vocabs['pos_vocab'].w2ind))
         logging.info("Dependency dep vocab : {} ".format(self.deptraindataset.vocabs['dep_vocab'].w2ind))
-        epoch = self.args['max_steps']//self.args['eval_interval']
+        epoch = self.args['max_steps']//self.args['eval_interval']if self.args['epochs']is None   else self.args['epochs']
         self.jointmodel.train()
+        
         save_ner_name = self.args['lang']+"_"+self.args['word_embed_type']+"_"+self.args['save_ner_name']
         save_name = self.args['lang']+"_"+self.args['word_embed_type']+"_"+self.args['save_name']
         save_dep_name = self.args['lang']+"_"+self.args['word_embed_type']+"_"+self.args['save_dep_name']
+        save_ner_name = self.exp_name+"_"+self.args['save_ner_name']
+        save__name = self.exp_name+"_"+self.args['save_name']
+        save_dep_name = self.exp_name+"_"+self.args['save_dep_name']
         best_ner_f1 = 0
         best_dep_f1 = 0
         best_uas_f1 = 0
@@ -842,6 +930,10 @@ class JointTrainer:
         model_func = self.update_funcs[self.args['model_type']]
         model_type = self.args['model_type']
         logging.info("Training on : {} type ".format(self.args['word_embed_type']))
+        if self.args['word_embed_type'] in ['random_init','fastext']:
+            print("Word embed type {} ".format(self.args['word_embed_type']))
+            for param_group in self.jointmodel.base_model.embed_optimizer.param_groups:
+                print("Word embedding learning rates : {}".format(param_group['lr']))
         for e in range(epoch):
         
             train_loss = 0
@@ -1067,7 +1159,7 @@ class JointTrainer:
         
         field_names = ["word", "head", "deprel"]
         gold_file = dataset.file_name
-        pred_file = "pred_"+gold_file.split("/")[-1]    
+        pred_file = "pred_{}_{}_{}_".format(self.args['model_type'],self.args['word_embed_type'],self.args['lang'])+gold_file.split("/")[-1]    
         start_id = orig_idx[0]
         #for x in tqdm(range(len(self.depvaldataset)),desc = "Evaluation"):
         rel_accs = 0
@@ -1144,10 +1236,12 @@ class JointTrainer:
         content = unsort_dataset(content,orig_idx)
         
         field_names = ["token","truth", "ner_tag"]
-        out_file = os.path.join(self.args['save_dir'],self.args['ner_output_file'])
-
+        ner_out_name = "{}_{}_{}_{}".format(self.args['model_type'],self.args['word_embed_type'],self.args['lang'],self.args['ner_output_file'])
+        out_file = os.path.join(self.args['save_dir'],ner_out_name)
+        print("Ner output will be written to {}".format(out_file))
         conll_writer(out_file,content,field_names,"ner")
-        conll_file = os.path.join(self.args['save_dir'],self.args['conll_file_name'])
+        conll_ner_name = "{}_{}_{}_{}".format(self.args['model_type'],self.args['word_embed_type'],self.args['lang'],self.args['conll_file_name'])
+        conll_file = os.path.join(self.args['save_dir'],conll_ner_name)
         #convert2IOB2new(out_file,conll_file)
         prec, rec, f1 = 0, 0, 0
         try:
@@ -1172,6 +1266,7 @@ def main(args):
         logging.info(best_params)
     else:
         if args['mode']=='predict':
+            print("Running in prediction mode ")
             jointtrainer.predict()
         else:
             if args['multiple']==1:

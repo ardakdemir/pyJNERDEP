@@ -180,8 +180,8 @@ def conll_writer(file_name, content, field_names, task_name,verbose=False):
     out.close()
 
 def ud_scores(system_conllu_file, gold_conllu_file):
-    
-    cropped = os.path.join(system_conllu_file[:system_conllu_file.rfind("/")],'new_cropped')
+    dir,pred_filename = os.path.split(system_conllu_file)   
+    cropped = os.path.join(dir,'new_cropped_{}'.format(pred_filename))
     print("Storing cropped at {} ".format(cropped))
     get_conll_file_for_eval( gold_conllu_file,cropped,system_conllu_file=system_conllu_file)
     gold_ud = ud_eval.load_conllu_file(cropped)
