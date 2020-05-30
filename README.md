@@ -16,7 +16,7 @@ In order to train your own models using the same datasets or replicate the resul
 Below are the required documents for training new models and replicating the results:
 
 - .pkh files containing the saved model parameters [link](https://drive.google.com/drive/folders/1I2YSW6Vzw6CrIgJlKfIm3uFod1ETd7SR?usp=sharing)
-- *_config.json files for models that use different parameter combinations than default (NER_only model with lstm size 229) [link](https://drive.google.com/drive/folders/1I2YSW6Vzw6CrIgJlKfIm3uFod1ETd7SR?usp=sharing)
+- *_config.json files for models that use different parameter combinations than default (NER_only model with lstm size 229 for the Turkish language) [link](https://drive.google.com/drive/folders/1I2YSW6Vzw6CrIgJlKfIm3uFod1ETd7SR?usp=sharing)
 - training, development and test files for each language are under the 'ner_datasets' and 'dep_datasets' folders of the link(training files are required to get the vocabularies for each task and pos tags) [link](https://drive.google.com/drive/folders/1ugT4tk8FlxxOQdjp4m9pXc_6_Xhdlo2-?usp=sharing)
 
 
