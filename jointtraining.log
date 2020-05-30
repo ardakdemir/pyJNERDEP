@@ -1,0 +1,1234 @@
+DEBUG - Starting new HTTPS connection (1): s3.amazonaws.com:443
+DEBUG - https://s3.amazonaws.com:443 "HEAD /models.huggingface.co/bert/bert-base-uncased-vocab.txt HTTP/1.1" 200 0
+INFO - loading file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt from cache at /home/aakdemir/.cache/torch/pytorch_transformers/26bc1ad6c0ac742e9b52263248f6d0f00068293b33709fae12320c0e35ccfbbb.542ce4285a40d23a559526243235df47c5f75c197f04f37d1a0c124c32c9a084
+DEBUG - Starting new HTTPS connection (1): s3.amazonaws.com:443
+DEBUG - https://s3.amazonaws.com:443 "HEAD /models.huggingface.co/bert/bert-base-uncased-vocab.txt HTTP/1.1" 200 0
+INFO - loading file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt from cache at /home/aakdemir/.cache/torch/pytorch_transformers/26bc1ad6c0ac742e9b52263248f6d0f00068293b33709fae12320c0e35ccfbbb.542ce4285a40d23a559526243235df47c5f75c197f04f37d1a0c124c32c9a084
+INFO - Sorting dataset is set to True
+DEBUG - Starting new HTTPS connection (1): s3.amazonaws.com:443
+DEBUG - https://s3.amazonaws.com:443 "HEAD /models.huggingface.co/bert/bert-base-uncased-vocab.txt HTTP/1.1" 200 0
+INFO - loading file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt from cache at /home/aakdemir/.cache/torch/pytorch_transformers/26bc1ad6c0ac742e9b52263248f6d0f00068293b33709fae12320c0e35ccfbbb.542ce4285a40d23a559526243235df47c5f75c197f04f37d1a0c124c32c9a084
+INFO - Sorting dataset is set to True
+DEBUG - Starting new HTTPS connection (1): s3.amazonaws.com:443
+DEBUG - https://s3.amazonaws.com:443 "HEAD /models.huggingface.co/bert/bert-base-uncased-vocab.txt HTTP/1.1" 200 0
+INFO - loading file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt from cache at /home/aakdemir/.cache/torch/pytorch_transformers/26bc1ad6c0ac742e9b52263248f6d0f00068293b33709fae12320c0e35ccfbbb.542ce4285a40d23a559526243235df47c5f75c197f04f37d1a0c124c32c9a084
+DEBUG - Starting new HTTPS connection (1): s3.amazonaws.com:443
+DEBUG - https://s3.amazonaws.com:443 "HEAD /models.huggingface.co/bert/bert-base-uncased-vocab.txt HTTP/1.1" 200 0
+INFO - loading file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt from cache at /home/aakdemir/.cache/torch/pytorch_transformers/26bc1ad6c0ac742e9b52263248f6d0f00068293b33709fae12320c0e35ccfbbb.542ce4285a40d23a559526243235df47c5f75c197f04f37d1a0c124c32c9a084
+DEBUG - Starting new HTTPS connection (1): s3.amazonaws.com:443
+DEBUG - https://s3.amazonaws.com:443 "HEAD /models.huggingface.co/bert/bert-base-uncased-config.json HTTP/1.1" 200 0
+INFO - loading configuration file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-config.json from cache at /home/aakdemir/.cache/torch/pytorch_transformers/4dad0251492946e18ac39290fcfe91b89d370fee250efe9521476438fe8ca185.bf3b9ea126d8c0001ee8a1e8b92229871d06d36d8808208cc2449280da87785c
+INFO - Model config {
+  "attention_probs_dropout_prob": 0.1,
+  "finetuning_task": null,
+  "hidden_act": "gelu",
+  "hidden_dropout_prob": 0.1,
+  "hidden_size": 768,
+  "initializer_range": 0.02,
+  "intermediate_size": 3072,
+  "layer_norm_eps": 1e-12,
+  "max_position_embeddings": 512,
+  "num_attention_heads": 12,
+  "num_hidden_layers": 12,
+  "num_labels": 2,
+  "output_attentions": false,
+  "output_hidden_states": true,
+  "pruned_heads": {},
+  "torchscript": false,
+  "type_vocab_size": 2,
+  "vocab_size": 30522
+}
+
+DEBUG - Starting new HTTPS connection (1): s3.amazonaws.com:443
+DEBUG - https://s3.amazonaws.com:443 "HEAD /models.huggingface.co/bert/bert-base-uncased-pytorch_model.bin HTTP/1.1" 200 0
+INFO - loading weights file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-pytorch_model.bin from cache at /home/aakdemir/.cache/torch/pytorch_transformers/aa1ef1aede4482d0dbcd4d52baad8ae300e60902e88fcb0bebdec09afd232066.36ca03ab34a1a5d5fa7bc3d03d55c4fa650fed07220e2eeebc06ce58d0e9a157
+INFO - Training on cuda:0 
+INFO - Dependency pos vocab : {'[PAD]': 0, '[ROOT]': 1, 'ADJ': 2, 'NOUN': 3, 'AUX': 4, 'PRON': 5, 'VERB': 6, 'PUNCT': 7, 'DET': 8, 'ADP': 9, 'PROPN': 10, 'NUM': 11, 'ADV': 12, 'CCONJ': 13, 'INTJ': 14, 'X': 15} 
+INFO - Dependency dep vocab : {'[PAD]': 0, '[ROOT]': 1, 'amod': 2, 'csubj': 3, 'cop': 4, 'nmod:poss': 5, 'obj': 6, 'root': 7, 'punct': 8, 'obl': 9, 'compound': 10, 'case': 11, 'nmod': 12, 'nsubj': 13, 'conj': 14, 'det': 15, 'advmod': 16, 'acl': 17, 'cc': 18, 'flat': 19, 'compound:lvc': 20, 'nummod': 21, 'discourse': 22, 'compound:redup': 23, 'appos': 24, 'mark': 25, 'advmod:emph': 26, 'aux:q': 27, 'fixed': 28, 'parataxis': 29, 'ccomp': 30, 'dep': 31, 'vocative': 32} 
+INFO - Train loss average : 5.231116080284119 after 10 examples
+INFO - Ner loss average 0.0 - dep loss average 5.231116080284119 
+INFO - Train loss average : 4.9470723390579225 after 20 examples
+INFO - Ner loss average 0.0 - dep loss average 4.9470723390579225 
+INFO - Train loss average : 4.556006018320719 after 30 examples
+INFO - Ner loss average 0.0 - dep loss average 4.556006018320719 
+INFO - Train loss average : 4.061929748952389 after 40 examples
+INFO - Ner loss average 0.0 - dep loss average 4.061929748952389 
+INFO - Train loss average : 3.7992245822399853 after 50 examples
+INFO - Ner loss average 0.0 - dep loss average 3.7992245822399853 
+INFO - Train loss average : 3.7844471498702963 after 60 examples
+INFO - Ner loss average 0.0 - dep loss average 3.7844471498702963 
+INFO - Train loss average : 3.7467293129967794 after 70 examples
+INFO - Ner loss average 0.0 - dep loss average 3.7467293129967794 
+INFO - Train loss average : 3.6648464191239327 after 80 examples
+INFO - Ner loss average 0.0 - dep loss average 3.6648464191239327 
+INFO - Train loss average : 3.6387970198773676 after 90 examples
+INFO - Ner loss average 0.0 - dep loss average 3.6387970198773676 
+INFO - Train loss average : 3.602667671702802 after 100 examples
+INFO - Ner loss average 0.0 - dep loss average 3.602667671702802 
+INFO - Train loss average : 3.5098696158352225 after 110 examples
+INFO - Ner loss average 0.0 - dep loss average 3.5098696158352225 
+INFO - Train loss average : 3.4644274932332335 after 120 examples
+INFO - Ner loss average 0.0 - dep loss average 3.4644274932332335 
+INFO - Train loss average : 3.4180064542648885 after 130 examples
+INFO - Ner loss average 0.0 - dep loss average 3.4180064542648885 
+INFO - Train loss average : 3.394849061300712 after 140 examples
+INFO - Ner loss average 0.0 - dep loss average 3.394849061300712 
+INFO - Train loss average : 3.3791076105584703 after 150 examples
+INFO - Ner loss average 0.0 - dep loss average 3.3791076105584703 
+INFO - Train loss average : 3.2836828497936947 after 160 examples
+INFO - Ner loss average 0.0 - dep loss average 3.2836828497936947 
+INFO - Train loss average : 3.2536653320359834 after 170 examples
+INFO - Ner loss average 0.0 - dep loss average 3.2536653320359834 
+INFO - Train loss average : 3.2157909735830295 after 180 examples
+INFO - Ner loss average 0.0 - dep loss average 3.2157909735830295 
+INFO - Train loss average : 3.1843743065274075 after 190 examples
+INFO - Ner loss average 0.0 - dep loss average 3.1843743065274075 
+INFO - Train loss average : 3.1473069815151393 after 200 examples
+INFO - Ner loss average 0.0 - dep loss average 3.1473069815151393 
+INFO - Results for epoch : 1
+INFO - Evaluating dependency performance on ../../datasets/tr_imst-ud-test.conllu
+INFO - LAS Precision : 0.4489204318272691  Recall 0.4489204318272691 F1 0.4489204318272691
+INFO - Saving best model to ../best_dep_model.pkh
+INFO - Train loss average : 2.1607375144958496 after 10 examples
+INFO - Ner loss average 0.0 - dep loss average 2.1607375144958496 
+INFO - Train loss average : 2.192524528503418 after 20 examples
+INFO - Ner loss average 0.0 - dep loss average 2.192524528503418 
+INFO - Train loss average : 2.1033441543579103 after 30 examples
+INFO - Ner loss average 0.0 - dep loss average 2.1033441543579103 
+INFO - Train loss average : 2.1605531692504885 after 40 examples
+INFO - Ner loss average 0.0 - dep loss average 2.1605531692504885 
+INFO - Train loss average : 2.1329467322677376 after 50 examples
+INFO - Ner loss average 0.0 - dep loss average 2.1329467322677376 
+INFO - Train loss average : 2.14348845500499 after 60 examples
+INFO - Ner loss average 0.0 - dep loss average 2.14348845500499 
+INFO - Train loss average : 2.15807757734188 after 70 examples
+INFO - Ner loss average 0.0 - dep loss average 2.15807757734188 
+INFO - Train loss average : 2.122076913109049 after 80 examples
+INFO - Ner loss average 0.0 - dep loss average 2.122076913109049 
+INFO - Train loss average : 2.0749633969118197 after 90 examples
+INFO - Ner loss average 0.0 - dep loss average 2.0749633969118197 
+INFO - Train loss average : 2.064482013694942 after 100 examples
+INFO - Ner loss average 0.0 - dep loss average 2.064482013694942 
+INFO - Train loss average : 2.0793197183107788 after 110 examples
+INFO - Ner loss average 0.0 - dep loss average 2.0793197183107788 
+INFO - Train loss average : 2.0823887339172265 after 120 examples
+INFO - Ner loss average 0.0 - dep loss average 2.0823887339172265 
+INFO - Train loss average : 2.0932137031681264 after 130 examples
+INFO - Ner loss average 0.0 - dep loss average 2.0932137031681264 
+INFO - Train loss average : 2.080707642515855 after 140 examples
+INFO - Ner loss average 0.0 - dep loss average 2.080707642515855 
+INFO - Train loss average : 2.0785159683972596 after 150 examples
+INFO - Ner loss average 0.0 - dep loss average 2.0785159683972596 
+INFO - Train loss average : 2.065711394394748 after 160 examples
+INFO - Ner loss average 0.0 - dep loss average 2.065711394394748 
+INFO - Train loss average : 2.034188302189988 after 170 examples
+INFO - Ner loss average 0.0 - dep loss average 2.034188302189988 
+INFO - Train loss average : 2.0486350821745063 after 180 examples
+INFO - Ner loss average 0.0 - dep loss average 2.0486350821745063 
+INFO - Train loss average : 2.0495278048476107 after 190 examples
+INFO - Ner loss average 0.0 - dep loss average 2.0495278048476107 
+INFO - Train loss average : 2.039589736815542 after 200 examples
+INFO - Ner loss average 0.0 - dep loss average 2.039589736815542 
+INFO - Results for epoch : 2
+INFO - Evaluating dependency performance on ../../datasets/tr_imst-ud-test.conllu
+INFO - LAS Precision : 0.5283886445421832  Recall 0.5283886445421832 F1 0.5283886445421832
+INFO - Saving best model to ../best_dep_model.pkh
+INFO - Train loss average : 1.820838099718094 after 10 examples
+INFO - Ner loss average 0.0 - dep loss average 1.820838099718094 
+INFO - Train loss average : 1.8636701628565788 after 20 examples
+INFO - Ner loss average 0.0 - dep loss average 1.8636701628565788 
+INFO - Train loss average : 1.9337375273307165 after 30 examples
+INFO - Ner loss average 0.0 - dep loss average 1.9337375273307165 
+INFO - Train loss average : 1.9435428850352765 after 40 examples
+INFO - Ner loss average 0.0 - dep loss average 1.9435428850352765 
+INFO - Train loss average : 1.891071394085884 after 50 examples
+INFO - Ner loss average 0.0 - dep loss average 1.891071394085884 
+INFO - Train loss average : 1.9351653878887494 after 60 examples
+INFO - Ner loss average 0.0 - dep loss average 1.9351653878887494 
+INFO - Train loss average : 1.9683445560080663 after 70 examples
+INFO - Ner loss average 0.0 - dep loss average 1.9683445560080663 
+INFO - Train loss average : 1.9580744121223688 after 80 examples
+INFO - Ner loss average 0.0 - dep loss average 1.9580744121223688 
+INFO - Train loss average : 1.9271349287695354 after 90 examples
+INFO - Ner loss average 0.0 - dep loss average 1.9271349287695354 
+INFO - Train loss average : 1.866035286486149 after 100 examples
+INFO - Ner loss average 0.0 - dep loss average 1.866035286486149 
+INFO - Train loss average : 1.8349196853962813 after 110 examples
+INFO - Ner loss average 0.0 - dep loss average 1.8349196853962813 
+INFO - Train loss average : 1.8188929157952467 after 120 examples
+INFO - Ner loss average 0.0 - dep loss average 1.8188929157952467 
+INFO - Train loss average : 1.8216795304646858 after 130 examples
+INFO - Ner loss average 0.0 - dep loss average 1.8216795304646858 
+INFO - Train loss average : 1.8167088434100152 after 140 examples
+INFO - Ner loss average 0.0 - dep loss average 1.8167088434100152 
+INFO - Train loss average : 1.8226433891057967 after 150 examples
+INFO - Ner loss average 0.0 - dep loss average 1.8226433891057967 
+INFO - Train loss average : 1.8135838912799955 after 160 examples
+INFO - Ner loss average 0.0 - dep loss average 1.8135838912799955 
+INFO - Train loss average : 1.7890462945489323 after 170 examples
+INFO - Ner loss average 0.0 - dep loss average 1.7890462945489323 
+INFO - Train loss average : 1.7907439563009473 after 180 examples
+INFO - Ner loss average 0.0 - dep loss average 1.7907439563009473 
+INFO - Train loss average : 1.7727767447107716 after 190 examples
+INFO - Ner loss average 0.0 - dep loss average 1.7727767447107716 
+INFO - Train loss average : 1.765704358369112 after 200 examples
+INFO - Ner loss average 0.0 - dep loss average 1.765704358369112 
+INFO - Results for epoch : 3
+INFO - Evaluating dependency performance on ../../datasets/tr_imst-ud-test.conllu
+INFO - LAS Precision : 0.5526789284286285  Recall 0.5526789284286285 F1 0.5526789284286285
+INFO - Saving best model to ../best_dep_model.pkh
+INFO - Train loss average : 1.6886439144611358 after 10 examples
+INFO - Ner loss average 0.0 - dep loss average 1.6886439144611358 
+INFO - Train loss average : 1.6133516252040863 after 20 examples
+INFO - Ner loss average 0.0 - dep loss average 1.6133516252040863 
+INFO - Train loss average : 1.5958020051320394 after 30 examples
+INFO - Ner loss average 0.0 - dep loss average 1.5958020051320394 
+INFO - Train loss average : 1.617493325471878 after 40 examples
+INFO - Ner loss average 0.0 - dep loss average 1.617493325471878 
+INFO - Train loss average : 1.673848352432251 after 50 examples
+INFO - Ner loss average 0.0 - dep loss average 1.673848352432251 
+INFO - Train loss average : 1.6780226901173592 after 60 examples
+INFO - Ner loss average 0.0 - dep loss average 1.6780226901173592 
+INFO - Train loss average : 1.6605428674391338 after 70 examples
+INFO - Ner loss average 0.0 - dep loss average 1.6605428674391338 
+INFO - Train loss average : 1.6019655832555144 after 80 examples
+INFO - Ner loss average 0.0 - dep loss average 1.6019655832555144 
+INFO - Train loss average : 1.603477541729808 after 90 examples
+INFO - Ner loss average 0.0 - dep loss average 1.603477541729808 
+INFO - Train loss average : 1.6357360078021883 after 100 examples
+INFO - Ner loss average 0.0 - dep loss average 1.6357360078021883 
+INFO - Train loss average : 1.6273233436386694 after 110 examples
+INFO - Ner loss average 0.0 - dep loss average 1.6273233436386694 
+INFO - Train loss average : 1.6083696033495167 after 120 examples
+INFO - Ner loss average 0.0 - dep loss average 1.6083696033495167 
+INFO - Train loss average : 1.6110041128614774 after 130 examples
+INFO - Ner loss average 0.0 - dep loss average 1.6110041128614774 
+INFO - Train loss average : 1.6094598519748875 after 140 examples
+INFO - Ner loss average 0.0 - dep loss average 1.6094598519748875 
+INFO - Train loss average : 1.598763692850868 after 150 examples
+INFO - Ner loss average 0.0 - dep loss average 1.598763692850868 
+INFO - Train loss average : 1.6048448224319145 after 160 examples
+INFO - Ner loss average 0.0 - dep loss average 1.6048448224319145 
+INFO - Train loss average : 1.6135181375067025 after 170 examples
+INFO - Ner loss average 0.0 - dep loss average 1.6135181375067025 
+INFO - Train loss average : 1.6191701518785622 after 180 examples
+INFO - Ner loss average 0.0 - dep loss average 1.6191701518785622 
+INFO - Train loss average : 1.6091729762620832 after 190 examples
+INFO - Ner loss average 0.0 - dep loss average 1.6091729762620832 
+INFO - Train loss average : 1.6018748233560474 after 200 examples
+INFO - Ner loss average 0.0 - dep loss average 1.6018748233560474 
+INFO - Results for epoch : 4
+INFO - Evaluating dependency performance on ../../datasets/tr_imst-ud-test.conllu
+INFO - LAS Precision : 0.5657736905237905  Recall 0.5657736905237905 F1 0.5657736905237905
+INFO - Saving best model to ../best_dep_model.pkh
+INFO - Train loss average : 1.5178140223026275 after 10 examples
+INFO - Ner loss average 0.0 - dep loss average 1.5178140223026275 
+INFO - Train loss average : 1.543975043296814 after 20 examples
+INFO - Ner loss average 0.0 - dep loss average 1.543975043296814 
+INFO - Train loss average : 1.4216754277547201 after 30 examples
+INFO - Ner loss average 0.0 - dep loss average 1.4216754277547201 
+INFO - Train loss average : 1.3799242198467254 after 40 examples
+INFO - Ner loss average 0.0 - dep loss average 1.3799242198467254 
+INFO - Train loss average : 1.3355501580238343 after 50 examples
+INFO - Ner loss average 0.0 - dep loss average 1.3355501580238343 
+INFO - Train loss average : 1.3451384961605073 after 60 examples
+INFO - Ner loss average 0.0 - dep loss average 1.3451384961605073 
+INFO - Train loss average : 1.3635182193347386 after 70 examples
+INFO - Ner loss average 0.0 - dep loss average 1.3635182193347386 
+INFO - Train loss average : 1.3773240134119988 after 80 examples
+INFO - Ner loss average 0.0 - dep loss average 1.3773240134119988 
+INFO - Train loss average : 1.3720857322216033 after 90 examples
+INFO - Ner loss average 0.0 - dep loss average 1.3720857322216033 
+INFO - Train loss average : 1.4053136360645295 after 100 examples
+INFO - Ner loss average 0.0 - dep loss average 1.4053136360645295 
+INFO - Train loss average : 1.3832353700291027 after 110 examples
+INFO - Ner loss average 0.0 - dep loss average 1.3832353700291027 
+INFO - Train loss average : 1.3837972176571687 after 120 examples
+INFO - Ner loss average 0.0 - dep loss average 1.3837972176571687 
+INFO - Train loss average : 1.3649458043850384 after 130 examples
+INFO - Ner loss average 0.0 - dep loss average 1.3649458043850384 
+INFO - Train loss average : 1.3652385930929865 after 140 examples
+INFO - Ner loss average 0.0 - dep loss average 1.3652385930929865 
+INFO - Train loss average : 1.3561378810803095 after 150 examples
+INFO - Ner loss average 0.0 - dep loss average 1.3561378810803095 
+INFO - Train loss average : 1.3505821104161442 after 160 examples
+INFO - Ner loss average 0.0 - dep loss average 1.3505821104161442 
+INFO - Train loss average : 1.3442829551942208 after 170 examples
+INFO - Ner loss average 0.0 - dep loss average 1.3442829551942208 
+INFO - Train loss average : 1.3367921762685808 after 180 examples
+INFO - Ner loss average 0.0 - dep loss average 1.3367921762685808 
+INFO - Train loss average : 1.3434008576073928 after 190 examples
+INFO - Ner loss average 0.0 - dep loss average 1.3434008576073928 
+INFO - Train loss average : 1.3464834725577384 after 200 examples
+INFO - Ner loss average 0.0 - dep loss average 1.3464834725577384 
+INFO - Results for epoch : 5
+INFO - Evaluating dependency performance on ../../datasets/tr_imst-ud-test.conllu
+INFO - LAS Precision : 0.5855657736905238  Recall 0.5855657736905238 F1 0.5855657736905238
+INFO - Saving best model to ../best_dep_model.pkh
+INFO - Train loss average : 1.2053464025259018 after 10 examples
+INFO - Ner loss average 0.0 - dep loss average 1.2053464025259018 
+INFO - Train loss average : 1.1823486328125 after 20 examples
+INFO - Ner loss average 0.0 - dep loss average 1.1823486328125 
+INFO - Train loss average : 1.2333834757407507 after 30 examples
+INFO - Ner loss average 0.0 - dep loss average 1.2333834757407507 
+INFO - Train loss average : 1.2135794185101987 after 40 examples
+INFO - Ner loss average 0.0 - dep loss average 1.2135794185101987 
+INFO - Train loss average : 1.2258205264806747 after 50 examples
+INFO - Ner loss average 0.0 - dep loss average 1.2258205264806747 
+INFO - Train loss average : 1.2716262156764666 after 60 examples
+INFO - Ner loss average 0.0 - dep loss average 1.2716262156764666 
+INFO - Train loss average : 1.2761090282882963 after 70 examples
+INFO - Ner loss average 0.0 - dep loss average 1.2761090282882963 
+INFO - Train loss average : 1.2401469985023141 after 80 examples
+INFO - Ner loss average 0.0 - dep loss average 1.2401469985023141 
+INFO - Train loss average : 1.2470863330695363 after 90 examples
+INFO - Ner loss average 0.0 - dep loss average 1.2470863330695363 
+INFO - Train loss average : 1.2383212013542653 after 100 examples
+INFO - Ner loss average 0.0 - dep loss average 1.2383212013542653 
+INFO - Train loss average : 1.2324700381268154 after 110 examples
+INFO - Ner loss average 0.0 - dep loss average 1.2324700381268154 
+INFO - Train loss average : 1.2444642890244721 after 120 examples
+INFO - Ner loss average 0.0 - dep loss average 1.2444642890244721 
+INFO - Train loss average : 1.2468549543848404 after 130 examples
+INFO - Ner loss average 0.0 - dep loss average 1.2468549543848404 
+INFO - Train loss average : 1.2440907920045512 after 140 examples
+INFO - Ner loss average 0.0 - dep loss average 1.2440907920045512 
+INFO - Train loss average : 1.235294796526432 after 150 examples
+INFO - Ner loss average 0.0 - dep loss average 1.235294796526432 
+INFO - Train loss average : 1.2181348529644311 after 160 examples
+INFO - Ner loss average 0.0 - dep loss average 1.2181348529644311 
+INFO - Train loss average : 1.2232326518963366 after 170 examples
+INFO - Ner loss average 0.0 - dep loss average 1.2232326518963366 
+INFO - Train loss average : 1.2289375312626363 after 180 examples
+INFO - Ner loss average 0.0 - dep loss average 1.2289375312626363 
+INFO - Train loss average : 1.2188614350400473 after 190 examples
+INFO - Ner loss average 0.0 - dep loss average 1.2188614350400473 
+INFO - Train loss average : 1.226201084330678 after 200 examples
+INFO - Ner loss average 0.0 - dep loss average 1.226201084330678 
+INFO - Results for epoch : 6
+INFO - Evaluating dependency performance on ../../datasets/tr_imst-ud-test.conllu
+INFO - LAS Precision : 0.5941623350659736  Recall 0.5941623350659736 F1 0.5941623350659736
+INFO - Saving best model to ../best_dep_model.pkh
+INFO - Train loss average : 0.9967936694622039 after 10 examples
+INFO - Ner loss average 0.0 - dep loss average 0.9967936694622039 
+INFO - Train loss average : 0.9890549041330814 after 20 examples
+INFO - Ner loss average 0.0 - dep loss average 0.9890549041330814 
+INFO - Train loss average : 0.9554600694837669 after 30 examples
+INFO - Ner loss average 0.0 - dep loss average 0.9554600694837669 
+INFO - Train loss average : 1.029595813085325 after 40 examples
+INFO - Ner loss average 0.0 - dep loss average 1.029595813085325 
+INFO - Train loss average : 1.090754982177168 after 50 examples
+INFO - Ner loss average 0.0 - dep loss average 1.090754982177168 
+INFO - Train loss average : 1.1018370886178066 after 60 examples
+INFO - Ner loss average 0.0 - dep loss average 1.1018370886178066 
+INFO - Train loss average : 1.137635649913656 after 70 examples
+INFO - Ner loss average 0.0 - dep loss average 1.137635649913656 
+INFO - Train loss average : 1.1477037645876407 after 80 examples
+INFO - Ner loss average 0.0 - dep loss average 1.1477037645876407 
+INFO - Train loss average : 1.1351093562112915 after 90 examples
+INFO - Ner loss average 0.0 - dep loss average 1.1351093562112915 
+INFO - Train loss average : 1.1431113408505917 after 100 examples
+INFO - Ner loss average 0.0 - dep loss average 1.1431113408505917 
+INFO - Train loss average : 1.1403272053057498 after 110 examples
+INFO - Ner loss average 0.0 - dep loss average 1.1403272053057498 
+INFO - Train loss average : 1.1490459356456995 after 120 examples
+INFO - Ner loss average 0.0 - dep loss average 1.1490459356456995 
+INFO - Train loss average : 1.155738674562711 after 130 examples
+INFO - Ner loss average 0.0 - dep loss average 1.155738674562711 
+INFO - Train loss average : 1.1353410675057343 after 140 examples
+INFO - Ner loss average 0.0 - dep loss average 1.1353410675057343 
+INFO - Train loss average : 1.1312169312437375 after 150 examples
+INFO - Ner loss average 0.0 - dep loss average 1.1312169312437375 
+INFO - Train loss average : 1.1203999056480825 after 160 examples
+INFO - Ner loss average 0.0 - dep loss average 1.1203999056480825 
+INFO - Train loss average : 1.1274492620545276 after 170 examples
+INFO - Ner loss average 0.0 - dep loss average 1.1274492620545276 
+INFO - Train loss average : 1.1309368641012245 after 180 examples
+INFO - Ner loss average 0.0 - dep loss average 1.1309368641012245 
+INFO - Train loss average : 1.1320690107188727 after 190 examples
+INFO - Ner loss average 0.0 - dep loss average 1.1320690107188727 
+INFO - Train loss average : 1.1251992321759463 after 200 examples
+INFO - Ner loss average 0.0 - dep loss average 1.1251992321759463 
+INFO - Results for epoch : 7
+INFO - Evaluating dependency performance on ../../datasets/tr_imst-ud-test.conllu
+INFO - LAS Precision : 0.5891643342662934  Recall 0.5891643342662934 F1 0.5891643342662934
+INFO - Train loss average : 0.9976661081425846 after 10 examples
+INFO - Ner loss average 0.0 - dep loss average 0.9976661081425846 
+INFO - Train loss average : 0.962322382396087 after 20 examples
+INFO - Ner loss average 0.0 - dep loss average 0.962322382396087 
+INFO - Train loss average : 0.9753884919919074 after 30 examples
+INFO - Ner loss average 0.0 - dep loss average 0.9753884919919074 
+INFO - Train loss average : 1.0080187297193333 after 40 examples
+INFO - Ner loss average 0.0 - dep loss average 1.0080187297193333 
+INFO - Train loss average : 1.0185822670720517 after 50 examples
+INFO - Ner loss average 0.0 - dep loss average 1.0185822670720517 
+INFO - Train loss average : 1.0510919366497546 after 60 examples
+INFO - Ner loss average 0.0 - dep loss average 1.0510919366497546 
+INFO - Train loss average : 1.0649691340513527 after 70 examples
+INFO - Ner loss average 0.0 - dep loss average 1.0649691340513527 
+INFO - Train loss average : 1.0489115176140331 after 80 examples
+INFO - Ner loss average 0.0 - dep loss average 1.0489115176140331 
+INFO - Train loss average : 1.0674090237563683 after 90 examples
+INFO - Ner loss average 0.0 - dep loss average 1.0674090237563683 
+INFO - Train loss average : 1.0817717591952531 after 100 examples
+INFO - Ner loss average 0.0 - dep loss average 1.0817717591952531 
+INFO - Train loss average : 1.0743120245889506 after 110 examples
+INFO - Ner loss average 0.0 - dep loss average 1.0743120245889506 
+INFO - Train loss average : 1.060472983455596 after 120 examples
+INFO - Ner loss average 0.0 - dep loss average 1.060472983455596 
+INFO - Train loss average : 1.0489035918950462 after 130 examples
+INFO - Ner loss average 0.0 - dep loss average 1.0489035918950462 
+INFO - Train loss average : 1.0547730689269623 after 140 examples
+INFO - Ner loss average 0.0 - dep loss average 1.0547730689269623 
+INFO - Train loss average : 1.045547291704764 after 150 examples
+INFO - Ner loss average 0.0 - dep loss average 1.045547291704764 
+INFO - Train loss average : 1.0368856695189606 after 160 examples
+INFO - Ner loss average 0.0 - dep loss average 1.0368856695189606 
+INFO - Train loss average : 1.0282218652339103 after 170 examples
+INFO - Ner loss average 0.0 - dep loss average 1.0282218652339103 
+INFO - Train loss average : 1.0255271547111786 after 180 examples
+INFO - Ner loss average 0.0 - dep loss average 1.0255271547111786 
+INFO - Train loss average : 1.0118907915673365 after 190 examples
+INFO - Ner loss average 0.0 - dep loss average 1.0118907915673365 
+INFO - Train loss average : 1.0064593770867214 after 200 examples
+INFO - Ner loss average 0.0 - dep loss average 1.0064593770867214 
+INFO - Results for epoch : 8
+INFO - Evaluating dependency performance on ../../datasets/tr_imst-ud-test.conllu
+INFO - LAS Precision : 0.6027588964414234  Recall 0.6027588964414234 F1 0.6027588964414234
+INFO - Saving best model to ../best_dep_model.pkh
+INFO - Train loss average : 0.8732273638248443 after 10 examples
+INFO - Ner loss average 0.0 - dep loss average 0.8732273638248443 
+INFO - Train loss average : 0.9189440727233886 after 20 examples
+INFO - Ner loss average 0.0 - dep loss average 0.9189440727233886 
+INFO - Train loss average : 1.0095393617947896 after 30 examples
+INFO - Ner loss average 0.0 - dep loss average 1.0095393617947896 
+INFO - Train loss average : 0.9614309344440699 after 40 examples
+INFO - Ner loss average 0.0 - dep loss average 0.9614309344440699 
+INFO - Train loss average : 0.9531256905198098 after 50 examples
+INFO - Ner loss average 0.0 - dep loss average 0.9531256905198098 
+INFO - Train loss average : 0.9423234017565847 after 60 examples
+INFO - Ner loss average 0.0 - dep loss average 0.9423234017565847 
+INFO - Train loss average : 0.950978242659143 after 70 examples
+INFO - Ner loss average 0.0 - dep loss average 0.950978242659143 
+INFO - Train loss average : 0.9409158641006797 after 80 examples
+INFO - Ner loss average 0.0 - dep loss average 0.9409158641006797 
+INFO - Train loss average : 0.9166406930734714 after 90 examples
+INFO - Ner loss average 0.0 - dep loss average 0.9166406930734714 
+INFO - Train loss average : 0.8907767322752624 after 100 examples
+INFO - Ner loss average 0.0 - dep loss average 0.8907767322752624 
+INFO - Train loss average : 0.8909844758920371 after 110 examples
+INFO - Ner loss average 0.0 - dep loss average 0.8909844758920371 
+INFO - Train loss average : 0.8885570744751021 after 120 examples
+INFO - Ner loss average 0.0 - dep loss average 0.8885570744751021 
+INFO - Train loss average : 0.8930289633715383 after 130 examples
+INFO - Ner loss average 0.0 - dep loss average 0.8930289633715383 
+INFO - Train loss average : 0.8967181212800954 after 140 examples
+INFO - Ner loss average 0.0 - dep loss average 0.8967181212800954 
+INFO - Train loss average : 0.8906402391816179 after 150 examples
+INFO - Ner loss average 0.0 - dep loss average 0.8906402391816179 
+INFO - Train loss average : 0.8890520558343269 after 160 examples
+INFO - Ner loss average 0.0 - dep loss average 0.8890520558343269 
+INFO - Train loss average : 0.8855751734117374 after 170 examples
+INFO - Ner loss average 0.0 - dep loss average 0.8855751734117374 
+INFO - Train loss average : 0.8886665977227192 after 180 examples
+INFO - Ner loss average 0.0 - dep loss average 0.8886665977227192 
+INFO - Train loss average : 0.8797692856996467 after 190 examples
+INFO - Ner loss average 0.0 - dep loss average 0.8797692856996467 
+INFO - Train loss average : 0.8769908807147294 after 200 examples
+INFO - Ner loss average 0.0 - dep loss average 0.8769908807147294 
+INFO - Results for epoch : 9
+INFO - Evaluating dependency performance on ../../datasets/tr_imst-ud-test.conllu
+INFO - LAS Precision : 0.6049580167932826  Recall 0.6049580167932826 F1 0.6049580167932826
+INFO - Saving best model to ../best_dep_model.pkh
+INFO - Train loss average : 0.9230533510446548 after 10 examples
+INFO - Ner loss average 0.0 - dep loss average 0.9230533510446548 
+INFO - Train loss average : 0.9363875150680542 after 20 examples
+INFO - Ner loss average 0.0 - dep loss average 0.9363875150680542 
+INFO - Train loss average : 0.9088157104949156 after 30 examples
+INFO - Ner loss average 0.0 - dep loss average 0.9088157104949156 
+INFO - Train loss average : 0.9394647782668472 after 40 examples
+INFO - Ner loss average 0.0 - dep loss average 0.9394647782668472 
+INFO - Train loss average : 0.9274065528810024 after 50 examples
+INFO - Ner loss average 0.0 - dep loss average 0.9274065528810024 
+INFO - Train loss average : 0.8957079861313104 after 60 examples
+INFO - Ner loss average 0.0 - dep loss average 0.8957079861313104 
+INFO - Train loss average : 0.8743094289941448 after 70 examples
+INFO - Ner loss average 0.0 - dep loss average 0.8743094289941448 
+INFO - Train loss average : 0.8675535201095045 after 80 examples
+INFO - Ner loss average 0.0 - dep loss average 0.8675535201095045 
+INFO - Train loss average : 0.8807458575401041 after 90 examples
+INFO - Ner loss average 0.0 - dep loss average 0.8807458575401041 
+INFO - Train loss average : 0.8719490498490632 after 100 examples
+INFO - Ner loss average 0.0 - dep loss average 0.8719490498490632 
+INFO - Train loss average : 0.8738642581653866 after 110 examples
+INFO - Ner loss average 0.0 - dep loss average 0.8738642581653866 
+INFO - Train loss average : 0.8892908203260352 after 120 examples
+INFO - Ner loss average 0.0 - dep loss average 0.8892908203260352 
+INFO - Train loss average : 0.898071918822825 after 130 examples
+INFO - Ner loss average 0.0 - dep loss average 0.898071918822825 
+INFO - Train loss average : 0.902061440489654 after 140 examples
+INFO - Ner loss average 0.0 - dep loss average 0.902061440489654 
+INFO - Train loss average : 0.9050647145633897 after 150 examples
+INFO - Ner loss average 0.0 - dep loss average 0.9050647145633897 
+INFO - Train loss average : 0.8943037418765016 after 160 examples
+INFO - Ner loss average 0.0 - dep loss average 0.8943037418765016 
+INFO - Train loss average : 0.8820194276926272 after 170 examples
+INFO - Ner loss average 0.0 - dep loss average 0.8820194276926272 
+INFO - Train loss average : 0.8818516483840843 after 180 examples
+INFO - Ner loss average 0.0 - dep loss average 0.8818516483840843 
+INFO - Train loss average : 0.8731058742752985 after 190 examples
+INFO - Ner loss average 0.0 - dep loss average 0.8731058742752985 
+INFO - Train loss average : 0.8634944565687328 after 200 examples
+INFO - Ner loss average 0.0 - dep loss average 0.8634944565687328 
+INFO - Results for epoch : 10
+INFO - Evaluating dependency performance on ../../datasets/tr_imst-ud-test.conllu
+INFO - LAS Precision : 0.6100559776089565  Recall 0.6100559776089565 F1 0.6100559776089565
+INFO - Saving best model to ../best_dep_model.pkh
+INFO - Train loss average : 0.6478500887751579 after 10 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6478500887751579 
+INFO - Train loss average : 0.7616358980536461 after 20 examples
+INFO - Ner loss average 0.0 - dep loss average 0.7616358980536461 
+INFO - Train loss average : 0.7347613509744406 after 30 examples
+INFO - Ner loss average 0.0 - dep loss average 0.7347613509744406 
+INFO - Train loss average : 0.7160222319886088 after 40 examples
+INFO - Ner loss average 0.0 - dep loss average 0.7160222319886088 
+INFO - Train loss average : 0.7080646370351315 after 50 examples
+INFO - Ner loss average 0.0 - dep loss average 0.7080646370351315 
+INFO - Train loss average : 0.7401372371862333 after 60 examples
+INFO - Ner loss average 0.0 - dep loss average 0.7401372371862333 
+INFO - Train loss average : 0.7557935376651586 after 70 examples
+INFO - Ner loss average 0.0 - dep loss average 0.7557935376651586 
+INFO - Train loss average : 0.7509632582194172 after 80 examples
+INFO - Ner loss average 0.0 - dep loss average 0.7509632582194172 
+INFO - Train loss average : 0.7526503190708657 after 90 examples
+INFO - Ner loss average 0.0 - dep loss average 0.7526503190708657 
+INFO - Train loss average : 0.7499786436837167 after 100 examples
+INFO - Ner loss average 0.0 - dep loss average 0.7499786436837167 
+INFO - Train loss average : 0.7550534617071125 after 110 examples
+INFO - Ner loss average 0.0 - dep loss average 0.7550534617071125 
+INFO - Train loss average : 0.7586454446349914 after 120 examples
+INFO - Ner loss average 0.0 - dep loss average 0.7586454446349914 
+INFO - Train loss average : 0.7780028272348528 after 130 examples
+INFO - Ner loss average 0.0 - dep loss average 0.7780028272348528 
+INFO - Train loss average : 0.7630395808057594 after 140 examples
+INFO - Ner loss average 0.0 - dep loss average 0.7630395808057594 
+INFO - Train loss average : 0.7601087276823819 after 150 examples
+INFO - Ner loss average 0.0 - dep loss average 0.7601087276823819 
+INFO - Train loss average : 0.7581451837148052 after 160 examples
+INFO - Ner loss average 0.0 - dep loss average 0.7581451837148052 
+INFO - Train loss average : 0.7535941357286099 after 170 examples
+INFO - Ner loss average 0.0 - dep loss average 0.7535941357286099 
+INFO - Train loss average : 0.7461448097549793 after 180 examples
+INFO - Ner loss average 0.0 - dep loss average 0.7461448097549793 
+INFO - Train loss average : 0.7390255348707893 after 190 examples
+INFO - Ner loss average 0.0 - dep loss average 0.7390255348707893 
+INFO - Train loss average : 0.7495495663071051 after 200 examples
+INFO - Ner loss average 0.0 - dep loss average 0.7495495663071051 
+INFO - Results for epoch : 11
+INFO - Evaluating dependency performance on ../../datasets/tr_imst-ud-test.conllu
+INFO - LAS Precision : 0.6127548980407836  Recall 0.6127548980407836 F1 0.6127548980407836
+INFO - Saving best model to ../best_dep_model.pkh
+INFO - Train loss average : 0.7980028182268143 after 10 examples
+INFO - Ner loss average 0.0 - dep loss average 0.7980028182268143 
+INFO - Train loss average : 0.7615263074636459 after 20 examples
+INFO - Ner loss average 0.0 - dep loss average 0.7615263074636459 
+INFO - Train loss average : 0.8289466559886932 after 30 examples
+INFO - Ner loss average 0.0 - dep loss average 0.8289466559886932 
+INFO - Train loss average : 0.8014185710577294 after 40 examples
+INFO - Ner loss average 0.0 - dep loss average 0.8014185710577294 
+INFO - Train loss average : 0.7804219826124609 after 50 examples
+INFO - Ner loss average 0.0 - dep loss average 0.7804219826124609 
+INFO - Train loss average : 0.7676035675375412 after 60 examples
+INFO - Ner loss average 0.0 - dep loss average 0.7676035675375412 
+INFO - Train loss average : 0.7524594156204589 after 70 examples
+INFO - Ner loss average 0.0 - dep loss average 0.7524594156204589 
+INFO - Train loss average : 0.7437314611743204 after 80 examples
+INFO - Ner loss average 0.0 - dep loss average 0.7437314611743204 
+INFO - Train loss average : 0.7545855397048096 after 90 examples
+INFO - Ner loss average 0.0 - dep loss average 0.7545855397048096 
+INFO - Train loss average : 0.7579305557068438 after 100 examples
+INFO - Ner loss average 0.0 - dep loss average 0.7579305557068438 
+INFO - Train loss average : 0.7683109907179394 after 110 examples
+INFO - Ner loss average 0.0 - dep loss average 0.7683109907179394 
+INFO - Train loss average : 0.75963201795239 after 120 examples
+INFO - Ner loss average 0.0 - dep loss average 0.75963201795239 
+INFO - Train loss average : 0.7433494031644211 after 130 examples
+INFO - Ner loss average 0.0 - dep loss average 0.7433494031644211 
+INFO - Train loss average : 0.7388073887343385 after 140 examples
+INFO - Ner loss average 0.0 - dep loss average 0.7388073887343385 
+INFO - Train loss average : 0.740169976769636 after 150 examples
+INFO - Ner loss average 0.0 - dep loss average 0.740169976769636 
+INFO - Train loss average : 0.7328696770768147 after 160 examples
+INFO - Ner loss average 0.0 - dep loss average 0.7328696770768147 
+INFO - Train loss average : 0.7239080106346485 after 170 examples
+INFO - Ner loss average 0.0 - dep loss average 0.7239080106346485 
+INFO - Train loss average : 0.7263935391532464 after 180 examples
+INFO - Ner loss average 0.0 - dep loss average 0.7263935391532464 
+INFO - Train loss average : 0.7255734425871387 after 190 examples
+INFO - Ner loss average 0.0 - dep loss average 0.7255734425871387 
+INFO - Train loss average : 0.7204384318320081 after 200 examples
+INFO - Ner loss average 0.0 - dep loss average 0.7204384318320081 
+INFO - Results for epoch : 12
+INFO - Evaluating dependency performance on ../../datasets/tr_imst-ud-test.conllu
+INFO - LAS Precision : 0.6147540983606558  Recall 0.6147540983606558 F1 0.6147540983606558
+INFO - Saving best model to ../best_dep_model.pkh
+INFO - Train loss average : 0.6885639533400536 after 10 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6885639533400536 
+INFO - Train loss average : 0.6301087345927954 after 20 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6301087345927954 
+INFO - Train loss average : 0.6314234274129072 after 30 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6314234274129072 
+INFO - Train loss average : 0.6727843908593059 after 40 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6727843908593059 
+INFO - Train loss average : 0.6666226036846638 after 50 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6666226036846638 
+INFO - Train loss average : 0.6779958672821522 after 60 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6779958672821522 
+INFO - Train loss average : 0.6746796771883965 after 70 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6746796771883965 
+INFO - Train loss average : 0.6722720559686423 after 80 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6722720559686423 
+INFO - Train loss average : 0.6596846602857113 after 90 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6596846602857113 
+INFO - Train loss average : 0.6381905019283295 after 100 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6381905019283295 
+INFO - Train loss average : 0.6442310778932138 after 110 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6442310778932138 
+INFO - Train loss average : 0.6511089584479729 after 120 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6511089584479729 
+INFO - Train loss average : 0.6472734435246541 after 130 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6472734435246541 
+INFO - Train loss average : 0.6432653855133269 after 140 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6432653855133269 
+INFO - Train loss average : 0.6538064825658997 after 150 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6538064825658997 
+INFO - Train loss average : 0.6590278516639956 after 160 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6590278516639956 
+INFO - Train loss average : 0.6561713776496403 after 170 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6561713776496403 
+INFO - Train loss average : 0.6545874243291716 after 180 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6545874243291716 
+INFO - Train loss average : 0.6567993740011987 after 190 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6567993740011987 
+INFO - Train loss average : 0.6546858848165721 after 200 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6546858848165721 
+INFO - Results for epoch : 13
+INFO - Evaluating dependency performance on ../../datasets/tr_imst-ud-test.conllu
+INFO - LAS Precision : 0.6156537385045981  Recall 0.6156537385045981 F1 0.6156537385045981
+INFO - Saving best model to ../best_dep_model.pkh
+INFO - Train loss average : 0.7500123918056488 after 10 examples
+INFO - Ner loss average 0.0 - dep loss average 0.7500123918056488 
+INFO - Train loss average : 0.6740454249083996 after 20 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6740454249083996 
+INFO - Train loss average : 0.6976383537054062 after 30 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6976383537054062 
+INFO - Train loss average : 0.6651256361976265 after 40 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6651256361976265 
+INFO - Train loss average : 0.6578405971825123 after 50 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6578405971825123 
+INFO - Train loss average : 0.6763707932084799 after 60 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6763707932084799 
+INFO - Train loss average : 0.6429416248840946 after 70 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6429416248840946 
+INFO - Train loss average : 0.6344969391822814 after 80 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6344969391822814 
+INFO - Train loss average : 0.6088894267980424 after 90 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6088894267980424 
+INFO - Train loss average : 0.6167551856581122 after 100 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6167551856581122 
+INFO - Train loss average : 0.5995938585647805 after 110 examples
+INFO - Ner loss average 0.0 - dep loss average 0.5995938585647805 
+INFO - Train loss average : 0.5959028191942101 after 120 examples
+INFO - Ner loss average 0.0 - dep loss average 0.5959028191942101 
+INFO - Train loss average : 0.603366371194044 after 130 examples
+INFO - Ner loss average 0.0 - dep loss average 0.603366371194044 
+INFO - Train loss average : 0.6048044153688742 after 140 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6048044153688742 
+INFO - Train loss average : 0.6044546483270824 after 150 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6044546483270824 
+INFO - Train loss average : 0.6044802753545809 after 160 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6044802753545809 
+INFO - Train loss average : 0.6025763731942896 after 170 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6025763731942896 
+INFO - Train loss average : 0.5894628518830157 after 180 examples
+INFO - Ner loss average 0.0 - dep loss average 0.5894628518830157 
+INFO - Train loss average : 0.5855233877358076 after 190 examples
+INFO - Ner loss average 0.0 - dep loss average 0.5855233877358076 
+INFO - Train loss average : 0.581777310394682 after 200 examples
+INFO - Ner loss average 0.0 - dep loss average 0.581777310394682 
+INFO - Results for epoch : 14
+INFO - Evaluating dependency performance on ../../datasets/tr_imst-ud-test.conllu
+INFO - LAS Precision : 0.6171531387445022  Recall 0.6171531387445022 F1 0.6171531387445022
+INFO - Saving best model to ../best_dep_model.pkh
+INFO - Train loss average : 0.6247145980596542 after 10 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6247145980596542 
+INFO - Train loss average : 0.5192739071790129 after 20 examples
+INFO - Ner loss average 0.0 - dep loss average 0.5192739071790129 
+INFO - Train loss average : 0.5588645410103102 after 30 examples
+INFO - Ner loss average 0.0 - dep loss average 0.5588645410103102 
+INFO - Train loss average : 0.6251074307831004 after 40 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6251074307831004 
+INFO - Train loss average : 0.613154750559479 after 50 examples
+INFO - Ner loss average 0.0 - dep loss average 0.613154750559479 
+INFO - Train loss average : 0.628700832106794 after 60 examples
+INFO - Ner loss average 0.0 - dep loss average 0.628700832106794 
+INFO - Train loss average : 0.6297724824531802 after 70 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6297724824531802 
+INFO - Train loss average : 0.6245315051288344 after 80 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6245315051288344 
+INFO - Train loss average : 0.6230732443949415 after 90 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6230732443949415 
+INFO - Train loss average : 0.6345983119029551 after 100 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6345983119029551 
+INFO - Train loss average : 0.6449136798778041 after 110 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6449136798778041 
+INFO - Train loss average : 0.6376973710721359 after 120 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6376973710721359 
+INFO - Train loss average : 0.631753242144791 after 130 examples
+INFO - Ner loss average 0.0 - dep loss average 0.631753242144791 
+INFO - Train loss average : 0.6312475137545595 after 140 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6312475137545595 
+INFO - Train loss average : 0.631114278845489 after 150 examples
+INFO - Ner loss average 0.0 - dep loss average 0.631114278845489 
+INFO - Train loss average : 0.6229683098499663 after 160 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6229683098499663 
+INFO - Train loss average : 0.6301334723939791 after 170 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6301334723939791 
+INFO - Train loss average : 0.6246073358692229 after 180 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6246073358692229 
+INFO - Train loss average : 0.6155622336523313 after 190 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6155622336523313 
+INFO - Train loss average : 0.6033492115233093 after 200 examples
+INFO - Ner loss average 0.0 - dep loss average 0.6033492115233093 
+INFO - Results for epoch : 15
+INFO - Evaluating dependency performance on ../../datasets/tr_imst-ud-test.conllu
+INFO - LAS Precision : 0.6193522590963615  Recall 0.6193522590963615 F1 0.6193522590963615
+INFO - Saving best model to ../best_dep_model.pkh
+INFO - Train loss average : 0.4510078430175781 after 10 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4510078430175781 
+INFO - Train loss average : 0.5141907677054405 after 20 examples
+INFO - Ner loss average 0.0 - dep loss average 0.5141907677054405 
+INFO - Train loss average : 0.527661835650603 after 30 examples
+INFO - Ner loss average 0.0 - dep loss average 0.527661835650603 
+INFO - Train loss average : 0.5586934659630061 after 40 examples
+INFO - Ner loss average 0.0 - dep loss average 0.5586934659630061 
+INFO - Train loss average : 0.562684950530529 after 50 examples
+INFO - Ner loss average 0.0 - dep loss average 0.562684950530529 
+INFO - Train loss average : 0.5529595005015532 after 60 examples
+INFO - Ner loss average 0.0 - dep loss average 0.5529595005015532 
+INFO - Train loss average : 0.5409968757735831 after 70 examples
+INFO - Ner loss average 0.0 - dep loss average 0.5409968757735831 
+INFO - Train loss average : 0.5489587048534303 after 80 examples
+INFO - Ner loss average 0.0 - dep loss average 0.5489587048534303 
+INFO - Train loss average : 0.5590508721354935 after 90 examples
+INFO - Ner loss average 0.0 - dep loss average 0.5590508721354935 
+INFO - Train loss average : 0.5591122214868665 after 100 examples
+INFO - Ner loss average 0.0 - dep loss average 0.5591122214868665 
+INFO - Train loss average : 0.5535943469879302 after 110 examples
+INFO - Ner loss average 0.0 - dep loss average 0.5535943469879302 
+INFO - Train loss average : 0.5370377773729463 after 120 examples
+INFO - Ner loss average 0.0 - dep loss average 0.5370377773729463 
+INFO - Train loss average : 0.545642265648796 after 130 examples
+INFO - Ner loss average 0.0 - dep loss average 0.545642265648796 
+INFO - Train loss average : 0.5430407870294792 after 140 examples
+INFO - Ner loss average 0.0 - dep loss average 0.5430407870294792 
+INFO - Train loss average : 0.5506775149951378 after 150 examples
+INFO - Ner loss average 0.0 - dep loss average 0.5506775149951378 
+INFO - Train loss average : 0.5475954110966995 after 160 examples
+INFO - Ner loss average 0.0 - dep loss average 0.5475954110966995 
+INFO - Train loss average : 0.5413487016716424 after 170 examples
+INFO - Ner loss average 0.0 - dep loss average 0.5413487016716424 
+INFO - Train loss average : 0.5430937897413969 after 180 examples
+INFO - Ner loss average 0.0 - dep loss average 0.5430937897413969 
+INFO - Train loss average : 0.5418083664593532 after 190 examples
+INFO - Ner loss average 0.0 - dep loss average 0.5418083664593532 
+INFO - Train loss average : 0.5357812808617018 after 200 examples
+INFO - Ner loss average 0.0 - dep loss average 0.5357812808617018 
+INFO - Results for epoch : 16
+INFO - Evaluating dependency performance on ../../datasets/tr_imst-ud-test.conllu
+INFO - LAS Precision : 0.6145541783286685  Recall 0.6145541783286685 F1 0.6145541783286685
+INFO - Train loss average : 0.4654824957251549 after 10 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4654824957251549 
+INFO - Train loss average : 0.48850169852375985 after 20 examples
+INFO - Ner loss average 0.0 - dep loss average 0.48850169852375985 
+INFO - Train loss average : 0.464461380825378 after 30 examples
+INFO - Ner loss average 0.0 - dep loss average 0.464461380825378 
+INFO - Train loss average : 0.4696278501942288 after 40 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4696278501942288 
+INFO - Train loss average : 0.5028164166724309 after 50 examples
+INFO - Ner loss average 0.0 - dep loss average 0.5028164166724309 
+INFO - Train loss average : 0.5185397789309112 after 60 examples
+INFO - Ner loss average 0.0 - dep loss average 0.5185397789309112 
+INFO - Train loss average : 0.525086175580509 after 70 examples
+INFO - Ner loss average 0.0 - dep loss average 0.525086175580509 
+INFO - Train loss average : 0.5380821633472805 after 80 examples
+INFO - Ner loss average 0.0 - dep loss average 0.5380821633472805 
+INFO - Train loss average : 0.5284429038021092 after 90 examples
+INFO - Ner loss average 0.0 - dep loss average 0.5284429038021092 
+INFO - Train loss average : 0.5337479802477173 after 100 examples
+INFO - Ner loss average 0.0 - dep loss average 0.5337479802477173 
+INFO - Train loss average : 0.5263816553739492 after 110 examples
+INFO - Ner loss average 0.0 - dep loss average 0.5263816553739492 
+INFO - Train loss average : 0.5148143085321256 after 120 examples
+INFO - Ner loss average 0.0 - dep loss average 0.5148143085321256 
+INFO - Train loss average : 0.5146583771458468 after 130 examples
+INFO - Ner loss average 0.0 - dep loss average 0.5146583771458468 
+INFO - Train loss average : 0.514662969962228 after 140 examples
+INFO - Ner loss average 0.0 - dep loss average 0.514662969962228 
+INFO - Train loss average : 0.5112359128380194 after 150 examples
+INFO - Ner loss average 0.0 - dep loss average 0.5112359128380194 
+INFO - Train loss average : 0.5106696860850206 after 160 examples
+INFO - Ner loss average 0.0 - dep loss average 0.5106696860850206 
+INFO - Train loss average : 0.50852521432098 after 170 examples
+INFO - Ner loss average 0.0 - dep loss average 0.50852521432098 
+INFO - Train loss average : 0.5047495770565648 after 180 examples
+INFO - Ner loss average 0.0 - dep loss average 0.5047495770565648 
+INFO - Train loss average : 0.512139449365388 after 190 examples
+INFO - Ner loss average 0.0 - dep loss average 0.512139449365388 
+INFO - Train loss average : 0.5167537712107878 after 200 examples
+INFO - Ner loss average 0.0 - dep loss average 0.5167537712107878 
+INFO - Results for epoch : 17
+INFO - Evaluating dependency performance on ../../datasets/tr_imst-ud-test.conllu
+INFO - LAS Precision : 0.6167532986805278  Recall 0.6167532986805278 F1 0.6167532986805278
+INFO - Train loss average : 0.49150399416685103 after 10 examples
+INFO - Ner loss average 0.0 - dep loss average 0.49150399416685103 
+INFO - Train loss average : 0.5127009630203248 after 20 examples
+INFO - Ner loss average 0.0 - dep loss average 0.5127009630203248 
+INFO - Train loss average : 0.5329880714416504 after 30 examples
+INFO - Ner loss average 0.0 - dep loss average 0.5329880714416504 
+INFO - Train loss average : 0.5267946228384972 after 40 examples
+INFO - Ner loss average 0.0 - dep loss average 0.5267946228384972 
+INFO - Train loss average : 0.48828981548547745 after 50 examples
+INFO - Ner loss average 0.0 - dep loss average 0.48828981548547745 
+INFO - Train loss average : 0.47452149242162706 after 60 examples
+INFO - Ner loss average 0.0 - dep loss average 0.47452149242162706 
+INFO - Train loss average : 0.4638776932443891 after 70 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4638776932443891 
+INFO - Train loss average : 0.4788631111383438 after 80 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4788631111383438 
+INFO - Train loss average : 0.4687151885694928 after 90 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4687151885694928 
+INFO - Train loss average : 0.46972596652805804 after 100 examples
+INFO - Ner loss average 0.0 - dep loss average 0.46972596652805804 
+INFO - Train loss average : 0.4644580190154639 after 110 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4644580190154639 
+INFO - Train loss average : 0.46299950721828886 after 120 examples
+INFO - Ner loss average 0.0 - dep loss average 0.46299950721828886 
+INFO - Train loss average : 0.4605851245542558 after 130 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4605851245542558 
+INFO - Train loss average : 0.46299228252443886 after 140 examples
+INFO - Ner loss average 0.0 - dep loss average 0.46299228252443886 
+INFO - Train loss average : 0.4570833494452139 after 150 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4570833494452139 
+INFO - Train loss average : 0.45899417613982224 after 160 examples
+INFO - Ner loss average 0.0 - dep loss average 0.45899417613982224 
+INFO - Train loss average : 0.4726761871346218 after 170 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4726761871346218 
+INFO - Train loss average : 0.4735077569416414 after 180 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4735077569416414 
+INFO - Train loss average : 0.4709770262976618 after 190 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4709770262976618 
+INFO - Train loss average : 0.4655312906904146 after 200 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4655312906904146 
+INFO - Results for epoch : 18
+INFO - Evaluating dependency performance on ../../datasets/tr_imst-ud-test.conllu
+INFO - LAS Precision : 0.6117552978808477  Recall 0.6117552978808477 F1 0.6117552978808477
+INFO - Train loss average : 0.5317745625972747 after 10 examples
+INFO - Ner loss average 0.0 - dep loss average 0.5317745625972747 
+INFO - Train loss average : 0.5198906049132347 after 20 examples
+INFO - Ner loss average 0.0 - dep loss average 0.5198906049132347 
+INFO - Train loss average : 0.49480847641825676 after 30 examples
+INFO - Ner loss average 0.0 - dep loss average 0.49480847641825676 
+INFO - Train loss average : 0.482535926066339 after 40 examples
+INFO - Ner loss average 0.0 - dep loss average 0.482535926066339 
+INFO - Train loss average : 0.48552375949919224 after 50 examples
+INFO - Ner loss average 0.0 - dep loss average 0.48552375949919224 
+INFO - Train loss average : 0.4895196214939157 after 60 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4895196214939157 
+INFO - Train loss average : 0.4933232123830489 after 70 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4933232123830489 
+INFO - Train loss average : 0.4847239986527711 after 80 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4847239986527711 
+INFO - Train loss average : 0.4765524704837137 after 90 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4765524704837137 
+INFO - Train loss average : 0.485636321939528 after 100 examples
+INFO - Ner loss average 0.0 - dep loss average 0.485636321939528 
+INFO - Train loss average : 0.4877139001068744 after 110 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4877139001068744 
+INFO - Train loss average : 0.47611778158073625 after 120 examples
+INFO - Ner loss average 0.0 - dep loss average 0.47611778158073625 
+INFO - Train loss average : 0.48649675883352755 after 130 examples
+INFO - Ner loss average 0.0 - dep loss average 0.48649675883352755 
+INFO - Train loss average : 0.48591380015547786 after 140 examples
+INFO - Ner loss average 0.0 - dep loss average 0.48591380015547786 
+INFO - Train loss average : 0.4821146484464407 after 150 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4821146484464407 
+INFO - Train loss average : 0.4775552651146427 after 160 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4775552651146427 
+INFO - Train loss average : 0.4865407230442061 after 170 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4865407230442061 
+INFO - Train loss average : 0.47899663634598255 after 180 examples
+INFO - Ner loss average 0.0 - dep loss average 0.47899663634598255 
+INFO - Train loss average : 0.4741617664694786 after 190 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4741617664694786 
+INFO - Train loss average : 0.47185188472270967 after 200 examples
+INFO - Ner loss average 0.0 - dep loss average 0.47185188472270967 
+INFO - Results for epoch : 19
+INFO - Evaluating dependency performance on ../../datasets/tr_imst-ud-test.conllu
+INFO - LAS Precision : 0.617952818872451  Recall 0.617952818872451 F1 0.617952818872451
+INFO - Train loss average : 0.3989247590303421 after 10 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3989247590303421 
+INFO - Train loss average : 0.4396083191037178 after 20 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4396083191037178 
+INFO - Train loss average : 0.47856817543506625 after 30 examples
+INFO - Ner loss average 0.0 - dep loss average 0.47856817543506625 
+INFO - Train loss average : 0.4648952767252922 after 40 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4648952767252922 
+INFO - Train loss average : 0.4437601898610592 after 50 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4437601898610592 
+INFO - Train loss average : 0.4507572433600823 after 60 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4507572433600823 
+INFO - Train loss average : 0.44305459574929307 after 70 examples
+INFO - Ner loss average 0.0 - dep loss average 0.44305459574929307 
+INFO - Train loss average : 0.4498361080419272 after 80 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4498361080419272 
+INFO - Train loss average : 0.45792385600507257 after 90 examples
+INFO - Ner loss average 0.0 - dep loss average 0.45792385600507257 
+INFO - Train loss average : 0.4605728552863002 after 100 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4605728552863002 
+INFO - Train loss average : 0.4601596274836497 after 110 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4601596274836497 
+INFO - Train loss average : 0.4587274423489968 after 120 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4587274423489968 
+INFO - Train loss average : 0.4455193330462162 after 130 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4455193330462162 
+INFO - Train loss average : 0.4329972515148776 after 140 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4329972515148776 
+INFO - Train loss average : 0.43496172393361726 after 150 examples
+INFO - Ner loss average 0.0 - dep loss average 0.43496172393361726 
+INFO - Train loss average : 0.4360419036820531 after 160 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4360419036820531 
+INFO - Train loss average : 0.43491999971515993 after 170 examples
+INFO - Ner loss average 0.0 - dep loss average 0.43491999971515993 
+INFO - Train loss average : 0.4353726215246651 after 180 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4353726215246651 
+INFO - Train loss average : 0.43108806668927796 after 190 examples
+INFO - Ner loss average 0.0 - dep loss average 0.43108806668927796 
+INFO - Train loss average : 0.4287223566090688 after 200 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4287223566090688 
+INFO - Results for epoch : 20
+INFO - Evaluating dependency performance on ../../datasets/tr_imst-ud-test.conllu
+INFO - LAS Precision : 0.6138544582167134  Recall 0.6138544582167134 F1 0.6138544582167134
+INFO - Train loss average : 0.41767738573253155 after 10 examples
+INFO - Ner loss average 0.0 - dep loss average 0.41767738573253155 
+INFO - Train loss average : 0.4473943566903472 after 20 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4473943566903472 
+INFO - Train loss average : 0.46527475950618585 after 30 examples
+INFO - Ner loss average 0.0 - dep loss average 0.46527475950618585 
+INFO - Train loss average : 0.4666403065435588 after 40 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4666403065435588 
+INFO - Train loss average : 0.4598920130729675 after 50 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4598920130729675 
+INFO - Train loss average : 0.47127599492669103 after 60 examples
+INFO - Ner loss average 0.0 - dep loss average 0.47127599492669103 
+INFO - Train loss average : 0.45815668571740387 after 70 examples
+INFO - Ner loss average 0.0 - dep loss average 0.45815668571740387 
+INFO - Train loss average : 0.4494309378555045 after 80 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4494309378555045 
+INFO - Train loss average : 0.4388581106853154 after 90 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4388581106853154 
+INFO - Train loss average : 0.43106842776760457 after 100 examples
+INFO - Ner loss average 0.0 - dep loss average 0.43106842776760457 
+INFO - Train loss average : 0.4298161087896336 after 110 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4298161087896336 
+INFO - Train loss average : 0.4265631632724156 after 120 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4265631632724156 
+INFO - Train loss average : 0.4159064429059911 after 130 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4159064429059911 
+INFO - Train loss average : 0.4164757814557691 after 140 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4164757814557691 
+INFO - Train loss average : 0.4281166048627347 after 150 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4281166048627347 
+INFO - Train loss average : 0.42699885566544254 after 160 examples
+INFO - Ner loss average 0.0 - dep loss average 0.42699885566544254 
+INFO - Train loss average : 0.41945528955856226 after 170 examples
+INFO - Ner loss average 0.0 - dep loss average 0.41945528955856226 
+INFO - Train loss average : 0.4130631994481923 after 180 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4130631994481923 
+INFO - Train loss average : 0.4058092064787879 after 190 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4058092064787879 
+INFO - Train loss average : 0.4088286594697274 after 200 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4088286594697274 
+INFO - Results for epoch : 21
+INFO - Evaluating dependency performance on ../../datasets/tr_imst-ud-test.conllu
+INFO - LAS Precision : 0.6173530587764894  Recall 0.6173530587764894 F1 0.6173530587764894
+INFO - Train loss average : 0.4038277752697468 after 10 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4038277752697468 
+INFO - Train loss average : 0.31423471700400113 after 20 examples
+INFO - Ner loss average 0.0 - dep loss average 0.31423471700400113 
+INFO - Train loss average : 0.3592068750411272 after 30 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3592068750411272 
+INFO - Train loss average : 0.3765458929352462 after 40 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3765458929352462 
+INFO - Train loss average : 0.3700792109966278 after 50 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3700792109966278 
+INFO - Train loss average : 0.3672868549823761 after 60 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3672868549823761 
+INFO - Train loss average : 0.3907560610345432 after 70 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3907560610345432 
+INFO - Train loss average : 0.3940926447510719 after 80 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3940926447510719 
+INFO - Train loss average : 0.38284537566618787 after 90 examples
+INFO - Ner loss average 0.0 - dep loss average 0.38284537566618787 
+INFO - Train loss average : 0.3781428669951856 after 100 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3781428669951856 
+INFO - Train loss average : 0.3817102322354913 after 110 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3817102322354913 
+INFO - Train loss average : 0.3852864582557231 after 120 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3852864582557231 
+INFO - Train loss average : 0.38631389864648763 after 130 examples
+INFO - Ner loss average 0.0 - dep loss average 0.38631389864648763 
+INFO - Train loss average : 0.38498246990410345 after 140 examples
+INFO - Ner loss average 0.0 - dep loss average 0.38498246990410345 
+INFO - Train loss average : 0.3830792501444618 after 150 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3830792501444618 
+INFO - Train loss average : 0.385442201315891 after 160 examples
+INFO - Ner loss average 0.0 - dep loss average 0.385442201315891 
+INFO - Train loss average : 0.3832712128648863 after 170 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3832712128648863 
+INFO - Train loss average : 0.3935613147810929 after 180 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3935613147810929 
+INFO - Train loss average : 0.39545163350473894 after 190 examples
+INFO - Ner loss average 0.0 - dep loss average 0.39545163350473894 
+INFO - Train loss average : 0.39599690194241705 after 200 examples
+INFO - Ner loss average 0.0 - dep loss average 0.39599690194241705 
+INFO - Results for epoch : 22
+INFO - Evaluating dependency performance on ../../datasets/tr_imst-ud-test.conllu
+INFO - LAS Precision : 0.6172530987604958  Recall 0.6172530987604958 F1 0.6172530987604958
+INFO - Train loss average : 0.432869828492403 after 10 examples
+INFO - Ner loss average 0.0 - dep loss average 0.432869828492403 
+INFO - Train loss average : 0.3930511957034469 after 20 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3930511957034469 
+INFO - Train loss average : 0.40256782012681164 after 30 examples
+INFO - Ner loss average 0.0 - dep loss average 0.40256782012681164 
+INFO - Train loss average : 0.4020052830688655 after 40 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4020052830688655 
+INFO - Train loss average : 0.42532277803868057 after 50 examples
+INFO - Ner loss average 0.0 - dep loss average 0.42532277803868057 
+INFO - Train loss average : 0.4031550205933551 after 60 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4031550205933551 
+INFO - Train loss average : 0.4007572022665824 after 70 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4007572022665824 
+INFO - Train loss average : 0.4006379868136719 after 80 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4006379868136719 
+INFO - Train loss average : 0.4080308842369252 after 90 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4080308842369252 
+INFO - Train loss average : 0.400416845548898 after 100 examples
+INFO - Ner loss average 0.0 - dep loss average 0.400416845548898 
+INFO - Train loss average : 0.40979399195110255 after 110 examples
+INFO - Ner loss average 0.0 - dep loss average 0.40979399195110255 
+INFO - Train loss average : 0.403816733090207 after 120 examples
+INFO - Ner loss average 0.0 - dep loss average 0.403816733090207 
+INFO - Train loss average : 0.4029412533944616 after 130 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4029412533944616 
+INFO - Train loss average : 0.40001778578651803 after 140 examples
+INFO - Ner loss average 0.0 - dep loss average 0.40001778578651803 
+INFO - Train loss average : 0.3915117011219263 after 150 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3915117011219263 
+INFO - Train loss average : 0.38703775156755 after 160 examples
+INFO - Ner loss average 0.0 - dep loss average 0.38703775156755 
+INFO - Train loss average : 0.38554959572194253 after 170 examples
+INFO - Ner loss average 0.0 - dep loss average 0.38554959572194253 
+INFO - Train loss average : 0.3873300750946833 after 180 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3873300750946833 
+INFO - Train loss average : 0.38658170848104517 after 190 examples
+INFO - Ner loss average 0.0 - dep loss average 0.38658170848104517 
+INFO - Train loss average : 0.386878122119233 after 200 examples
+INFO - Ner loss average 0.0 - dep loss average 0.386878122119233 
+INFO - Results for epoch : 23
+INFO - Evaluating dependency performance on ../../datasets/tr_imst-ud-test.conllu
+INFO - LAS Precision : 0.6187524990003999  Recall 0.6187524990003999 F1 0.6187524990003999
+INFO - Train loss average : 0.35208800137043 after 10 examples
+INFO - Ner loss average 0.0 - dep loss average 0.35208800137043 
+INFO - Train loss average : 0.39014653451740744 after 20 examples
+INFO - Ner loss average 0.0 - dep loss average 0.39014653451740744 
+INFO - Train loss average : 0.4233687919874986 after 30 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4233687919874986 
+INFO - Train loss average : 0.4018957642838359 after 40 examples
+INFO - Ner loss average 0.0 - dep loss average 0.4018957642838359 
+INFO - Train loss average : 0.3914984501898289 after 50 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3914984501898289 
+INFO - Train loss average : 0.40574354731167356 after 60 examples
+INFO - Ner loss average 0.0 - dep loss average 0.40574354731167356 
+INFO - Train loss average : 0.3862251668370196 after 70 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3862251668370196 
+INFO - Train loss average : 0.3799536663340405 after 80 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3799536663340405 
+INFO - Train loss average : 0.381873712874949 after 90 examples
+INFO - Ner loss average 0.0 - dep loss average 0.381873712874949 
+INFO - Train loss average : 0.38162521677091715 after 100 examples
+INFO - Ner loss average 0.0 - dep loss average 0.38162521677091715 
+INFO - Train loss average : 0.3884376208382574 after 110 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3884376208382574 
+INFO - Train loss average : 0.38817837059808274 after 120 examples
+INFO - Ner loss average 0.0 - dep loss average 0.38817837059808274 
+INFO - Train loss average : 0.3917683073104574 after 130 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3917683073104574 
+INFO - Train loss average : 0.3957812208815345 after 140 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3957812208815345 
+INFO - Train loss average : 0.39157297945270936 after 150 examples
+INFO - Ner loss average 0.0 - dep loss average 0.39157297945270936 
+INFO - Train loss average : 0.385678448935505 after 160 examples
+INFO - Ner loss average 0.0 - dep loss average 0.385678448935505 
+INFO - Train loss average : 0.38495347097735194 after 170 examples
+INFO - Ner loss average 0.0 - dep loss average 0.38495347097735194 
+INFO - Train loss average : 0.38601454267692237 after 180 examples
+INFO - Ner loss average 0.0 - dep loss average 0.38601454267692237 
+INFO - Train loss average : 0.38175427974201737 after 190 examples
+INFO - Ner loss average 0.0 - dep loss average 0.38175427974201737 
+INFO - Train loss average : 0.37795803729211913 after 200 examples
+INFO - Ner loss average 0.0 - dep loss average 0.37795803729211913 
+INFO - Results for epoch : 24
+INFO - Evaluating dependency performance on ../../datasets/tr_imst-ud-test.conllu
+INFO - LAS Precision : 0.6176529388244703  Recall 0.6176529388244703 F1 0.6176529388244703
+INFO - Train loss average : 0.41228863298892976 after 10 examples
+INFO - Ner loss average 0.0 - dep loss average 0.41228863298892976 
+INFO - Train loss average : 0.3330022029578686 after 20 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3330022029578686 
+INFO - Train loss average : 0.3558654570331176 after 30 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3558654570331176 
+INFO - Train loss average : 0.3371619204059243 after 40 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3371619204059243 
+INFO - Train loss average : 0.3339713269472122 after 50 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3339713269472122 
+INFO - Train loss average : 0.3534753014643987 after 60 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3534753014643987 
+INFO - Train loss average : 0.34636369825207763 after 70 examples
+INFO - Ner loss average 0.0 - dep loss average 0.34636369825207763 
+INFO - Train loss average : 0.34573585184989497 after 80 examples
+INFO - Ner loss average 0.0 - dep loss average 0.34573585184989497 
+INFO - Train loss average : 0.34501579916104674 after 90 examples
+INFO - Ner loss average 0.0 - dep loss average 0.34501579916104674 
+INFO - Train loss average : 0.3381972209643573 after 100 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3381972209643573 
+INFO - Train loss average : 0.3408498411405493 after 110 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3408498411405493 
+INFO - Train loss average : 0.34729401623674977 after 120 examples
+INFO - Ner loss average 0.0 - dep loss average 0.34729401623674977 
+INFO - Train loss average : 0.3481885381544439 after 130 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3481885381544439 
+INFO - Train loss average : 0.3463211707704301 after 140 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3463211707704301 
+INFO - Train loss average : 0.3400847920713325 after 150 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3400847920713325 
+INFO - Train loss average : 0.3436562243092339 after 160 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3436562243092339 
+INFO - Train loss average : 0.34320844332413636 after 170 examples
+INFO - Ner loss average 0.0 - dep loss average 0.34320844332413636 
+INFO - Train loss average : 0.3465042553376406 after 180 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3465042553376406 
+INFO - Train loss average : 0.344490558570741 after 190 examples
+INFO - Ner loss average 0.0 - dep loss average 0.344490558570741 
+INFO - Train loss average : 0.3375902472110465 after 200 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3375902472110465 
+INFO - Results for epoch : 25
+INFO - Evaluating dependency performance on ../../datasets/tr_imst-ud-test.conllu
+INFO - LAS Precision : 0.6162534986005598  Recall 0.6162534986005598 F1 0.6162534986005598
+INFO - Train loss average : 0.27455710172653197 after 10 examples
+INFO - Ner loss average 0.0 - dep loss average 0.27455710172653197 
+INFO - Train loss average : 0.27919615488499405 after 20 examples
+INFO - Ner loss average 0.0 - dep loss average 0.27919615488499405 
+INFO - Train loss average : 0.2490102848658959 after 30 examples
+INFO - Ner loss average 0.0 - dep loss average 0.2490102848658959 
+INFO - Train loss average : 0.2657213737256825 after 40 examples
+INFO - Ner loss average 0.0 - dep loss average 0.2657213737256825 
+INFO - Train loss average : 0.2595934747159481 after 50 examples
+INFO - Ner loss average 0.0 - dep loss average 0.2595934747159481 
+INFO - Train loss average : 0.2885268756498893 after 60 examples
+INFO - Ner loss average 0.0 - dep loss average 0.2885268756498893 
+INFO - Train loss average : 0.30331228151917455 after 70 examples
+INFO - Ner loss average 0.0 - dep loss average 0.30331228151917455 
+INFO - Train loss average : 0.32552462639287116 after 80 examples
+INFO - Ner loss average 0.0 - dep loss average 0.32552462639287116 
+INFO - Train loss average : 0.33010476239853437 after 90 examples
+INFO - Ner loss average 0.0 - dep loss average 0.33010476239853437 
+INFO - Train loss average : 0.32803872726857664 after 100 examples
+INFO - Ner loss average 0.0 - dep loss average 0.32803872726857664 
+INFO - Train loss average : 0.32308688455007295 after 110 examples
+INFO - Ner loss average 0.0 - dep loss average 0.32308688455007295 
+INFO - Train loss average : 0.32331232813497385 after 120 examples
+INFO - Ner loss average 0.0 - dep loss average 0.32331232813497385 
+INFO - Train loss average : 0.32503066699092203 after 130 examples
+INFO - Ner loss average 0.0 - dep loss average 0.32503066699092203 
+INFO - Train loss average : 0.3227607622210469 after 140 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3227607622210469 
+INFO - Train loss average : 0.31891160119945805 after 150 examples
+INFO - Ner loss average 0.0 - dep loss average 0.31891160119945805 
+INFO - Train loss average : 0.3222196673916187 after 160 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3222196673916187 
+INFO - Train loss average : 0.3164580046089695 after 170 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3164580046089695 
+INFO - Train loss average : 0.31883381495976615 after 180 examples
+INFO - Ner loss average 0.0 - dep loss average 0.31883381495976615 
+INFO - Train loss average : 0.3200962645982049 after 190 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3200962645982049 
+INFO - Train loss average : 0.3211367827048525 after 200 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3211367827048525 
+INFO - Results for epoch : 26
+INFO - Evaluating dependency performance on ../../datasets/tr_imst-ud-test.conllu
+INFO - LAS Precision : 0.6182526989204318  Recall 0.6182526989204318 F1 0.6182526989204318
+INFO - Train loss average : 0.311031211912632 after 10 examples
+INFO - Ner loss average 0.0 - dep loss average 0.311031211912632 
+INFO - Train loss average : 0.3503748498857021 after 20 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3503748498857021 
+INFO - Train loss average : 0.34041718654334546 after 30 examples
+INFO - Ner loss average 0.0 - dep loss average 0.34041718654334546 
+INFO - Train loss average : 0.3221684697084129 after 40 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3221684697084129 
+INFO - Train loss average : 0.32266681306064127 after 50 examples
+INFO - Ner loss average 0.0 - dep loss average 0.32266681306064127 
+INFO - Train loss average : 0.3344912781690558 after 60 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3344912781690558 
+INFO - Train loss average : 0.3305941205471754 after 70 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3305941205471754 
+INFO - Train loss average : 0.32381174168549476 after 80 examples
+INFO - Ner loss average 0.0 - dep loss average 0.32381174168549476 
+INFO - Train loss average : 0.32660374575191076 after 90 examples
+INFO - Ner loss average 0.0 - dep loss average 0.32660374575191076 
+INFO - Train loss average : 0.32508341439068317 after 100 examples
+INFO - Ner loss average 0.0 - dep loss average 0.32508341439068317 
+INFO - Train loss average : 0.31989510188048537 after 110 examples
+INFO - Ner loss average 0.0 - dep loss average 0.31989510188048537 
+INFO - Train loss average : 0.3189851074013859 after 120 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3189851074013859 
+INFO - Train loss average : 0.31878959533686824 after 130 examples
+INFO - Ner loss average 0.0 - dep loss average 0.31878959533686824 
+INFO - Train loss average : 0.32021663883434875 after 140 examples
+INFO - Ner loss average 0.0 - dep loss average 0.32021663883434875 
+INFO - Train loss average : 0.3133605223024885 after 150 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3133605223024885 
+INFO - Train loss average : 0.3108032067422755 after 160 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3108032067422755 
+INFO - Train loss average : 0.31389371543465294 after 170 examples
+INFO - Ner loss average 0.0 - dep loss average 0.31389371543465294 
+INFO - Train loss average : 0.31406507717652454 after 180 examples
+INFO - Ner loss average 0.0 - dep loss average 0.31406507717652454 
+INFO - Train loss average : 0.3136828586263092 after 190 examples
+INFO - Ner loss average 0.0 - dep loss average 0.3136828586263092 
+INFO - Train loss average : 0.31179899713024495 after 200 examples
+INFO - Ner loss average 0.0 - dep loss average 0.31179899713024495 
+INFO - Results for epoch : 27
+INFO - Evaluating dependency performance on ../../datasets/tr_imst-ud-test.conllu
+INFO - LAS Precision : 0.6161535385845661  Recall 0.6161535385845661 F1 0.6161535385845661
+INFO - Train loss average : 0.25269134193658827 after 10 examples
+INFO - Ner loss average 0.0 - dep loss average 0.25269134193658827 
+INFO - Train loss average : 0.28213461665436623 after 20 examples
+INFO - Ner loss average 0.0 - dep loss average 0.28213461665436623 
+INFO - Train loss average : 0.27421885772297777 after 30 examples
+INFO - Ner loss average 0.0 - dep loss average 0.27421885772297777 
+INFO - Train loss average : 0.2909016955178231 after 40 examples
+INFO - Ner loss average 0.0 - dep loss average 0.2909016955178231 
+INFO - Train loss average : 0.2968262254819274 after 50 examples
+INFO - Ner loss average 0.0 - dep loss average 0.2968262254819274 
+INFO - Train loss average : 0.2894350272603333 after 60 examples
+INFO - Ner loss average 0.0 - dep loss average 0.2894350272603333 
