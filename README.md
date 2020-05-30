@@ -6,7 +6,9 @@ For the double-blind review we refrain from sharing any private information.
 We also share the trained models using drive links together with all the data used for both tasks.
 
 
-The entry point for the project is the jointtrainer_multilang.py which controls both training, prediction and evaluation steps through the arguments.
+The entry point to run the main experiments  is the jointtrainer_multilang.py file. It controls both training, prediction and evaluation steps through the command line arguments.
+
+
 
 ## Datasets and Trained Models
 
@@ -15,12 +17,22 @@ Below are the required documents for training new models and replicating the res
 
 - .pkh files containing the saved model parameters [link](https://drive.google.com/drive/folders/1I2YSW6Vzw6CrIgJlKfIm3uFod1ETd7SR?usp=sharing)
 - *_config.json files for models that use different parameter combinations than default (NER_only model with lstm size 229) [link](https://drive.google.com/drive/folders/1I2YSW6Vzw6CrIgJlKfIm3uFod1ETd7SR?usp=sharing)
-- training and test files are under the 'ner_datasets' and 'dep_dataseets' folders of the link(training files are required to get the vocabularies for each task and pos tags) [link](https://drive.google.com/drive/folders/1ugT4tk8FlxxOQdjp4m9pXc_6_Xhdlo2-?usp=sharing)
+- training, development and test files for each language are under the 'ner_datasets' and 'dep_datasets' folders of the link(training files are required to get the vocabularies for each task and pos tags) [link](https://drive.google.com/drive/folders/1ugT4tk8FlxxOQdjp4m9pXc_6_Xhdlo2-?usp=sharing)
+
+
+In addition we provide sample data under:
+
+```
+example_data/
+```
+
+which contains small portions of train and test sets for both tasks, for the Turkish language.
+
 
 
 ## Setup
 
-To ease the work required to for doing the setup, we provide a docker file that contains all the setting for running the source code. The docker image is available under : https://hub.docker.com/r/aakdemir/pytorch-cuda/tags with the version 0.1.
+To ease the work required to for doing the setup, we provide a docker file that contains all the setting for running the source code. The docker image is available under : https://hub.docker.com/r/aakdemir/pytorch-cuda/tags with the version 0.2.
 
 Start by cloning the source code (hier2 branch) to your machine (or by downloading and unzipping it).
 
@@ -28,21 +40,21 @@ Start by cloning the source code (hier2 branch) to your machine (or by downloadi
 
 Make sure that docker is installed and running on your local device. Check docker [homepage](https://docs.docker.com/docker-for-windows/install/) for details.
 
-Next run the following code to mount /tmp/data of your local machine:
+Next run the following code to mount required data inside your local machine:
 
 ```
-docker run -it --rm -v ~/pyjNERDEP:/work aakdemir/pytorch-cuda:0.1
+docker run -it --rm -v ~/pyjNERDEP:/work aakdemir/pytorch-cuda:0.2
 
 ```
 
 This code will download the docker image and start a container which mounts the local directory ~/pyJNERDEP to the /work directory inside the container.
-Make sure that you obtain and place the datasets inside ~/pyJNERDEP so that container can have access to them.
+Make sure that you obtain and place the datasets inside ~/pyJNERDEP so that container can have access to them, in addition to the source code shared in this folder.
 By default, the code runs using GPU whenever available.
 
 A more generic way of initiating the container is as follows:
 
 ```
-docker run -it --rm -v [path_to_the_datasets_in_local]:[path_in_container_for_data] -v [path_to_the_source_code_inside_local]:[path_in_container_for_source_code]  aakdemir/pytorch-cuda:0.1
+docker run -it --rm -v [path_to_the_datasets_in_local]:[path_in_container_for_data] -v [path_to_the_source_code_inside_local]:[path_in_container_for_source_code]  aakdemir/pytorch-cuda:0.2
 
 ```
 
@@ -155,4 +167,26 @@ python jointtrainer_multilang.py --mode predict --load_model 1 --load_path dep_o
 ### Example run using the config file that stores the experiment specific model configuration
 ```
 python jointtrainer_multilang.py --mode predict --load_model 1 --load_path dep_only_6788.pkh --ner_train_file traindev_pos.tsv --dep_train_file tr_imst_ud_traindev.conllu --model_type NER --load_config 1 --config_file ner_9382_config.json  --save_dir predicts
+```
+
+
+## Analysis Codes
+
+In the submitted paper, we give an analysis of the sentences that 1) other methods failed, and mBERT succeeded, and 2) other methods succeded, and mBERT failed.
+
+All of the code to replicate the results of this analysis is contained inside the ipython Notebook :
+
+```
+error_analysis_scripts.ipynb
+```
+
+
+To be able to replicate the results, we also share the results of each model for all languages for the NER task through the drive link : [link](https://drive.google.com/drive/folders/1hgM4m4KGspk4kvzQqiAF6bidWi0vAgB4?usp=sharing)
+
+This drive folder contains results for 16 cases for the NER task (4 models (baseline, word2vec, fasttext and mBERT) for 4 languages).
+
+In addition to get the unknown-rare frequency analysis, the training files should also be downloaded and stored in the folder "datasets" under the current working directory. For example for the Czech Language,
+
+```
+    datasets/myner_czech-train.txt
 ```
