@@ -1,4 +1,4 @@
-## Hierarchical Multi-task Learning of Dependency Parsing and Named Entity Recognition using Subword Contextual Embeddings
+## Subword Contextual Embeddings for Languages with Rich Morphology
 
 This repository contains the source code for replicating the experiments in our paper, submitted for review for ACL 2020.
 For the double-blind review we refrain from sharing any private information.
@@ -6,12 +6,12 @@ For the double-blind review we refrain from sharing any private information.
 We also share the trained models using drive links together with all the data used for both tasks.
 
 
-The entry point for the project is the jointtrainer.py which controls both training, prediction and evaluation steps through the arguments. 
+The entry point for the project is the jointtrainer_multilang.py which controls both training, prediction and evaluation steps through the arguments.
 
 ## Datasets and Trained Models
 
 In order to train your own models using the same datasets or replicate the results, we share the trained models reported on the paper together with the datasets using external links.
-Below are the required documents for training new models and replicating the results: 
+Below are the required documents for training new models and replicating the results:
 
 - .pkh files containing the saved model parameters [link](https://drive.google.com/drive/folders/1I2YSW6Vzw6CrIgJlKfIm3uFod1ETd7SR?usp=sharing)
 - *_config.json files for models that use different parameter combinations than default (NER_only model with lstm size 229) [link](https://drive.google.com/drive/folders/1I2YSW6Vzw6CrIgJlKfIm3uFod1ETd7SR?usp=sharing)
@@ -20,7 +20,7 @@ Below are the required documents for training new models and replicating the res
 
 ## Setup
 
-To ease the work required to for doing the setup, we provide a docker file that contains all the setting for running the source code. The docker image is available under : https://hub.docker.com/r/aakdemir/pytorch-cuda/tags with the version 0.1. 
+To ease the work required to for doing the setup, we provide a docker file that contains all the setting for running the source code. The docker image is available under : https://hub.docker.com/r/aakdemir/pytorch-cuda/tags with the version 0.1.
 
 Start by cloning the source code (hier2 branch) to your machine (or by downloading and unzipping it).
 
@@ -28,7 +28,7 @@ Start by cloning the source code (hier2 branch) to your machine (or by downloadi
 
 Make sure that docker is installed and running on your local device. Check docker [homepage](https://docs.docker.com/docker-for-windows/install/) for details.
 
-Next run the following code to mount /tmp/data of your local machine: 
+Next run the following code to mount /tmp/data of your local machine:
 
 ```
 docker run -it --rm -v ~/pyjNERDEP:/work aakdemir/pytorch-cuda:0.1
@@ -101,33 +101,33 @@ Below are some important parameters and their descriptions.
 Training a hierarchical model where the HLSTM output of the DEP-component is concatenated to the common layer output and given to the NER component (corresponds to DEP_low_repr and NER_high_repr models in the paper).
 
 ```
-    python jointtrainer.py --model_type DEPNER 
+    python jointtrainer_multilang.py --model_type DEPNER
 ```
 
 #### Multitask Model 2 (hier_pred)
 Training a hierarchical model where the soft embeddings of the NER label predictions are concatenated to the common layer output (DEP_high_pred and NER_low_pred models in the paper). In addition warmup is set to 10, so that the NER component will be trained for 10 epochs before starting the multitask learning.
 
 ```
-    python jointtrainer.py --model_type NERDEP --inner 0 --soft 1 --warmup 10
+    python jointtrainer_multilang.py --model_type NERDEP --inner 0 --soft 1 --warmup 10
 ```
 
 
 #### Multitask Model 3 (flat)
 
 ```
-    python jointtrainer.py --model_type FLAT 
-   
+    python jointtrainer_multilang.py --model_type FLAT
+
 ```
 
 #### Single Models (DEP_only and NER_only)
 These two models are conventional DNN based models attempting a single task.
 
 ```
-python jointtrainer.py --model_type DEP
+python jointtrainer_multilang.py --model_type DEP
 ```
 
 ```
-python jointtrainer.py --model_type NER
+python jointtrainer_multilang.py --model_type NER
 ```
 
 
@@ -148,14 +148,11 @@ Example runs.
 
 
 ```
-python jointtrainer.py --mode predict --load_model 1 --load_path dep_only_6788.pkh --ner_train_file traindev_pos.tsv --dep_train_file tr_imst_ud_traindev.conllu --model_type DEP --save_dir predicts 
+python jointtrainer_multilang.py --mode predict --load_model 1 --load_path dep_only_6788.pkh --ner_train_file traindev_pos.tsv --dep_train_file tr_imst_ud_traindev.conllu --model_type DEP --save_dir predicts
 ```
 
 
 ### Example run using the config file that stores the experiment specific model configuration
 ```
-python jointtrainer.py --mode predict --load_model 1 --load_path dep_only_6788.pkh --ner_train_file traindev_pos.tsv --dep_train_file tr_imst_ud_traindev.conllu --model_type NER --load_config 1 --config_file ner_9382_config.json  --save_dir predicts 
+python jointtrainer_multilang.py --mode predict --load_model 1 --load_path dep_only_6788.pkh --ner_train_file traindev_pos.tsv --dep_train_file tr_imst_ud_traindev.conllu --model_type NER --load_config 1 --config_file ner_9382_config.json  --save_dir predicts
 ```
-
-
-
