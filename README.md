@@ -10,12 +10,12 @@ The entry point to run the main experiments  is the jointtrainer_multilang.py fi
 
 
 
-## Datasets and Trained Models
+## Datasets and Pretrained Models
 
 In order to train your own models using the same datasets or replicate the results, we share the trained models reported on the paper together with the datasets using external links.
 Below are the required documents for training new models and replicating the results:
 
-- .pkh files containing the saved model parameters [link](https://drive.google.com/drive/folders/1I2YSW6Vzw6CrIgJlKfIm3uFod1ETd7SR?usp=sharing)
+- Pretrained models : .pkh files containing the saved model parameters [link](https://drive.google.com/drive/folders/1I2YSW6Vzw6CrIgJlKfIm3uFod1ETd7SR?usp=sharing)
 - *_config.json files for models that use different parameter combinations than default (NER_only model with lstm size 229 for the Turkish language) [link](https://drive.google.com/drive/folders/1I2YSW6Vzw6CrIgJlKfIm3uFod1ETd7SR?usp=sharing)
 - training, development and test files for each language are under the 'ner_datasets' and 'dep_datasets' folders of the link(training files are required to get the vocabularies for each task and pos tags) [link](https://drive.google.com/drive/folders/1ugT4tk8FlxxOQdjp4m9pXc_6_Xhdlo2-?usp=sharing)
 
@@ -27,6 +27,7 @@ example_data/
 ```
 
 which contains small portions of train and test sets for both tasks, for the Turkish language.
+
 
 
 
@@ -80,6 +81,44 @@ Change the '--save_dir' parameters accordingly. All the information about the tr
 
 
 By default, the model looks at '~/datasets' folder for all the datasets and the default setting is the 'FLAT' model where task specific components only share the common layer.
+
+## Training-Evaluation Scripts
+
+We used "singularity" [link](https://singularity.lbl.gov/docs-docker) to run our experiments on our cluster, which can be used with the docker image provided above. To run the training script you can build the singularity image using the following command:
+
+```
+    singularity build ~/singularity/pt-cuda-tf-ft-gn  aakdemir/pytorch-cuda:0.2
+```
+
+this will build a singularity image under "~/singularity".
+
+
+To train models for each language (Czech, Hungarian, Finnish and Turkish) using each embedding method (Baseline, Word2Vec, FastText and mBERT) you can use the script under "experiment_scripts". Example run :
+
+```
+    bash experiment_scripts/joint_multilang_submit.sh NER
+
+```
+
+The above command will run the training and evaluation for the NER task, for each embedding method and each language, separately. Similarly for Dependency Parsing task:
+
+```
+    bash experiment_scripts/joint_multilang_submit.sh DEP
+
+```
+
+The evaluation scripts for NER and DEP tasks are :
+
+```
+ conll_eval.py
+```
+
+```
+ parser/conll_ud_eval.py
+```
+
+the relevant functions from these scripts are called during validation/inference.
+
 
 ### Architectural Parameters
 
