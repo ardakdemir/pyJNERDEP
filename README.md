@@ -1,6 +1,6 @@
 ## Subword Contextual Embeddings for Languages with Rich Morphology
 
-This repository contains the source code for replicating the experiments in our paper, submitted for review for ACL 2020.
+This repository contains the source code for replicating the experiments in our paper, submitted for review for EMNLP 2020, Long papers.
 For the double-blind review we refrain from sharing any private information.
 
 We also share the trained models using drive links together with all the data used for both tasks.
