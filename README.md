@@ -15,9 +15,38 @@ The entry point to run the main experiments  is the jointtrainer_multilang.py fi
 In order to train your own models using the same datasets or replicate the results, we share the trained models reported on the paper together with the datasets using external links.
 Below are the required documents for training new models and replicating the results:
 
-- Pretrained models : .pkh files containing the saved model parameters [link](https://drive.google.com/drive/folders/1I2YSW6Vzw6CrIgJlKfIm3uFod1ETd7SR?usp=sharing)
+- Pretrained models : We provide all the models necessary to replicate the results reported in our paper. ".pkh" files containing the saved model parameters [link](https://drive.google.com/drive/folders/1I2YSW6Vzw6CrIgJlKfIm3uFod1ETd7SR?usp=sharing).
+
+Below we give the name mappings to get the right model file name for each configuration.
+
+Name mapping for each method :
+
+    - Baseline : random_init
+    - Word2Vec : word2vec
+    - FastText : fastext
+    - mBERT : bert
+
+Name mapping for each language :
+
+    - Turkish : tr
+    - Finnish : fi
+    - Hungarian : hu
+    - Czech : cs
+
+
+For example, for the Word2Vec-DEP-Finnish combination the relevant model file is :
+
+```
+DEP_word2vec_fi_best_dep_model.pkh
+```
+
+
 - *_config.json files for models that use different parameter combinations than default (NER_only model with lstm size 229 for the Turkish language) [link](https://drive.google.com/drive/folders/1I2YSW6Vzw6CrIgJlKfIm3uFod1ETd7SR?usp=sharing)
-- training, development and test files for each language are under the 'ner_datasets' and 'dep_datasets' folders of the link(training files are required to get the vocabularies for each task and pos tags) [link](https://drive.google.com/drive/folders/1ugT4tk8FlxxOQdjp4m9pXc_6_Xhdlo2-?usp=sharing)
+
+### Datasets
+
+
+Training, development and test files for each language are under the 'ner_datasets' and 'dep_datasets' folders of the link(training files are required to get the vocabularies for each task and pos tags) [link](https://drive.google.com/drive/folders/1ugT4tk8FlxxOQdjp4m9pXc_6_Xhdlo2-?usp=sharing)
 
 
 In addition we provide sample data under:
@@ -227,5 +256,5 @@ This drive folder contains results for 16 cases for the NER task (4 models (base
 In addition to get the unknown-rare frequency analysis, the training files should also be downloaded and stored in the folder "datasets" under the current working directory. For example for the Czech Language,
 
 ```
-    datasets/myner_czech-train.txt
+datasets/myner_czech-train.txt
 ```
