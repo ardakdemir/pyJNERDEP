@@ -35,10 +35,10 @@ output_file = "tokenized.txt"
 
 
 def test_tokenizers():
-    for lang in model_name_dict:
+    for lang,model_name in model_name_dict.items():
         sent = sent_dict[lang]
-        tokenizer = AutoTokenizer.from_pretrained(lang)
-        model = AutoModel.from_pretrained(lang)
+        tokenizer = AutoTokenizer.from_pretrained(model_name)
+        model = AutoModel.from_pretrained(model_name)
         tokens = tokenizer.tokenize(sent)
         print(model)
         with open(output_file, "a", encoding="utf-8") as o:
