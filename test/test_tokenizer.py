@@ -27,7 +27,7 @@ sent_dict = {"tr": "Sen benim kim olduğumu biliyor musun?",
 
 model_name_dict = {"jp": "cl-tohoku/bert-base-japanese",
                    "tr": "dbmdz/bert-base-turkish-cased",
-                   "hu": "~/bert_models/hubert",
+                   "hu": "/home/aakdemir/bert_models/hubert",
                    "fi": "TurkuNLP/bert-base-finnish-cased-v1",
                    "cs": "DeepPavlov/bert-base-bg-cs-pl-ru-cased"}
 

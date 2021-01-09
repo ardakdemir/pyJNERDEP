@@ -81,6 +81,7 @@ def load_word2vec(word2vec_path):
             vec = [float(x) for x in vec.replace("\n","").replace("[","").replace("]","").split()]
             d[x.split("\t")[1]]= vec
     return d
+
 def get_pretrained_word_embeddings(w2ind,lang='tr',dim='768',word_vec_root="../word_vecs",load_w2v=False):
     vocab_size = len(w2ind)
     #load_path = embedding_path+"_cached.pk"
@@ -151,7 +152,8 @@ def get_pretrained_word_embeddings(w2ind,lang='tr',dim='768',word_vec_root="../w
     print("Initialized {} out of {} words from fastext".format(c,vocab_size))
     end = time.time()
     print("Word embeddings initialized in {} seconds ".format(round(end-start,4)))
-    return embed 
+    return embed
+
 def generate_pred_content(tokens, preds, truths=None, lens=None, label_voc=None):
 
     ## this is where the start token and  end token get eliminated!!
