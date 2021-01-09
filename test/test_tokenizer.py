@@ -45,10 +45,11 @@ def load_bert_model(lang):
 def test_tokenizers():
     for lang,model_name in model_name_dict.items():
         sent = sent_dict[lang]
+        print("Testing {}...".format(lang))
         tokenizer = AutoTokenizer.from_pretrained(model_name)
         model = load_bert_model(lang)
         tokens = tokenizer.tokenize(sent)
-        print(model)
+        # print(model)
         with open(output_file, "a", encoding="utf-8") as o:
             o.write("{}\n".format(lang))
             o.write("Sentence: " + sent)
