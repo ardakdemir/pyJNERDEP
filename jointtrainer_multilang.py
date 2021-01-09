@@ -65,7 +65,14 @@ ROOT_IND = 1
 special_labels = [PAD,START_TAG,END_TAG,ROOT_TAG]
 
 
-lang_abs = {"fi":"finnish","hu":"hungarian", "cs": "czech", "tr": "turkish"}
+lang_abs = {"fi":"finnish","hu":"hungarian", "cs": "czech", "tr": "turkish","jp":"japanese"}
+
+model_name_dict = {"jp": "cl-tohoku/bert-base-japanese",
+                   "tr": "dbmdz/bert-base-turkish-cased",
+                   "hu": "/home/aakdemir/bert_models/hubert",
+                   "fi": "TurkuNLP/bert-base-finnish-cased-v1",
+                   "cs": "DeepPavlov/bert-base-bg-cs-pl-ru-cased"}
+
 
 def embedding_initializer(dim,num_labels):
     embed = nn.Embedding(num_labels,dim)
@@ -318,6 +325,15 @@ class JointModel(nn.Module):
 
 
 
+
+def load_bert_model(lang):
+    model_name = model_name_dict[lang]
+    if lang == "hu":
+        model = BertForPreTraining.from_pretrained(model_name, from_tf=True)
+        return model
+    else:
+        model = AutoModel.from_pretrained(model_name)
+        return model
 
 
 class BaseModel(nn.Module):
