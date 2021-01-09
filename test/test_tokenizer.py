@@ -42,8 +42,8 @@ def test_tokenizers():
         tokens = tokenizer.tokenize(sent)
         print(model)
         with open(output_file, "a", encoding="utf-8") as o:
-            a.write("{}\n".format(lang))
-            a.write("Sentence: " + sent)
+            o.write("{}\n".format(lang))
+            o.write("Sentence: " + sent)
             o.write("\n")
             o.write("Tokens: " + " ".join(tokens))
             o.write("\n")
