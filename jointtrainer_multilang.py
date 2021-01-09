@@ -63,7 +63,10 @@ END_IND = 2
 ROOT_TAG = "[ROOT]"
 ROOT_IND = 1
 special_labels = [PAD,START_TAG,END_TAG,ROOT_TAG]
-lang_abs = {"fi":"finnish","hu":"hungarian", "cs": "czech", "tr": "turkish" , "ar" : "arabic"}
+
+
+lang_abs = {"fi":"finnish","hu":"hungarian", "cs": "czech", "tr": "turkish"}
+
 def embedding_initializer(dim,num_labels):
     embed = nn.Embedding(num_labels,dim)
     nn.init.uniform_(embed.weight,-np.sqrt(6/(dim+num_labels)),np.sqrt(6/(dim+num_labels)))

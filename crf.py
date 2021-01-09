@@ -1,15 +1,7 @@
 import torch.nn as nn
-import torch.optim as optim
-import torch.nn.functional as F
-import numpy as np
-from tqdm import tqdm
-import torchvision
 from torch.nn.utils.rnn import pack_padded_sequence
 import torch
-from torch.utils.data import Dataset, DataLoader
-from torchvision import datasets, models, transforms
-from torch import autograd
-import logging
+
 
 
 from datareader import DataReader, START_TAG, END_TAG, PAD_IND, END_IND, START_IND, ROOT_IND

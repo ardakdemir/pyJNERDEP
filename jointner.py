@@ -148,7 +148,6 @@ class JointNer(nn.Module):
         if task == "NERDEP":
             if self.args['inner']==1:
                 feats = torch.cat([bert_out,hlstm_out],dim=2)
-
             else:
                 scores = self.crf.emission(hlstm_out)
                 for i,s in enumerate(sent_lens):
