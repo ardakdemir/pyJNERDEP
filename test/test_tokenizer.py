@@ -1,4 +1,4 @@
-from transformers import AutoTokenizer, AutoModel
+from transformers import AutoTokenizer, AutoModel,BertForPreTraining
 
 import argparse
 
@@ -27,18 +27,26 @@ sent_dict = {"tr": "Sen benim kim olduğumu biliyor musun?",
 
 model_name_dict = {"jp": "cl-tohoku/bert-base-japanese",
                    "tr": "dbmdz/bert-base-turkish-cased",
-                   "hu": "SZTAKI-HLT/hubert-base-cc",
-                   "fi": "TurkuNLP/bert-base-finnish-cased-v1 ",
+                   "hu": "~/bert_models/hubert",
+                   "fi": "TurkuNLP/bert-base-finnish-cased-v1",
                    "cs": "DeepPavlov/bert-base-bg-cs-pl-ru-cased"}
 
 output_file = "tokenized.txt"
 
+def load_bert_model(lang):
+    model_name = model_name_dict[lang]
+    if lang == "hu":
+        model = BertForPreTraining.from_pretrained(model_name, from_tf=True)
+        return model
+    else:
+        model = AutoModel.from_pretrained(model_name)
+        return model
 
 def test_tokenizers():
     for lang,model_name in model_name_dict.items():
         sent = sent_dict[lang]
         tokenizer = AutoTokenizer.from_pretrained(model_name)
-        model = AutoModel.from_pretrained(model_name)
+        model = load_bert_model(lang)
         tokens = tokenizer.tokenize(sent)
         print(model)
         with open(output_file, "a", encoding="utf-8") as o:
