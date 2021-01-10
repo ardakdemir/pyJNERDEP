@@ -5,6 +5,7 @@ import torch.nn as nn
 import numpy as np
 import torch
 from gensim.models import Word2Vec
+import os
 
 sent_dict = {"tr": "Sen benim kim olduğumu biliyor musun?",
              "cs": "Potřebujete rychle poradit?",
@@ -124,6 +125,7 @@ def test_models():
 def main():
     test_models()
     test_embeddings()
+
 
 if __name__ == "__main__":
     main()
