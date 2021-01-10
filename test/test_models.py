@@ -48,11 +48,12 @@ class MyWord2Vec():
 
     def __init__(self, file_name, lang):
         self.file_name = file_name
+        self.lang = lang
         self.vocab, self.wv, self.dim = self.get_vectors(file_name)
         self.encoding_map
 
     def get_vectors(self, file_name):
-        with open(file_name, "r", encoding=encoding_map[lang]) as f:
+        with open(file_name, "r", encoding=encoding_map[self.lang]) as f:
             f = f.read().split("\n")
             wv = {}
             my_len = 0
