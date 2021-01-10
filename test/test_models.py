@@ -50,7 +50,9 @@ encoding_map = {"cs": "latin-1",
 
 
 class MyDict():
-
+    """
+        My simple dictionary to allow wv.vocab access
+    """
     def __init__(self, w2v):
         self.w2v = w2v
         self.vocab = set(w2v.keys())
