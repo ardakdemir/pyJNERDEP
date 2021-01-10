@@ -40,6 +40,17 @@ encoding_map = {"cs": "latin-1",
                 "hu": "utf-8",
                 "fi": "utf-8"}
 
+class MyDict():
+    
+    def __init__(self, w2v):
+        self.w2v = w2v
+        self.vocab = set(w2v.keys())
+    def __getitem__(self,word):
+        return self.w2v[word]
+    def __setitem__(self,word,val):
+        self.w2v[word] = val
+    def __len__(self):
+        return len(self.w2v)
 
 class MyWord2Vec():
     """
@@ -70,7 +81,8 @@ class MyWord2Vec():
                 length = len(vec)
                 if length > 1:
                     my_len = length
-        return wv.keys(), wv, length
+        vocab, wv, length = wv.keys(), MyDict(wv),my_len
+        return vocab, wv, length
 
 
 class BertModelforJoint(nn.Module):
