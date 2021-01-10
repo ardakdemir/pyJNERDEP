@@ -217,8 +217,8 @@ def test_models():
 
 def main():
     # test_models()
-    test_embeddings()
-
+    # test_word2vec()
+    test_fastext()
 
 if __name__ == "__main__":
     main()
