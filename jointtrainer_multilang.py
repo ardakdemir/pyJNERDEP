@@ -111,7 +111,7 @@ def get_pretrained_word_embeddings(w2ind,lang='tr',dim='768',word_vec_root="../w
                 c +=1
         print("Found {} out of {} words in word2vec for {} ".format(c,len(w2ind),lang))
         return embed
-    if not from_model :
+    if not from_model:
         load_path = ''
         print("Loading embeddings from {}".format(load_path))
         emb_dict = pickle.load(open(load_path,'rb'))
@@ -466,7 +466,7 @@ class BaseModel(nn.Module):
         cap_embedding = self.embed_dropout(self.cap_embeds(cap_inds))
         pos_embedding = self.embed_dropout(self.pos_embeds(pos_ids))
         if self.args['word_embed_type']=='bert':
-            word_embed = self.get_word_embedding([batch_bert_ids,batch_seq_ids,bert2toks],type=self.args['word_embed_type'])    
+            word_embed = self.get_word_embedding([batch_bert_ids,batch_seq_ids,bert2toks],type=self.args['word_embed_type'])
         if self.args['word_embed_type'] in ['fastext','random_init','word2vec']:
             #print("Before weights of fourth word{}".format(self.word_embeds.weight.data[tok_inds[0,3]]))
             word_embed = self.get_word_embedding(tok_inds,type=self.args['word_embed_type'])    
@@ -865,6 +865,7 @@ class JointTrainer:
         ind = ner_batch[2][2].to(self.device)
         ner_loss = self.ner_update(ner_batch)
         return ner_loss, 0
+
     def nerdep_update(self, index, epoch):
         
         dep_loss = 0

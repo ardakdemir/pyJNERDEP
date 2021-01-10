@@ -2,7 +2,9 @@ from transformers import AutoTokenizer, AutoModel, BertForPreTraining, BertForTo
 
 import argparse
 import torch.nn as nn
+import numpy as np
 import torch
+from gensim.models import Word2Vec
 
 sent_dict = {"tr": "Sen benim kim olduğumu biliyor musun?",
              "cs": "Potřebujete rychle poradit?",
@@ -16,6 +18,12 @@ model_name_dict = {"jp": "cl-tohoku/bert-base-japanese",
                    "fi": "TurkuNLP/bert-base-finnish-cased-v1",
                    "cs": "DeepPavlov/bert-base-bg-cs-pl-ru-cased"}
 
+word2vec_dict = {"jp": "../../word_vecs/jp/ja.bin",
+                 "tr": "../../word_vecs/tr/tr.bin",
+                 "hu": "../../word_vecs/hu/hu.bin",
+                 "fi": "../../word_vecs/fi/fi.bin",
+                 "cs": "../../word_vecs/cs/cs.bin"}
+
 output_file = "tokenized.txt"
 
 word2vec_lens = {"tr": 200,
@@ -23,6 +31,8 @@ word2vec_lens = {"tr": 200,
                  "fi": 300,
                  "cs": 200,  # Wakaaraanai
                  "jp": 300}
+
+unks = {l: np.random.rand(word2vec_lens[l]) for l in word2vec_lens.keys()}
 
 
 class BertModelforJoint(nn.Module):
@@ -65,6 +75,30 @@ def load_bert_model(lang):
     return model
 
 
+def test_embeddings():
+    print("Testing word2vec")
+    for lang, model_name in word2vec_dict.items():
+        print("Testing {}".format(lang))
+        if not os.path.exists(model_name):
+            print("Model not found. SKipping {}".format(lang))
+            continue
+        tokens = sent_dict[lang].split(" ")
+        model = Word2Vec.load(model_name)
+        vecs = []
+        c = 0
+        for tok in tokens:
+            if tok in model.wv.vocab:
+                vec = model.wv[tok]
+                vecs.append(vec)
+            else:
+                print("Could not find token in vocab")
+                vecs.append(unks[lang])
+                c += 1
+        print("{}/{} oovs".format(c, len(tokens)))
+        print("{} vecs {} tokens".format(len(vecs), len(tokens)))
+    return test_embeddings
+
+
 def test_models():
     for lang, model_name in model_name_dict.items():
         sent = sent_dict[lang]
@@ -89,7 +123,7 @@ def test_models():
 
 def main():
     test_models()
-
+    test_embeddings()
 
 if __name__ == "__main__":
     main()
