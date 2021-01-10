@@ -22,7 +22,7 @@ output_file = "tokenized.txt"
 class BertModelforJoint(nn.Module):
 
     def __init__(self, lang):
-        super(JointModel, self).__init__()
+        super(BertModelforJoint, self).__init__()
         self.model = self.load_bert_model(lang)
         self.lang = lang
         # base model for generating bert output
