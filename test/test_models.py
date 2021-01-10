@@ -6,6 +6,8 @@ import numpy as np
 import torch
 from gensim.models import Word2Vec
 import os
+import fasttext
+import fasttext.util
 
 sent_dict = {"tr": "Sen benim kim olduğumu biliyor musun?",
              "cs": "Potřebujete rychle poradit?",
@@ -25,6 +27,12 @@ word2vec_dict = {"jp": "../../word_vecs/jp/jp.bin",
                  "fi": "../../word_vecs/fi/fi.bin",
                  "cs": "../../word_vecs/cs/cs.txt"}
 
+fasttext_dict = {"jp": "../../word_vecs/jp/cc.jp.300.bin",
+                 "tr": "../../word_vecs/tr/cc.tr.300.bin",
+                 "hu": "../../word_vecs/hu/cc.hu.300.bin",
+                 "fi": "../../word_vecs/fi/cc.fi.300.bin",
+                 "cs": "../../word_vecs/cs/cc.cs.300.bin"}
+
 output_file = "tokenized.txt"
 
 word2vec_lens = {"tr": 200,
@@ -40,17 +48,22 @@ encoding_map = {"cs": "latin-1",
                 "hu": "utf-8",
                 "fi": "utf-8"}
 
+
 class MyDict():
-    
+
     def __init__(self, w2v):
         self.w2v = w2v
         self.vocab = set(w2v.keys())
-    def __getitem__(self,word):
+
+    def __getitem__(self, word):
         return self.w2v[word]
-    def __setitem__(self,word,val):
+
+    def __setitem__(self, word, val):
         self.w2v[word] = val
+
     def __len__(self):
         return len(self.w2v)
+
 
 class MyWord2Vec():
     """
@@ -70,7 +83,7 @@ class MyWord2Vec():
             c = 0
             for l in f:  # s
                 s = l.split(" ")
-                if len(s)<2:
+                if len(s) < 2:
                     continue
                 w = s[0]
                 v = s[1:]
@@ -81,7 +94,7 @@ class MyWord2Vec():
                 length = len(vec)
                 if length > 1:
                     my_len = length
-        vocab, wv, length = wv.keys(), MyDict(wv),my_len
+        vocab, wv, length = wv.keys(), MyDict(wv), my_len
         return vocab, wv, length
 
 
@@ -134,8 +147,29 @@ def load_word2vec(lang):
     return model
 
 
-def test_embeddings():
+def test_fastext():
+    print("Testing fasttext")
+    vec_dict = {}
+    for lang, model_name in fasttext_dict.items():
+        print("Testing {}".format(lang))
+        if not os.path.exists(model_name):
+            print("Model not found. SKipping {}".format(lang))
+            continue
+        tokens = sent_dict[lang].split(" ")
+        model = fasttext.load_model(fastext_path)
+        vecs = []
+        for tok in tokens:
+            vec = ft.get_word_vector(word)
+            vecs.append(vec)
+        print("{}/{} oovs".format(c, len(tokens)))
+        print("{} vecs {} tokens".format(len(vecs), len(tokens)))
+        vec_dict[lang] = vecs
+    return vec_dict
+
+
+def test_word2vec():
     print("Testing word2vec")
+    vec_dict = {}
     for lang, model_name in word2vec_dict.items():
         print("Testing {}".format(lang))
         if not os.path.exists(model_name):
@@ -155,7 +189,8 @@ def test_embeddings():
                 c += 1
         print("{}/{} oovs".format(c, len(tokens)))
         print("{} vecs {} tokens".format(len(vecs), len(tokens)))
-    return test_embeddings
+        vec_dict[lang] = vecs
+    return vec_dict
 
 
 def test_models():
