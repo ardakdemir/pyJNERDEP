@@ -2,6 +2,8 @@ from transformers import AutoTokenizer, AutoModel,BertForPreTraining,BertForToke
 
 import argparse
 import torch.nn as nn
+import torch
+
 
 sent_dict = {"tr": "Sen benim kim olduğumu biliyor musun?",
              "cs": "Potřebujete rychle poradit?",
