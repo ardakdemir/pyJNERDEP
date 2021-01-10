@@ -1,9 +1,8 @@
-from transformers import AutoTokenizer, AutoModel,BertForPreTraining,BertForTokenClassification
+from transformers import AutoTokenizer, AutoModel, BertForPreTraining, BertForTokenClassification
 
 import argparse
 import torch.nn as nn
 import torch
-
 
 sent_dict = {"tr": "Sen benim kim olduğumu biliyor musun?",
              "cs": "Potřebujete rychle poradit?",
@@ -19,6 +18,11 @@ model_name_dict = {"jp": "cl-tohoku/bert-base-japanese",
 
 output_file = "tokenized.txt"
 
+word2vec_lens = {"tr": 200,
+                 "hu": 300,
+                 "fi": 300,
+                 "cs": 200,  # Wakaaraanai
+                 "jp": 300}
 
 
 class BertModelforJoint(nn.Module):
@@ -29,7 +33,7 @@ class BertModelforJoint(nn.Module):
         self.lang = lang
         # base model for generating bert output
 
-    def load_bert_model(self,lang):
+    def load_bert_model(self, lang):
         model_name = model_name_dict[lang]
         if lang == "hu":
             model = BertForPreTraining.from_pretrained(model_name, from_tf=True, output_hidden_states=True)
@@ -38,7 +42,7 @@ class BertModelforJoint(nn.Module):
             model.classifier = nn.Identity()
         return model
 
-    def forward(self,input,attention_mask,**kwargs):
+    def forward(self, input, attention_mask, **kwargs):
         """
             Output the logits of the last layer for each word...
         :param input:
@@ -50,10 +54,11 @@ class BertModelforJoint(nn.Module):
             output = self.model(input, attention_mask)[0]
         return output
 
+
 def load_bert_model(lang):
     model_name = model_name_dict[lang]
     if lang == "hu":
-        model = BertForPreTraining.from_pretrained(model_name, from_tf=True,output_hidden_states=True)
+        model = BertForPreTraining.from_pretrained(model_name, from_tf=True, output_hidden_states=True)
     else:
         model = BertForTokenClassification.from_pretrained(model_name)
         model.classifier = nn.Identity()
@@ -61,21 +66,21 @@ def load_bert_model(lang):
 
 
 def test_models():
-    for lang,model_name in model_name_dict.items():
+    for lang, model_name in model_name_dict.items():
         sent = sent_dict[lang]
         print("Testing {}...".format(lang))
         tokenizer = AutoTokenizer.from_pretrained(model_name)
         model = BertModelforJoint(lang)
         tokens = tokenizer.tokenize(sent)
         input = torch.LongTensor(tokenizer.convert_tokens_to_ids(tokens)).reshape(1, -1)
-        print("Token ids: {}".format(input))
+        print("Token ids: {}".format(input.shape))
         attention_mask = torch.ones(*input.shape)
         if lang == "hu":
             output = model(input, attention_mask)[2][-1]
         else:
             output = model(input, attention_mask)[0]
         print("Output shape: {}".format(output.shape))
-        assert output.shape == (input.shape[0],input.shape[1],768)
+        assert output.shape == (input.shape[0], input.shape[1], 768)
         # print(model)
         with open(output_file, "a", encoding="utf-8") as o:
             o.write("{}\n".format(lang))
@@ -84,8 +89,10 @@ def test_models():
             o.write("Tokens: " + " ".join(tokens))
             o.write("\n")
 
+
 def main():
     test_models()
+
 
 if __name__ == "__main__":
     main()

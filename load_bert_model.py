@@ -16,17 +16,19 @@ def load_bert_model(lang):
         model = BertForPreTraining.from_pretrained(model_name, from_tf=True,output_hidden_states=True)
     else:
         model = BertForTokenClassification.from_pretrained(model_name)
+        model.classifier = nn.Identity()
     return model
 
 
-lang = "hu"
+lang = "jp"
 model = load_bert_model(lang)
-
+model_name = model_name_dict[lang]
 # model.cls = nn.Identity()
 # model = nn.Sequential(*list(model.children())[:-1])
-tokenizer = AutoTokenizer.from_pretrained("dbmdz/bert-base-turkish-cased")
+tokenizer = AutoTokenizer.from_pretrained(model_name)
 input = tokenizer.tokenize("Arda Akdemir  nereye gidiyorsunuz.")
-input = torch.LongTensor(tokenizer.convert_tokens_to_ids(input)).reshape(1, -1)
+input = torch.LongTensor([tokenizer.convert_tokens_to_ids(input)]).reshape(1,-1)
+
 print(input.shape)
 # bert_token_ids = torch.randint(0, 10, (3,12),dtype=torch.Long)
 # print(bert_token_ids.shape)
@@ -36,5 +38,6 @@ if lang == "hu":
 else:
     output = model(input, attention_mask)[0]
 
+print(input.shape)
 print(output.shape)
 assert output.shape == (input.shape[0],input.shape[1],768)
