@@ -67,7 +67,7 @@ def test_models():
         tokenizer = AutoTokenizer.from_pretrained(model_name)
         model = BertModelforJoint(lang)
         tokens = tokenizer.tokenize(sent)
-        input = torch.LongTensor(tokenizer.convert_tokens_to_ids(input)).reshape(1, -1)
+        input = torch.LongTensor(tokenizer.convert_tokens_to_ids(tokens)).reshape(1, -1)
         print("Token ids: {}".format(input))
         attention_mask = torch.ones(*input.shape)
         if lang == "hu":
