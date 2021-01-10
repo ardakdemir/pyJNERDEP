@@ -66,7 +66,7 @@ class MyWord2Vec():
                     continue
                 w = s[0]
                 v = s[1:]
-                vec = [float(v_) for v_ in v.split(" ") if len(v_) > 1]
+                vec = [float(v_) for v_ in v if len(v_) > 1]
                 if len(vec) < 10:
                     continue  # skip not a proper vector
                 wv[w] = vec
