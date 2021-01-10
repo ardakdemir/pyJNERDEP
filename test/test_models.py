@@ -74,6 +74,7 @@ def test_models():
             output = model(input, attention_mask)[2][-1]
         else:
             output = model(input, attention_mask)[0]
+        print("Output shape: {}".format(output.shape))
         assert output.shape == (input.shape[0],input.shape[1],768)
         # print(model)
         with open(output_file, "a", encoding="utf-8") as o:
