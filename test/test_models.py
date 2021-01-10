@@ -75,10 +75,7 @@ def test_models():
         input = torch.LongTensor(tokenizer.convert_tokens_to_ids(tokens)).reshape(1, -1)
         print("Token ids: {}".format(input.shape))
         attention_mask = torch.ones(*input.shape)
-        if lang == "hu":
-            output = model(input, attention_mask)[2][-1]
-        else:
-            output = model(input, attention_mask)[0]
+        output = model(input, attention_mask)
         print("Output shape: {}".format(output.shape))
         assert output.shape == (input.shape[0], input.shape[1], 768)
         # print(model)
