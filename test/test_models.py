@@ -23,40 +23,44 @@ word2vec_dict = {"jp": "../../word_vecs/jp/jp.bin",
                  "tr": "../../word_vecs/tr/tr.bin",
                  "hu": "../../word_vecs/hu/hu.bin",
                  "fi": "../../word_vecs/fi/fi.bin",
-                 "cs": "../../word_vecs/cs/cs.bin"}
+                 "cs": "../../word_vecs/cs/cs.txt"}
 
 output_file = "tokenized.txt"
 
 word2vec_lens = {"tr": 200,
                  "hu": 300,
                  "fi": 300,
-                 "cs": 200,  # Wakaaraanai
+                 "cs": 100,
                  "jp": 300}
 
 unks = {l: np.random.rand(word2vec_lens[l]) for l in word2vec_lens.keys()}
 
-encoding_map = {"cs":"latin-1",
-                "tr":"utf-8",
-                "hu":"utf-8",
-                "fi":"utf-8"}
+encoding_map = {"cs": "latin-1",
+                "tr": "utf-8",
+                "hu": "utf-8",
+                "fi": "utf-8"}
+
+
 class MyWord2Vec():
     """
         My word2Vec that is initialized from a file
     """
-    def __init__(self, file_name,lang ):
+
+    def __init__(self, file_name, lang):
         self.file_name = file_name
-        self.vocab, self.wv,self.dim = self.get_vectors(file_name)
+        self.vocab, self.wv, self.dim = self.get_vectors(file_name)
         self.encoding_map
+
     def get_vectors(self, file_name):
         with open(file_name, "r", encoding=encoding_map[lang]) as f:
             f = f.read().split("\n")
             wv = {}
             my_len = 0
-            for l in f: #s
+            for l in f:  # s
                 w, v = l.split(" ", 1)
                 vec = [float(v_) for v_ in v]
-                if len(vec)<10:
-                    continue # skip not a proper vector
+                if len(vec) < 10:
+                    continue  # skip not a proper vector
                 wv[w] = vec
                 length = len(vec)
                 if length > 1:
@@ -107,7 +111,7 @@ def load_bert_model(lang):
 def load_word2vec(lang):
     model_name = word2vec_dict[lang]
     if lang == "cs":
-        model = MyWord2Vec(model_name,lang)
+        model = MyWord2Vec(model_name, lang)
     else:
         model = Word2Vec.load(model_name)
     return model
@@ -121,7 +125,7 @@ def test_embeddings():
             print("Model not found. SKipping {}".format(lang))
             continue
         tokens = sent_dict[lang].split(" ")
-        model = Word2Vec.load(model_name)
+        model = load_word2vec(lang)
         vecs = []
         c = 0
         for tok in tokens:
