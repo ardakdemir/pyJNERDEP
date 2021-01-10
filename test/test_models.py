@@ -1,4 +1,4 @@
-from transformers import AutoTokenizer, AutoModel,BertForPreTraining
+from transformers import AutoTokenizer, AutoModel,BertForPreTraining,BertForTokenClassification
 
 import argparse
 import torch.nn as nn
@@ -26,9 +26,6 @@ class BertModelforJoint(nn.Module):
         self.model = self.load_bert_model(lang)
         self.lang = lang
         # base model for generating bert output
-        self.base_model = BaseModel(self.args, tokenizer)
-
-        self.args['lstm_input_size'] = self.base_model.lstm_input_size
 
     def load_bert_model(self,lang):
         model_name = model_name_dict[lang]
