@@ -50,7 +50,6 @@ class MyWord2Vec():
         self.file_name = file_name
         self.lang = lang
         self.vocab, self.wv, self.dim = self.get_vectors(file_name)
-        self.encoding_map
 
     def get_vectors(self, file_name):
         with open(file_name, "r", encoding=encoding_map[self.lang]) as f:
@@ -59,8 +58,6 @@ class MyWord2Vec():
             my_len = 0
             c = 0
             for l in f:  # s
-                print(c)
-                c+=1
                 s = l.split(" ")
                 if len(s)<2:
                     continue
