@@ -74,20 +74,67 @@ model_name_dict = {"jp": "cl-tohoku/bert-base-japanese",
                    "cs": "DeepPavlov/bert-base-bg-cs-pl-ru-cased"}
 
 
+encoding_map = {"cs": "latin-1",
+                "tr": "utf-8",
+                "hu": "utf-8",
+                "fi": "utf-8"}
+
+
+word2vec_dict = {"jp": "../../word_vecs/jp/jp.bin",
+                 "tr": "../../word_vecs/tr/tr.bin",
+                 "hu": "../../word_vecs/hu/hu.bin",
+                 "fi": "../../word_vecs/fi/fi.bin",
+                 "cs": "../../word_vecs/cs/cs.txt"}
+
+word2vec_lens = {"tr": 200,
+                 "hu": 300,
+                 "fi": 300,
+                 "cs": 100,
+                 "jp": 300}
+
+
 def embedding_initializer(dim,num_labels):
     embed = nn.Embedding(num_labels,dim)
     nn.init.uniform_(embed.weight,-np.sqrt(6/(dim+num_labels)),np.sqrt(6/(dim+num_labels)))
     return embed
 
-def load_word2vec(word2vec_path):
-    a = open(word2vec_path,encoding='utf-8').read().strip("\n").split("]")
-    d = {}
-    for x in a:
-        if len(x.split("\t"))>1:
-            vec = x.split("\t")[-1]
-            vec = [float(x) for x in vec.replace("\n","").replace("[","").replace("]","").split()]
-            d[x.split("\t")[1]]= vec
-    return d
+def load_word2vec(lang):
+    model_name = word2vec_dict[lang]
+    if lang == "cs":
+        model = MyWord2Vec(model_name, lang)
+    else:
+        model = Word2Vec.load(model_name)
+    return model
+
+
+
+class MyWord2Vec():
+    """
+        My word2Vec that is initialized from a file
+    """
+
+    def __init__(self, file_name, lang):
+        self.file_name = file_name
+        self.lang = lang
+        self.vocab, self.wv, self.dim = self.get_vectors(file_name)
+        self.encoding_map
+
+    def get_vectors(self, file_name):
+        with open(file_name, "r", encoding=encoding_map[self.lang]) as f:
+            f = f.read().split("\n")
+            wv = {}
+            my_len = 0
+            for l in f:  # s
+                w, v = l.split(" ", 1)
+                vec = [float(v_) for v_ in v]
+                if len(vec) < 10:
+                    continue  # skip not a proper vector
+                wv[w] = vec
+                length = len(vec)
+                if length > 1:
+                    my_len = length
+        return wv.keys(), wv, length
+
 
 def get_pretrained_word_embeddings(w2ind,lang='tr',dim='768',word_vec_root="../word_vecs",load_w2v=False):
     vocab_size = len(w2ind)

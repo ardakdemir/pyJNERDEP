@@ -59,7 +59,7 @@ class MyWord2Vec():
             my_len = 0
             for l in f:  # s
                 w, v = l.split(" ", 1)
-                vec = [float(v_) for v_ in v]
+                vec = [float(v_) for v_ in v.split(" ") if len(v_) > 1]
                 if len(vec) < 10:
                     continue  # skip not a proper vector
                 wv[w] = vec
@@ -165,7 +165,7 @@ def test_models():
 
 
 def main():
-    test_models()
+    # test_models()
     test_embeddings()
 
 
