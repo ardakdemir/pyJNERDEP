@@ -6,7 +6,7 @@ import numpy as np
 import torch
 from gensim.models import Word2Vec
 import os
-import fasttext
+import fasttext as ft
 import fasttext.util
 
 sent_dict = {"tr": "Sen benim kim olduğumu biliyor musun?",
