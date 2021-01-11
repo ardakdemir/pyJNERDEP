@@ -34,7 +34,7 @@ import os
 import copy
 from pdb import set_trace
 import unidecode
-from pytorch_transformers import *
+# from pytorch_transformers import *
 from torch import autograd
 from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 from datetime import date
