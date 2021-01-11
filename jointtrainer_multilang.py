@@ -454,7 +454,7 @@ class BaseModel(nn.Module):
         super(BaseModel, self).__init__()
         self.bert_tokenizer = tokenizer
         # self.bert_model = BertModel.from_pretrained('bert-base-cased', output_hidden_states=True)
-        self.bert_model = BertModelforJoint(self.args["lang"])
+        self.bert_model = BertModelforJoint(args["lang"])
         self.bert_model.resize_token_embeddings(len(tokenizer))
         self.w_dim = self.bert_model.encoder.layer[11].output.dense.out_features
         # self.vocab_size = args['vocab_size']
@@ -1061,6 +1061,12 @@ class JointTrainer:
         epoch = self.args['max_steps'] // self.args['eval_interval'] if self.args['epochs'] is None else self.args[
             'epochs']
         self.jointmodel.train()
+        experiment_log_name = "experiment_log_" + self.args['lang'] + "_" + self.args['word_embed_type'] + ".json"
+        experiment_log = {"ner_f1":[],
+                          "dep_f1":[],
+                          "dep_uas_f1":[],
+                          "ner_loss":[],
+                          "dep_loss":[]}
 
         save_ner_name = self.args['lang'] + "_" + self.args['word_embed_type'] + "_" + self.args['save_ner_name']
         save_name = self.args['lang'] + "_" + self.args['word_embed_type'] + "_" + self.args['save_name']
@@ -1095,8 +1101,8 @@ class JointTrainer:
             print("Word embed type {} ".format(self.args['word_embed_type']))
             for param_group in self.jointmodel.base_model.embed_optimizer.param_groups:
                 print("Word embedding learning rates : {}".format(param_group['lr']))
-        for e in range(epoch):
 
+        for e in range(epoch):
             train_loss = 0
             ner_losses = 0
             dep_losses = 0
@@ -1107,23 +1113,15 @@ class JointTrainer:
 
             self.nertrainreader.for_eval = False
             self.jointmodel.train()
-            logging.info("Learning rates")
-            # print("NER learning rates")
-            for param_group in self.jointmodel.nermodel.ner_optimizer.param_groups:
-                logging.info(param_group['lr'])
-                # print(param_group['lr'])
-            # print("DEP learning rates")
-            for param_group in self.jointmodel.depparser.optimizer.param_groups:
-                logging.info(param_group['lr'])
-                # print(param_group['lr'])
-            for i in tqdm(range(self.args['eval_interval'])):
 
+            for i in tqdm(range(self.args['eval_interval'])):
                 ner_loss, dep_loss = model_func(i, e)
                 ner_losses += ner_loss
                 dep_losses += dep_loss
                 if i % 10 == 9 and (not self.args['hyper'] == 1):
                     logging.info("Average dep loss {} ".format(dep_losses / (i + 1)))
                     logging.info("Average ner loss {} ".format(ner_losses / (i + 1)))
+
             logging.info("Results for epoch : {}".format(e + 1))
             self.jointmodel.eval()
             dep_f1 = 0
@@ -1183,6 +1181,12 @@ class JointTrainer:
                 self.save_model(save_name)
             self.jointmodel.train()
 
+            experiment_log["ner_f1"].append(ner_f1)
+            experiment_log["dep_f1"].append(dep_f1)
+            experiment_log["dep_uas_f1"].append(uas_f1)
+            experiment_log["ner_loss"].append(ner_loss)
+            experiment_log["dep_loss"].append(dep_loss)
+
         logging.info("Best results : ")
         logging.info("NER : {}  LAS : {} UAS : {}".format(best_ner_f1, best_dep_f1, best_uas_f1))
         logging.info(
@@ -1198,6 +1202,11 @@ class JointTrainer:
             o.write("NER Results on {} embed_type : {} fixed : {} \n pre : {} rec : {} f1 : {}\n".format(
                 self.args['ner_val_file'], self.args['word_embed_type'], self.args['fix_embed'], best_model_nerpre,
                 best_model_nerrec, best_ner_f1))
+            
+        logging.info("Experiment log")
+        logging.info(experiment_log)
+        with open(experiment_log_name,"w") as o:
+            json.dump(experiment_log,o)
         return best_ner_f1, best_dep_f1
 
     def train(self):

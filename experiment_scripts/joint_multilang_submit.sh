@@ -1,8 +1,5 @@
 /usr/local/bin/nosh
 word_vec_folder='../word_vecs/'
-train_dataset=~/datasets/arabic_data/sentsplitted_conll_all.test.features.txt
-val_dataset=~/datasets/arabic_data/sentsplitted_conll_all.dev.features.txt
-test_dataset=~/datasets/arabic_data/sentsplitted_conll_all.test.features.txt
 batch_size=100
 model_type=${1}
 word_embed_dim=768
