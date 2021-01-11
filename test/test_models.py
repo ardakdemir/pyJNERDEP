@@ -1,4 +1,4 @@
-# from transformers import AutoTokenizer, AutoModel, BertForPreTraining, BertForTokenClassification
+from transformers import AutoTokenizer, AutoModel, BertForPreTraining, BertForTokenClassification
 import io
 import argparse
 import torch.nn as nn
@@ -12,7 +12,7 @@ import fasttext.util
 sent_dict = {"tr": "Sen benim kim olduğumu biliyor musun?",
              "cs": "Potřebujete rychle poradit?",
              "hu": "Az ezredfordulós szilveszter valószínűleg az átlagos év véginél komolyabb feladatokat ró a sürgősségi betegellátás szervezeteire és a rendőrségre.",
-             "jp": "為せば成る為さねば成らぬ。\n麩菓子は、麩を主材料とした日本の菓子。",
+             "jp": "為せば成る為さねば成らぬ。 \n麩菓子は 麩を主材料とした日本の菓子。",
              "fi": " Showroomilla esiteltiin uusi The Garden Collection ja tarjoiltiin maukasta aamupalaa aamu-unisille muotibloggaajille."}
 
 model_name_dict = {"jp": "cl-tohoku/bert-base-japanese",

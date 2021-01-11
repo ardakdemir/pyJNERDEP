@@ -26,6 +26,7 @@ import torchvision
 from torch.nn.utils import clip_grad_norm_
 from torch.utils.data import Dataset, DataLoader
 from torchvision import datasets, models, transforms
+from transformers import AutoTokenizer, AutoModel, BertForPreTraining, BertForTokenClassification
 from parser.parsereader import bert2token, pad_trunc_batch
 import matplotlib.pyplot as plt
 import time
@@ -78,17 +79,17 @@ encoding_map = {"cs": "latin-1",
                 "hu": "utf-8",
                 "fi": "utf-8"}
 
-word2vec_dict = {"jp": "../../word_vecs/jp/jp.bin",
-                 "tr": "../../word_vecs/tr/tr.bin",
-                 "hu": "../../word_vecs/hu/hu.bin",
-                 "fi": "../../word_vecs/fi/fi.bin",
-                 "cs": "../../word_vecs/cs/cs.txt"}
+word2vec_dict = {"jp": "word_vecs/jp/jp.bin",
+                 "tr": "word_vecs/tr/tr.bin",
+                 "hu": "word_vecs/hu/hu.bin",
+                 "fi": "word_vecs/fi/fi.bin",
+                 "cs": "word_vecs/cs/cs.txt"}
 
-fasttext_dict = {"jp": "../../word_vecs/jp/cc.jp.300.bin",
-                 "tr": "../../word_vecs/tr/cc.tr.300.bin",
-                 "hu": "../../word_vecs/hu/cc.hu.300.bin",
-                 "fi": "../../word_vecs/fi/cc.fi.300.bin",
-                 "cs": "../../word_vecs/cs/cc.cs.300.bin"}
+fasttext_dict = {"jp": "word_vecs/jp/cc.jp.300.bin",
+                 "tr": "word_vecs/tr/cc.tr.300.bin",
+                 "hu": "word_vecs/hu/cc.hu.300.bin",
+                 "fi": "word_vecs/fi/cc.fi.300.bin",
+                 "cs": "word_vecs/cs/cc.cs.300.bin"}
 
 word2vec_lens = {"tr": 200,
                  "hu": 300,
@@ -194,9 +195,9 @@ def get_pretrained_word_embeddings(w2ind, lang='tr', dim='768', word_vec_root=".
         fastext_path = fasttext_dict[lang]
         if not os.path.exists(fastext_path):
             fasttext.util.download_model(lang, if_exists='ignore')
-        ft = fasttext.load_model('cc.{}.300.bin'.format(lang))
+            ft = fasttext.load_model('cc.{}.300.bin'.format(lang))
         else:
-        ft = fasttext.load_model(fastext_path)
+            ft = fasttext.load_model(fastext_path)
         s = time.time()
         # embeddings = open(embedding_path,encoding='utf-8').read().strip().split("\n")
         # print("First line of embeddings")
@@ -215,11 +216,11 @@ def get_pretrained_word_embeddings(w2ind, lang='tr', dim='768', word_vec_root=".
         embed = nn.Embedding(vocab_size, dim)
         nn.init.uniform_(embed.weight, -np.sqrt(6 / (dim + vocab_size)), np.sqrt(6 / (dim + vocab_size)))
         for word in list(w2ind.keys()):
-        # if emb_dict.get(word) is not None:
-        #    ind = w2ind[word]
-        # embed.weight.data[ind].copy_(torch.tensor(emb_dict[word],requires_grad=True))
-        #    embed.weight.data[ind].copy_(ft_vec)
-        #    c +=1
+            # if emb_dict.get(word) is not None:
+            #    ind = w2ind[word]
+            # embed.weight.data[ind].copy_(torch.tensor(emb_dict[word],requires_grad=True))
+            #    embed.weight.data[ind].copy_(ft_vec)
+            #    c +=1
             c += 1
         ind = w2ind[word]
         vec = ft.get_word_vector(word)
@@ -417,13 +418,44 @@ def load_bert_model(lang):
         return model
 
 
+class BertModelforJoint(nn.Module):
+
+    def __init__(self, lang):
+        super(BertModelforJoint, self).__init__()
+        self.model = self.load_bert_model(lang)
+        self.lang = lang
+        # base model for generating bert output
+
+    def load_bert_model(self, lang):
+        model_name = model_name_dict[lang]
+        if lang == "hu":
+            model = BertForPreTraining.from_pretrained(model_name, from_tf=True, output_hidden_states=True)
+        else:
+            model = BertForTokenClassification.from_pretrained(model_name)
+            model.classifier = nn.Identity()
+        return model
+
+    def forward(self, input, attention_mask, **kwargs):
+        """
+            Output the logits of the last layer for each word...
+        :param input:
+        :return:
+        """
+        if self.lang == "hu":
+            output = self.model(input, attention_mask)[2][-1]
+        else:
+            output = self.model(input, attention_mask)[0]
+        return output
+
+
 class BaseModel(nn.Module):
 
     def __init__(self, args, tokenizer):
 
         super(BaseModel, self).__init__()
         self.bert_tokenizer = tokenizer
-        self.bert_model = BertModel.from_pretrained('bert-base-cased', output_hidden_states=True)
+        # self.bert_model = BertModel.from_pretrained('bert-base-cased', output_hidden_states=True)
+        self.bert_model = BertModelforJoint(self.args["lang"])
         self.bert_model.resize_token_embeddings(len(tokenizer))
         self.w_dim = self.bert_model.encoder.layer[11].output.dense.out_features
         # self.vocab_size = args['vocab_size']
