@@ -311,7 +311,6 @@ def parse_args():
     parser.add_argument('--char_emb_dim', type=int, default=100)
     parser.add_argument('--cap_types', type=int, default=6)
     parser.add_argument('--pos_dim', type=int, default=64)
-    parser.add_argument('--word_embed_dim', type=int, default=768)
     parser.add_argument('--dep_dim', type=int, default=128)
     parser.add_argument('--ner_dim', type=int, default=128)
     parser.add_argument('--transformed_dim', type=int, default=125)
@@ -460,15 +459,17 @@ class BaseModel(nn.Module):
         self.w_dim = self.bert_model.encoder.layer[11].output.dense.out_features
         # self.vocab_size = args['vocab_size']
         self.args = args
+        self.lang = args["lang"]
         self.cap_types = self.args['cap_types']
         self.cap_dim = args['cap_dim']
         self.pos_dim = self.args['pos_dim']
+
         self.embed_drop = args['embed_drop']
         self.lstm_drop = args['lstm_drop']
         self.weight_decay = self.args['weight_decay']
         if self.args['word_embed_type'] == "random_init":
             print("Whole vocab size {}".format(len(self.args['vocab'])))
-            self.w_dim = self.args["word_embed_dim"]
+            self.w_dim = word2vec_lens[self.lang]
             self.word_embeds = embedding_initializer(self.w_dim, len(self.args['vocab']))
             if self.args['fix_embed']:
                 self.word_embeds.weight.requires_grad = False
@@ -476,9 +477,10 @@ class BaseModel(nn.Module):
 
         if self.args['word_embed_type'] in ["fastext", 'word2vec']:
             print("Whole vocab size {}".format(len(self.args['vocab'])))
+            self.w_dim = word2vec_lens[self.lang]
             load_w2v = True if self.args['word_embed_type'] == 'word2vec' else False
             self.word_embeds = get_pretrained_word_embeddings(self.args['vocab'], self.args['lang'],
-                                                              self.args['word_embed_dim'], self.args['wordvec_dir'],
+                                                              self.w_dim, self.args['wordvec_dir'],
                                                               load_w2v=load_w2v)
 
             print("Initialized word embeddings from {}".format(self.args['word_embed_type']))
@@ -524,7 +526,8 @@ class BaseModel(nn.Module):
         self.bert_optimizer = bert_optimizer
 
     def _get_bert_batch_hidden(self, hiddens, bert2toks, layers=[-2, -3, -4]):
-        meanss = torch.mean(torch.stack([hiddens[i] for i in layers]), 0)
+        # meanss = torch.mean(torch.stack([hiddens[i] for i in layers]), 0)
+        meanss = hiddens  # just use hiddens without averaging
         batch_my_hiddens = []
 
         for means, bert2tok in zip(meanss, bert2toks):
@@ -548,7 +551,8 @@ class BaseModel(nn.Module):
                 print("Shape {} ".format(x.shape))
 
     def _get_bert_batch_hidden2(self, hiddens, bert2toks, layers=[-2, -3, -4]):
-        meanss = torch.mean(torch.stack([hiddens[i] for i in layers]), 0)
+        # meanss = torch.mean(torch.stack([hiddens[i] for i in layers]), 0)
+        meanss = hiddens
         batch_my_hiddens = []
         for means, bert2tok in zip(meanss, bert2toks):
             my_token_hids = []
@@ -638,7 +642,10 @@ class JointTrainer:
         self.args = args
         # args2 = {'bert_dim' : 100,'pos_dim' : 12, 'pos_vocab_size': 23,'lstm_hidden' : 10,'device':device}
         # self.args  = {**self.args,**args2}
-        self.bert_tokenizer = BertTokenizer.from_pretrained('bert-base-cased', do_lower_case=False)
+        # self.bert_tokenizer = BertTokenizer.from_pretrained('bert-base-cased', do_lower_case=False)
+        self.lang = self.args['lang']
+        model_name = model_name_dict[self.lang]
+        self.bert_tokenizer = AutoTokenizer.from_pretrained(model_name)
         self.bert_tokenizer.add_tokens(['[SOS]', '[EOS]', '[ROOT]', '[PAD]'])
         self.exp_name = "{}_{}_{}".format(self.args['model_type'], self.args['word_embed_type'], self.args['lang'])
         print("Experiment name {} ".format(self.exp_name))
