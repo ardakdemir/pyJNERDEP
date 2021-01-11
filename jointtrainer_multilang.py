@@ -168,7 +168,7 @@ def get_pretrained_word_embeddings(w2ind, lang='tr', dim='768', word_vec_root=".
     pretrained_type = 'fastext' if not load_w2v else 'word2vec'
     if pretrained_type == 'word2vec':
         word_vec_path = os.path.join(word_vec_root, lang, "w2v_{}_{}".format(lang, dim))
-        gensim_model = KeyedVectors.load(word_vec_path)
+        gensim_model = load_word2vec(lang)
         # word_vec_path = os.path.join(word_vec_root,lang,"{}.{}.tsv".format(lang,dim))
         embed = nn.Embedding(vocab_size, dim)
         nn.init.uniform_(embed.weight, -np.sqrt(6 / (dim + vocab_size)), np.sqrt(6 / (dim + vocab_size)))

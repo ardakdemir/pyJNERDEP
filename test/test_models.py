@@ -161,7 +161,7 @@ def test_fastext():
         model = fasttext.load_model(model_name)
         vecs = []
         for tok in tokens:
-            vec = ft.get_word_vector(word)
+            vec = model.get_word_vector(word)
             vecs.append(vec)
         print("{}/{} oovs".format(c, len(tokens)))
         print("{} vecs {} tokens".format(len(vecs), len(tokens)))
