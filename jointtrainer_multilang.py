@@ -98,6 +98,8 @@ word2vec_lens = {"tr": 200,
                  "jp": 300}
 
 
+
+
 def embedding_initializer(dim, num_labels):
     embed = nn.Embedding(num_labels, dim)
     nn.init.uniform_(embed.weight, -np.sqrt(6 / (dim + num_labels)), np.sqrt(6 / (dim + num_labels)))
@@ -477,7 +479,7 @@ class BaseModel(nn.Module):
 
         if self.args['word_embed_type'] in ["fastext", 'word2vec']:
             print("Whole vocab size {}".format(len(self.args['vocab'])))
-            self.w_dim = word2vec_lens[self.lang]
+            self.w_dim = word2vec_lens[self.lang] if self.args['word_embed_type']=="word2vec" else 300
             load_w2v = True if self.args['word_embed_type'] == 'word2vec' else False
             self.word_embeds = get_pretrained_word_embeddings(self.args['vocab'], self.args['lang'],
                                                               self.w_dim, self.args['wordvec_dir'],
