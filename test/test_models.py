@@ -163,7 +163,7 @@ def test_fastext():
         for tok in tokens:
             vec = model.get_word_vector(tok)
             vecs.append(vec)
-        print("{}/{} oovs".format(c, len(tokens)))
+            assert len(vec) == 300
         print("{} vecs {} tokens".format(len(vecs), len(tokens)))
         vec_dict[lang] = vecs
     return vec_dict
