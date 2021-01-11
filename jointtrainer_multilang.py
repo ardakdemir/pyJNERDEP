@@ -165,7 +165,7 @@ class MyWord2Vec():
 def get_pretrained_word_embeddings(w2ind, lang='tr', dim='768', word_vec_root="../word_vecs", load_w2v=False):
     vocab_size = len(w2ind)
     # load_path = embedding_path+"_cached.pk"
-    print("Getting pretrained embeddings")
+    print("Getting pretrained embeddings with dim:{}".format(dim))
     start = time.time()
     from_model = True
     pretrained_type = 'fastext' if not load_w2v else 'word2vec'
