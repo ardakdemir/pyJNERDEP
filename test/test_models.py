@@ -1,4 +1,4 @@
-from transformers import AutoTokenizer, AutoModel, BertForPreTraining, BertForTokenClassification
+# from transformers import AutoTokenizer, AutoModel, BertForPreTraining, BertForTokenClassification
 import io
 import argparse
 import torch.nn as nn
@@ -158,7 +158,7 @@ def test_fastext():
             print("Model not found. SKipping {}".format(lang))
             continue
         tokens = sent_dict[lang].split(" ")
-        model = fasttext.load_model(fastext_path)
+        model = fasttext.load_model(model_name)
         vecs = []
         for tok in tokens:
             vec = ft.get_word_vector(word)
