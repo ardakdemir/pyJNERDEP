@@ -455,7 +455,7 @@ class BaseModel(nn.Module):
         self.bert_tokenizer = tokenizer
         # self.bert_model = BertModel.from_pretrained('bert-base-cased', output_hidden_states=True)
         self.bert_model = BertModelforJoint(args["lang"])
-        self.bert_model.resize_token_embeddings(len(tokenizer))
+        self.bert_model.model.resize_token_embeddings(len(tokenizer))
         self.w_dim = self.bert_model.encoder.layer[11].output.dense.out_features
         # self.vocab_size = args['vocab_size']
         self.args = args
