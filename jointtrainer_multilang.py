@@ -646,6 +646,8 @@ class JointTrainer:
         self.lang = self.args['lang']
         model_name = model_name_dict[self.lang]
         self.bert_tokenizer = AutoTokenizer.from_pretrained(model_name)
+        print("BERT TOkenigezer")
+        print(self.bert_tokenizer)
         self.bert_tokenizer.add_tokens(['[SOS]', '[EOS]', '[ROOT]', '[PAD]'])
         self.exp_name = "{}_{}_{}".format(self.args['model_type'], self.args['word_embed_type'], self.args['lang'])
         print("Experiment name {} ".format(self.exp_name))
@@ -1202,7 +1204,7 @@ class JointTrainer:
             o.write("NER Results on {} embed_type : {} fixed : {} \n pre : {} rec : {} f1 : {}\n".format(
                 self.args['ner_val_file'], self.args['word_embed_type'], self.args['fix_embed'], best_model_nerpre,
                 best_model_nerrec, best_ner_f1))
-            
+
         logging.info("Experiment log")
         logging.info(experiment_log)
         with open(experiment_log_name,"w") as o:
