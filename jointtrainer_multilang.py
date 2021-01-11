@@ -645,6 +645,7 @@ class JointTrainer:
         # self.bert_tokenizer = BertTokenizer.from_pretrained('bert-base-cased', do_lower_case=False)
         self.lang = self.args['lang']
         model_name = model_name_dict[self.lang]
+        print(model_name)
         self.bert_tokenizer = AutoTokenizer.from_pretrained(model_name)
         print("BERT TOkenigezer")
         print(self.bert_tokenizer)

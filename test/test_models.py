@@ -220,7 +220,12 @@ def test_models():
 def main():
     # test_models()
     # test_word2vec()
-    test_fastext()
+    model_name = "dbmdz/bert-base-turkish-cased"
+    # print(model_name)
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    print(tokenizer)
+
+    # test_fastext()
 
 if __name__ == "__main__":
     main()
