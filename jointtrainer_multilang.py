@@ -71,29 +71,35 @@ lang_abs = {"fi": "finnish", "hu": "hungarian", "cs": "czech", "tr": "turkish", 
 model_name_dict = {"jp": "cl-tohoku/bert-base-japanese",
                    "tr": "dbmdz/bert-base-turkish-cased",
                    "hu": "/home/aakdemir/bert_models/hubert",
+                   "en": "bert-base-cased",
                    "fi": "TurkuNLP/bert-base-finnish-cased-v1",
                    "cs": "DeepPavlov/bert-base-bg-cs-pl-ru-cased"}
 
 encoding_map = {"cs": "latin-1",
                 "tr": "utf-8",
                 "hu": "utf-8",
+                "en": "utf-8",
+                "jp": "utf-8",
                 "fi": "utf-8"}
 
 word2vec_dict = {"jp": "../word_vecs/jp/jp.bin",
                  "tr": "../word_vecs/tr/tr.bin",
                  "hu": "../word_vecs/hu/hu.bin",
+                 "en": "../word_vecs/en/en.txt",
                  "fi": "../word_vecs/fi/fi.bin",
                  "cs": "../word_vecs/cs/cs.txt"}
 
 fasttext_dict = {"jp": "../word_vecs/jp/cc.jp.300.bin",
                  "tr": "../word_vecs/tr/cc.tr.300.bin",
                  "hu": "../word_vecs/hu/cc.hu.300.bin",
+                 "en": "../word_vecs/en/cc.en.300.bin",
                  "fi": "../word_vecs/fi/cc.fi.300.bin",
                  "cs": "../word_vecs/cs/cc.cs.300.bin"}
 
 word2vec_lens = {"tr": 200,
                  "hu": 300,
                  "fi": 300,
+                 "en": 100,
                  "cs": 100,
                  "jp": 300}
 
@@ -106,7 +112,7 @@ def embedding_initializer(dim, num_labels):
 
 def load_word2vec(lang):
     model_name = word2vec_dict[lang]
-    if lang == "cs":
+    if lang == "cs" or lang == "en":
         model = MyWord2Vec(model_name, lang)
     else:
         model = Word2Vec.load(model_name)
@@ -1247,7 +1253,7 @@ class JointTrainer:
             logging.info("DEP Results -- pre : {}  rec : {} f1 : {}  ".format(ner_pre, ner_rec, ner_f1))
             with open(os.path.join(self.args["save_dir"], self.args["dep_test_result_file"]), "a")  as o:
                 s = self.args['lang'] + "_" + self.args['word_embed_type']
-                s = s + "\t" + "\t".join([str(x) for x in [ner_pre, ner_rec, ner_f1]])
+                s = s + "\t" + "\t".join([str(x) for x in [ner_pre, ner_rec, ner_f1]]) + "\n"
                 o.write(s)
 
         if model_type != "DEP":
@@ -1260,7 +1266,7 @@ class JointTrainer:
             logging.info("NER Results -- pre : {}  rec : {} f1 : {}  ".format(ner_pre, ner_rec, ner_f1))
             with open(os.path.join(self.args["save_dir"], self.args["ner_test_result_file"]), "a")  as o:
                 s = self.args['lang'] + "_" + self.args['word_embed_type']
-                s = s + "\t" + "\t".join([str(x) for x in [ner_pre, ner_rec, ner_f1]])
+                s = s + "\t" + "\t".join([str(x) for x in [ner_pre, ner_rec, ner_f1]]) + "\n"
                 o.write(s)
 
         logging.info("Experiment log")
