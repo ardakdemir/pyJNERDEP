@@ -1,1 +1,1 @@
-python jointtrainer_multilang.py --model_type NER  --word_embed_type bert  --log_file NER_fastext_jp --lang jp --batch_size 100 --epochs 3 --save_dir ../deneme1201 
+python jointtrainer_multilang.py --model_type NER  --word_embed_type bert  --log_file NER_bert_jp --lang jp --batch_size 300 --epochs 3 --save_dir ../deneme1201 
