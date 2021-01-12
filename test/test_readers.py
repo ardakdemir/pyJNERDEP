@@ -16,19 +16,30 @@ model_name_dict = {"jp": "cl-tohoku/bert-base-japanese",
 
 lang_abs = {"fi": "finnish", "hu": "hungarian", "cs": "czech", "tr": "turkish", "jp": "japanese"}
 
-batch_size = 10
+batch_size = 200
 data_folder = "/home/aakdemir/datasets"
 
 # config
-lang = "jp"
-encoding = encoding_map[lang]
-model_name = model_name_dict[lang]
-task = "NER"
-language = lang_abs[lang]
-file_name = os.path.join(data_folder, "myner_{}-train.txt".format(language))
+for lang in model_name_dict.keys():
+    print("Trying to read {} datasets".format(lang))
+    for task in ["NER", "DEP"]:
+        print("Reading {} dataset".format(task))
+        lang = "jp"
+        encoding = encoding_map[lang]
+        model_name = model_name_dict[lang]
+        language = lang_abs[lang]
 
-bert_tokenizer = AutoTokenizer.from_pretrained(model_name)
-data_reader = DataReader(file_name, task, batch_size=batch_size,
-                         tokenizer=bert_tokenizer)
-l = len(data_reader)
-print("Read {} batches ".format(l))
+        if task == "NER":
+            file_name = os.path.join(data_folder, "myner_{}-train.txt".format(language))
+        else:
+            file_name = os.path.join(data_folder, "dep_{}_train.conllu".format(language)))
+
+        bert_tokenizer = AutoTokenizer.from_pretrained(model_name)
+        if task == "NER":
+            data_reader = DataReader(file_name, task, batch_size=batch_size,
+                                     tokenizer=bert_tokenizer)
+        elif task == "DEP":
+            data_reader = DepDataset(file_name, batch_size=12,
+                       tokenizer=.bert_tokenizer)
+        l = len(data_reader)
+        print("Read {} batches ".format(l))
