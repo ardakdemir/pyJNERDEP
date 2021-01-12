@@ -66,7 +66,7 @@ ROOT_TAG = "[ROOT]"
 ROOT_IND = 1
 special_labels = [PAD, START_TAG, END_TAG, ROOT_TAG]
 
-lang_abs = {"fi": "finnish", "hu": "hungarian", "cs": "czech", "tr": "turkish", "jp": "japanese"}
+lang_abs = {"fi": "finnish", "en": "english", "hu": "hungarian", "cs": "czech", "tr": "turkish", "jp": "japanese"}
 
 model_name_dict = {"jp": "cl-tohoku/bert-base-japanese",
                    "tr": "dbmdz/bert-base-turkish-cased",
