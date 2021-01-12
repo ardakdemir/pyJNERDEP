@@ -577,7 +577,8 @@ class BaseModel(nn.Module):
             batch_bert_ids, batch_seq_ids, bert2toks = word_embed_input
             bert_out = self.bert_model(batch_bert_ids, batch_seq_ids)
             # print(bert2toks)
-            bert_hiddens = self._get_bert_batch_hidden(bert_out[2], bert2toks)
+            print("Bert shape: {}".format(bert_out.shape))
+            bert_hiddens = self._get_bert_batch_hidden(bert_out, bert2toks)
             bert_hiddens = self.dropout(bert_hiddens)
             return bert_hiddens
         else:
