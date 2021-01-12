@@ -277,7 +277,11 @@ def parse_args():
     parser.add_argument('--eval_file', type=str, default=None, help='Input file for data loader.')
     parser.add_argument('--output_file', type=str, default=None, help='Output CoNLL-U file.')
     parser.add_argument('--gold_file', type=str, default=None, help='Output CoNLL-U file.')
-    parser.add_argument('--ner_result_out_file', type=str, default="ner_results", help='Output CoNLL-U file.')
+    parser.add_argument('--ner_result_out_file', type=str, default="ner_results", help='File to store the results...')
+    parser.add_argument('--ner_test_result_file', type=str, default="ner_test_results.txt",
+                        help='File to store the results...')
+    parser.add_argument('--dep_test_result_file', type=str, default="dep_test_results.txt",
+                        help='File to store the results...')
 
     parser.add_argument('--log_file', type=str, default='jointtraining.log', help='Input file for data loader.')
     parser.add_argument('--ner_train_file', type=str, default='../../datasets/traindev_pos.tsv',
@@ -819,6 +823,11 @@ class JointTrainer:
             self.depvaldataset = DepDataset(dep_dev_name, batch_size=self.args['batch_size'],
                                             vocabs=self.deptraindataset.vocabs, for_eval=True,
                                             tokenizer=self.bert_tokenizer)
+            self.nertestreader = DataReader(ner_test_name, "NER", batch_size=self.args['batch_size'],
+                                            tokenizer=self.bert_tokenizer)
+            self.deptesdataset = DepDataset(dep_test_name, batch_size=self.args['batch_size'],
+                                            vocabs=self.deptraindataset.vocabs, for_eval=True,
+                                            tokenizer=self.bert_tokenizer)
         # self.nervalreader.label_voc = self.nertrainreader.label_voc
         diff = set(self.nertrainreader.label_voc.w2ind) - set(self.nervalreader.label_voc.w2ind)
         diff = set(self.nervalreader.label_voc.w2ind) - set(self.nertrainreader.label_voc.w2ind)
@@ -860,6 +869,14 @@ class JointTrainer:
         self.nervalreader.label_voc = self.nertrainreader.label_voc
         self.nervalreader.pos_voc = self.nertrainreader.pos_voc
         self.nervalreader.num_cats = self.nertrainreader.num_cats
+
+        if self.args['mode'] != 'predict':
+            self.deptestdataset.vocabs = self.deptraindataset.vocabs
+            self.nertestreader.word_voc = merged_tok
+            self.nertestreader.label_voc = self.nertrainreader.label_voc
+            self.nertestreader.pos_voc = self.nertrainreader.pos_voc
+            self.nertestreader.num_cats = self.nertrainreader.num_cats
+
         self.args['vocab_size'] = len(self.nertrainreader.word_voc)
         self.args['pos_vocab_size'] = len(self.deptraindataset.vocabs['pos_vocab'])
         self.deptraindataset.num_pos = len(self.deptraindataset.vocabs['pos_vocab'])
@@ -1071,7 +1088,9 @@ class JointTrainer:
         epoch = self.args['max_steps'] // self.args['eval_interval'] if self.args['epochs'] is None else self.args[
             'epochs']
         self.jointmodel.train()
-        experiment_log_name = "experiment_log_" + self.args['lang'] + "_" + self.args['word_embed_type'] + ".json"
+        experiment_log_name = os.path.join(self.args["save_dir"],
+                                           "experiment_log_" + self.args['lang'] + "_" + self.args[
+                                               'word_embed_type'] + ".json")
         experiment_log = {"ner_f1": [],
                           "dep_f1": [],
                           "dep_uas_f1": [],
@@ -1134,13 +1153,13 @@ class JointTrainer:
 
             logging.info("Results for epoch : {}".format(e + 1))
             self.jointmodel.eval()
+
             dep_f1 = 0
             uas_f1 = 0
-
+            ner_f1 = 0
             if (model_type != "NER" and model_type != "NERDEP") or (
                     model_type == "NERDEP" and e > self.args['ner_warmup']):
                 dep_pre, dep_rec, dep_f1, uas_f1 = self.dep_evaluate()
-            ner_f1 = 0
 
             if (model_type == "DEPNER" and e >= self.args['dep_warmup']) or (
                     model_type != "DEPNER" and model_type != "DEP"):
@@ -1207,16 +1226,50 @@ class JointTrainer:
         logging.info(ner_val_f1)
         logging.info("DEP val f1s ")
         logging.info(dep_val_f1)
-        o_f = self.args['ner_result_out_file']
+        o_f = os.path.join(self.args["save_dir"], self.args['ner_result_out_file'])
         with open(o_f, "a") as o:
-            o.write("NER Results on {} embed_type : {} fixed : {} \n pre : {} rec : {} f1 : {}\n".format(
-                self.args['ner_val_file'], self.args['word_embed_type'], self.args['fix_embed'], best_model_nerpre,
+            o.write("NER Val Results on {} embed_type : {} fixed : {} \n pre : {} rec : {} f1 : {}\n".format(
+                self.args['lang'], self.args['word_embed_type'], self.args['fix_embed'], best_model_nerpre,
                 best_model_nerrec, best_ner_f1))
+
+
+
+        logging.info("Evaluating best models on test set...")
+
+        dep_f1 = 0
+        uas_f1 = 0
+        ner_f1 = 0
+        if model_type != "NER":
+            self.depvaldataset = self.deptestdataset
+            dep_pre, dep_rec, dep_f1, uas_f1 = self.dep_evaluate()
+            experiment_log["dep_test"] = {"pre":dep_pre,
+                                          "rec":dep_rec,
+                                          "f1":dep_f1}
+            logging.info("DEP Results -- pre : {}  rec : {} f1 : {}  ".format(ner_pre, ner_rec, ner_f1))
+            with open(self.args["dep_test_result_file"], "a")  as o:
+                s = self.args['lang'] + "_" + self.args['word_embed_type']
+                s = s + "\t" + "\t".join([str(x) for x in [ner_pre, ner_rec, ner_f1]])
+                o.write(s)
+
+        if model_type != "DEP":
+            self.nervalreader = self.nertestreader
+            self.nervalreader.for_eval = True
+            ner_pre, ner_rec, ner_f1 = self.ner_evaluate()
+            experiment_log["ner_test"] = {"pre":  ner_pre,
+                                          "rec": ner_rec,
+                                          "f1": ner_f1}
+            logging.info("NER Results -- pre : {}  rec : {} f1 : {}  ".format(ner_pre, ner_rec, ner_f1))
+            with open(self.args["ner_test_result_file"], "a")  as o:
+                s = self.args['lang'] + "_" + self.args['word_embed_type']
+                s = s + "\t" + "\t".join([str(x) for x in [ner_pre, ner_rec, ner_f1]])
+                o.write(s)
 
         logging.info("Experiment log")
         logging.info(experiment_log)
         with open(experiment_log_name, "w") as o:
             json.dump(experiment_log, o)
+
+
         return best_ner_f1, best_dep_f1
 
     def train(self):

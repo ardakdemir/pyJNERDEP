@@ -25,7 +25,7 @@ word2vec_dict = {"jp": "../../word_vecs/jp/jp.bin",
                  "tr": "../../word_vecs/tr/tr.bin",
                  "hu": "../../word_vecs/hu/hu.bin",
                  "fi": "../../word_vecs/fi/fi.bin",
-                 "cs": "../../word_vecs/cs/cs.txt"}
+                 "cs": "../../word_vecs/cs/cs.txt",}
 
 fasttext_dict = {"jp": "../../word_vecs/jp/cc.jp.300.bin",
                  "tr": "../../word_vecs/tr/cc.tr.300.bin",
