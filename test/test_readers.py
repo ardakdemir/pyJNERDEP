@@ -4,7 +4,7 @@ import os
 from parser.parsereader import DepDataset
 import logging
 
-log_path = "test_log_file"
+log_path = "test/test_log_file.txt"
 logging.basicConfig(level=logging.DEBUG, handlers=[logging.FileHandler(log_path, 'w', 'utf-8')],
                     format='%(levelname)s - %(message)s')
 
