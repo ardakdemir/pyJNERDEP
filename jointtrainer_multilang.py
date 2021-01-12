@@ -607,7 +607,6 @@ class BaseModel(nn.Module):
         if self.args['word_embed_type'] in ['fastext', 'random_init', 'word2vec']:
             # print("Before weights of fourth word{}".format(self.word_embeds.weight.data[tok_inds[0,3]]))
             word_embed = self.get_word_embedding(tok_inds, type=self.args['word_embed_type'])
-            print("Word embedding output dim shape {}".format(word_embed.shape))
         # bert_out = self.bert_model(batch_bert_ids,batch_seq_ids)
         # bert_hiddens = self._get_bert_batch_hidden(bert_out[2],bert2toks)
         # bert_hiddens = self.dropout(bert_hiddens)
@@ -925,7 +924,6 @@ class JointTrainer:
         return loss
 
     def dep_forward(self, dep_batch, task="DEP", training=True, word_embed_type='bert'):
-        logging.info("Eval data ")
         ## get the output of ner layer
         if task == "NERDEP":
             bert_feats = self.forward(dep_batch)
