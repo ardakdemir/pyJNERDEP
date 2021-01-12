@@ -1,6 +1,7 @@
 from datareader import DataReader
 from transformers import AutoTokenizer, AutoModel, BertForPreTraining, BertForTokenClassification
 import os
+from parser.parsereader import DepDataset
 
 encoding_map = {"cs": "latin-1",
                 "tr": "utf-8",
