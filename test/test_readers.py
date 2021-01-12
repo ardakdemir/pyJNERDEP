@@ -22,7 +22,7 @@ data_folder = "/home/aakdemir/datasets"
 
 # config
 for lang in model_name_dict.keys():
-    print("Trying to read {} datasets".format(lang))
+    print("\nTrying to read {} datasets".format(lang))
     for task in ["NER", "DEP"]:
         print("Reading {} dataset".format(task))
         lang = "jp"
