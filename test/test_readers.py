@@ -12,13 +12,15 @@ encoding_map = {"cs": "latin-1",
                 "tr": "utf-8",
                 "hu": "utf-8",
                 "jp": "utf-8",
-                "fi": "utf-8"}
+                "fi": "utf-8",
+                "en":"utf-8"}
 
 model_name_dict = {"jp": "cl-tohoku/bert-base-japanese",
                    "tr": "dbmdz/bert-base-turkish-cased",
                    "hu": "/home/aakdemir/bert_models/hubert",
                    "fi": "TurkuNLP/bert-base-finnish-cased-v1",
-                   "cs": "DeepPavlov/bert-base-bg-cs-pl-ru-cased"}
+                   "cs": "DeepPavlov/bert-base-bg-cs-pl-ru-cased",
+                   "en":"bert-base-cased"}
 
 lang_abs = {"fi": "finnish", "hu": "hungarian", "cs": "czech", "tr": "turkish", "jp": "japanese"}
 

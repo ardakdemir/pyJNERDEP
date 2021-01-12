@@ -492,12 +492,12 @@ class BaseModel(nn.Module):
         # self.cap_embeds  = nn.Embedding(self.cap_types, self.cap_dim)
         # self.pos_embeds  = nn.Embedding(self.args['pos_vocab_size'], self.pos_dim)
         self.lstm_input_size = self.w_dim
+        self.cap_types = self.args['cap_types']
+        self.cap_dim = args['cap_dim']
+        self.pos_dim = self.args['pos_dim']
+        self.cap_embeds = embedding_initializer(self.cap_dim, self.cap_types)
+        self.pos_embeds = embedding_initializer(self.pos_dim, self.args['pos_vocab_size'])
         if not self.args['word_only']:
-            self.cap_types = self.args['cap_types']
-            self.cap_dim = args['cap_dim']
-            self.pos_dim = self.args['pos_dim']
-            self.cap_embeds = embedding_initializer(self.cap_dim, self.cap_types)
-            self.pos_embeds = embedding_initializer(self.pos_dim, self.args['pos_vocab_size'])
             self.lstm_input_size = self.w_dim + self.cap_dim + self.pos_dim
             # self.bilstm  = nn.LSTM(self.lstm_input, self.lstm_hidden, bidirectional=True, num_layers=1, batch_first=True)
         self.dropout = nn.Dropout(self.lstm_drop)
