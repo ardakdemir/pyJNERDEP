@@ -78,7 +78,7 @@ model_name_dict = {"jp": "cl-tohoku/bert-base-japanese",
 encoding_map = {"cs": "latin-1",
                 "tr": "utf-8",
                 "hu": "utf-8",
-                "en": "utf-8",
+                "en": "latin-1",
                 "jp": "utf-8",
                 "fi": "utf-8"}
 
