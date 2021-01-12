@@ -578,7 +578,6 @@ class BaseModel(nn.Module):
             batch_bert_ids, batch_seq_ids, bert2toks = word_embed_input
             bert_out = self.bert_model(batch_bert_ids, batch_seq_ids)
             # print(bert2toks)
-            print("Bert shape: {}".format(bert_out.shape))
             bert_hiddens = self._get_bert_batch_hidden(bert_out, bert2toks)
             bert_hiddens = self.dropout(bert_hiddens)
             return bert_hiddens
@@ -1081,8 +1080,8 @@ class JointTrainer:
         return ner_loss, dep_loss
 
     def train2(self):
+        train_start = time.time()
         logging.info("Training on {} ".format(self.args['device']))
-
         logging.info("Dependency pos vocab : {} ".format(self.deptraindataset.vocabs['pos_vocab'].w2ind))
         logging.info("Dependency dep vocab : {} ".format(self.deptraindataset.vocabs['dep_vocab'].w2ind))
         epoch = self.args['max_steps'] // self.args['eval_interval'] if self.args['epochs'] is None else self.args[
@@ -1232,10 +1231,10 @@ class JointTrainer:
                 self.args['lang'], self.args['word_embed_type'], self.args['fix_embed'], best_model_nerpre,
                 best_model_nerrec, best_ner_f1))
 
-
-
+        train_end = time.time()
+        train_time = round(train_end-train_start,3)
+        logging.info("Training finished in {} seconds...".format(train_time))
         logging.info("Evaluating best models on test set...")
-
         dep_f1 = 0
         uas_f1 = 0
         ner_f1 = 0
@@ -1246,7 +1245,7 @@ class JointTrainer:
                                           "rec":dep_rec,
                                           "f1":dep_f1}
             logging.info("DEP Results -- pre : {}  rec : {} f1 : {}  ".format(ner_pre, ner_rec, ner_f1))
-            with open(self.args["dep_test_result_file"], "a")  as o:
+            with open(os.path.join(self.args["save_dir"],self.args["dep_test_result_file"]), "a")  as o:
                 s = self.args['lang'] + "_" + self.args['word_embed_type']
                 s = s + "\t" + "\t".join([str(x) for x in [ner_pre, ner_rec, ner_f1]])
                 o.write(s)
@@ -1259,7 +1258,7 @@ class JointTrainer:
                                           "rec": ner_rec,
                                           "f1": ner_f1}
             logging.info("NER Results -- pre : {}  rec : {} f1 : {}  ".format(ner_pre, ner_rec, ner_f1))
-            with open(self.args["ner_test_result_file"], "a")  as o:
+            with open(os.path.join(self.args["save_dir"],self.args["ner_test_result_file"])  as o:
                 s = self.args['lang'] + "_" + self.args['word_embed_type']
                 s = s + "\t" + "\t".join([str(x) for x in [ner_pre, ner_rec, ner_f1]])
                 o.write(s)
