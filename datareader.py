@@ -55,7 +55,6 @@ class DataReader():
 
     def __init__(self,file_path, task_name, batch_size = 3000,tokenizer = None,encoding = "utf-8"):
         self.encoding = encoding
-        self.with_pos = with_pos
         self.file_path = file_path
         self.task_name = task_name
         self.batch_size = batch_size
