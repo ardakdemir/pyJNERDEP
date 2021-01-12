@@ -40,6 +40,6 @@ for lang in model_name_dict.keys():
                                      tokenizer=bert_tokenizer)
         elif task == "DEP":
             data_reader = DepDataset(file_name, batch_size=12,
-                       tokenizer=.bert_tokenizer)
+                       tokenizer=bert_tokenizer)
         l = len(data_reader)
         print("Read {} batches ".format(l))
