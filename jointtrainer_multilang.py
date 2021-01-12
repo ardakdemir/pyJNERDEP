@@ -825,7 +825,7 @@ class JointTrainer:
                                             tokenizer=self.bert_tokenizer)
             self.nertestreader = DataReader(ner_test_name, "NER", batch_size=self.args['batch_size'],
                                             tokenizer=self.bert_tokenizer)
-            self.deptesdataset = DepDataset(dep_test_name, batch_size=self.args['batch_size'],
+            self.deptestdataset = DepDataset(dep_test_name, batch_size=self.args['batch_size'],
                                             vocabs=self.deptraindataset.vocabs, for_eval=True,
                                             tokenizer=self.bert_tokenizer)
         # self.nervalreader.label_voc = self.nertrainreader.label_voc
