@@ -46,6 +46,7 @@ unks = {l: np.random.rand(word2vec_lens[l]) for l in word2vec_lens.keys()}
 encoding_map = {"cs": "latin-1",
                 "tr": "utf-8",
                 "hu": "utf-8",
+                "jp": "utf-8",
                 "fi": "utf-8"}
 
 

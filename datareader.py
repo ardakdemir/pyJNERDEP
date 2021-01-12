@@ -53,7 +53,8 @@ def pad_trunc(sent,max_len, pad_len, pad_ind):
 
 class DataReader():
 
-    def __init__(self,file_path, task_name, batch_size = 3000,tokenizer = None):
+    def __init__(self,file_path, task_name, batch_size = 3000,tokenizer = None,encoding = "utf-8"):
+        self.encoding = encoding
         self.file_path = file_path
         self.task_name = task_name
         self.batch_size = batch_size
@@ -125,14 +126,14 @@ torch.tensor([seq_ids],dtype=torch.long), torch.tensor(bert2tok), lab])
 
     def get_dataset(self):
         print("Reading from {} ".format(self.file_path))
-        dataset = open(self.file_path,encoding='utf-8').read().split("\n")
+        dataset = open(self.file_path,encoding=self.encoding).read().split("\n")
         new_dataset = []
         sent = []
         label_counts = Counter()
         pos_counts = Counter()
         root = [START_TAG, START_TAG, START_TAG, START_TAG]
         for line in dataset:
-            if len(line.split())<3:
+            if len(line.split())<2:
                 if len(sent)>0:
                     sent.append([END_TAG, END_TAG , END_TAG, END_TAG ])
                     if len(sent)>2:
