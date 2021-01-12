@@ -30,7 +30,6 @@ for lang in model_name_dict.keys():
     print("\nTrying to read {} datasets".format(lang))
     for task in ["NER", "DEP"]:
         print("Reading {} dataset".format(task))
-        lang = "jp"
         encoding = encoding_map[lang]
         model_name = model_name_dict[lang]
         language = lang_abs[lang]
@@ -49,7 +48,9 @@ for lang in model_name_dict.keys():
             data_reader = DepDataset(file_name, batch_size=12,
                                      tokenizer=bert_tokenizer)
         batch = data_reader[0]
-        logging.info(batch)
+        for x in batch:
+            logging.info(batch)
+            logging.info("\n")
         l = len(data_reader)
 
         print("Read {} batches ".format(l))
