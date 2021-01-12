@@ -62,7 +62,7 @@ class DataReader():
         print("Dataset size : {}".format(len(self.dataset)))
         self.data_len = len(self.dataset)
         self.pos2ind, self.l2ind, self.word2ind, self.vocab_size = self.get_vocabs()
-        self.pos_voc = Vocab(self.pos2ind)
+        self.pos_vocab = Vocab(self.pos2ind)
         self.label_voc = Vocab(self.l2ind)
         self.word_voc = Vocab(self.word2ind)
         self.batched_dataset, self.sentence_lens = group_into_batch(self.dataset,batch_size = self.batch_size)
