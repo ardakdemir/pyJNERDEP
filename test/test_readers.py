@@ -55,6 +55,5 @@ def test_readers():
             l = len(data_reader)
 
             print("Read {} batches ".format(l))
-            return
 
 test_readers()
