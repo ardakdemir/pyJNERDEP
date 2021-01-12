@@ -32,7 +32,7 @@ for lang in model_name_dict.keys():
         if task == "NER":
             file_name = os.path.join(data_folder, "myner_{}-train.txt".format(language))
         else:
-            file_name = os.path.join(data_folder, "dep_{}_train.conllu".format(language)))
+            file_name = os.path.join(data_folder, "dep_{}_train.conllu".format(language))
 
         bert_tokenizer = AutoTokenizer.from_pretrained(model_name)
         if task == "NER":
