@@ -41,6 +41,7 @@ for lang in model_name_dict.keys():
             file_name = os.path.join(data_folder, "dep_{}_train.conllu".format(language))
 
         bert_tokenizer = AutoTokenizer.from_pretrained(model_name)
+        bert_tokenizer.add_tokens(['[SOS]', '[EOS]', '[ROOT]', '[PAD]'])
         if task == "NER":
             data_reader = DataReader(file_name, task, batch_size=batch_size,
                                      tokenizer=bert_tokenizer)
