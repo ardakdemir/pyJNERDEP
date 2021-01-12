@@ -49,8 +49,10 @@ for lang in model_name_dict.keys():
                                      tokenizer=bert_tokenizer)
         batch = data_reader[0]
         for x in batch:
-            logging.info(batch)
+            logging.info(x)
             logging.info("\n")
         l = len(data_reader)
 
         print("Read {} batches ".format(l))
+        return
+    
