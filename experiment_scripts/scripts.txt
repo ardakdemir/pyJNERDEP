@@ -1,1 +1,1 @@
-python jointtrainer_multilang.py --model_type ${model_type}  --word_embed_type fastext    --log_file $NER_word2vec_tr --lang tr --batch_size 100 --epochs 30 --save_dir ../deneme1101 
+python jointtrainer_multilang.py --model_type NER  --word_embed_type bert  --log_file NER_fastext_jp --lang jp --batch_size 100 --epochs 3 --save_dir ../deneme1201 

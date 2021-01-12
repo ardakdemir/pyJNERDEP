@@ -55,6 +55,7 @@ class DataReader():
 
     def __init__(self,file_path, task_name, batch_size = 3000,tokenizer = None,encoding = "utf-8"):
         self.encoding = encoding
+        self.with_pos = with_pos
         self.file_path = file_path
         self.task_name = task_name
         self.batch_size = batch_size
@@ -148,6 +149,7 @@ torch.tensor([seq_ids],dtype=torch.long), torch.tensor(bert2tok), lab])
                 row[0] = row[0].replace(' ','')
                 sent.append(row)
                 label_counts.update([row[-1]])
+
                 pos_counts.update([row[-2]])
         if len(sent)>0:
             sent.append([END_TAG, END_TAG, END_TAG , END_TAG ])

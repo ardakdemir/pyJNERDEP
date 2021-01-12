@@ -320,6 +320,8 @@ def parse_args():
                         help='Word embedding type to be used')
 
     parser.add_argument('--fix_embed', default=False, action='store_true', help='Word embedding type to be used')
+    parser.add_argument('--word_only', default=False, action='store_true', help='If true, pos/cap embeddings are not used')
+
     parser.add_argument('--lstm_layers', type=int, default=3)
     parser.add_argument('--char_num_layers', type=int, default=1)
     parser.add_argument('--pretrain_max_vocab', type=int, default=-1)
@@ -462,9 +464,7 @@ class BaseModel(nn.Module):
         # self.vocab_size = args['vocab_size']
         self.args = args
         self.lang = args["lang"]
-        self.cap_types = self.args['cap_types']
-        self.cap_dim = args['cap_dim']
-        self.pos_dim = self.args['pos_dim']
+
 
         self.embed_drop = args['embed_drop']
         self.lstm_drop = args['lstm_drop']
@@ -493,8 +493,13 @@ class BaseModel(nn.Module):
             print("Requires grad {}".format(self.word_embeds.weight.requires_grad))
         # self.cap_embeds  = nn.Embedding(self.cap_types, self.cap_dim)
         # self.pos_embeds  = nn.Embedding(self.args['pos_vocab_size'], self.pos_dim)
-        self.cap_embeds = embedding_initializer(self.cap_dim, self.cap_types)
-        self.pos_embeds = embedding_initializer(self.pos_dim, self.args['pos_vocab_size'])
+
+        if not self.args['word_only']:
+            self.cap_types = self.args['cap_types']
+            self.cap_dim = args['cap_dim']
+            self.pos_dim = self.args['pos_dim']
+            self.cap_embeds = embedding_initializer(self.cap_dim, self.cap_types)
+            self.pos_embeds = embedding_initializer(self.pos_dim, self.args['pos_vocab_size'])
         # self.word_embeds = nn.Embedding(self.vocab_size, self.w_dim)
         self.lstm_input_size = self.w_dim + self.cap_dim + self.pos_dim
         # self.bilstm  = nn.LSTM(self.lstm_input, self.lstm_hidden, bidirectional=True, num_layers=1, batch_first=True)
@@ -584,8 +589,7 @@ class BaseModel(nn.Module):
 
     def forward(self, tok_inds, pos_ids, batch_bert_ids, batch_seq_ids, bert2toks, cap_inds, sent_lens):
 
-        cap_embedding = self.embed_dropout(self.cap_embeds(cap_inds))
-        pos_embedding = self.embed_dropout(self.pos_embeds(pos_ids))
+
         if self.args['word_embed_type'] == 'bert':
             word_embed = self.get_word_embedding([batch_bert_ids, batch_seq_ids, bert2toks],
                                                  type=self.args['word_embed_type'])
@@ -596,14 +600,18 @@ class BaseModel(nn.Module):
         # bert_out = self.bert_model(batch_bert_ids,batch_seq_ids)
         # bert_hiddens = self._get_bert_batch_hidden(bert_out[2],bert2toks)
         # bert_hiddens = self.dropout(bert_hiddens)
-        concat = torch.cat((word_embed, cap_embedding, pos_embedding), dim=2)
+        if not self.args['word_only']:
+            cap_embedding = self.embed_dropout(self.cap_embeds(cap_inds))
+            pos_embedding = self.embed_dropout(self.pos_embeds(pos_ids))
+            word_embed = torch.cat((word_embed, cap_embedding, pos_embedding), dim=2)
+
         # bilstms are separate for each task
         # padded = pack_padded_sequence(concat,sent_lens,batch_first=True)
         # lstm_out,_ = self.bilstm(padded)
         # unpacked, _ = pad_packed_sequence(lstm_out, batch_first=True)
         # unpacked = self.dropout(unpacked)
-
-        return concat
+        print("Word representation output shape: {}".format(word_embed.shape))
+        return word_embed
 
 
 class JointTrainer:
