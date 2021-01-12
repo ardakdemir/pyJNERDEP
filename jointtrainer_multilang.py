@@ -154,16 +154,22 @@ class MyWord2Vec():
             f = f.read().split("\n")
             wv = {}
             my_len = 0
+            c = 0
             for l in f:  # s
-                w, v = l.split(" ", 1)
-                vec = [float(v_) for v_ in v]
+                s = l.split(" ")
+                if len(s) < 2:
+                    continue
+                w = s[0]
+                v = s[1:]
+                vec = [float(v_) for v_ in v if len(v_) > 1]
                 if len(vec) < 10:
                     continue  # skip not a proper vector
                 wv[w] = vec
                 length = len(vec)
                 if length > 1:
                     my_len = length
-        return wv.keys(), wv, length
+        vocab, wv, length = wv.keys(), MyDict(wv), my_len
+        return vocab, wv, length
 
 
 def get_pretrained_word_embeddings(w2ind, lang='tr', dim='768', word_vec_root="../word_vecs", load_w2v=False):
