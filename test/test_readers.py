@@ -27,6 +27,10 @@ data_folder = "/home/aakdemir/datasets"
 
 # config
 def test_readers():
+    """
+        Test readers for each task and language
+    :return:
+    """
     for lang in model_name_dict.keys():
         print("\nTrying to read {} datasets".format(lang))
         for task in ["NER", "DEP"]:
