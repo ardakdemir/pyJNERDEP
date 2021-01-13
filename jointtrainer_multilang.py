@@ -15,7 +15,7 @@ import fasttext.util
 import torch.optim as optim
 import copy
 import json
-from gensim.models import KeyedVectors
+from gensim.models import KeyedVectors,Word2Vec
 from gensim.test.utils import datapath
 import gensim
 import pickle
@@ -195,15 +195,8 @@ def get_pretrained_word_embeddings(w2ind, lang='tr', dim='768', word_vec_root=".
                 c += 1
         print("Found {} out of {} words in word2vec for {} ".format(c, len(w2ind), lang))
         return embed
-    if not from_model:
-        load_path = ''
-        print("Loading embeddings from {}".format(load_path))
-        emb_dict = pickle.load(open(load_path, 'rb'))
-        # embed = nn.Embedding(embed_mat.shape[0],embed_mat.shape[1])
-        dim = len(list(emb_dict.values())[0])
-        # embed.weight.data.copy_(torch.from_numpy(embed_mat))
     else:
-        print("Generating embedding from scratch using fasttext model (not .txt file)")
+        print("Generating embedding from fasttext model (not .txt file)")
 
         fastext_path = fasttext_dict[lang]
         if not os.path.exists(fastext_path):
@@ -229,16 +222,11 @@ def get_pretrained_word_embeddings(w2ind, lang='tr', dim='768', word_vec_root=".
         embed = nn.Embedding(vocab_size, dim)
         nn.init.uniform_(embed.weight, -np.sqrt(6 / (dim + vocab_size)), np.sqrt(6 / (dim + vocab_size)))
         for word in list(w2ind.keys()):
-            # if emb_dict.get(word) is not None:
-            #    ind = w2ind[word]
-            # embed.weight.data[ind].copy_(torch.tensor(emb_dict[word],requires_grad=True))
-            #    embed.weight.data[ind].copy_(ft_vec)
-            #    c +=1
             c += 1
-        ind = w2ind[word]
-        vec = ft.get_word_vector(word)
-        ft_vec = torch.tensor(vec, requires_grad=True)
-        embed.weight.data[ind].copy_(ft_vec)
+            ind = w2ind[word]
+            vec = ft.get_word_vector(word)
+            ft_vec = torch.tensor(vec, requires_grad=True)
+            embed.weight.data[ind].copy_(ft_vec)
         print("Initialized {} out of {} words from fastext".format(c, vocab_size))
         end = time.time()
         print("Word embeddings initialized in {} seconds ".format(round(end - start, 4)))

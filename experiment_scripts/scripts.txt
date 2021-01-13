@@ -2,4 +2,4 @@ python jointtrainer_multilang.py --model_type DEP  --word_embed_type word2vec  -
 
 
 # mBERT!
-python jointtrainer_multilang.py --model_type DEP  --word_embed_type mbert  --word_only --log_file DEP_word2vec_en --lang en --batch_size 300 --epochs 3 --save_dir ../deneme1301
+python jointtrainer_multilang.py --model_type NER  --word_embed_type bert_en  --word_only --log_file NER_bert_en_tr_log --lang tr --batch_size 300 --epochs 3 --save_dir ../deneme1301_tr
