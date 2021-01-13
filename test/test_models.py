@@ -9,7 +9,7 @@ import os
 import fasttext as ft
 import fasttext.util
 
-sent_dict = {"tr": "Sen benim kim olduğumu biliyor musun?",
+sent_dict = {"tr": "Fakat, temel gündem maddesi değişmiyordu: Türkiye.",
              "cs": "Potřebujete rychle poradit?",
              "hu": "Az ezredfordulós szilveszter valószínűleg az átlagos év véginél komolyabb feladatokat ró a sürgősségi betegellátás szervezeteire és a rendőrségre.",
              "jp": "為せば成る為さねば成らぬ。 \n麩菓子は 麩を主材料とした日本の菓子。",
@@ -239,7 +239,7 @@ def main():
     model_name = "dbmdz/bert-base-turkish-cased"
     # print(model_name)
     # tokenizer = AutoTokenizer.from_pretrained(model_name)
-    print(tokenizer)
+    # print(tokenizer)
 
     # test_fastext()
 
