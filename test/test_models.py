@@ -57,14 +57,6 @@ word2vec_lens = {"tr": 200,
 
 unks = {l: np.random.rand(word2vec_lens[l]) for l in word2vec_lens.keys()}
 
-encoding_map = {"cs": "latin-1",
-                "tr": "utf-8",
-                "en":"latin-1",
-                "hu": "utf-8",
-                "jp": "utf-8",
-                "fi": "utf-8"}
-
-
 class MyDict():
     """
         My simple dictionary to allow wv.vocab access
