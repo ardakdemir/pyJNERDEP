@@ -13,31 +13,45 @@ sent_dict = {"tr": "Sen benim kim olduğumu biliyor musun?",
              "cs": "Potřebujete rychle poradit?",
              "hu": "Az ezredfordulós szilveszter valószínűleg az átlagos év véginél komolyabb feladatokat ró a sürgősségi betegellátás szervezeteire és a rendőrségre.",
              "jp": "為せば成る為さねば成らぬ。 \n麩菓子は 麩を主材料とした日本の菓子。",
+             "en": "I am moving to Azabu-juban next year ...",
              "fi": " Showroomilla esiteltiin uusi The Garden Collection ja tarjoiltiin maukasta aamupalaa aamu-unisille muotibloggaajille."}
 
 model_name_dict = {"jp": "cl-tohoku/bert-base-japanese",
                    "tr": "dbmdz/bert-base-turkish-cased",
                    "hu": "/home/aakdemir/bert_models/hubert",
                    "fi": "TurkuNLP/bert-base-finnish-cased-v1",
-                   "cs": "DeepPavlov/bert-base-bg-cs-pl-ru-cased"}
-
-word2vec_dict = {"jp": "../../word_vecs/jp/jp.bin",
-                 "tr": "../../word_vecs/tr/tr.bin",
-                 "hu": "../../word_vecs/hu/hu.bin",
-                 "fi": "../../word_vecs/fi/fi.bin",
-                 "cs": "../../word_vecs/cs/cs.txt",}
-
-fasttext_dict = {"jp": "../../word_vecs/jp/cc.jp.300.bin",
-                 "tr": "../../word_vecs/tr/cc.tr.300.bin",
-                 "hu": "../../word_vecs/hu/cc.hu.300.bin",
-                 "fi": "../../word_vecs/fi/cc.fi.300.bin",
-                 "cs": "../../word_vecs/cs/cc.cs.300.bin"}
+                   "cs": "DeepPavlov/bert-base-bg-cs-pl-ru-cased",
+                   "en":"bert-base-cased",
+                   "mbert":"bert-base-multilingual-cased",
+                   "bert_en":"bert-base-cased"}
 
 output_file = "tokenized.txt"
+
+encoding_map = {"cs": "latin-1",
+                "tr": "utf-8",
+                "hu": "utf-8",
+                "en": "latin-1",
+                "jp": "utf-8",
+                "fi": "utf-8"}
+
+word2vec_dict = {"jp": "../word_vecs/jp/jp.bin",
+                 "tr": "../word_vecs/tr/tr.bin",
+                 "hu": "../word_vecs/hu/hu.bin",
+                 "en": "../word_vecs/en/en.txt",
+                 "fi": "../word_vecs/fi/fi.bin",
+                 "cs": "../word_vecs/cs/cs.txt"}
+
+fasttext_dict = {"jp": "../word_vecs/jp/cc.jp.300.bin",
+                 "tr": "../word_vecs/tr/cc.tr.300.bin",
+                 "hu": "../word_vecs/hu/cc.hu.300.bin",
+                 "en": "../word_vecs/en/cc.en.300.bin",
+                 "fi": "../word_vecs/fi/cc.fi.300.bin",
+                 "cs": "../word_vecs/cs/cc.cs.300.bin"}
 
 word2vec_lens = {"tr": 200,
                  "hu": 300,
                  "fi": 300,
+                 "en": 100,
                  "cs": 100,
                  "jp": 300}
 
@@ -45,6 +59,7 @@ unks = {l: np.random.rand(word2vec_lens[l]) for l in word2vec_lens.keys()}
 
 encoding_map = {"cs": "latin-1",
                 "tr": "utf-8",
+                "en":"latin-1",
                 "hu": "utf-8",
                 "jp": "utf-8",
                 "fi": "utf-8"}
@@ -197,25 +212,33 @@ def test_word2vec():
 
 
 def test_models():
-    for lang, model_name in model_name_dict.items():
-        sent = sent_dict[lang]
-        print("Testing {}...".format(lang))
-        tokenizer = AutoTokenizer.from_pretrained(model_name)
-        model = BertModelforJoint(lang)
-        tokens = tokenizer.tokenize(sent)
-        input = torch.LongTensor(tokenizer.convert_tokens_to_ids(tokens)).reshape(1, -1)
-        print("Token ids: {}".format(input.shape))
-        attention_mask = torch.ones(*input.shape)
-        output = model(input, attention_mask)
-        print("Output shape: {}".format(output.shape))
-        assert output.shape == (input.shape[0], input.shape[1], 768)
-        # print(model)
-        with open(output_file, "a", encoding="utf-8") as o:
-            o.write("{}\n".format(lang))
-            o.write("Sentence: " + sent)
-            o.write("\n")
-            o.write("Tokens: " + " ".join(tokens))
-            o.write("\n")
+    for lang, sent in sent_dict.items():
+
+        for mod in ["bert","mbert","bert_en"]:
+            sent = sent_dict[lang]
+            print("Testing {} with {}...".format(lang, mod))
+            if mod == "bert":
+                model_name = model_name_dict[lang]
+                tokenizer = AutoTokenizer.from_pretrained(model_name)
+                model = BertModelforJoint(lang)
+            else:
+                model_name = model_name_dict[mod]
+                tokenizer = AutoTokenizer.from_pretrained(model_name)
+                model = BertModelforJoint(model_name)
+            tokens = tokenizer.tokenize(sent)
+            input = torch.LongTensor(tokenizer.convert_tokens_to_ids(tokens)).reshape(1, -1)
+            print("Token ids: {}".format(input.shape))
+            attention_mask = torch.ones(*input.shape)
+            output = model(input, attention_mask)
+            print("Output shape: {}".format(output.shape))
+            assert output.shape == (input.shape[0], input.shape[1], 768)
+            # print(model)
+            with open(output_file, "a", encoding=encoding_map[lang]) as o:
+                o.write("{}\t{}\n".format(lang,mod))
+                o.write("Sentence: " + sent)
+                o.write("\n")
+                o.write("Tokens: " + " ".join(tokens))
+                o.write("\n")
 
 
 def main():

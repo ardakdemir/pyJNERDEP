@@ -329,7 +329,8 @@ def parse_args():
     parser.add_argument('--dep_dim', type=int, default=128)
     parser.add_argument('--ner_dim', type=int, default=128)
     parser.add_argument('--transformed_dim', type=int, default=125)
-    parser.add_argument('--word_embed_type', default='bert', choices=['bert', 'random_init', 'fastext', 'word2vec'],
+    parser.add_argument('--word_embed_type', default='bert',
+                        choices=["mbert", "bert_en", 'bert', 'random_init', 'fastext', 'word2vec'],
                         help='Word embedding type to be used')
 
     parser.add_argument('--fix_embed', default=False, action='store_true', help='Word embedding type to be used')
