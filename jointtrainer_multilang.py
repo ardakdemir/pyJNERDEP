@@ -677,8 +677,9 @@ class JointTrainer:
         model_name = model_name_dict[self.lang]
         print(self.lang, " ", model_name)
         if self.word_embed_type in ["mbert", "bert_en"]:
-            logging.info("Using {}-based bert tokenizer".format(self.word_embed_type))
-            self.bert_tokenizer = AutoTokenizer.from_pretrained(self.word_embed_type)
+            model_name = model_name_dict[self.word_embed_type]
+            logging.info("Using {}-based bert tokenizer".format(model_name))
+            self.bert_tokenizer = AutoTokenizer.from_pretrained(model_name)
         else:
             self.bert_tokenizer = AutoTokenizer.from_pretrained(model_name)
         print("BERT Tokenizer")

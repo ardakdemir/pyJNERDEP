@@ -1,5 +1,5 @@
 python jointtrainer_multilang.py --model_type DEP  --word_embed_type word2vec  --word_only --log_file DEP_word2vec_en --lang en --batch_size 300 --epochs 3 --save_dir ../deneme1301
 
 
-# mBERT! 
-python jointtrainer_multilang.py --model_type DEP  --word_embed_type word2vec  --word_only --log_file DEP_word2vec_en --lang en --batch_size 300 --epochs 3 --save_dir ../deneme1301
+# mBERT!
+python jointtrainer_multilang.py --model_type DEP  --word_embed_type mbert  --word_only --log_file DEP_word2vec_en --lang en --batch_size 300 --epochs 3 --save_dir ../deneme1301
