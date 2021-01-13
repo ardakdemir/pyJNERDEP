@@ -594,7 +594,8 @@ class BaseModel(nn.Module):
         return torch.stack(batch_my_hiddens)
 
     def get_word_embedding(self, word_embed_input, type="bert"):
-        if type == "bert":
+        if "bert" in type:
+            
             batch_bert_ids, batch_seq_ids, bert2toks = word_embed_input
             bert_out = self.bert_model(batch_bert_ids, batch_seq_ids)
             # print(bert2toks)
@@ -610,7 +611,7 @@ class BaseModel(nn.Module):
 
     def forward(self, tok_inds, pos_ids, batch_bert_ids, batch_seq_ids, bert2toks, cap_inds, sent_lens):
 
-        if self.args['word_embed_type'] == 'bert':
+        if self.args['word_embed_type'] not in ['fastext', 'random_init', 'word2vec']:
             word_embed = self.get_word_embedding([batch_bert_ids, batch_seq_ids, bert2toks],
                                                  type=self.args['word_embed_type'])
         if self.args['word_embed_type'] in ['fastext', 'random_init', 'word2vec']:
