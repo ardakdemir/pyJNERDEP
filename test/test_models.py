@@ -224,7 +224,7 @@ def test_models():
             else:
                 model_name = model_name_dict[mod]
                 tokenizer = AutoTokenizer.from_pretrained(model_name)
-                model = BertModelforJoint(model_name)
+                model = BertModelforJoint(mod)
             tokens = tokenizer.tokenize(sent)
             input = torch.LongTensor(tokenizer.convert_tokens_to_ids(tokens)).reshape(1, -1)
             print("Token ids: {}".format(input.shape))
