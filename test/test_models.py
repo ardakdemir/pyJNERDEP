@@ -27,7 +27,7 @@ model_name_dict = {"jp": "cl-tohoku/bert-base-japanese",
 
 output_file = "tokenized.txt"
 
-encoding_map = {"cs": "latin-1",
+encoding_map = {"cs": "utf-8",
                 "tr": "utf-8",
                 "hu": "utf-8",
                 "en": "latin-1",
