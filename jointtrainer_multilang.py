@@ -1253,10 +1253,10 @@ class JointTrainer:
             experiment_log["dep_test"] = {"pre": dep_pre,
                                           "rec": dep_rec,
                                           "f1": dep_f1}
-            logging.info("DEP Results -- pre : {}  rec : {} f1 : {}  ".format(ner_pre, ner_rec, ner_f1))
+            logging.info("DEP Results -- pre : {}  rec : {} f1 : {}  ".format(dep_pre, dep_rec, dep_f1))
             with open(os.path.join(self.args["save_dir"], self.args["dep_test_result_file"]), "a")  as o:
                 s = self.args['lang'] + "_" + self.args['word_embed_type']
-                s = s + "\t" + "\t".join([str(x) for x in [ner_pre, ner_rec, ner_f1]]) + "\n"
+                s = s + "\t" + "\t".join([str(x) for x in [dep_pre, dep_rec, dep_f1]]) + "\n"
                 o.write(s)
 
         if model_type != "DEP":
