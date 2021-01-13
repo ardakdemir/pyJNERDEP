@@ -10,12 +10,12 @@ echo "EXPERIMENT WILL BE STORED IN ${load_dir}"
 #$ -N ner_multilang
 
 langs=(czech hungarian japanese english finnish  turkish)
-word_vec_prefs=(cs hu jp en fi tr)
+word_vec_prefs=("cs" "hu" "jp" "en" "fi" "tr")
 
 
 cd ~/parser/final_model
 
-for i in 0 1 2 3
+for i in 0 1 2 3 4 5
 do
 
     lang=${langs[$i]}
@@ -25,7 +25,7 @@ do
     val_dataset=../../datasets/myner_${lang}-test.txt
 
 #    for type in bert mbert bert_en fastext word2vec random_init
-    for type in fastext word2vec random_init
+    for type in bert mbert bert_en fastext word2vec random_init
     do
         echo "Running for "${lang}"  "${type}"  pref  "${wvec_pref}
         singularity exec --nv  --writable ~/singularity/pt-cuda-tf-tr-ft python jointtrainer_multilang.py --model_type ${model_type}  --word_embed_type ${type}    --log_file ${model_type}_log_${type}_${lang}_log.txt --lang ${wvec_pref} --batch_size 300 --epochs 10 --save_dir $load_dir --word_only
