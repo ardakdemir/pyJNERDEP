@@ -595,7 +595,7 @@ class BaseModel(nn.Module):
 
     def get_word_embedding(self, word_embed_input, type="bert"):
         if "bert" in type:
-            
+            logging.info("Getting word embedding with {}".format(type))
             batch_bert_ids, batch_seq_ids, bert2toks = word_embed_input
             bert_out = self.bert_model(batch_bert_ids, batch_seq_ids)
             # print(bert2toks)
