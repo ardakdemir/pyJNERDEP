@@ -71,9 +71,11 @@ lang_abs = {"fi": "finnish", "en": "english", "hu": "hungarian", "cs": "czech", 
 model_name_dict = {"jp": "cl-tohoku/bert-base-japanese",
                    "tr": "dbmdz/bert-base-turkish-cased",
                    "hu": "/home/aakdemir/bert_models/hubert",
-                   "en": "bert-base-cased",
                    "fi": "TurkuNLP/bert-base-finnish-cased-v1",
-                   "cs": "DeepPavlov/bert-base-bg-cs-pl-ru-cased"}
+                   "cs": "DeepPavlov/bert-base-bg-cs-pl-ru-cased",
+                   "en": "bert-base-cased",
+                   "mbert": "bert-base-multilingual-cased",
+                   "bert_en": "bert-base-cased"}
 
 encoding_map = {"cs": "latin-1",
                 "tr": "utf-8",
@@ -473,8 +475,14 @@ class BaseModel(nn.Module):
         super(BaseModel, self).__init__()
         self.bert_tokenizer = tokenizer
         # self.bert_model = BertModel.from_pretrained('bert-base-cased', output_hidden_states=True)
-        self.bert_model = BertModelforJoint(args["lang"])
-        self.bert_model.model.resize_token_embeddings(len(tokenizer))
+        self.embed_type = args["word_embed_type"]
+        if self.embed_type not in ["bert_en", "mbert"]:
+            self.bert_model = BertModelforJoint(args["lang"])
+            self.bert_model.model.resize_token_embeddings(len(tokenizer))
+        else:
+            logging.info("Using {} bert mode model ".format(self.embed_type))
+            self.bert_model = BertModelforJoint(self.embed_type)
+            self.bert_model.model.resize_token_embeddings(len(tokenizer))
         self.w_dim = 768
         # self.vocab_size = args['vocab_size']
         self.args = args
@@ -665,10 +673,15 @@ class JointTrainer:
         # self.args  = {**self.args,**args2}
         # self.bert_tokenizer = BertTokenizer.from_pretrained('bert-base-cased', do_lower_case=False)
         self.lang = self.args['lang']
+        self.word_embed_type = self.args["word_embed_type"]
         model_name = model_name_dict[self.lang]
         print(self.lang, " ", model_name)
-        self.bert_tokenizer = AutoTokenizer.from_pretrained(model_name)
-        print("BERT TOkenigezer")
+        if self.word_embed_type in ["mbert", "bert_en"]:
+            logging.info("Using {}-based bert tokenizer".format(self.word_embed_type))
+            self.bert_tokenizer = AutoTokenizer.from_pretrained(self.word_embed_type)
+        else:
+            self.bert_tokenizer = AutoTokenizer.from_pretrained(model_name)
+        print("BERT Tokenizer")
         print(self.bert_tokenizer)
         self.bert_tokenizer.add_tokens(['[SOS]', '[EOS]', '[ROOT]', '[PAD]'])
         self.exp_name = "{}_{}_{}".format(self.args['model_type'], self.args['word_embed_type'], self.args['lang'])
