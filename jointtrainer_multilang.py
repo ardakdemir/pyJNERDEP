@@ -1285,6 +1285,8 @@ class JointTrainer:
             for x in self.jointmodel.parameters():
                 print(x)
                 break
+            logging.info("Best ner model")
+            
             self.jointmodel.load_state_dict(best_ner_model)
             logging.info("Loading best weights")
             logging.info("Weights after")
