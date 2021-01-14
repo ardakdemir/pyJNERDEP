@@ -13,8 +13,8 @@ print(crf_weights)
 
 
 load_path = args["load_path"]
-joint_trainer.jointmodel.load_state_dict(torch.load(load_path)
-                                         
+joint_trainer.jointmodel.load_state_dict(torch.load(load_path))
+
 crf_weights = joint_trainer.jointmodel.nermodel.crf.emission.weight
 print("My crf weights after")
 print(crf_weights)
