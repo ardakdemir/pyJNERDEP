@@ -1250,6 +1250,7 @@ class JointTrainer:
 
         train_end = time.time()
         train_time = round(train_end - train_start, 3)
+        experiment_log["training_time"] = train_time
         logging.info("Training finished in {} seconds...".format(train_time))
         logging.info("Evaluating best models on test set...")
         dep_f1 = 0
@@ -1260,11 +1261,13 @@ class JointTrainer:
             logging.info("Weights before")
             for x in self.jointmodel.parameters():
                 print(x)
+                break
             self.jointmodel.load_state_dict(best_dep_model)
             logging.info("Loading best weights")
             logging.info("Weights after")
             for x in self.jointmodel.parameters():
                 print(x)
+                break
             self.depvaldataset = self.deptestdataset
             dep_pre, dep_rec, dep_f1, uas_f1 = self.dep_evaluate()
             experiment_log["dep_test"] = {"pre": dep_pre,
@@ -1281,11 +1284,13 @@ class JointTrainer:
             logging.info("Weights before")
             for x in self.jointmodel.parameters():
                 print(x)
+                break
             self.jointmodel.load_state_dict(best_ner_model)
             logging.info("Loading best weights")
             logging.info("Weights after")
             for x in self.jointmodel.parameters():
                 print(x)
+                break
             self.nervalreader = self.nertestreader
             self.nervalreader.for_eval = True
             ner_pre, ner_rec, ner_f1 = self.ner_evaluate()
@@ -1470,7 +1475,7 @@ class JointTrainer:
         print("LAS F1 {}  ====    UAS F1 {}".format(f1 * 100, uas_f1 * 100))
         # self.parser.train()
 
-        return p, r, f1 * 100, uas_f1 * 100
+        return round(p,3), round(r,3), round(f1 * 100,3), round(uas_f1 * 100,3)
 
     def ner_evaluate(self):
         self.jointmodel.eval()
@@ -1526,7 +1531,7 @@ class JointTrainer:
         logging.info("My values ignoring the boundaries.\npre: {}  rec: {}  f1: {} ".format(my_pre, my_rec, my_f1))
         logging.info("NER f1 : {} ".format(f1))
         # self.model.train()
-        return prec, rec, f1
+        return round(prec,3, round(rec,3), round(f1,3)
 
 
 def main(args):
