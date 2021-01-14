@@ -6,13 +6,13 @@ joint_trainer = JointTrainer(args)
 joint_trainer.init_models()
 
 def test_dep_module():
-    hlstm = joint_trainer.jointmodel.depparser.highwaylstm.lstm[0].weight_ih_l
+    hlstm = joint_trainer.jointmodel.depparser.highwaylstm.lstm[0].weight_ih_l0
     print("My hlstm weights before")
     print(hlstm)
     load_path = args["load_path"]
     joint_trainer.jointmodel.load_state_dict(torch.load(load_path))
 
-    hlstm = joint_trainer.jointmodel.depparser.highwaylstm.lstm[0].weight_ih_l
+    hlstm = joint_trainer.jointmodel.depparser.highwaylstm.lstm[0].weight_ih_l0
     print("My hlstm weights after")
     print(hlstm)
 
