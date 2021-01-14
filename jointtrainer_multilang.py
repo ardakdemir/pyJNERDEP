@@ -221,13 +221,22 @@ def get_pretrained_word_embeddings(w2ind, lang='tr', dim='768', word_vec_root=".
         c = 0
         embed = nn.Embedding(vocab_size, dim)
         nn.init.uniform_(embed.weight, -np.sqrt(6 / (dim + vocab_size)), np.sqrt(6 / (dim + vocab_size)))
-        for word in list(w2ind.keys()):
+        vocab = list(w2ind.keys())
+        first_word = vocab[0]
+        first_word_ind = w2ind[first_word]
+        first_word_weights = embed.weight.data[first_word_ind]
+        logging.info("Weights of the first word before")
+        logging.info(first_word_weights)
+        for word in vocab:
             c += 1
             ind = w2ind[word]
             vec = ft.get_word_vector(word)
             ft_vec = torch.tensor(vec, requires_grad=True)
             embed.weight.data[ind].copy_(ft_vec)
         print("Initialized {} out of {} words from fastext".format(c, vocab_size))
+        first_word_weights = embed.weight.data[first_word_ind]
+        logging.info("Weights of the first word after")
+        logging.info(first_word_weights)
         end = time.time()
         print("Word embeddings initialized in {} seconds ".format(round(end - start, 4)))
     return embed
@@ -1286,7 +1295,7 @@ class JointTrainer:
                 print(x)
                 break
             logging.info("Best ner model")
-            
+
             self.jointmodel.load_state_dict(best_ner_model)
             logging.info("Loading best weights")
             logging.info("Weights after")
