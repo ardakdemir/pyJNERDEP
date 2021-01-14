@@ -7,7 +7,6 @@ load_dir="../model_save_dir_${model_type}_${exp_suf}/"
 echo "EXPERIMENT WILL BE STORED IN ${load_dir}"
 #$ -cwd
 #$ -l os7,v100=1,s_vmem=100G,mem_req=100G
-#$ -N ner_multilang
 
 langs=(czech hungarian japanese english finnish  turkish)
 word_vec_prefs=("cs" "hu" "jp" "en" "fi" "tr")
