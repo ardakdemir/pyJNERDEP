@@ -5,7 +5,7 @@ args = parse_args()
 joint_trainer = JointTrainer(args)
 joint_trainer.init_models()
 
-state_dict = joint_trainer.jointmodel.state_dict()
+crf_weights = joint_trainer.jointmodel.nermodel.crf.emission.weight
 
-print("My state dictionary")
-print(state_dict)
+print("My crf weights")
+print(crf_weights)
