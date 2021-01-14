@@ -15,7 +15,7 @@ import fasttext.util
 import torch.optim as optim
 import copy
 import json
-from gensim.models import KeyedVectors,Word2Vec
+from gensim.models import KeyedVectors, Word2Vec
 from gensim.test.utils import datapath
 import gensim
 import pickle
@@ -1475,7 +1475,7 @@ class JointTrainer:
         print("LAS F1 {}  ====    UAS F1 {}".format(f1 * 100, uas_f1 * 100))
         # self.parser.train()
 
-        return round(p,3), round(r,3), round(f1 * 100,3), round(uas_f1 * 100,3)
+        return round(p, 3), round(r, 3), round(f1 * 100, 3), round(uas_f1 * 100, 3)
 
     def ner_evaluate(self):
         self.jointmodel.eval()
@@ -1531,7 +1531,7 @@ class JointTrainer:
         logging.info("My values ignoring the boundaries.\npre: {}  rec: {}  f1: {} ".format(my_pre, my_rec, my_f1))
         logging.info("NER f1 : {} ".format(f1))
         # self.model.train()
-        return round(prec,3, round(rec,3), round(f1,3)
+        return round(prec, 3), round(rec, 3), round(f1, 3)
 
 
 def main(args):
