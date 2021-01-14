@@ -1120,6 +1120,8 @@ class JointTrainer:
         best_uas_f1 = 0
         best_model_nerpre = 0
         best_model_nerrec = 0
+        best_ner_model = None
+        best_dep_model = None
         best_ner_epoch = 0
         best_dep_epoch = 0
         ner_patience = 0
@@ -1191,6 +1193,7 @@ class JointTrainer:
                         print("Saving best dep model to {} ".format(save_dep_name))
                         self.save_model(save_dep_name)
                         self.best_global_dep_f1 = dep_f1
+                        best_dep_model = self.jointmodel.state_dict()
                     best_dep_f1 = dep_f1
                     best_dep_epoch = e + 1
                 else:
@@ -1207,6 +1210,7 @@ class JointTrainer:
                         print("Saving best ner model to {} ".format(save_ner_name))
                         self.save_model(save_ner_name)
                         self.best_global_ner_f1 = ner_f1
+                        best_ner_model = self.jointmodel.state_dict()
                     best_ner_f1 = ner_f1
                     best_model_nerpre = ner_pre
                     best_model_nerrec = ner_rec
@@ -1252,6 +1256,15 @@ class JointTrainer:
         uas_f1 = 0
         ner_f1 = 0
         if model_type != "NER":
+            logging.info("Loading best weights")
+            logging.info("Weights before")
+            for x in self.jointmodel.parameters():
+                print(x)
+            self.jointmodel.load_state_dict(best_dep_model)
+            logging.info("Loading best weights")
+            logging.info("Weights after")
+            for x in self.jointmodel.parameters():
+                print(x)
             self.depvaldataset = self.deptestdataset
             dep_pre, dep_rec, dep_f1, uas_f1 = self.dep_evaluate()
             experiment_log["dep_test"] = {"pre": dep_pre,
@@ -1264,6 +1277,15 @@ class JointTrainer:
                 o.write(s)
 
         if model_type != "DEP":
+            logging.info("Loading best weights")
+            logging.info("Weights before")
+            for x in self.jointmodel.parameters():
+                print(x)
+            self.jointmodel.load_state_dict(best_ner_model)
+            logging.info("Loading best weights")
+            logging.info("Weights after")
+            for x in self.jointmodel.parameters():
+                print(x)
             self.nervalreader = self.nertestreader
             self.nervalreader.for_eval = True
             ner_pre, ner_rec, ner_f1 = self.ner_evaluate()
