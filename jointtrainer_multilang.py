@@ -1268,15 +1268,16 @@ class JointTrainer:
         if model_type != "NER":
             logging.info("Loading best weights")
             logging.info("Weights before")
-            for x in self.jointmodel.parameters():
-                print(x)
-                break
+            crf_weights = self.jointmodel.nermodel.crf.emission.weight
             self.jointmodel.load_state_dict(best_dep_model)
-            logging.info("Loading best weights")
+            logging.info(crf_weights)
+
             logging.info("Weights after")
-            for x in self.jointmodel.parameters():
-                print(x)
-                break
+            crf_weights = self.jointmodel.nermodel.crf.emission.weight
+            self.jointmodel.load_state_dict(best_dep_model)
+            logging.info(crf_weights)
+
+
             self.depvaldataset = self.deptestdataset
             dep_pre, dep_rec, dep_f1, uas_f1 = self.dep_evaluate()
             experiment_log["dep_test"] = {"pre": dep_pre,
