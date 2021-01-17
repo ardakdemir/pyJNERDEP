@@ -1238,12 +1238,13 @@ class JointTrainer:
             experiment_log["dep_uas_f1"].append(uas_f1)
             experiment_log["ner_loss"].append(ner_loss)
             experiment_log["dep_loss"].append(dep_loss)
-            experiment_log["finetune_steps"].append(self.args['eval_interval']))
+            experiment_log["finetune_steps"].append(self.args['eval_interval'])
 
             logging.info("Best results : ")
             logging.info("NER : {}  LAS : {} UAS : {}".format(best_ner_f1, best_dep_f1, best_uas_f1))
             logging.info(
-            "Best NER results : pre : {} rec : {}  f1 : {} ".format(best_model_nerpre, best_model_nerrec, best_ner_f1))
+                "Best NER results : pre : {} rec : {}  f1 : {} ".format(best_model_nerpre, best_model_nerrec,
+                                                                        best_ner_f1))
             # self.plot_f1(ner_val_f1, self.args['model_type'], "NER")
             # self.plot_f1(dep_val_f1, self.args['model_type'], "DEP")
             logging.info("NER val f1s ")
@@ -1279,8 +1280,8 @@ class JointTrainer:
             self.depvaldataset = self.deptestdataset
             dep_pre, dep_rec, dep_f1, uas_f1 = self.dep_evaluate()
             experiment_log["dep_test"] = {"pre": dep_pre,
-            "rec": dep_rec,
-            "f1": dep_f1}
+                                          "rec": dep_rec,
+                                          "f1": dep_f1}
             logging.info("DEP Results -- pre : {}  rec : {} f1 : {}  ".format(dep_pre, dep_rec, dep_f1))
             with open(os.path.join(self.args["save_dir"], self.args["dep_test_result_file"]), "a")  as o:
                 s = self.args['lang'] + "_" + self.args['word_embed_type']
