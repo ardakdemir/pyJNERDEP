@@ -1463,8 +1463,8 @@ def main(args):
                     ner_f1, dep_f1, exp_log = jointtrainer.train2()
                     exp_logs[i] = exp_log
 
-                logging.info("Experiment log")
-                logging.info(experiment_log)
+                logging.info("Experiment logs")
+                logging.info(exp_logs)
                 with open(experiment_log_name, "w") as o:
                     json.dump(exp_logs, o)
 
