@@ -1460,6 +1460,8 @@ def main(args):
                 jointtrainer.init_models()
                 exp_logs = {}
                 for i in range(args["repeat"]):
+                    jointtrainer.best_global_ner_f1 = 0
+                    jointtrainer.best_global_dep_f1 = 0
                     ner_f1, dep_f1, exp_log = jointtrainer.train2()
                     exp_logs[i] = exp_log
 
