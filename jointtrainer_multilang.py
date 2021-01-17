@@ -1238,13 +1238,12 @@ class JointTrainer:
             experiment_log["dep_uas_f1"].append(uas_f1)
             experiment_log["ner_loss"].append(ner_loss)
             experiment_log["dep_loss"].append(dep_loss)
-            experiment_log["finetune_steps"].append(self.args['eval_interval'])
+            experiment_log["finetune_steps"].append(self.args['eval_interval']))
 
             logging.info("Best results : ")
             logging.info("NER : {}  LAS : {} UAS : {}".format(best_ner_f1, best_dep_f1, best_uas_f1))
             logging.info(
-                "Best NER results : pre : {} rec : {}  f1 : {} ".format(best_model_nerpre, best_model_nerrec,
-                                                                        best_ner_f1))
+            "Best NER results : pre : {} rec : {}  f1 : {} ".format(best_model_nerpre, best_model_nerrec, best_ner_f1))
             # self.plot_f1(ner_val_f1, self.args['model_type'], "NER")
             # self.plot_f1(dep_val_f1, self.args['model_type'], "DEP")
             logging.info("NER val f1s ")
@@ -1257,16 +1256,16 @@ class JointTrainer:
                     self.args['lang'], self.args['word_embed_type'], self.args['fix_embed'], best_model_nerpre,
                     best_model_nerrec, best_ner_f1))
 
-            train_end = time.time()
-            train_time = round(train_end - train_start, 3)
-            experiment_log["training_time"] = train_time
-            logging.info("Training finished in {} seconds...".format(train_time))
-            logging.info("Evaluating best models on test set...")
-            dep_f1 = 0
-            uas_f1 = 0
-            ner_f1 = 0
-            if model_type != "NER":
-                logging.info("Loading best weights")
+        train_end = time.time()
+        train_time = round(train_end - train_start, 3)
+        experiment_log["training_time"] = train_time
+        logging.info("Training finished in {} seconds...".format(train_time))
+        logging.info("Evaluating best models on test set...")
+        dep_f1 = 0
+        uas_f1 = 0
+        ner_f1 = 0
+        if model_type != "NER":
+            logging.info("Loading best weights")
             logging.info("Weights before")
             crf_weights = self.jointmodel.nermodel.crf.emission.weight
             self.jointmodel.load_state_dict(best_dep_model)
@@ -1280,41 +1279,41 @@ class JointTrainer:
             self.depvaldataset = self.deptestdataset
             dep_pre, dep_rec, dep_f1, uas_f1 = self.dep_evaluate()
             experiment_log["dep_test"] = {"pre": dep_pre,
-                                          "rec": dep_rec,
-                                          "f1": dep_f1}
+            "rec": dep_rec,
+            "f1": dep_f1}
             logging.info("DEP Results -- pre : {}  rec : {} f1 : {}  ".format(dep_pre, dep_rec, dep_f1))
             with open(os.path.join(self.args["save_dir"], self.args["dep_test_result_file"]), "a")  as o:
                 s = self.args['lang'] + "_" + self.args['word_embed_type']
             s = s + "\t" + "\t".join([str(x) for x in [dep_pre, dep_rec, dep_f1]]) + "\n"
             o.write(s)
 
-            if model_type != "DEP":
-                logging.info("Loading best weights")
+        if model_type != "DEP":
+            logging.info("Loading best weights")
             logging.info("Weights before")
             for x in self.jointmodel.parameters():
                 print(x)
-        break
-        logging.info("Best ner model")
+                break
+            logging.info("Best ner model")
 
-        self.jointmodel.load_state_dict(best_ner_model)
-        logging.info("Loading best weights")
-        logging.info("Weights after")
-        for x in self.jointmodel.parameters():
-            print(x)
-            break
-        self.nervalreader = self.nertestreader
-        self.nervalreader.for_eval = True
-        ner_pre, ner_rec, ner_f1 = self.ner_evaluate()
-        experiment_log["ner_test"] = {"pre": ner_pre,
-                                      "rec": ner_rec,
-                                      "f1": ner_f1}
-        logging.info("NER Results -- pre : {}  rec : {} f1 : {}  ".format(ner_pre, ner_rec, ner_f1))
-        with open(os.path.join(self.args["save_dir"], self.args["ner_test_result_file"]), "a")  as o:
-            s = self.args['lang'] + "_" + self.args['word_embed_type']
-            s = s + "\t" + "\t".join([str(x) for x in [ner_pre, ner_rec, ner_f1]]) + "\n"
-            o.write(s)
+            self.jointmodel.load_state_dict(best_ner_model)
+            logging.info("Loading best weights")
+            logging.info("Weights after")
+            for x in self.jointmodel.parameters():
+                print(x)
+                break
+            self.nervalreader = self.nertestreader
+            self.nervalreader.for_eval = True
+            ner_pre, ner_rec, ner_f1 = self.ner_evaluate()
+            experiment_log["ner_test"] = {"pre": ner_pre,
+                                          "rec": ner_rec,
+                                          "f1": ner_f1}
+            logging.info("NER Results -- pre : {}  rec : {} f1 : {}  ".format(ner_pre, ner_rec, ner_f1))
+            with open(os.path.join(self.args["save_dir"], self.args["ner_test_result_file"]), "a")  as o:
+                s = self.args['lang'] + "_" + self.args['word_embed_type']
+                s = s + "\t" + "\t".join([str(x) for x in [ner_pre, ner_rec, ner_f1]]) + "\n"
+                o.write(s)
 
-    return best_ner_f1, best_dep_f1, experiment_log
+        return best_ner_f1, best_dep_f1, experiment_log
 
 
 def train(self):
