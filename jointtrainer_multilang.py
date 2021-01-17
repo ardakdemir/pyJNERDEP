@@ -1317,230 +1317,126 @@ class JointTrainer:
         return best_ner_f1, best_dep_f1, experiment_log
 
 
-def train(self):
-    logging.info("Training on {} ".format(self.args['device']))
-    logging.info("Dependency pos vocab : {} ".format(self.deptraindataset.vocabs['pos_vocab'].w2ind))
-    logging.info("Dependency dep vocab : {} ".format(self.deptraindataset.vocabs['dep_vocab'].w2ind))
-    epoch = self.args['max_steps'] // self.args['eval_interval']
-    self.jointmodel.train()
-    best_ner_f1 = 0
-    best_dep_f1 = 0
-    best_uas_f1 = 0
-    best_ner_epoch = 0
-    best_dep_epoch = 0
-    dep_val_loss = []
-    ner_val_loss = []
-    if self.args['load_model'] == 1:
-        save_path = os.path.join(self.args['save_dir'], self.args['save_name'])
-        logging.info("Model loaded %s" % save_path)
-        self.jointmodel.load_state_dict(torch.load(save_path))
-    print("Pos tag vocab for dependency dataset")
-    print(self.deptraindataset.vocabs['pos_vocab'].w2ind)
-    print("Pos tag vocab for named entity dataset")
-    print(self.nertrainreader.pos_vocab.w2ind)
-    print("Dep vocab for dependency dataset")
-    print(self.deptraindataset.vocabs['dep_vocab'].w2ind)
+    def save_model(self, save_name, weights=True):
+        save_name = os.path.join(self.args['save_dir'], save_name)
+        if weights:
+            logging.info("Saving best model to {}".format(save_name))
+            torch.save(self.jointmodel.state_dict(), save_name)
+        config_path = os.path.join(self.args['save_dir'], self.args['config_file'])
+        arg = copy.deepcopy(self.args)
+        del arg['device']
+        with open(config_path, 'w') as outfile:
+            json.dump(arg, outfile)
 
-    for e in range(epoch):
 
-        train_loss = 0
-        ner_losses = 0
-        dep_losses = 0
-        depind_losses = 0
-        deprel_losses = 0
-        deprel_acc = 0
-        uas_epoch = 0
-
-        self.nertrainreader.for_eval = False
-        self.jointmodel.train()
-
-        for i in tqdm(range(self.args['eval_interval'])):
-
-            if not self.args['dep_only'] and e >= self.args['dep_warmup']:
-                ner_batch = self.nertrainreader[i]
-                # logging.info(ner_batch[0])
-                ner_loss = self.ner_update(ner_batch)
-                ner_losses += ner_loss
-                train_loss += ner_loss
-
-            if not self.args['ner_only']:
-                dep_batch = self.deptraindataset[i]
-                dep_loss, deprel_loss, depind_loss, acc, uas = self.dep_update(dep_batch)
-                dep_losses += dep_loss
-                train_loss += dep_loss
-                deprel_losses += deprel_loss
-                depind_losses += depind_loss
-                deprel_acc += acc
-                uas_epoch += uas
-        logging.info("Results for epoch : {}".format(e + 1))
+    def dep_evaluate(self):
+        logging.info("Evaluating dependency performance on {}".format(self.depvaldataset.file_name))
         self.jointmodel.eval()
-        dep_f1 = 0
-        uas_f1 = 0
-        if not self.args['ner_only']:
-            dep_pre, dep_rec, dep_f1, uas_f1 = self.dep_evaluate()
-        ner_f1 = 0
-        logging.info("Losses -- train {}  dependency {} ner {} ".format(train_loss, dep_losses, ner_losses))
-        if e >= self.args['dep_warmup'] and not self.args['dep_only']:
-            ner_pre, ner_rec, ner_f1 = self.ner_evaluate()
-            logging.info("NER Results -- f1 : {} ".format(ner_f1))
+        dataset = self.depvaldataset
+        orig_idx = self.depvaldataset.orig_idx
+        data = []
 
-        logging.info("Dependency Results -- LAS f1 : {}  UAS f1 :  {} ".format(dep_f1, uas_f1))
-
-        if uas_f1 > best_uas_f1:
-            best_uas_f1 = uas_f1
-
-        if dep_f1 > best_dep_f1:
-            self.save_model(self.args['save_dep_name'])
-            best_dep_f1 = dep_f1
-            best_dep_epoch = e
-        else:
-            logging.info("Best LAS of {} achieved at {}".format(best_dep_f1, best_dep_epoch))
-            for param_group in self.jointmodel.depparser.optimizer.param_groups:
-                param_group['lr'] *= self.args['lr_decay']
-
-            for param_group in self.jointmodel.base_model.embed_optimizer.param_groups:
-                param_group['lr'] *= self.args['lr_decay']
-
-        if ner_f1 > best_ner_f1:
-            best_ner_epoch = e
-            self.save_model(self.args['save_ner_name'])
-            best_ner_f1 = ner_f1
-
-        else:
-            logging.info("Best F-1 for NER  of {} achieved at {}".format(best_ner_f1, best_ner_epoch))
-            for param_group in self.jointmodel.nermodel.ner_optimizer.param_groups:
-                param_group['lr'] *= self.args['lr_decay']
-            for param_group in self.jointmodel.base_model.embed_optimizer.param_groups:
-                param_group['lr'] *= self.args['lr_decay']
-
-        if ner_f1 > best_ner_f1 and dep_f1 > best_dep_f1:
-            self.save_model(self.args['save_name'])
-        self.jointmodel.train()
-
-    logging.info("Best results : ")
-    logging.info("NER : {}  LAS : {} UAS : {}".format(best_ner_f1, best_dep_f1, best_uas_f1))
-
-
-def save_model(self, save_name, weights=True):
-    save_name = os.path.join(self.args['save_dir'], save_name)
-    if weights:
-        logging.info("Saving best model to {}".format(save_name))
-        torch.save(self.jointmodel.state_dict(), save_name)
-    config_path = os.path.join(self.args['save_dir'], self.args['config_file'])
-    arg = copy.deepcopy(self.args)
-    del arg['device']
-    with open(config_path, 'w') as outfile:
-        json.dump(arg, outfile)
-
-
-def dep_evaluate(self):
-    logging.info("Evaluating dependency performance on {}".format(self.depvaldataset.file_name))
-    self.jointmodel.eval()
-    dataset = self.depvaldataset
-    orig_idx = self.depvaldataset.orig_idx
-    data = []
-
-    field_names = ["word", "head", "deprel"]
-    gold_file = dataset.file_name
-    pred_file = "pred_{}_{}_{}_".format(self.args['model_type'], self.args['word_embed_type'], self.args['lang']) + \
-                gold_file.split("/")[-1]
-    start_id = orig_idx[0]
-    # for x in tqdm(range(len(self.depvaldataset)),desc = "Evaluation"):
-    rel_accs = 0
-    head_accs = 0
-    self.depvaldataset.for_eval = True
-    for x in tqdm(range(len(self.depvaldataset)), desc="Evaluation"):
-        # batch = dataset[x]
-        batch = self.depvaldataset[x]
-        sent_lens = batch[2][0]
-        tokens = batch[0]
-        if self.args['model_type'] == "NERDEP":
-            loss, preds, _, _, rel_acc, head_acc = self.dep_forward(batch, training=False,
-                                                                    task=self.args['model_type'])
-        else:
-            loss, preds, _, _, rel_acc, head_acc = self.dep_forward(batch, training=False, task="DEP")
-        rel_accs += rel_acc
-        head_accs += head_acc
-        heads, dep_rels, output = self.jointmodel.depparser.decode(preds[0], preds[1], sent_lens, verbose=True)
-        for outs, sent, l in zip(output, tokens, sent_lens):
-            new_sent = []
-            assert len(sent[1:l]) == len(outs), "Sizes do not match"
-            for pred, tok in zip(outs, sent[1:l]):
-                new_sent.append([tok] + pred)
-            data.append(new_sent)
-    # print(orig_idx)
-    # print(len(data))
-    head_accs /= len(self.depvaldataset)
-    rel_accs /= len(self.depvaldataset)
-    data = unsort_dataset(data, orig_idx)
-    pred_file = os.path.join(self.args['save_dir'], pred_file)
-    conll_writer(pred_file, data, field_names, task_name="dep")
-    print("Predictions can be observed from {}".format(pred_file))
-    p, r, f1, uas_f1 = score(pred_file, gold_file, verbose=False)
-    # p,r, f1 = 0,0,0
-    logging.info("LAS F1 {}  ====    UAS F1 {}".format(f1 * 100, uas_f1 * 100))
-    print("Dependency results")
-    print("LAS F1 {}  ====    UAS F1 {}".format(f1 * 100, uas_f1 * 100))
-    # self.parser.train()
-
-    return round(p, 3), round(r, 3), round(f1 * 100, 3), round(uas_f1 * 100, 3)
-
-
-def ner_evaluate(self):
-    self.jointmodel.eval()
-    sents = []
-    preds = []
-    truths = []
-    ## for each batch
-    dataset = self.nervalreader
-    dataset.for_eval = True
-    all_lens = []
-    for i in tqdm(range(len(dataset))):
-        d = dataset[i]
-        tokens = d[0]
-        sent_lens = d[2][0]
-        ner_inds = d[2][3][:, :]
-        # print(ner_inds)
-        with torch.no_grad():
-            if self.args['model_type'] != "DEPNER":
-                bert_out = self.forward(d)
+        field_names = ["word", "head", "deprel"]
+        gold_file = dataset.file_name
+        pred_file = "pred_{}_{}_{}_".format(self.args['model_type'], self.args['word_embed_type'], self.args['lang']) + \
+                    gold_file.split("/")[-1]
+        start_id = orig_idx[0]
+        # for x in tqdm(range(len(self.depvaldataset)),desc = "Evaluation"):
+        rel_accs = 0
+        head_accs = 0
+        self.depvaldataset.for_eval = True
+        for x in tqdm(range(len(self.depvaldataset)), desc="Evaluation"):
+            # batch = dataset[x]
+            batch = self.depvaldataset[x]
+            sent_lens = batch[2][0]
+            tokens = batch[0]
+            if self.args['model_type'] == "NERDEP":
+                loss, preds, _, _, rel_acc, head_acc = self.dep_forward(batch, training=False,
+                                                                        task=self.args['model_type'])
             else:
-                bert_out = self.dep_forward(d, task="DEPNER")
-            crf_scores = self.jointmodel.nermodel(bert_out, sent_lens, train=False)
+                loss, preds, _, _, rel_acc, head_acc = self.dep_forward(batch, training=False, task="DEP")
+            rel_accs += rel_acc
+            head_accs += head_acc
+            heads, dep_rels, output = self.jointmodel.depparser.decode(preds[0], preds[1], sent_lens, verbose=True)
+            for outs, sent, l in zip(output, tokens, sent_lens):
+                new_sent = []
+                assert len(sent[1:l]) == len(outs), "Sizes do not match"
+                for pred, tok in zip(outs, sent[1:l]):
+                    new_sent.append([tok] + pred)
+                data.append(new_sent)
+        # print(orig_idx)
+        # print(len(data))
+        head_accs /= len(self.depvaldataset)
+        rel_accs /= len(self.depvaldataset)
+        data = unsort_dataset(data, orig_idx)
+        pred_file = os.path.join(self.args['save_dir'], pred_file)
+        conll_writer(pred_file, data, field_names, task_name="dep")
+        print("Predictions can be observed from {}".format(pred_file))
+        p, r, f1, uas_f1 = score(pred_file, gold_file, verbose=False)
+        # p,r, f1 = 0,0,0
+        logging.info("LAS F1 {}  ====    UAS F1 {}".format(f1 * 100, uas_f1 * 100))
+        print("Dependency results")
+        print("LAS F1 {}  ====    UAS F1 {}".format(f1 * 100, uas_f1 * 100))
+        # self.parser.train()
 
-            paths, scores = self.jointmodel.nermodel.batch_viterbi_decode(crf_scores, sent_lens)
-            for i in range(crf_scores.shape[0]):
-                truth = ner_inds[i].detach().cpu().numpy() // self.args['ner_cats']  ##converting 1d labels
-                sents.append(tokens[i])
-                preds.append(paths[i])
-                truths.append(truth)
-                all_lens.append(sent_lens[i].detach().cpu().numpy())
+        return round(p, 3), round(r, 3), round(f1 * 100, 3), round(uas_f1 * 100, 3)
 
-    content = generate_pred_content(sents, preds, truths, lens=all_lens, label_voc=self.nertrainreader.label_voc)
-    orig_idx = dataset.orig_idx
-    content = unsort_dataset(content, orig_idx)
 
-    field_names = ["token", "truth", "ner_tag"]
-    ner_out_name = "{}_{}_{}_{}".format(self.args['model_type'], self.args['word_embed_type'], self.args['lang'],
-                                        self.args['ner_output_file'])
-    out_file = os.path.join(self.args['save_dir'], ner_out_name)
-    print("Ner output will be written to {}".format(out_file))
-    conll_writer(out_file, content, field_names, "ner")
-    conll_ner_name = "{}_{}_{}_{}".format(self.args['model_type'], self.args['word_embed_type'], self.args['lang'],
-                                          self.args['conll_file_name'])
-    conll_file = os.path.join(self.args['save_dir'], conll_ner_name)
-    # convert2IOB2new(out_file,conll_file)
-    prec, rec, f1 = 0, 0, 0
-    try:
-        prec, rec, f1 = evaluate_conll_file(open(out_file, encoding='utf-8').readlines())
-    except:
-        f1 = 0
-    # logging.info("{} {} {} ".format(prec,rec,f1))
-    my_pre, my_rec, my_f1 = self.nerevaluator.conll_eval(out_file)
-    logging.info("My values ignoring the boundaries.\npre: {}  rec: {}  f1: {} ".format(my_pre, my_rec, my_f1))
-    logging.info("NER f1 : {} ".format(f1))
-    # self.model.train()
-    return round(prec, 3), round(rec, 3), round(f1, 3)
+    def ner_evaluate(self):
+        self.jointmodel.eval()
+        sents = []
+        preds = []
+        truths = []
+        ## for each batch
+        dataset = self.nervalreader
+        dataset.for_eval = True
+        all_lens = []
+        for i in tqdm(range(len(dataset))):
+            d = dataset[i]
+            tokens = d[0]
+            sent_lens = d[2][0]
+            ner_inds = d[2][3][:, :]
+            # print(ner_inds)
+            with torch.no_grad():
+                if self.args['model_type'] != "DEPNER":
+                    bert_out = self.forward(d)
+                else:
+                    bert_out = self.dep_forward(d, task="DEPNER")
+                crf_scores = self.jointmodel.nermodel(bert_out, sent_lens, train=False)
+
+                paths, scores = self.jointmodel.nermodel.batch_viterbi_decode(crf_scores, sent_lens)
+                for i in range(crf_scores.shape[0]):
+                    truth = ner_inds[i].detach().cpu().numpy() // self.args['ner_cats']  ##converting 1d labels
+                    sents.append(tokens[i])
+                    preds.append(paths[i])
+                    truths.append(truth)
+                    all_lens.append(sent_lens[i].detach().cpu().numpy())
+
+        content = generate_pred_content(sents, preds, truths, lens=all_lens, label_voc=self.nertrainreader.label_voc)
+        orig_idx = dataset.orig_idx
+        content = unsort_dataset(content, orig_idx)
+
+        field_names = ["token", "truth", "ner_tag"]
+        ner_out_name = "{}_{}_{}_{}".format(self.args['model_type'], self.args['word_embed_type'], self.args['lang'],
+                                            self.args['ner_output_file'])
+        out_file = os.path.join(self.args['save_dir'], ner_out_name)
+        print("Ner output will be written to {}".format(out_file))
+        conll_writer(out_file, content, field_names, "ner")
+        conll_ner_name = "{}_{}_{}_{}".format(self.args['model_type'], self.args['word_embed_type'], self.args['lang'],
+                                              self.args['conll_file_name'])
+        conll_file = os.path.join(self.args['save_dir'], conll_ner_name)
+        # convert2IOB2new(out_file,conll_file)
+        prec, rec, f1 = 0, 0, 0
+        try:
+            prec, rec, f1 = evaluate_conll_file(open(out_file, encoding='utf-8').readlines())
+        except:
+            f1 = 0
+        # logging.info("{} {} {} ".format(prec,rec,f1))
+        my_pre, my_rec, my_f1 = self.nerevaluator.conll_eval(out_file)
+        logging.info("My values ignoring the boundaries.\npre: {}  rec: {}  f1: {} ".format(my_pre, my_rec, my_f1))
+        logging.info("NER f1 : {} ".format(f1))
+        # self.model.train()
+        return round(prec, 3), round(rec, 3), round(f1, 3)
 
 
 def main(args):
