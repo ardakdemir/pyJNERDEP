@@ -3,3 +3,14 @@ python jointtrainer_multilang.py --model_type DEP  --word_embed_type word2vec  -
 
 # mBERT!
 python jointtrainer_multilang.py --model_type NER  --word_embed_type bert_en  --word_only --log_file NER_bert_en_tr_log --lang tr --batch_size 300 --epochs 3 --save_dir ../deneme1301_tr
+
+#fastext
+python jointtrainer_multilang.py --model_type NER  --word_embed_type fastext  --word_only --log_file NER_fastext_tr_log --lang tr --batch_size 300 --epochs 3 --save_dir ../deneme1701_tr_fastext --repeat 1
+
+
+#test jooint model loading
+python test/test_jointmodel.py --lang tr --word_embed_type fastext --load_path ../model_save_dir_NER_01_13_22_34/NER_fastext_tr_best_ner_model.pkh --word_only
+
+
+##qsub multilang
+qsub -N dep_1801 

@@ -1109,6 +1109,7 @@ class JointTrainer:
         epoch = self.args['max_steps'] // self.args['eval_interval'] if self.args['epochs'] is None else self.args[
             'epochs']
         self.jointmodel.train()
+
         experiment_log = {"ner_f1": [],
                           "dep_f1": [],
                           "dep_uas_f1": [],
