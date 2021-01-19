@@ -123,12 +123,43 @@ class MyWord2Vec():
         return vocab, wv, length
 
 
+class MyBertModel(nn.Module):
+
+    def __init__(self, lang):
+        super(MyBertModel, self).__init__()
+        self.model = self.load_bert_model(lang)
+        self.lang = lang
+        # base model for generating bert output
+
+    def load_bert_model(self, lang):
+        model_name = model_name_dict[lang]
+        if lang == "hu":
+            model = BertForPreTraining.from_pretrained(model_name, from_tf=True, output_hidden_states=True)
+        else:
+            model = BertForTokenClassification.from_pretrained(model_name)
+            model.classifier = nn.Identity()
+        return model
+
+    def forward(self, input, attention_mask, **kwargs):
+        """
+            Output the logits of the last layer for each word...
+        :param input:
+        :return:
+        """
+        if self.lang == "hu":
+            output = self.model(input, attention_mask)[2][-1]
+        else:
+            output = self.model(input, attention_mask)[0]
+        return output
+
+
 class SequenceClassifier(nn.Module):
     def __init__(self, lang, word_vocab, model_type, num_cats):
         super(SequenceClassifier, self).__init__()
         self.lang = lang
         self.word_vocab = word_vocab
         self.vocab_size = len(word_vocab)
+        self.hidden_dim = 128
         self.model_type = model_type
         self.num_cat = num_cats
         self.init_base_model()
@@ -140,9 +171,11 @@ class SequenceClassifier(nn.Module):
 
     def init_bert(self):
         if self.model_type in ["bert_en", "mbert"]:
-            self.base_model = load_bert_model(self.model_type)
+            print("Initializing {} model".format(self.model_type))
+            self.base_model = MyBertModel(self.model_type)
         else:
-            self.base_model = load_bert_model(self.lang)
+            print("Initializing lang specific bert model")
+            self.base_model = MyBertModel(self.lang)
         self.vector_dim = 768
         bert_optimizer = optim.AdamW(self.base_model.parameters(),
                                      lr=2e-5)
@@ -166,6 +199,7 @@ class SequenceClassifier(nn.Module):
         self.base_model = embed
         self.base_optimizer = optim.AdamW([{"params": self.word_embeds.parameters(),
                                             'lr': 2e-3}])
+        self.init_lstm()
 
     def init_fastext(self):
         self.vector_dim = 300
@@ -186,6 +220,7 @@ class SequenceClassifier(nn.Module):
         self.base_model = embed
         self.base_optimizer = optim.AdamW([{"params": self.base_model.parameters(),
                                             'lr': 2e-3}])
+        self.init_lstm()
 
     def init_randominit(self):
         self.vector_dim = RANDOM_DIM
@@ -195,16 +230,22 @@ class SequenceClassifier(nn.Module):
         self.base_model = embed
         self.base_optimizer = optim.AdamW([{"params": self.base_model.parameters(),
                                             'lr': 2e-3}])
+        self.init_lstm()
+
+    def init_lstm(self):
+        self.lstm = nn.LSTM(self.vector_dim, self.hidden_dim, bidirectional=True)
+        self.hidden_optimizer = optim.AdamW([{"params": self.lstm.parameters(),
+                                              'lr': 2e-3}])
 
     def init_base_model(self):
         if self.model_type == "word2vec":
             self.init_word2vec()
-        elif self.model_type in ["bert", "mbert", "bert_en"]:
-            self.init_bert()
         elif self.model_type == "random_init":
             self.init_randominit()
         elif self.model_type == "fastext":
             self.init_fastext()
+        elif self.model_type in ["bert", "mbert", "bert_en"]:
+            self.init_bert()
 
     def predict(self, input):
         return 0
@@ -222,15 +263,17 @@ class SequenceClassifier(nn.Module):
         print(bert_out.shape)
         return bert_out
 
-    def loss(self,class_logits,labels):
-        return self.loss(class_logits,labels)
+    def loss(self, class_logits, labels):
+        return self.loss(class_logits, labels)
 
     def forward(self, input):
         if "bert" in self.model_type:
-            embed_out = self.get_bert_output(input)
+            bert_output = self.get_bert_output(input)
+            hidden_out = bert_output[:, 0, :]
         else:
             embed_out = self.get_embed_output(input)
-        print(embed_out.shape)
-        class_logits = self.classifier(embed_out)
+            hidden, _, _ = self.lstm(embed_out)
+            hidden_out = hidden[:, 0, :]
+        class_logits = self.classifier(hidden_out)
         print(class_logits.shape)
         return class_logits
