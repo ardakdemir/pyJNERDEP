@@ -205,7 +205,6 @@ def test_word2vec():
 
 def test_models():
     for lang, sent in sent_dict.items():
-
         for mod in ["bert","mbert","bert_en"]:
             sent = sent_dict[lang]
             print("Testing {} with {}...".format(lang, mod))

@@ -263,6 +263,18 @@ class SequenceClassifier(nn.Module):
         print(bert_out.shape)
         return bert_out
 
+    def zero_grad(self):
+        self.base_optimizer.zero_grad()
+        self.classifier_optimizer.zero_grad()
+        if hasattr(self, "hidden_optimizer"):
+            self.hidden_optimizer.zero_grad()
+
+    def optimizer_step(self):
+        self.base_optimizer.step()
+        self.classifier_optimizer.step()
+        if hasattr(self, "hidden_optimizer"):
+            self.hidden_optimizer.step()
+
     def loss(self, class_logits, labels):
         return self.loss(class_logits, labels)
 
