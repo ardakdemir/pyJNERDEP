@@ -159,7 +159,7 @@ def train():
         seq_classifier.train()
         for i in tqdm(range(eval_interval)):
             seq_classifier.zero_grad()
-            data = reader[i]
+            data = datasets["train"][i]
             tokens, tok_inds, bert_batch_after_padding, data_tuple = data
             labels = data_tuple[3]
             class_logits = seq_classifier(data)
