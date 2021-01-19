@@ -131,7 +131,7 @@ def evaluate(model, dataset):
 def train():
     args = parse_args()
     lang = args["lang"]
-    model_type = args["model_type"]
+    model_type = args["word_embed_type"]
     tokenizer = init_tokenizer(lang, model_type)
 
     file_map = {"train": args["sa_train_file"],
