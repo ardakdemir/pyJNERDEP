@@ -15,7 +15,7 @@ import fasttext.util
 
 from sequence_classifier import SequenceClassifier
 from sareader import SentReader
-from test.test_models import model_name_dict, word2vec_dict, load_word2vec,lang_abs
+from test.test_models import model_name_dict, word2vec_dict, load_word2vec, lang_abs
 from parser.parsereader import DepDataset
 from parser.utils import conll_writer, sort_dataset, unsort_dataset, score, convert2IOB2new
 from datareader import DataReader
@@ -44,11 +44,9 @@ ner_train_name = os.path.join(data_folder, "myner_{}-train.txt".format(lang))
 ner_dev_name = os.path.join(data_folder, "myner_{}-dev.txt".format(lang))
 ner_test_name = os.path.join(data_folder, "myner_{}-test.txt".format(lang))
 
-self.nertrainreader = DataReader(ner_train_name, "NER", batch_size=200,
-                                 tokenizer=bert_tokenizer)
-self.deptraindataset = DepDataset(dep_train_name, batch_size=200,
-                                  tokenizer=bert_tokenizer)
+nertrainreader = DataReader(ner_train_name, "NER", batch_size=200,
+                            tokenizer=bert_tokenizer)
+deptraindataset = DepDataset(dep_train_name, batch_size=200,
+                             tokenizer=bert_tokenizer)
 
 w2v_model = load_word2vec(l)
-
-
