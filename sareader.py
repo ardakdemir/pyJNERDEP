@@ -166,7 +166,7 @@ class SentReader():
             sentence = data["text"]
             toks = sentence.split(" ")
             label = data["label"]
-            labels.append(self.label_vocab.map([label]))
+            labels.append(self.label_vocab.map([label])[0]) # To enforce correct shape
             tok_inds.append(self.word_vocab.map(toks))
             tokens.append(toks)
         assert len(tok_inds) == len(tokens) == len(batch)

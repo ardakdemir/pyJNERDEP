@@ -167,7 +167,7 @@ class SequenceClassifier(nn.Module):
         self.classifier_optimizer = optim.AdamW([{"params": self.classifier.parameters()}], \
                                                 lr=0.0015, eps=1e-6)
 
-        self.loss = CrossEntropyLoss()
+        self.criterion = CrossEntropyLoss()
 
     def init_bert(self):
         if self.model_type in ["bert_en", "mbert"]:
@@ -274,8 +274,8 @@ class SequenceClassifier(nn.Module):
         if hasattr(self, "hidden_optimizer"):
             self.hidden_optimizer.step()
 
-    def get_loss(self, class_logits, labels):
-        return self.loss(class_logits, labels)
+    def loss(self, class_logits, labels):
+        return self.criterion(class_logits, labels)
 
     def forward(self, input):
         if "bert" in self.model_type:
