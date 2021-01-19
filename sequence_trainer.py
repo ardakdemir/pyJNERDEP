@@ -46,9 +46,9 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--sa_train_file', type=str, default='../../datasets/sa_movie_turkish-train.json',
                         help='training file for sa')
-    parser.add_argument('--sa_dev_file', type=str, default='../../datasets/sa_movie_turkish-train.json',
+    parser.add_argument('--sa_dev_file', type=str, default='../../datasets/sa_movie_turkish-dev.json',
                         help='validation file for sa')
-    parser.add_argument('--sa_test_file', type=str, default='../../datasets/sa_movie_turkish-train.json',
+    parser.add_argument('--sa_test_file', type=str, default='../../datasets/sa_movie_turkish-test.json',
                         help='test file for sa')
     parser.add_argument('--sa_output_file', type=str, default="sa_out.txt",
                         help='Output file for named entity recognition')
@@ -99,7 +99,6 @@ def parse_args():
     return args
 
 
-
 def evaluate(model, dataset):
     dataset.for_eval = True
     tp = 0
@@ -140,7 +139,7 @@ def train():
                 "test": args["sa_test_file"]}
     print(file_map)
     datasets = {f: SentReader(file_map[f], tokenizer=tokenizer) for f in file_map}
-    num_cats = len(datasets.label_vocab.w2ind)
+    num_cats = len(datasets["train"].label_vocab.w2ind)
 
     for x in ["dev", "test"]:
         datasets[x].word_vocab.w2ind = datasets["train"].word_vocab.w2ind
