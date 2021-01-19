@@ -130,8 +130,6 @@ class SentReader():
         dataset = [(k, v) for k, v in dataset.items()]
         dataset.sort(key=lambda x: len(x[1]["text"].split(" ")),reverse=True)  # Sort by of tokens
         sentence_lengths = [len(x[1]["text"].split(" ")) for x in dataset]
-        print("Sentence lengths")
-        print(sentence_lengths)
         data = [x[1] for x in dataset]
         sentence_ids = [x[0] for x in dataset]
         self.dataset = dataset
