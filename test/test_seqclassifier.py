@@ -91,6 +91,7 @@ def main():
     test_models()
     # test_word2vec()
     model_name = "dbmdz/bert-base-turkish-cased"
+    test_sequence_classifiers()
     # print(model_name)
     # tokenizer = AutoTokenizer.from_pretrained(model_name)
     # print(tokenizer)
