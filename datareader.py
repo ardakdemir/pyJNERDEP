@@ -4,7 +4,7 @@ import pandas as pd
 import torch
 import numpy as np
 import logging
-from pytorch_transformers import BertTokenizer
+from transformers import AutoTokenizer
 from parser.parsereader import group_into_batch, bert2token, pad_trunc_batch
 from parser.parser import Vocab
 from parser.utils import sort_dataset, unsort_dataset
@@ -70,7 +70,7 @@ class DataReader():
         self.for_eval = False
         self.num_cats = len(self.l2ind)
         if tokenizer is None:    
-            self.bert_tokenizer = BertTokenizer.from_pretrained('bert-base-cased', do_lower_case=False)
+            self.bert_tokenizer = AutoTokenizer.from_pretrained('bert-base-cased')
             tokenizer.add_tokens(['[SOS]','[EOS]', '[ROOT]'])
         else:
             self.bert_tokenizer = tokenizer

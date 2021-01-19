@@ -509,7 +509,7 @@ class BaseModel(nn.Module):
             print("Embeddings fixed? {} ".format(self.args['fix_embed']))
             if self.args['fix_embed']:
                 self.word_embeds.weight.requires_grad = False
-            print("Requires grad {}".format(self.word_embeds.weight.requires_grad))
+            print("Requires grad for embeddings: {}".format(self.word_embeds.weight.requires_grad))
         # self.cap_embeds  = nn.Embedding(self.cap_types, self.cap_dim)
         # self.pos_embeds  = nn.Embedding(self.args['pos_vocab_size'], self.pos_dim)
         self.lstm_input_size = self.w_dim
@@ -1169,7 +1169,7 @@ class JointTrainer:
                 ner_loss, dep_loss = model_func(i, e)
                 ner_losses += ner_loss
                 dep_losses += dep_loss
-                if i % 10 == 9 and (not self.args['hyper'] == 1):
+                if i % 100 == 99 and (not self.args['hyper'] == 1):
                     logging.info("Average dep loss {} ".format(dep_losses / (i + 1)))
                     logging.info("Average ner loss {} ".format(ner_losses / (i + 1)))
 

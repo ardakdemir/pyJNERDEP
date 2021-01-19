@@ -7,7 +7,7 @@ from pytorch_transformers import BertTokenizer
 from torch.utils.data import Dataset, DataLoader
 
 
-from parser.parser import Parser, Vocab, VOCAB_PREF
+from parser.parser import Vocab, VOCAB_PREF
 from parser.utils import sort_dataset, unsort_dataset
 
 import logging
@@ -255,7 +255,7 @@ class DepDataset(Dataset):
         Not the number of samples!!
 
     """
-    def  __init__(self, data_file, for_eval = False, vocabs = None,  transform = None, batch_size = 500, tokenizer = None, type="dep"):
+    def __init__(self, data_file, for_eval = False, vocabs = None,  transform = None, batch_size = 500, tokenizer = None, type="dep"):
         self.file_name = data_file
         self.for_eval = for_eval
         self.batch_size = batch_size
