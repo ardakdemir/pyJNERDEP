@@ -274,7 +274,7 @@ class SequenceClassifier(nn.Module):
         if hasattr(self, "hidden_optimizer"):
             self.hidden_optimizer.step()
 
-    def loss(self, class_logits, labels):
+    def get_loss(self, class_logits, labels):
         return self.loss(class_logits, labels)
 
     def forward(self, input):
