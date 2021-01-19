@@ -174,9 +174,9 @@ class SequenceClassifier(nn.Module):
         self.classifier = nn.Linear(self.classifier_input_dim, num_cats)
         self.classifier_optimizer = optim.AdamW([{"params": self.classifier.parameters()}], \
                                                 lr=0.0015, eps=1e-6)
-
-        # self.criterion = CrossEntropyLoss()
-        self.criterion = BCEWithLogitsLoss()
+        self.soft = nn.Softmax(dim=1)
+        self.criterion = CrossEntropyLoss()
+        # self.criterion = BCEWithLogitsLoss()
     def init_bert(self):
         if self.model_type in ["bert_en", "mbert"]:
             print("Initializing {} model".format(self.model_type))
@@ -294,9 +294,8 @@ class SequenceClassifier(nn.Module):
 
     def loss(self, class_logits, labels):
         labels.to(self.device)
-        labels.unsqueeze(1)
-        
-        return self.criterion(class_logits, labels)
+        probs = self.soft(class_logits)
+        return self.criterion(probs, labels)
 
     def forward(self, input):
         if "bert" in self.model_type:
