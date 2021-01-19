@@ -63,7 +63,7 @@ unks = {l: np.random.rand(word2vec_lens[l]) for l in word2vec_lens.keys()}
 def test_sequence_classifiers():
     for mod in ["bert", "mbert", "bert_en", "fastext", "word2vec", "random_init"]:
         print("Testing sequence classifier with {}".format(mod))
-        lang, model_type = "tr", model
+        lang, model_type = "tr", mod
         data_path = '../datasets/sa_movie_turkish-test.json'
         tokenizer = AutoTokenizer.from_pretrained(model_name_dict[lang])
         reader = SentReader(data_path, tokenizer=tokenizer)
