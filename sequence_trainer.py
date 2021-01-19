@@ -150,8 +150,8 @@ def train():
     seq_classifier.train()
     seq_classifier.to(device)
 
-    eval_interval = self.args["eval_interval"]
-    epochs = self.args["epochs"]
+    eval_interval = args["eval_interval"]
+    epochs = args["epochs"]
     epochs_losses = []
     for e in tqdm(range(epochs)):
         total_loss = 0
