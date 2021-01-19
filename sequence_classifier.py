@@ -8,6 +8,7 @@ import os
 import copy
 import fasttext
 import fasttext.util
+from gensim.models import Word2Vec
 from transformers import AutoTokenizer, AutoModel, BertForPreTraining, BertForTokenClassification
 
 

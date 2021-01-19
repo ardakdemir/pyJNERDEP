@@ -98,7 +98,7 @@ class SentReader():
         self.label_vocab = Vocab(self.l2ind)
 
         self.batched_dataset = group_into_batch(self.dataset, batch_size=self.batch_size)
-        self.bert_token_limit = 512
+        self.bert_token_limit = 500
         self.for_eval = False
         self.num_cats = len(self.l2ind)
         if tokenizer is None:
@@ -128,7 +128,7 @@ class SentReader():
         print("Reading from {} ".format(self.file_path))
         dataset = json.load(open(self.file_path, "r"))
         dataset = [(k, v) for k, v in dataset.items()]
-        dataset.sort(key=lambda x: len(x[1]["text"].split(" ")))  # Sort by of tokens
+        dataset.sort(key=lambda x: len(x[1]["text"].split(" ")),reverse=True)  # Sort by of tokens
         sentence_lengths = [len(x[1]["text"].split(" ")) for x in dataset]
         print("Sentence lengths")
         print(sentence_lengths)
@@ -181,7 +181,10 @@ class SentReader():
         i = 0
         for toks in tokens:
             sentence = " ".join(toks)
-            btok = self.bert_tokenizer.tokenize(sentence)[:self.bert_token_limit]
+            btok = self.bert_tokenizer.tokenize(sentence)
+            if len(btok) > self.bert_token_limit:
+                print("{} is too long pruning to {}".format(len(btok),self.bert_token_limit))
+                btok = [:self.bert_token_limit]
             btok = [CLS] + btok
             bert_batch_before_padding.append(btok)
         bert_batch_after_padding, bert_lens = pad_batch(bert_batch_before_padding)
