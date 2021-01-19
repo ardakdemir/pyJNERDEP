@@ -24,6 +24,14 @@ model_name_dict = {"jp": "cl-tohoku/bert-base-japanese",
                    "bert_en": "bert-base-cased"}
 
 
+def init_tokenizer(lang, model_type):
+    if model_type in ["mbert", "bert_en"]:
+        tokenizer = AutoTokenizer.from_pretrained(model_name_dict[model_type])
+    else:
+        tokenizer = AutoTokenizer.from_pretrained(model_name_dict[lang])
+    return tokenizer
+
+
 def read_config(args):
     config_file = args['config_file']
     with open(config_file) as json_file:
