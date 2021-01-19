@@ -60,12 +60,21 @@ word2vec_lens = {"tr": 200,
 unks = {l: np.random.rand(word2vec_lens[l]) for l in word2vec_lens.keys()}
 
 
+def init_tokenizer(lang,model_type):
+    if model_type in ["mbert", "bert_en"]:
+        tokenizer = AutoTokenizer.from_pretrained(model_name_dict[model_type])
+    else:
+        tokenizer = AutoTokenizer.from_pretrained(model_name_dict[lang])
+    return tokenizer
+
+
 def test_sequence_classifiers():
     for mod in ["bert", "mbert", "bert_en", "fastext", "word2vec", "random_init"]:
         print("Testing sequence classifier with {}".format(mod))
         lang, model_type = "tr", mod
         data_path = '../../datasets/sa_movie_turkish-test.json'
-        tokenizer = AutoTokenizer.from_pretrained(model_name_dict[lang])
+
+        tokenizer = init_tokenizer(lang,model_type)
         reader = SentReader(data_path, tokenizer=tokenizer)
 
         num_cats = reader.num_cats
