@@ -79,7 +79,7 @@ def test_sequence_classifiers():
         seq_classifier.zero_grad()
 
         data = reader[0]
-        tokens, tok_inds, bert_batch_after_padding, data_tuple = input
+        tokens, tok_inds, bert_batch_after_padding, data_tuple = data
         labels = data_tuple[3]
         class_logits = seq_classifier(data)
         print("Logit shape: {} label shape: {}".format(class_logits.shape, labels.shape))
