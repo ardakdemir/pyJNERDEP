@@ -90,23 +90,6 @@ def parse_args():
     return args
 
 
-data_path = '../datasets/sa_movie_turkish-test.json'
-lang, model_type, num_cats = "tr", "bert", 2
-
-tokenizer = AutoTokenizer.from_pretrained(model_name_dict[lang])
-reader = SentReader(data_path, tokenizer=tokenizer)
-
-word_vocab = reader.word_vocab
-
-print("Vocab size: {}".format(len(reader.word_vocab.w2ind)))
-
-
-def merge_vocabs(voc1, voc2):
-    for v in voc2.w2ind:
-        if v not in voc1.w2ind:
-            voc1.w2ind[v] = len(voc1.w2ind)
-    return voc1
-
 
 def evaluate(model, dataset):
     dataset.for_eval = True
