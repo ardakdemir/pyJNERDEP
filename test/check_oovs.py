@@ -12,8 +12,10 @@ from gensim.models import Word2Vec
 import os
 import fasttext as ft
 import fasttext.util
+
 from sequence_classifier import SequenceClassifier
 from sareader import SentReader
+from test.test_models import model_name_dict, word2vec_dict, load_word2vec
 from parser.parsereader import DepDataset
 from parser.utils import conll_writer, sort_dataset, unsort_dataset, score, convert2IOB2new
 from datareader import DataReader
@@ -22,15 +24,6 @@ data_folder = "~/datasets"
 
 lang = "jp"
 model_type = "bert"
-
-model_name_dict = {"jp": "cl-tohoku/bert-base-japanese",
-                   "tr": "dbmdz/bert-base-turkish-cased",
-                   "hu": "/home/aakdemir/bert_models/hubert",
-                   "fi": "TurkuNLP/bert-base-finnish-cased-v1",
-                   "cs": "DeepPavlov/bert-base-bg-cs-pl-ru-cased",
-                   "en": "bert-base-cased",
-                   "mbert": "bert-base-multilingual-cased",
-                   "bert_en": "bert-base-cased"}
 
 
 def init_tokenizer(lang, model_type):
@@ -54,3 +47,5 @@ self.nertrainreader = DataReader(ner_train_name, "NER", batch_size=200,
                                  tokenizer=bert_tokenizer)
 self.deptraindataset = DepDataset(dep_train_name, batch_size=200,
                                   tokenizer=bert_tokenizer)
+
+w2v_model = load_word2vec(lang)

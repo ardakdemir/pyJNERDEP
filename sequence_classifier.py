@@ -283,7 +283,8 @@ class SequenceClassifier(nn.Module):
             hidden_out = bert_output[:, 0, :]
         else:
             embed_out = self.get_embed_output(input)
-            hidden, _, _ = self.lstm(embed_out)
+            hidden, _ = self.lstm(embed_out)
             hidden_out = hidden[:, 0, :]
+            print("LSTM out shape: {}".format(hidden_out.shape))
         class_logits = self.classifier(hidden_out)
         return class_logits

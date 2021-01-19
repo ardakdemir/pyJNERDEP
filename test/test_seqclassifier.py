@@ -93,6 +93,7 @@ def test_sequence_classifiers():
         class_logits = seq_classifier(data)
         print("Logit shape: {} label shape: {}".format(class_logits.shape, labels.shape))
         loss = seq_classifier.criterion(class_logits,labels)
+        print("Loss: {}".format(loss))
         loss.backward()
         seq_classifier.optimizer_step()
 
