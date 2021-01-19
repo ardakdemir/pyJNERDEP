@@ -98,7 +98,7 @@ class SentReader():
         self.label_vocab = Vocab(self.l2ind)
 
         self.batched_dataset = group_into_batch(self.dataset, batch_size=self.batch_size)
-
+        self.bert_token_limit = 512
         self.for_eval = False
         self.num_cats = len(self.l2ind)
         if tokenizer is None:
@@ -130,6 +130,8 @@ class SentReader():
         dataset = [(k, v) for k, v in dataset.items()]
         dataset.sort(key=lambda x: len(x[1]["text"].split(" ")))  # Sort by of tokens
         sentence_lengths = [len(x[1]["text"].split("\n")) for x in dataset]
+        print("Sentence lengths")
+        print(sentence_lengths)
         data = [x[1] for x in dataset]
         sentence_ids = [x[0] for x in dataset]
         self.dataset = dataset
@@ -179,7 +181,7 @@ class SentReader():
         i = 0
         for toks in tokens:
             sentence = " ".join(toks)
-            btok = self.bert_tokenizer.tokenize(sentence)
+            btok = self.bert_tokenizer.tokenize(sentence)[:self.bert_token_limit]
             btok = [CLS] + btok
             bert_batch_before_padding.append(btok)
         bert_batch_after_padding, bert_lens = pad_batch(bert_batch_before_padding)

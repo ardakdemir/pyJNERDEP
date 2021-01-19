@@ -9,6 +9,11 @@ import os
 import fasttext as ft
 import fasttext.util
 
+
+lang_abs = {"fi": "finnish", "en": "english", "hu": "hungarian", "cs": "czech", "tr": "turkish", "jp": "japanese"}
+
+
+
 sent_dict = {"tr": "Fakat, temel gündem maddesi değişmiyordu: Türkiye.",
              "cs": "Potřebujete rychle poradit?",
              "hu": "Az ezredfordulós szilveszter valószínűleg az átlagos év véginél komolyabb feladatokat ró a sürgősségi betegellátás szervezeteire és a rendőrségre.",

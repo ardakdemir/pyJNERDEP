@@ -15,14 +15,15 @@ import fasttext.util
 
 from sequence_classifier import SequenceClassifier
 from sareader import SentReader
-from test.test_models import model_name_dict, word2vec_dict, load_word2vec
+from test.test_models import model_name_dict, word2vec_dict, load_word2vec,lang_abs
 from parser.parsereader import DepDataset
 from parser.utils import conll_writer, sort_dataset, unsort_dataset, score, convert2IOB2new
 from datareader import DataReader
 
 data_folder = "../../datasets"
 
-lang = "jp"
+l = "jp"
+lang = lang_abs[l]
 model_type = "bert"
 
 
@@ -34,7 +35,7 @@ def init_tokenizer(lang, model_type):
     return tokenizer
 
 
-bert_tokenizer = init_tokenizer(lang, model_type)
+bert_tokenizer = init_tokenizer(l, model_type)
 
 dep_train_name = os.path.join(data_folder, "dep_{}_train.conllu".format(lang))
 dep_dev_name = os.path.join(data_folder, "dep_{}_dev.conllu".format(lang))
@@ -48,6 +49,6 @@ self.nertrainreader = DataReader(ner_train_name, "NER", batch_size=200,
 self.deptraindataset = DepDataset(dep_train_name, batch_size=200,
                                   tokenizer=bert_tokenizer)
 
-w2v_model = load_word2vec(lang)
+w2v_model = load_word2vec(l)
 
 

@@ -60,7 +60,7 @@ word2vec_lens = {"tr": 200,
 unks = {l: np.random.rand(word2vec_lens[l]) for l in word2vec_lens.keys()}
 
 
-def init_tokenizer(lang,model_type):
+def init_tokenizer(lang, model_type):
     if model_type in ["mbert", "bert_en"]:
         tokenizer = AutoTokenizer.from_pretrained(model_name_dict[model_type])
     else:
@@ -74,9 +74,9 @@ def test_sequence_classifiers():
         lang, model_type = "tr", mod
         data_path = '../../datasets/sa_movie_turkish-test.json'
 
-        tokenizer = init_tokenizer(lang,model_type)
+        tokenizer = init_tokenizer(lang, model_type)
         reader = SentReader(data_path, tokenizer=tokenizer)
-
+        reader.for_eval = True
         num_cats = reader.num_cats
         word_vocab = reader.word_vocab
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -92,14 +92,13 @@ def test_sequence_classifiers():
         labels = data_tuple[3]
         class_logits = seq_classifier(data)
         print("Logit shape: {} label shape: {}".format(class_logits.shape, labels.shape))
-        loss = seq_classifier.criterion(class_logits,labels)
+        loss = seq_classifier.criterion(class_logits, labels)
         print("Loss: {}".format(loss))
         loss.backward()
         seq_classifier.optimizer_step()
 
 
 def main():
-
     model_name = "dbmdz/bert-base-turkish-cased"
     test_sequence_classifiers()
     # print(model_name)
