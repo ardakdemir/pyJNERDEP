@@ -175,8 +175,8 @@ class SequenceClassifier(nn.Module):
         self.classifier_optimizer = optim.AdamW([{"params": self.classifier.parameters()}], \
                                                 lr=0.0015, eps=1e-6)
 
-        self.criterion = CrossEntropyLoss()
-
+        # self.criterion = CrossEntropyLoss()
+        self.criterion = BCEWithLogitsLoss()
     def init_bert(self):
         if self.model_type in ["bert_en", "mbert"]:
             print("Initializing {} model".format(self.model_type))
