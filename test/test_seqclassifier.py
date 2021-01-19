@@ -68,7 +68,7 @@ def test_sequence_classifiers():
         tokenizer = AutoTokenizer.from_pretrained(model_name_dict[lang])
         reader = SentReader(data_path, tokenizer=tokenizer)
 
-        num = reader.num_cats
+        num_cats = reader.num_cats
         word_vocab = reader.word_vocab
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         seq_classifier = SequenceClassifier(lang, word_vocab, model_type, num_cats)
