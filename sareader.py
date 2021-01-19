@@ -129,7 +129,7 @@ class SentReader():
         dataset = json.load(open(self.file_path, "r"))
         dataset = [(k, v) for k, v in dataset.items()]
         dataset.sort(key=lambda x: len(x[1]["text"].split(" ")))  # Sort by of tokens
-        sentence_lengths = [len(x[1]["text"].split("\n")) for x in dataset]
+        sentence_lengths = [len(x[1]["text"].split(" ")) for x in dataset]
         print("Sentence lengths")
         print(sentence_lengths)
         data = [x[1] for x in dataset]
