@@ -260,7 +260,6 @@ class SequenceClassifier(nn.Module):
         tokens, tok_inds, bert_batch_after_padding, data = input
         bert_lens, masks, padded_tok_inds, labels, bert_batch_ids, bert_seq_ids = data
         bert_out = self.base_model(bert_batch_ids, bert_seq_ids)
-        print(bert_out.shape)
         return bert_out
 
     def zero_grad(self):
@@ -287,5 +286,4 @@ class SequenceClassifier(nn.Module):
             hidden, _, _ = self.lstm(embed_out)
             hidden_out = hidden[:, 0, :]
         class_logits = self.classifier(hidden_out)
-        print(class_logits.shape)
         return class_logits
