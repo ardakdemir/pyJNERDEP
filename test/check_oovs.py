@@ -50,3 +50,7 @@ deptraindataset = DepDataset(dep_train_name, batch_size=200,
                              tokenizer=bert_tokenizer)
 
 w2v_model = load_word2vec(l)
+
+dep_vocab = deptraindataset.vocabs["tok_vocab"].w2ind
+ner_vocab = deptraindataset.word_voc.w2ind
+

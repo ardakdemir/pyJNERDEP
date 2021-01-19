@@ -204,7 +204,7 @@ class SequenceClassifier(nn.Module):
                 c += 1
         print("Found {} out of {} words in word2vec for {} ".format(c, len(w2ind), self.lang))
         self.base_model = embed
-        self.base_optimizer = optim.AdamW([{"params": self.word_embeds.parameters(),
+        self.base_optimizer = optim.AdamW([{"params": self.base_model.parameters(),
                                             'lr': 2e-3}])
         self.init_lstm()
 
