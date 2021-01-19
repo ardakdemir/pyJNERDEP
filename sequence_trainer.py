@@ -46,7 +46,7 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--sa_train_file', type=str, default='../../datasets/sa_movie_turkish-train.json',
                         help='training file for sa')
-    parser.add_argument('--sa_val_file', type=str, default='../../datasets/sa_movie_turkish-train.json',
+    parser.add_argument('--sa_dev_file', type=str, default='../../datasets/sa_movie_turkish-train.json',
                         help='validation file for sa')
     parser.add_argument('--sa_test_file', type=str, default='../../datasets/sa_movie_turkish-train.json',
                         help='test file for sa')
