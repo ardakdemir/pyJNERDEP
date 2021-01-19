@@ -82,7 +82,7 @@ def parse_args():
 
     parser.add_argument('--epochs', type=int, default=10)
     parser.add_argument('--repeat', type=int, default=1)
-    parser.add_argument('--eval_interval', type=int, default=None)
+    parser.add_argument('--eval_interval', type=int, default=100)
     parser.add_argument('--batch_size', type=int, default=200)
     parser.add_argument('--model_save_name', type=str, default='best_sa_model.pkh', help="File name to save the model")
     parser.add_argument('--load_model', type=int, default=0, help='Binary for loading previous model')
