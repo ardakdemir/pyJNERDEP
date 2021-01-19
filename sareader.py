@@ -19,6 +19,8 @@ PAD = "[PAD]"
 PAD_IND = 0
 CLS = "[CLS]"
 CLS_IND = 1
+UNK = "UNK"
+UNK_IND = 2
 
 
 def pad_batch(batch, pad=PAD):
@@ -94,7 +96,7 @@ class SentReader():
         print("Dataset size : {}".format(len(self.dataset)))
         self.data_len = len(self.dataset)
         self.word2ind, self.l2ind, self.vocab_size = self.get_vocabs()
-        self.word_vocab = Vocab(self.word2ind)
+        self.word_vocab = Vocab(self.word2ind, UNK_IND)
         self.label_vocab = Vocab(self.l2ind)
 
         self.batched_dataset = group_into_batch(self.dataset, batch_size=self.batch_size)
@@ -112,7 +114,7 @@ class SentReader():
         return " ".join([self.word2ind[w] for w in sent])
 
     def get_vocabs(self):
-        word2ix = {PAD: PAD_IND, CLS: CLS_IND}
+        word2ix = {PAD: PAD_IND, CLS: CLS_IND, UNK: UNK_IND}
         l2ind = {}
         for k, data in self.dataset:
             for word in data["text"].split(" "):
@@ -128,12 +130,17 @@ class SentReader():
         print("Reading from {} ".format(self.file_path))
         dataset = json.load(open(self.file_path, "r"))
         dataset = [(k, v) for k, v in dataset.items()]
-        dataset.sort(key=lambda x: len(x[1]["text"].split(" ")),reverse=True)  # Sort by of tokens
+        dataset.sort(key=lambda x: len(x[1]["text"].split(" ")), reverse=True)  # Sort by of tokens
         sentence_lengths = [len(x[1]["text"].split(" ")) for x in dataset]
         data = [x[1] for x in dataset]
         sentence_ids = [x[0] for x in dataset]
         self.dataset = dataset
         self.sentence_ids = sentence_ids
+
+    def extend_vocab(self, new_vocab):
+        for v in new_vocab.w2ind:
+            if v not in self.word_vocab.w2ind:
+                self.word_vocab.w2ind[v] = len(self.word_vocab.w2ind)
 
     ## compatible with getSent and for word embeddings
     def prepare_sent(self, sent, word2ix):
@@ -166,7 +173,7 @@ class SentReader():
             sentence = data["text"]
             toks = sentence.split(" ")
             label = data["label"]
-            labels.append(self.label_vocab.map([label])[0]) # To enforce correct shape
+            labels.append(self.label_vocab.map([label])[0])  # To enforce correct shape
             tok_inds.append(self.word_vocab.map(toks))
             tokens.append(toks)
         assert len(tok_inds) == len(tokens) == len(batch)
@@ -181,7 +188,7 @@ class SentReader():
             sentence = " ".join(toks)
             btok = self.bert_tokenizer.tokenize(sentence)
             if len(btok) > self.bert_token_limit:
-                print("{} is too long pruning to {}".format(len(btok),self.bert_token_limit))
+                print("{} is too long pruning to {}".format(len(btok), self.bert_token_limit))
                 btok = btok[:self.bert_token_limit]
             btok = [CLS] + btok
             bert_batch_before_padding.append(btok)

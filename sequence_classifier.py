@@ -155,9 +155,10 @@ class MyBertModel(nn.Module):
 
 
 class SequenceClassifier(nn.Module):
-    def __init__(self, lang, word_vocab, model_type, num_cats):
+    def __init__(self, lang, word_vocab, model_type, num_cats, device):
         super(SequenceClassifier, self).__init__()
         self.lang = lang
+        self.device = device
         self.word_vocab = word_vocab
         self.vocab_size = len(word_vocab)
         self.hidden_dim = 128
@@ -255,11 +256,18 @@ class SequenceClassifier(nn.Module):
             self.init_bert()
 
     def predict(self, input):
-        return 0
+        tokens, tok_inds, bert_batch_after_padding, data = input
+        bert_lens, masks, padded_tok_inds, labels, bert_batch_ids, bert_seq_ids = data
+        labels.to(self.device)
+        class_logits = self.forward(input)
+        loss = self.loss(class_logits, labels)
+        preds = torch.argmax(class_logits, dim=1)
+        return preds, loss
 
     def get_embed_output(self, input):
         tokens, tok_inds, bert_batch_after_padding, data = input
         padded_tok_inds = data[2]
+        padded_tok_inds.to(self.device)
         embed_outs = self.base_model(padded_tok_inds)
         return embed_outs
 
@@ -267,6 +275,8 @@ class SequenceClassifier(nn.Module):
         tokens, tok_inds, bert_batch_after_padding, data = input
         bert_lens, masks, padded_tok_inds, labels, bert_batch_ids, bert_seq_ids = data
         print("Bert input shape : {}".format(bert_batch_ids.shape))
+        bert_batch_ids.to(self.device)
+        bert_seq_ids.to(self.device)
         bert_out = self.base_model(bert_batch_ids, bert_seq_ids)
         return bert_out
 
@@ -283,6 +293,7 @@ class SequenceClassifier(nn.Module):
             self.hidden_optimizer.step()
 
     def loss(self, class_logits, labels):
+        labels.to(self.device)
         return self.criterion(class_logits, labels)
 
     def forward(self, input):

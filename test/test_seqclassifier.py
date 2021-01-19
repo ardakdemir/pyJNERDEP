@@ -80,7 +80,7 @@ def test_sequence_classifiers():
         num_cats = reader.num_cats
         word_vocab = reader.word_vocab
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-        seq_classifier = SequenceClassifier(lang, word_vocab, model_type, num_cats)
+        seq_classifier = SequenceClassifier(lang, word_vocab, model_type, num_cats, device)
 
         seq_classifier.train()
         seq_classifier.to(device)
