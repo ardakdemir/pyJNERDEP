@@ -145,7 +145,7 @@ def train():
         datasets[x].word_vocab.w2ind = datasets["train"].word_vocab.w2ind
 
     word_vocab = datasets["train"].word_vocab
-    seq_classifier = SequenceClassifier(lang, word_vocab, model_type, num_cats)
+    seq_classifier = SequenceClassifier(lang, word_vocab, model_type, num_cats, device)
 
     seq_classifier.train()
     seq_classifier.to(device)
