@@ -175,7 +175,7 @@ def train():
         epochs_losses.append(total_loss / eval_interval)
         print("Evaluating the model")
         seq_classifier.eval()
-
+        evaluate(seq_classifier, datasets["dev"])
     print(epoch_losses)
 
 
