@@ -160,10 +160,16 @@ class SequenceClassifier(nn.Module):
         self.word_vocab = word_vocab
         self.vocab_size = len(word_vocab)
         self.hidden_dim = 128
+        self.bidirectional = True
         self.model_type = model_type
+
         self.num_cat = num_cats
         self.init_base_model()
-        self.classifier = nn.Linear(self.vector_dim, num_cats)
+
+        self.classifier_input_dim = 2 * self.hidden_dim if self.bidirectional else self.hidden_dim
+        if "bert" in model_type:
+            self.classifier_input_dim = self.vector_dim
+        self.classifier = nn.Linear(self.classifier_input_dim, num_cats)
         self.classifier_optimizer = optim.AdamW([{"params": self.classifier.parameters()}], \
                                                 lr=0.0015, eps=1e-6)
 
@@ -233,7 +239,7 @@ class SequenceClassifier(nn.Module):
         self.init_lstm()
 
     def init_lstm(self):
-        self.lstm = nn.LSTM(self.vector_dim, self.hidden_dim, bidirectional=True)
+        self.lstm = nn.LSTM(self.vector_dim, self.hidden_dim, bidirectional=self.bidirectional)
         self.hidden_optimizer = optim.AdamW([{"params": self.lstm.parameters(),
                                               'lr': 2e-3}])
 

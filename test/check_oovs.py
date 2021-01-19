@@ -49,3 +49,5 @@ self.deptraindataset = DepDataset(dep_train_name, batch_size=200,
                                   tokenizer=bert_tokenizer)
 
 w2v_model = load_word2vec(lang)
+
+
