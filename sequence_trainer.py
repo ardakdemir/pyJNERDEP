@@ -119,7 +119,7 @@ def evaluate(model, dataset):
     for x in tqdm(range(len(dataset))):
         tokens, tok_inds, bert_batch_after_padding, data_tuple = dataset[x]
         labels = data_tuple[3]
-        preds,loss = model.predict(data)
+        preds, loss = model.predict(data)
         eval_loss += loss
         for l, p in zip(labels, preds):
             total += 1
@@ -134,7 +134,7 @@ def evaluate(model, dataset):
                 else:
                     fp += 1
     acc = (tp + tn) / total
-    print("TP: {} FP: {} FN: {} TN: {} === Acc: {} === Loss: ".format(tp, fp, fn, tn, acc,eval_loss))
+    print("TP: {} FP: {} FN: {} TN: {} === Acc: {} === Loss: ".format(tp, fp, fn, tn, acc, eval_loss))
 
 
 def train():
@@ -146,6 +146,7 @@ def train():
     file_map = {"train": args["sa_train_file"],
                 "dev": args["sa_dev_file"],
                 "test": args["sa_test_file"]}
+    print(file_map)
     datasets = {f: SentReader(file_map[f], tokenizer=tokenizer) for f in file_map}
     num_cats = len(datasets.label_vocab.w2ind)
 
