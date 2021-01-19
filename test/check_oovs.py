@@ -20,7 +20,7 @@ from parser.parsereader import DepDataset
 from parser.utils import conll_writer, sort_dataset, unsort_dataset, score, convert2IOB2new
 from datareader import DataReader
 
-data_folder = "~/datasets"
+data_folder = "../../datasets"
 
 lang = "jp"
 model_type = "bert"
