@@ -204,7 +204,7 @@ def train():
     print("Accuracies ", accs)
     print("F1s ", f1s)
     print("Eval losses ", losses)
-
+    print("Training time: {}".format(train_time))
     print("Evaluating on test")
     seq_classifier.load_state_dict(best_model_weights)
     acc, f1, loss = evaluate(seq_classifier, datasets["test"])
@@ -216,6 +216,7 @@ def train():
                "test_f1": round(f1, 3),
                "test_loss": round(loss, 3),
                "lang": lang,
+               "train_time": train_time,
                "word_embed_type": model_type,
                "test_file": file_map["test"],
                "train_file": file_map["train"]}
