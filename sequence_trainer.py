@@ -85,6 +85,7 @@ def parse_args():
     parser.add_argument('--eval_interval', type=int, default=100)
     parser.add_argument('--batch_size', type=int, default=200)
     parser.add_argument('--model_save_name', type=str, default='best_sa_model.pkh', help="File name to save the model")
+    parser.add_argument('--save_folder', type=str, default='best_sa_model.pkh', help="File name to save the model")
     parser.add_argument('--load_model', type=int, default=0, help='Binary for loading previous model')
     parser.add_argument('--load_path', type=str, default='best_joint_model.pkh', help="File name to load the model")
 
@@ -170,7 +171,7 @@ def train():
             labels = data_tuple[3]
             class_logits = seq_classifier(data)
             print("Logit shape: {} label shape: {}".format(class_logits.shape, labels.shape))
-            loss = seq_classifier.criterion(class_logits, labels)
+            loss = seq_classifier.loss(class_logits, labels)
             total_loss += loss.item()
             print("Loss: {}".format(loss))
             loss.backward()
@@ -185,6 +186,8 @@ def train():
         accs.append(acc)
         f1s.append(f1)
         losses.append(loss)
+        if f1 > best_f1:
+            best_model_weights = seq_classifier.state_dict()
 
     print("Epoch train losses ", epochs_losses)
     print("Accuracies ", accs)
