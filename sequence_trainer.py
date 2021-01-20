@@ -107,7 +107,7 @@ def evaluate(model, dataset):
     fn = 0
     total = 0
     eval_loss = 0
-    for x in tqdm(range(len(dataset)),desc="Evaluation"):
+    for x in tqdm(range(len(dataset)), desc="Evaluation"):
         with torch.no_grad():
             tokens, tok_inds, bert_batch_after_padding, data_tuple = dataset[x]
             labels = data_tuple[3]
@@ -126,7 +126,11 @@ def evaluate(model, dataset):
                     else:
                         fp += 1
     acc = (tp + tn) / total
-    print("TP: {} FP: {} FN: {} TN: {} === Acc: {} === Loss: ".format(tp, fp, fn, tn, acc, eval_loss))
+    recall = tp / (fn + tp)
+    precision = tp / (fp + tp)
+    f1 = (2 * recall * precision) / (precision + recall)
+    print("TP: {} FP: {} FN: {} TN: {} === Acc: {} === Loss: {}".format(tp, fp, fn, tn, acc, eval_loss))
+    return acc, f1, eval_loss
 
 
 def train():
@@ -153,12 +157,13 @@ def train():
 
     eval_interval = args["eval_interval"]
     epochs = args["epochs"]
-    epochs_losses = []
-    for e in tqdm(range(epochs),desc="Epoch"):
+    epochs_losses, accs, f1s, losses = [], [], [], []
+
+    for e in tqdm(range(epochs), desc="Epoch"):
         total_loss = 0
         acc = 0
         seq_classifier.train()
-        for i in tqdm(range(eval_interval),"training"):
+        for i in tqdm(range(eval_interval), "training"):
             seq_classifier.zero_grad()
             data = datasets["train"][i]
             tokens, tok_inds, bert_batch_after_padding, data_tuple = data
@@ -176,8 +181,15 @@ def train():
         epochs_losses.append(total_loss / eval_interval)
         print("Evaluating the model")
         seq_classifier.eval()
-        evaluate(seq_classifier, datasets["dev"])
-    print(epoch_losses)
+        acc, f1, loss = evaluate(seq_classifier, datasets["dev"])
+        accs.append(acc)
+        f1s.append(f1)
+        losses.append(loss)
+        
+    print("Epoch train losses ", epochs_losses)
+    print("Accuracies ", accs)
+    print("F1s ", f1s)
+    print("Eval losses ", losses)
 
 
 if __name__ == "__main__":
