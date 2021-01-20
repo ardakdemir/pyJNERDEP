@@ -294,8 +294,6 @@ class SequenceClassifier(nn.Module):
     def loss(self, class_logits, labels):
         labels = labels.to(self.device)
         probs = self.soft(class_logits)
-        print("Prob device : {}".format(probs.device))
-        print("label device: {}".format(labels.device))
         return self.criterion(probs, labels)
 
     def forward(self, input):

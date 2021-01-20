@@ -87,7 +87,7 @@ def parse_args():
     parser.add_argument('--batch_size', type=int, default=200)
     parser.add_argument('--model_save_name', type=str, default='best_sa_model.pkh', help="File name to save the model")
     parser.add_argument('--save_folder', type=str, default='../sa_savedir', help="Folder to save files")
-    parser.add_argument('--exp_file', type=str, default='../sa_experiment_log.json', help="File to store exp details")
+    parser.add_argument('--exp_file', type=str, default='sa_experiment_log.json', help="File to store exp details")
     parser.add_argument('--load_model', type=int, default=0, help='Binary for loading previous model')
     parser.add_argument('--load_path', type=str, default='best_joint_model.pkh', help="File name to load the model")
 
