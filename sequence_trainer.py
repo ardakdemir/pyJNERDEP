@@ -138,7 +138,7 @@ def train():
                 "dev": args["sa_dev_file"],
                 "test": args["sa_test_file"]}
     print(file_map)
-    datasets = {f: SentReader(file_map[f], tokenizer=tokenizer) for f in file_map}
+    datasets = {f: SentReader(file_map[f], batch_size=args["batch_size"], tokenizer=tokenizer) for f in file_map}
     num_cats = len(datasets["train"].label_vocab.w2ind)
 
     for x in ["dev", "test"]:

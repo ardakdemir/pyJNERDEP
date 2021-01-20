@@ -47,7 +47,7 @@ def group_into_batch(dataset, batch_size):
         Do not naively batch by number of sentences!!
 
     """
-
+    print("Grouping with batch size: {}".format(batch_size))
     batched_dataset = []
     sentence_lens = []
     current_len = 0
@@ -93,7 +93,7 @@ class SentReader():
         self.file_path = file_path
         self.batch_size = batch_size
         self.get_dataset()
-        print("Dataset size : {}".format(len(self.dataset)))
+        print("Dataset size : {} ".format(len(self.dataset)))
         self.data_len = len(self.dataset)
         self.word2ind, self.l2ind, self.vocab_size = self.get_vocabs()
         self.word_vocab = Vocab(self.word2ind, UNK_IND)
