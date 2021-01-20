@@ -292,7 +292,7 @@ class SequenceClassifier(nn.Module):
             self.hidden_optimizer.step()
 
     def loss(self, class_logits, labels):
-        labels.to(self.device)
+        labels = labels.to(self.device)
         probs = self.soft(class_logits)
         return self.criterion(probs, labels)
 
