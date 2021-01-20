@@ -44,11 +44,11 @@ def read_config(args):
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--sa_train_file', type=str, default='../../datasets/sa_movie_turkish-train.json',
+    parser.add_argument('--sa_train_file', type=str, default='../../datasets/sa_twitter_turkish-train.json',
                         help='training file for sa')
-    parser.add_argument('--sa_dev_file', type=str, default='../../datasets/sa_movie_turkish-dev.json',
+    parser.add_argument('--sa_dev_file', type=str, default='../../datasets/sa_twitter_turkish-dev.json',
                         help='validation file for sa')
-    parser.add_argument('--sa_test_file', type=str, default='../../datasets/sa_movie_turkish-test.json',
+    parser.add_argument('--sa_test_file', type=str, default='../../datasets/sa_twitter_turkish-test.json',
                         help='test file for sa')
     parser.add_argument('--sa_output_file', type=str, default="sa_out.txt",
                         help='Output file for named entity recognition')
