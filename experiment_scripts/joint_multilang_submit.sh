@@ -26,8 +26,8 @@ do
     val_dataset=../../datasets/myner_${lang}-test.txt
 
 #    for type in bert mbert bert_en fastext word2vec random_init
-#    for type in bert mbert bert_en fastext word2vec random_init
-    for type in fastext word2vec random_init
+#    for type in fastext word2vec random_init
+    for type in bert mbert bert_en fastext word2vec random_init
     do
         echo "Running for "${lang}"  "${type}"  pref  "${wvec_pref}
         singularity exec --nv  --writable ~/singularity/pt-cuda-tf-tr-ft python jointtrainer_multilang.py --model_type ${model_type}  --word_embed_type ${type}    --log_file ${model_type}_log_${type}_${lang}_log.txt --lang ${wvec_pref} --batch_size ${batch_size} --epochs 10 --save_dir $load_dir --word_only --repeat ${repeat} --eval_interval ${eval_interval} --fix_embed

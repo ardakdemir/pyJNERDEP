@@ -274,7 +274,6 @@ class SequenceClassifier(nn.Module):
     def get_bert_output(self, input):
         tokens, tok_inds, bert_batch_after_padding, data = input
         bert_lens, masks, padded_tok_inds, labels, bert_batch_ids, bert_seq_ids = data
-        print("Bert input shape : {}".format(bert_batch_ids.shape))
         bert_batch_ids.to(self.device)
         bert_seq_ids.to(self.device)
         bert_out = self.base_model(bert_batch_ids, bert_seq_ids)
