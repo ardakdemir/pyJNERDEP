@@ -59,6 +59,7 @@ def parse_args():
     parser.add_argument('--word_embed_type', default='bert',
                         choices=["mbert", "bert_en", 'bert', 'random_init', 'fastext', 'word2vec'],
                         help='Word embedding type to be used')
+
     parser.add_argument('--fix_embed', default=False, action='store_true', help='Word embedding type to be used')
 
     parser.add_argument('--lstm_layers', type=int, default=3)
@@ -85,12 +86,12 @@ def parse_args():
     parser.add_argument('--eval_interval', type=int, default=100)
     parser.add_argument('--batch_size', type=int, default=200)
     parser.add_argument('--model_save_name', type=str, default='best_sa_model.pkh', help="File name to save the model")
-    parser.add_argument('--save_folder', type=str, default='best_sa_model.pkh', help="File name to save the model")
+    parser.add_argument('--save_folder', type=str, default='../sa_savedir', help="Folder to save files")
+    parser.add_argument('--exp_file', type=str, default='../sa_experiment_log.json', help="File to store exp details")
     parser.add_argument('--load_model', type=int, default=0, help='Binary for loading previous model')
     parser.add_argument('--load_path', type=str, default='best_joint_model.pkh', help="File name to load the model")
 
     parser.add_argument('--seed', type=int, default=1234)
-    parser.add_argument('--model_type', default='FLAT', help=' Choose model type to be trained')
     args = parser.parse_args()
 
     vars(args)['device'] = device
@@ -113,7 +114,8 @@ def evaluate(model, dataset):
             tokens, tok_inds, bert_batch_after_padding, data_tuple = dataset[x]
             labels = data_tuple[3]
             preds, loss = model.predict(dataset[x])
-            eval_loss += loss
+            preds = preds.detach().cpu().numpy()
+            eval_loss += loss.item()
             for l, p in zip(labels, preds):
                 total += 1
                 if l == p:
@@ -138,6 +140,8 @@ def train():
     args = parse_args()
     lang = args["lang"]
     model_type = args["word_embed_type"]
+    save_folder = args["save_folder"]
+    exp_file = args["exp_file"]
     tokenizer = init_tokenizer(lang, model_type)
 
     file_map = {"train": args["sa_train_file"],
@@ -188,12 +192,31 @@ def train():
         losses.append(loss)
         if f1 > best_f1:
             best_model_weights = seq_classifier.state_dict()
+            best_f1 = f1
 
     print("Epoch train losses ", epochs_losses)
     print("Accuracies ", accs)
     print("F1s ", f1s)
     print("Eval losses ", losses)
 
+    print("Evaluating on test")
+    seq_classifier.load_state_dict(best_model_weights)
+    acc, f1, loss = evaluate(seq_classifier, datasets["test"])
+    print("=== Test results === \n Acc:\t{}\nF1\t{}\nLoss\t{}\n".format(acc, f1, loss))
+    exp_log = {"dev_acc": accs,
+               "dev_f1": f1,
+               "dev_loss": losses,
+               "test_acc": acc,
+               "test_f1": f1,
+               "test_loss": loss,
+               "lang": lang,
+               "word_embed_type": model_type,
+               "test_file": file_map["test"],
+               "train_file": file_map["train"]}
+
+    exp_save_path = os.path.join(save_folder, exp_file)
+    with open(exp_save_path, "w") as o:
+        json.dump(exp_log,o)
 
 if __name__ == "__main__":
     train()
