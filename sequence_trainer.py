@@ -107,23 +107,24 @@ def evaluate(model, dataset):
     fn = 0
     total = 0
     eval_loss = 0
-    for x in tqdm(range(len(dataset))):
-        tokens, tok_inds, bert_batch_after_padding, data_tuple = dataset[x]
-        labels = data_tuple[3]
-        preds, loss = model.predict(dataset[x])
-        eval_loss += loss
-        for l, p in zip(labels, preds):
-            total += 1
-            if l == p:
-                if l == 1:
-                    tp += 1
+    for x in tqdm(range(len(dataset)),desc="Evaluation"):
+        with torch.no_grad():
+            tokens, tok_inds, bert_batch_after_padding, data_tuple = dataset[x]
+            labels = data_tuple[3]
+            preds, loss = model.predict(dataset[x])
+            eval_loss += loss
+            for l, p in zip(labels, preds):
+                total += 1
+                if l == p:
+                    if l == 1:
+                        tp += 1
+                    else:
+                        tn += 1
                 else:
-                    tn += 1
-            else:
-                if l == 1:
-                    fn += 1
-                else:
-                    fp += 1
+                    if l == 1:
+                        fn += 1
+                    else:
+                        fp += 1
     acc = (tp + tn) / total
     print("TP: {} FP: {} FN: {} TN: {} === Acc: {} === Loss: ".format(tp, fp, fn, tn, acc, eval_loss))
 
@@ -153,11 +154,11 @@ def train():
     eval_interval = args["eval_interval"]
     epochs = args["epochs"]
     epochs_losses = []
-    for e in tqdm(range(epochs)):
+    for e in tqdm(range(epochs),desc="Epoch"):
         total_loss = 0
         acc = 0
         seq_classifier.train()
-        for i in tqdm(range(eval_interval)):
+        for i in tqdm(range(eval_interval),"training"):
             seq_classifier.zero_grad()
             data = datasets["train"][i]
             tokens, tok_inds, bert_batch_after_padding, data_tuple = data
