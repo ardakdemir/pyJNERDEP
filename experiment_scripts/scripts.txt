@@ -17,3 +17,10 @@ python test/test_jointmodel.py --lang tr --word_embed_type fastext --load_path .
 
 ##qsub multilang with repeat and eval_interval!!
 qsub -N dep_1801 experiment_scripts/joint_multilang_submit.sh DEP 1 500
+
+
+# test cuda oom for english dep
+python jointtrainer_multilang.py --model_type DEP  --word_embed_type bert  --word_only --log_file NER_bert_tr_log --lang en --batch_size 100 --epochs 3 --save_dir ../deneme1901_en_bert --repeat 1 --fix_embed
+
+
+#sequence trainer example

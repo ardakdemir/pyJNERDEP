@@ -1346,25 +1346,26 @@ class JointTrainer:
         rel_accs = 0
         head_accs = 0
         self.depvaldataset.for_eval = True
-        for x in tqdm(range(len(self.depvaldataset)), desc="Evaluation"):
-            # batch = dataset[x]
-            batch = self.depvaldataset[x]
-            sent_lens = batch[2][0]
-            tokens = batch[0]
-            if self.args['model_type'] == "NERDEP":
-                loss, preds, _, _, rel_acc, head_acc = self.dep_forward(batch, training=False,
-                                                                        task=self.args['model_type'])
-            else:
-                loss, preds, _, _, rel_acc, head_acc = self.dep_forward(batch, training=False, task="DEP")
-            rel_accs += rel_acc
-            head_accs += head_acc
-            heads, dep_rels, output = self.jointmodel.depparser.decode(preds[0], preds[1], sent_lens, verbose=True)
-            for outs, sent, l in zip(output, tokens, sent_lens):
-                new_sent = []
-                assert len(sent[1:l]) == len(outs), "Sizes do not match"
-                for pred, tok in zip(outs, sent[1:l]):
-                    new_sent.append([tok] + pred)
-                data.append(new_sent)
+        with torch.no_grad():
+            for x in tqdm(range(len(self.depvaldataset)), desc="Evaluation"):
+                # batch = dataset[x]
+                batch = self.depvaldataset[x]
+                sent_lens = batch[2][0]
+                tokens = batch[0]
+                if self.args['model_type'] == "NERDEP":
+                    loss, preds, _, _, rel_acc, head_acc = self.dep_forward(batch, training=False,
+                                                                            task=self.args['model_type'])
+                else:
+                    loss, preds, _, _, rel_acc, head_acc = self.dep_forward(batch, training=False, task="DEP")
+                rel_accs += rel_acc
+                head_accs += head_acc
+                heads, dep_rels, output = self.jointmodel.depparser.decode(preds[0], preds[1], sent_lens, verbose=True)
+                for outs, sent, l in zip(output, tokens, sent_lens):
+                    new_sent = []
+                    assert len(sent[1:l]) == len(outs), "Sizes do not match"
+                    for pred, tok in zip(outs, sent[1:l]):
+                        new_sent.append([tok] + pred)
+                    data.append(new_sent)
         # print(orig_idx)
         # print(len(data))
         head_accs /= len(self.depvaldataset)
