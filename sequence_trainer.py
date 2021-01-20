@@ -185,7 +185,7 @@ def train():
         accs.append(acc)
         f1s.append(f1)
         losses.append(loss)
-        
+
     print("Epoch train losses ", epochs_losses)
     print("Accuracies ", accs)
     print("F1s ", f1s)

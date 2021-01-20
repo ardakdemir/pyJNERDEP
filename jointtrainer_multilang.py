@@ -1459,9 +1459,9 @@ def main(args):
                 experiment_log_name = os.path.join(args["save_dir"],
                                                    "experiment_log_" + args['lang'] + "_" + args[
                                                        'word_embed_type'] + ".json")
-                jointtrainer.init_models()
                 exp_logs = {}
                 for i in range(args["repeat"]):
+                    jointtrainer.init_models()
                     jointtrainer.best_global_ner_f1 = 0
                     jointtrainer.best_global_dep_f1 = 0
                     ner_f1, dep_f1, exp_log = jointtrainer.train2()
