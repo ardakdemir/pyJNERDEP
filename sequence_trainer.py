@@ -110,7 +110,7 @@ def evaluate(model, dataset):
     for x in tqdm(range(len(dataset))):
         tokens, tok_inds, bert_batch_after_padding, data_tuple = dataset[x]
         labels = data_tuple[3]
-        preds, loss = model.predict(data_tuple)
+        preds, loss = model.predict(dataset[x])
         eval_loss += loss
         for l, p in zip(labels, preds):
             total += 1
