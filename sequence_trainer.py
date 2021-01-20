@@ -6,6 +6,7 @@ import numpy as np
 import time
 from tqdm import tqdm
 import argparse
+
 import os
 import copy
 from transformers import AutoTokenizer, AutoModel, BertForPreTraining, BertForTokenClassification
@@ -142,6 +143,11 @@ def train():
     model_type = args["word_embed_type"]
     save_folder = args["save_folder"]
     exp_file = args["exp_file"]
+
+    if not os.path.exists(save_folder):
+        os.makedirs(save_folder)
+
+
     tokenizer = init_tokenizer(lang, model_type)
 
     file_map = {"train": args["sa_train_file"],
@@ -150,6 +156,7 @@ def train():
     print(file_map)
     datasets = {f: SentReader(file_map[f], batch_size=args["batch_size"], tokenizer=tokenizer) for f in file_map}
     num_cats = len(datasets["train"].label_vocab.w2ind)
+
 
     for x in ["dev", "test"]:
         datasets[x].word_vocab.w2ind = datasets["train"].word_vocab.w2ind
@@ -164,6 +171,7 @@ def train():
     epochs = args["epochs"]
     epochs_losses, accs, f1s, losses = [], [], [], []
     best_f1 = 0
+    begin = time.time()
     for e in tqdm(range(epochs), desc="Epoch"):
         total_loss = 0
         acc = 0
@@ -187,13 +195,15 @@ def train():
         print("Evaluating the model")
         seq_classifier.eval()
         acc, f1, loss = evaluate(seq_classifier, datasets["dev"])
-        accs.append(acc)
-        f1s.append(f1)
-        losses.append(loss)
+        accs.append(round(acc,3))
+        f1s.append(round(f1,3))
+        losses.append(round(loss,3))
         if f1 > best_f1:
             best_model_weights = seq_classifier.state_dict()
             best_f1 = f1
 
+    end = time.time()
+    train_time = round(end-begin)
     print("Epoch train losses ", epochs_losses)
     print("Accuracies ", accs)
     print("F1s ", f1s)
@@ -206,9 +216,9 @@ def train():
     exp_log = {"dev_acc": accs,
                "dev_f1": f1,
                "dev_loss": losses,
-               "test_acc": acc,
-               "test_f1": f1,
-               "test_loss": loss,
+               "test_acc": round(acc,3),
+               "test_f1": round(f1,3),
+               "test_loss": round(loss,3),
                "lang": lang,
                "word_embed_type": model_type,
                "test_file": file_map["test"],
