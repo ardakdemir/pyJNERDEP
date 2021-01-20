@@ -180,10 +180,8 @@ def train():
             tokens, tok_inds, bert_batch_after_padding, data_tuple = data
             labels = data_tuple[3]
             class_logits = seq_classifier(data)
-            print("Logit shape: {} label shape: {}".format(class_logits.shape, labels.shape))
             loss = seq_classifier.loss(class_logits, labels)
             total_loss += loss.item()
-            print("Loss: {}".format(loss))
             loss.backward()
             seq_classifier.optimizer_step()
             if i % 100 == 99:
