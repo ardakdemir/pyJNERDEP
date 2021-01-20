@@ -11,7 +11,7 @@ do
   do
     domain=${domains[$j]}
     echo "Language: "${lang}" Domain: "${domain}
-    file_path="../../datasets/sa_"${domain}"_"${lang}"_train.json"
+    file_path="../../datasets/sa_"${domain}"_"${lang}"-train.json"
     if [ -f ${file_path} ]
     then
       echo $file_path" "${lang}" "${domain}
