@@ -6,7 +6,7 @@ import numpy as np
 import time
 from tqdm import tqdm
 import argparse
-
+import json
 import os
 import copy
 from transformers import AutoTokenizer, AutoModel, BertForPreTraining, BertForTokenClassification
@@ -147,7 +147,6 @@ def train():
     if not os.path.exists(save_folder):
         os.makedirs(save_folder)
 
-
     tokenizer = init_tokenizer(lang, model_type)
 
     file_map = {"train": args["sa_train_file"],
@@ -156,7 +155,6 @@ def train():
     print(file_map)
     datasets = {f: SentReader(file_map[f], batch_size=args["batch_size"], tokenizer=tokenizer) for f in file_map}
     num_cats = len(datasets["train"].label_vocab.w2ind)
-
 
     for x in ["dev", "test"]:
         datasets[x].word_vocab.w2ind = datasets["train"].word_vocab.w2ind
@@ -195,15 +193,15 @@ def train():
         print("Evaluating the model")
         seq_classifier.eval()
         acc, f1, loss = evaluate(seq_classifier, datasets["dev"])
-        accs.append(round(acc,3))
-        f1s.append(round(f1,3))
-        losses.append(round(loss,3))
+        accs.append(round(acc, 3))
+        f1s.append(round(f1, 3))
+        losses.append(round(loss, 3))
         if f1 > best_f1:
             best_model_weights = seq_classifier.state_dict()
             best_f1 = f1
 
     end = time.time()
-    train_time = round(end-begin)
+    train_time = round(end - begin)
     print("Epoch train losses ", epochs_losses)
     print("Accuracies ", accs)
     print("F1s ", f1s)
@@ -216,17 +214,19 @@ def train():
     exp_log = {"dev_acc": accs,
                "dev_f1": f1,
                "dev_loss": losses,
-               "test_acc": round(acc,3),
-               "test_f1": round(f1,3),
-               "test_loss": round(loss,3),
+               "test_acc": round(acc, 3),
+               "test_f1": round(f1, 3),
+               "test_loss": round(loss, 3),
                "lang": lang,
                "word_embed_type": model_type,
                "test_file": file_map["test"],
                "train_file": file_map["train"]}
 
+    print("Experiment json: {}".format(exp_log))
     exp_save_path = os.path.join(save_folder, exp_file)
     with open(exp_save_path, "w") as o:
-        json.dump(exp_log,o)
+        json.dump(exp_log, o)
+
 
 if __name__ == "__main__":
     train()
