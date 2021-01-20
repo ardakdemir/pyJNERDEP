@@ -163,7 +163,7 @@ def train():
     eval_interval = args["eval_interval"]
     epochs = args["epochs"]
     epochs_losses, accs, f1s, losses = [], [], [], []
-
+    best_f1 = 0
     for e in tqdm(range(epochs), desc="Epoch"):
         total_loss = 0
         acc = 0
