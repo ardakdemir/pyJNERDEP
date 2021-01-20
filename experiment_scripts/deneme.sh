@@ -10,7 +10,8 @@ do
   for j in 0 1
   do
     domain=${domains[$j]}
-    file_path="../../datasets/"${lang}"_"${domain}"_train.json"
+    echo "Language: "${lang}" Domain: "${domain}
+    file_path="../../datasets/sa_"${lang}"_"${domain}"_train.json"
     if [ -f ${file_path} ]
     then
       echo $file_path" "${lang}" "${domain}
