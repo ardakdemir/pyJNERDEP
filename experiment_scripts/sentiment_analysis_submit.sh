@@ -32,7 +32,7 @@ do
     then
       for type in bert mbert bert_en fastext word2vec random_init
       do
-        exp_file="sa_experiment_log_"${lang}"_"${domain}"_"${type}".json"
+        exp_file="sa_experiment_log_"${domain}"_"${lang}"_"${type}".json"
         echo $train_path" "${lang}" "${domain}
         singularity exec --nv  --writable ~/singularity/pt-cuda-tf-tr-ft python jointtrainer_multilang.py  --exp_file ${exp_file} --word_embed_type ${type}   --lang $l --batch_size ${batch_size} --epochs 10 --save_folder $load_dir --eval_interval ${eval_interval}
       done
