@@ -34,7 +34,7 @@ do
       do
         exp_file="sa_experiment_log_"${domain}"_"${lang}"_"${type}".json"
         echo $train_path" "${lang}" "${domain}
-        singularity exec --nv  --writable ~/singularity/pt-cuda-tf-tr-ft python jointtrainer_multilang.py  --exp_file ${exp_file} --word_embed_type ${type}   --lang $l --batch_size ${batch_size} --epochs 10 --save_folder $load_dir --eval_interval ${eval_interval}
+        singularity exec --nv  --writable ~/singularity/pt-cuda-tf-tr-ft python sequence_trainer.py  --exp_file ${exp_file} --word_embed_type ${type}   --lang $l --batch_size ${batch_size} --epochs 10 --save_folder $load_dir --eval_interval ${eval_interval}
       done
     fi
   done
