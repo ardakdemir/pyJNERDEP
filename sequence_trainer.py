@@ -130,8 +130,15 @@ def evaluate(model, dataset):
                     else:
                         fp += 1
     acc = (tp + tn) / total
-    recall = tp / (fn + tp)
-    precision = tp / (fp + tp)
+    try:
+        recall = tp / (fn + tp)
+    except:
+        recall = 0
+    try:
+        precision = tp / (fp + tp)
+    except:
+        precision
+        0
     if precision + recall > 0:
         f1 = (2 * recall * precision) / (precision + recall)
     else:
@@ -146,6 +153,7 @@ def train():
     model_type = args["word_embed_type"]
     save_folder = args["save_folder"]
     exp_file = args["exp_file"]
+    repeat = args["repeat"]
 
     if not os.path.exists(save_folder):
         os.makedirs(save_folder)
@@ -166,72 +174,75 @@ def train():
         datasets[x].word_vocab.w2ind = datasets["train"].word_vocab.w2ind
 
     word_vocab = datasets["train"].word_vocab
-    seq_classifier = SequenceClassifier(lang, word_vocab, model_type, num_cats, device)
+    exp_logs = {}
+    for r in range(repeat):
+        seq_classifier = SequenceClassifier(lang, word_vocab, model_type, num_cats, device)
 
-    seq_classifier.train()
-    seq_classifier.to(device)
-
-    eval_interval = args["eval_interval"]
-    epochs = args["epochs"]
-    epochs_losses, accs, f1s, losses = [], [], [], []
-    best_f1 = 0
-    begin = time.time()
-    for e in tqdm(range(epochs), desc="Epoch"):
-        total_loss = 0
-        acc = 0
         seq_classifier.train()
-        for i in tqdm(range(eval_interval), "training"):
-            seq_classifier.zero_grad()
-            data = datasets["train"][i]
-            tokens, tok_inds, bert_batch_after_padding, data_tuple = data
-            labels = data_tuple[3]
-            class_logits = seq_classifier(data)
-            loss = seq_classifier.loss(class_logits, labels)
-            total_loss += loss.item()
-            loss.backward()
-            seq_classifier.optimizer_step()
-            if i % 100 == 99:
-                aver_loss = total_loss / (i + 1)
-                print("Average loss at {} steps: {}".format(i + 1, aver_loss))
-        epochs_losses.append(round(total_loss / eval_interval, 3))
-        print("Evaluating the model")
-        seq_classifier.eval()
-        acc, f1, loss = evaluate(seq_classifier, datasets["dev"])
-        accs.append(round(acc, 3))
-        f1s.append(round(f1, 3))
-        losses.append(round(loss, 3))
-        if f1 > best_f1:
-            best_model_weights = seq_classifier.state_dict()
-            best_f1 = f1
+        seq_classifier.to(device)
 
-    end = time.time()
-    train_time = round(end - begin)
-    print("Epoch train losses ", epochs_losses)
-    print("Accuracies ", accs)
-    print("F1s ", f1s)
-    print("Eval losses ", losses)
-    print("Training time: {}".format(train_time))
-    print("Evaluating on test")
-    seq_classifier.load_state_dict(best_model_weights)
-    acc, f1, loss = evaluate(seq_classifier, datasets["test"])
-    print("=== Test results === \n Acc:\t{}\nF1\t{}\nLoss\t{}\n".format(acc, f1, loss))
-    exp_log = {"dev_acc": accs,
-               "dev_f1": f1,
-               "dev_loss": losses,
-               "test_acc": round(acc, 3),
-               "test_f1": round(f1, 3),
-               "test_loss": round(loss, 3),
-               "train_loss": epochs_losses,
-               "lang": lang,
-               "train_time": train_time,
-               "word_embed_type": model_type,
-               "test_file": file_map["test"],
-               "train_file": file_map["train"]}
+        eval_interval = args["eval_interval"]
+        epochs = args["epochs"]
+        epochs_losses, accs, f1s, losses = [], [], [], []
+        best_f1 = 0
+        begin = time.time()
+        for e in tqdm(range(epochs), desc="Epoch"):
+            total_loss = 0
+            acc = 0
+            seq_classifier.train()
+            for i in tqdm(range(eval_interval), "training"):
+                seq_classifier.zero_grad()
+                data = datasets["train"][i]
+                tokens, tok_inds, bert_batch_after_padding, data_tuple = data
+                labels = data_tuple[3]
+                class_logits = seq_classifier(data)
+                loss = seq_classifier.loss(class_logits, labels)
+                total_loss += loss.item()
+                loss.backward()
+                seq_classifier.optimizer_step()
+                if i % 100 == 99:
+                    aver_loss = total_loss / (i + 1)
+                    print("Average loss at {} steps: {}".format(i + 1, aver_loss))
+            epochs_losses.append(round(total_loss / eval_interval, 3))
+            print("Evaluating the model")
+            seq_classifier.eval()
+            acc, f1, loss = evaluate(seq_classifier, datasets["dev"])
+            accs.append(round(acc, 3))
+            f1s.append(round(f1, 3))
+            losses.append(round(loss, 3))
+            if f1 > best_f1:
+                best_model_weights = seq_classifier.state_dict()
+                best_f1 = f1
+
+        end = time.time()
+        train_time = round(end - begin)
+        print("Epoch train losses ", epochs_losses)
+        print("Accuracies ", accs)
+        print("F1s ", f1s)
+        print("Eval losses ", losses)
+        print("Training time: {}".format(train_time))
+        print("Evaluating on test")
+        seq_classifier.load_state_dict(best_model_weights)
+        acc, f1, loss = evaluate(seq_classifier, datasets["test"])
+        print("=== Test results === \n Acc:\t{}\nF1\t{}\nLoss\t{}\n".format(acc, f1, loss))
+        exp_log = {"dev_acc": accs,
+                   "dev_f1": f1,
+                   "dev_loss": losses,
+                   "test_acc": round(acc, 3),
+                   "test_f1": round(f1, 3),
+                   "test_loss": round(loss, 3),
+                   "train_loss": epochs_losses,
+                   "lang": lang,
+                   "train_time": train_time,
+                   "word_embed_type": model_type,
+                   "test_file": file_map["test"],
+                   "train_file": file_map["train"]}
+        exp_logs[str(r)] = exp_log
 
     print("Experiment json: {}".format(exp_log))
     exp_save_path = os.path.join(save_folder, exp_file)
     with open(exp_save_path, "w") as o:
-        json.dump(exp_log, o)
+        json.dump(exp_logs, o)
 
 
 if __name__ == "__main__":

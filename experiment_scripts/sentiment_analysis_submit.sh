@@ -1,6 +1,7 @@
 /usr/local/bin/nosh
 eval_interval=${1}
 batch_size=${2}
+repeat=${3}
 exp_suf="$(date +"%m_%d_%H_%M")"
 load_dir="../sa_model_save_dir_${model_type}_${exp_suf}/"
 echo "EXPERIMENT WILL BE STORED IN ${load_dir}"
@@ -34,7 +35,7 @@ do
       do
         exp_file="sa_experiment_log_"${domain}"_"${lang}"_"${type}".json"
         echo $train_path" "${lang}" "${domain}
-        singularity exec --nv  --writable ~/singularity/pt-cuda-tf-tr-ft python sequence_trainer.py  --exp_file ${exp_file} --word_embed_type ${type}   --lang $l --batch_size ${batch_size} --epochs 10 --save_folder $load_dir --eval_interval ${eval_interval}
+        singularity exec --nv  --writable ~/singularity/pt-cuda-tf-tr-ft python sequence_trainer.py  --exp_file ${exp_file} --word_embed_type ${type}  --repeat ${repeat} --lang $l --batch_size ${batch_size} --epochs 10 --save_folder $load_dir --eval_interval ${eval_interval}
       done
     fi
   done
