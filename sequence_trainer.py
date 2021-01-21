@@ -55,6 +55,8 @@ def parse_args():
                         help='test file for sa')
     parser.add_argument('--sa_output_file', type=str, default="sa_out.txt",
                         help='Output file for named entity recognition')
+    parser.add_argument('--sa_result_file', type=str, default="sa_test_results.txt",
+                        help='Output file for named entity recognition')
     parser.add_argument('--config_file', type=str, default='config.json', help='Output file name in conll bio format')
     parser.add_argument('--mode', default='train', choices=['train', 'predict'])
     parser.add_argument('--load_config', default=0, type=int)
@@ -149,11 +151,40 @@ def evaluate(model, dataset):
     return acc, f1, eval_loss
 
 
+def write_results(exp_key, exp_logs, result_path):
+    title = "Model\tMax-Dev-F1\tAvg-Dev-F1\tMax-Dev-Acc\tAvg-Dev-Acc\tMax-Test-F1\tAvg-Test-F1\tMax-Test-Acc\tAvg-Test-Acc\n"
+    s = ""
+    if not os.path.exists(result_path):
+        os.makedirs(result_path)
+        s += title
+
+    dev_f1s = [max(v["dev_f1"]) for k, v in exp_logs.items()]
+    dev_accs = [max(v["dev_acc"]) for k, v in exp_logs.items()]
+    max_dev_f1 = max(dev_f1s)
+    avg_dev_f1 = sum(dev_f1s) / len(dev_f1s)
+    max_dev_acc = max(dev_accs)
+    avg_dev_acc = sum(dev_accs) / len(dev_accs)
+
+    test_f1s = [v["test_f1"] for k, v in exp_logs.items()]
+    test_accs = [v["test_acc"] for k, v in exp_logs.items()]
+    max_test_f1 = max(test_f1s)
+    avg_test_f1 = sum(test_f1s) / len(test_f1s)
+    max_test_acc = max(test_accs)
+    avg_test_acc = sum(test_accs) / len(test_accs)
+
+    with open(result_path, "a") as o:
+        s += "{}\t{}\n".format(exp_key, "\t".join([max_dev_f1, avg_dev_f1, max_dev_acc, avg_dev_acc, max_test_f1, avg_test_f1,
+                                         max_test_acc, avg_test_acc]))
+        o.write(s)
+
+
 def train():
     args = parse_args()
     lang = args["lang"]
     model_type = args["word_embed_type"]
     save_folder = args["save_folder"]
+    domain = args["domain"]
+    exp_key = "_".join([domain, lang, model_type])
     exp_file = args["exp_file"]
     repeat = args["repeat"]
 
@@ -232,7 +263,7 @@ def train():
         acc, f1, loss = evaluate(seq_classifier, datasets["test"])
         print("=== Test results === \n Acc:\t{}\nF1\t{}\nLoss\t{}\n".format(acc, f1, loss))
         exp_log = {"dev_acc": accs,
-                   "dev_f1": f1,
+                   "dev_f1": f1s,
                    "dev_loss": losses,
                    "test_acc": round(acc, 3),
                    "test_f1": round(f1, 3),
@@ -245,6 +276,9 @@ def train():
                    "train_file": file_map["train"]}
         exp_logs[str(r)] = exp_log
 
+    result_path = os.path.join(save_folder, args["sa_result_file"])
+
+    write_results(exp_key, exp_logs, result_path)
     print("Experiment json: {}".format(exp_log))
     exp_save_path = os.path.join(save_folder, exp_file)
     with open(exp_save_path, "w") as o:
