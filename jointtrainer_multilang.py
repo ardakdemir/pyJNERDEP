@@ -1178,7 +1178,6 @@ class JointTrainer:
 
             dep_f1 = 0
             uas_f1 = 0
-            dep_las_
             ner_f1 = 0
             if (model_type != "NER" and model_type != "NERDEP") or (
                     model_type == "NERDEP" and e > self.args['ner_warmup']):
@@ -1284,8 +1283,10 @@ class JointTrainer:
             experiment_log["dep_test"] = {"pre": dep_pre,
                                           "rec": dep_rec,
                                           "las_f1": dep_f1,
-                                          "uas_f1":uas_f1}
-            logging.info("\n\nDEP Results -- pre : {}  rec : {} las-f1 : {}  uas-f1\n\n".format(dep_pre, dep_rec, dep_f1,uas_f1))
+                                          "uas_f1": uas_f1}
+            logging.info(
+                "\n\nDEP Results -- pre : {}  rec : {} las-f1 : {}  uas-f1\n\n".format(dep_pre, dep_rec, dep_f1,
+                                                                                       uas_f1))
             with open(os.path.join(self.args["save_dir"], self.args["dep_test_result_file"]), "a")  as o:
                 s = self.args['lang'] + "_" + self.args['word_embed_type']
                 s = s + "\t" + "\t".join([str(x) for x in [dep_pre, dep_rec, dep_f1]]) + "\n"
@@ -1319,7 +1320,6 @@ class JointTrainer:
 
         return best_ner_f1, best_dep_f1, experiment_log
 
-
     def save_model(self, save_name, weights=True):
         save_name = os.path.join(self.args['save_dir'], save_name)
         if weights:
@@ -1330,7 +1330,6 @@ class JointTrainer:
         del arg['device']
         with open(config_path, 'w') as outfile:
             json.dump(arg, outfile)
-
 
     def dep_evaluate(self):
         logging.info("Evaluating dependency performance on {}".format(self.depvaldataset.file_name))
@@ -1384,7 +1383,6 @@ class JointTrainer:
         # self.parser.train()
 
         return round(p, 3), round(r, 3), round(f1 * 100, 3), round(uas_f1 * 100, 3)
-
 
     def ner_evaluate(self):
         self.jointmodel.eval()
