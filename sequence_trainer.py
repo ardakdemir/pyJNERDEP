@@ -171,7 +171,7 @@ def write_results(exp_key, exp_logs, result_path):
     max_test_f1 = str(round(max(test_f1s),3))
     avg_test_f1 = str(round(sum(test_f1s) / len(test_f1s),3))
     max_test_acc = str(round(max(test_accs),3))
-    avg_test_acc = str(ound(sum(test_accs) / len(test_accs),3))
+    avg_test_acc = str(round(sum(test_accs) / len(test_accs),3))
     with open(result_path, "a") as o:
         s += "{}\t{}\n".format(exp_key, "\t".join([max_dev_f1, avg_dev_f1, max_dev_acc, avg_dev_acc, max_test_f1, avg_test_f1,
                                          max_test_acc, avg_test_acc]))
