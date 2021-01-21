@@ -3,7 +3,7 @@ eval_interval=${1}
 batch_size=${2}
 repeat=${3}
 exp_suf="$(date +"%m_%d_%H_%M")"
-load_dir="../sa_model_save_dir_${model_type}_${exp_suf}/"
+load_dir="../sa_model_save_dir_${exp_suf}/"
 echo "EXPERIMENT WILL BE STORED IN ${load_dir}"
 #$ -cwd
 #$ -l os7,v100=1,s_vmem=100G,mem_req=100G
