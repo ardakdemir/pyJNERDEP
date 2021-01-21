@@ -55,6 +55,8 @@ def parse_args():
                         help='test file for sa')
     parser.add_argument('--sa_output_file', type=str, default="sa_out.txt",
                         help='Output file for named entity recognition')
+    parser.add_argument('--domain', type=str, default="movie",
+                        help='Domain for sentiment analysis'),
     parser.add_argument('--sa_result_file', type=str, default="sa_test_results.txt",
                         help='Output file for named entity recognition')
     parser.add_argument('--config_file', type=str, default='config.json', help='Output file name in conll bio format')
