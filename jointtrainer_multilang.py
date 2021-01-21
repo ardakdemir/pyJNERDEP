@@ -1111,7 +1111,7 @@ class JointTrainer:
         self.jointmodel.train()
 
         experiment_log = {"ner_f1": [],
-                          "dep_las_f1": [],
+                          "dep_f1": [],
                           "dep_uas_f1": [],
                           "ner_loss": [],
                           "dep_loss": [],
