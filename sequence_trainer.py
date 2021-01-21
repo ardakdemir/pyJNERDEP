@@ -157,8 +157,8 @@ def train():
     num_cats = len(datasets["train"].label_vocab.w2ind)
 
     for k,v in datasets.items():
-        print("{} number of batches: {}".format(k,len(batches)))
-        
+        print("{} number of batches: {}".format(k,len(v)))
+
     for x in ["dev", "test"]:
         datasets[x].word_vocab.w2ind = datasets["train"].word_vocab.w2ind
 
