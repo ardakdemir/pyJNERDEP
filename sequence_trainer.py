@@ -132,7 +132,10 @@ def evaluate(model, dataset):
     acc = (tp + tn) / total
     recall = tp / (fn + tp)
     precision = tp / (fp + tp)
-    f1 = (2 * recall * precision) / (precision + recall)
+    if precision + recall > 0:
+        f1 = (2 * recall * precision) / (precision + recall)
+    else:
+        f1 = 0
     print("TP: {} FP: {} FN: {} TN: {} === Acc: {} === Loss: {}".format(tp, fp, fn, tn, acc, eval_loss))
     return acc, f1, eval_loss
 
@@ -156,8 +159,8 @@ def train():
     datasets = {f: SentReader(file_map[f], batch_size=args["batch_size"], tokenizer=tokenizer) for f in file_map}
     num_cats = len(datasets["train"].label_vocab.w2ind)
 
-    for k,v in datasets.items():
-        print("{} number of batches: {}".format(k,len(v)))
+    for k, v in datasets.items():
+        print("{} number of batches: {}".format(k, len(v)))
 
     for x in ["dev", "test"]:
         datasets[x].word_vocab.w2ind = datasets["train"].word_vocab.w2ind
@@ -190,7 +193,7 @@ def train():
             if i % 100 == 99:
                 aver_loss = total_loss / (i + 1)
                 print("Average loss at {} steps: {}".format(i + 1, aver_loss))
-        epochs_losses.append(total_loss / eval_interval)
+        epochs_losses.append(round(total_loss / eval_interval, 3))
         print("Evaluating the model")
         seq_classifier.eval()
         acc, f1, loss = evaluate(seq_classifier, datasets["dev"])
@@ -218,6 +221,7 @@ def train():
                "test_acc": round(acc, 3),
                "test_f1": round(f1, 3),
                "test_loss": round(loss, 3),
+               "train_loss": epochs_losses,
                "lang": lang,
                "train_time": train_time,
                "word_embed_type": model_type,
