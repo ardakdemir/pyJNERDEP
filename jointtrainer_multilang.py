@@ -1111,7 +1111,7 @@ class JointTrainer:
         self.jointmodel.train()
 
         experiment_log = {"ner_f1": [],
-                          "dep_f1": [],
+                          "dep_las_f1": [],
                           "dep_uas_f1": [],
                           "ner_loss": [],
                           "dep_loss": [],
@@ -1178,6 +1178,7 @@ class JointTrainer:
 
             dep_f1 = 0
             uas_f1 = 0
+            dep_las_
             ner_f1 = 0
             if (model_type != "NER" and model_type != "NERDEP") or (
                     model_type == "NERDEP" and e > self.args['ner_warmup']):
@@ -1282,8 +1283,9 @@ class JointTrainer:
             dep_pre, dep_rec, dep_f1, uas_f1 = self.dep_evaluate()
             experiment_log["dep_test"] = {"pre": dep_pre,
                                           "rec": dep_rec,
-                                          "f1": dep_f1}
-            logging.info("DEP Results -- pre : {}  rec : {} f1 : {}  ".format(dep_pre, dep_rec, dep_f1))
+                                          "las_f1": dep_f1,
+                                          "uas_f1":uas_f1}
+            logging.info("\n\nDEP Results -- pre : {}  rec : {} las-f1 : {}  uas-f1\n\n".format(dep_pre, dep_rec, dep_f1,uas_f1))
             with open(os.path.join(self.args["save_dir"], self.args["dep_test_result_file"]), "a")  as o:
                 s = self.args['lang'] + "_" + self.args['word_embed_type']
                 s = s + "\t" + "\t".join([str(x) for x in [dep_pre, dep_rec, dep_f1]]) + "\n"
