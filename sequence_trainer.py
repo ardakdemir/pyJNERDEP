@@ -14,6 +14,7 @@ from sequence_classifier import SequenceClassifier
 from sareader import SentReader
 
 import logging
+
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 model_name_dict = {"jp": "cl-tohoku/bert-base-japanese",
@@ -143,7 +144,8 @@ def evaluate(model, dataset):
         f1 = (2 * recall * precision) / (precision + recall)
     else:
         f1 = 0
-    print("TP: {} FP: {} FN: {} TN: {} === Acc: {} === Loss: {}".format(tp, fp, fn, tn, acc, eval_loss))
+    print("\n\nTP: {} FP: {} FN: {} TN: {} === Acc: {} === F1: {} === Loss: {}\n\n".format(tp, fp, fn, tn, acc, f1,
+                                                                                           eval_loss))
     return acc, f1, eval_loss
 
 
@@ -155,8 +157,8 @@ def train():
     exp_file = args["exp_file"]
     repeat = args["repeat"]
 
-    logging.info("Running for  {} {} ".format(lang,model_type))
-    print("Running for  {} {} ".format(lang,model_type))
+    logging.info("Running for  {} {} ".format(lang, model_type))
+    print("Running for  {} {} ".format(lang, model_type))
 
     if not os.path.exists(save_folder):
         os.makedirs(save_folder)
@@ -175,7 +177,7 @@ def train():
 
     for x in ["dev", "test"]:
         datasets[x].word_vocab.w2ind = datasets["train"].word_vocab.w2ind
-
+        datasets[x].label_vocab.w2ind = datasets["train"].label_vocab.w2ind
     word_vocab = datasets["train"].word_vocab
     exp_logs = {}
     for r in range(repeat):
@@ -216,6 +218,7 @@ def train():
             if f1 > best_f1:
                 best_model_weights = seq_classifier.state_dict()
                 best_f1 = f1
+                print("Current best model is at epoch: {}")
 
         end = time.time()
         train_time = round(end - begin)
