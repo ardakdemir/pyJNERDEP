@@ -279,7 +279,6 @@ def train():
         exp_logs[str(r)] = exp_log
 
     result_path = os.path.join(save_folder, args["sa_result_file"])
-
     write_results(exp_key, exp_logs, result_path)
     print("Experiment json: {}".format(exp_log))
     exp_save_path = os.path.join(save_folder, exp_file)
