@@ -13,6 +13,7 @@ from transformers import AutoTokenizer, AutoModel, BertForPreTraining, BertForTo
 from sequence_classifier import SequenceClassifier
 from sareader import SentReader
 
+import logging
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 model_name_dict = {"jp": "cl-tohoku/bert-base-japanese",
@@ -137,8 +138,7 @@ def evaluate(model, dataset):
     try:
         precision = tp / (fp + tp)
     except:
-        precision
-        0
+        precision = 0
     if precision + recall > 0:
         f1 = (2 * recall * precision) / (precision + recall)
     else:
@@ -154,6 +154,9 @@ def train():
     save_folder = args["save_folder"]
     exp_file = args["exp_file"]
     repeat = args["repeat"]
+
+    logging.info("Running for  {} {} ".format(lang,model_type))
+    print("Running for  {} {} ".format(lang,model_type))
 
     if not os.path.exists(save_folder):
         os.makedirs(save_folder)
