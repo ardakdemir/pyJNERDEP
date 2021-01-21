@@ -157,7 +157,7 @@ def write_results(exp_key, exp_logs, result_path):
     title = "Model\tMax-Dev-F1\tAvg-Dev-F1\tMax-Dev-Acc\tAvg-Dev-Acc\tMax-Test-F1\tAvg-Test-F1\tMax-Test-Acc\tAvg-Test-Acc\n"
     s = ""
     if not os.path.exists(result_path):
-        os.makedirs(result_path)
+        os.makedirs(os.path.split(result_path)[0])
         s += title
 
     dev_f1s = [max(v["dev_f1"]) for k, v in exp_logs.items()]
