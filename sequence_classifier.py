@@ -10,7 +10,7 @@ import fasttext
 import fasttext.util
 from gensim.models import Word2Vec
 from transformers import AutoTokenizer, AutoModel, BertForPreTraining, BertForTokenClassification
-
+from constants import model_name_dict, encoding_map, word2vec_dict, fasttext_dict, word2vec_lens
 
 def embedding_initializer(dim, num_labels):
     embed = nn.Embedding(num_labels, dim)
