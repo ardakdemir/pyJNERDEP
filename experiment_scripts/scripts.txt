@@ -19,6 +19,11 @@ python test/test_jointmodel.py --lang tr --word_embed_type fastext --load_path .
 qsub -N dep_1801 experiment_scripts/joint_multilang_submit.sh DEP 1 500
 
 
+# CLI DEP example
+python jointtrainer_multilang.py --model_type DEP  --word_embed_type fastext  --word_only --log_file NER_bert_cs_log --lang en --batch_size 100 --epochs 10 --save_dir ../deneme1901_en_bert --repeat 1 --fix_embed
+
+
+
 # test cuda oom for english dep
 python jointtrainer_multilang.py --model_type DEP  --word_embed_type bert  --word_only --log_file NER_bert_tr_log --lang en --batch_size 100 --epochs 3 --save_dir ../deneme1901_en_bert --repeat 1 --fix_embed
 
@@ -28,7 +33,7 @@ python jointtrainer_multilang.py --model_type DEP  --word_embed_type bert  --wor
 python sequence_trainer.py --lang en --eval_interval 100 --batch_size 150 --word_embed_type fastext --sa_train_file ../../datasets/sa_movie_english-train.json  --sa_dev_file ../../datasets/sa_movie_english-dev.json  --sa_test_file ../../datasets/sa_movie_english-test.json
 
 
-python sequence_trainer.py --lang tr --eval_interval 100 --batch_size 150 --word_embed_type mbert --sa_train_file ../../datasets/sa_movie_turkish-train.json  --sa_dev_file ../../datasets/sa_movie_turkish-dev.json  --sa_test_file ../../datasets/sa_movie_turkish-test.json 
+python sequence_trainer.py --lang tr --eval_interval 100 --batch_size 150 --word_embed_type mbert --sa_train_file ../../datasets/sa_movie_turkish-train.json  --sa_dev_file ../../datasets/sa_movie_turkish-dev.json  --sa_test_file ../../datasets/sa_movie_turkish-test.json
 
 
 

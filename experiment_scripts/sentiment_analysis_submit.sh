@@ -29,7 +29,7 @@ do
     test_path="../../datasets/sa_"${domain}"_"${lang}"-test.json"
     if [ -f ${train_path} ]
     then
-      for type in bert mbert bert_en 
+      for type in bert mbert bert_en
       do
         exp_file="sa_experiment_log_"${domain}"_"${lang}"_"${type}".json"
         echo $train_path" "${lang}" "${domain}
