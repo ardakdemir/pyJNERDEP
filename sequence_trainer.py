@@ -29,8 +29,10 @@ model_name_dict = {"jp": "cl-tohoku/bert-base-japanese",
 
 def init_tokenizer(lang, model_type):
     if model_type in ["mbert", "bert_en"]:
+        print("Initializing tokenizer with {} for {}".format(model_name_dict[model_type], lang))
         tokenizer = AutoTokenizer.from_pretrained(model_name_dict[model_type])
     else:
+        print("Initializing tokenizer with {} for {}".format(model_name_dict[lang], lang))
         tokenizer = AutoTokenizer.from_pretrained(model_name_dict[lang])
     return tokenizer
 
@@ -122,6 +124,7 @@ def evaluate(model, dataset):
             labels = data_tuple[3]
             preds, loss = model.predict(dataset[x])
             preds = preds.detach().cpu().numpy()
+            loss = loss.detach().cpu().item()
             eval_loss += loss.item()
             for l, p in zip(labels, preds):
                 total += 1
@@ -161,20 +164,21 @@ def write_results(exp_key, exp_logs, result_path):
 
     dev_f1s = [max(v["dev_f1"]) for k, v in exp_logs.items()]
     dev_accs = [max(v["dev_acc"]) for k, v in exp_logs.items()]
-    max_dev_f1 = str(round(max(dev_f1s),3))
-    avg_dev_f1 = str(round(sum(dev_f1s) / len(dev_f1s),3))
-    max_dev_acc = str(round(max(dev_accs),3))
-    avg_dev_acc = str(round(sum(dev_accs) / len(dev_accs),3))
+    max_dev_f1 = str(round(max(dev_f1s), 3))
+    avg_dev_f1 = str(round(sum(dev_f1s) / len(dev_f1s), 3))
+    max_dev_acc = str(round(max(dev_accs), 3))
+    avg_dev_acc = str(round(sum(dev_accs) / len(dev_accs), 3))
 
     test_f1s = [v["test_f1"] for k, v in exp_logs.items()]
     test_accs = [v["test_acc"] for k, v in exp_logs.items()]
-    max_test_f1 = str(round(max(test_f1s),3))
-    avg_test_f1 = str(round(sum(test_f1s) / len(test_f1s),3))
-    max_test_acc = str(round(max(test_accs),3))
-    avg_test_acc = str(round(sum(test_accs) / len(test_accs),3))
+    max_test_f1 = str(round(max(test_f1s), 3))
+    avg_test_f1 = str(round(sum(test_f1s) / len(test_f1s), 3))
+    max_test_acc = str(round(max(test_accs), 3))
+    avg_test_acc = str(round(sum(test_accs) / len(test_accs), 3))
     with open(result_path, "a") as o:
-        s += "{}\t{}\n".format(exp_key, "\t".join([max_dev_f1, avg_dev_f1, max_dev_acc, avg_dev_acc, max_test_f1, avg_test_f1,
-                                         max_test_acc, avg_test_acc]))
+        s += "{}\t{}\n".format(exp_key,
+                               "\t".join([max_dev_f1, avg_dev_f1, max_dev_acc, avg_dev_acc, max_test_f1, avg_test_f1,
+                                          max_test_acc, avg_test_acc]))
         o.write(s)
 
 
@@ -261,7 +265,7 @@ def train():
         print("Evaluating on test")
         seq_classifier.load_state_dict(best_model_weights)
         acc, f1, loss = evaluate(seq_classifier, datasets["test"])
-        print("=== Test results === \n Acc:\t{}\nF1\t{}\nLoss\t{}\n".format(acc, f1, loss))
+        print("\n\n=== Test results === \n Acc:\t{}\nF1\t{}\nLoss\t{}\n\n".format(acc, f1, loss))
         exp_log = {"dev_acc": accs,
                    "dev_f1": f1s,
                    "dev_loss": losses,
