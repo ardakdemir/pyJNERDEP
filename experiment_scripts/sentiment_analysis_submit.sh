@@ -10,7 +10,9 @@ echo "EXPERIMENT WILL BE STORED IN ${load_dir}"
 
 cd ~/parser/final_model
 
-langs=(czech hungarian japanese english finnish  turkish)
+#langs=(czech hungarian japanese english finnish  turkish)
+langs=(turkish)
+
 lang_abr=("cs" "hu" "jp" "en" "fi" "tr")
 domains=("movie" "twitter")
 
@@ -27,7 +29,7 @@ do
     test_path="../../datasets/sa_"${domain}"_"${lang}"-test.json"
     if [ -f ${train_path} ]
     then
-      for type in bert mbert bert_en fastext word2vec random_init
+      for type in bert mbert bert_en 
       do
         exp_file="sa_experiment_log_"${domain}"_"${lang}"_"${type}".json"
         echo $train_path" "${lang}" "${domain}

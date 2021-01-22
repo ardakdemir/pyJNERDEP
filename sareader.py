@@ -188,7 +188,7 @@ class SentReader():
             sentence = " ".join(toks)
             btok = self.bert_tokenizer.tokenize(sentence)
             if len(btok) > self.bert_token_limit:
-                print("{} is too long pruning to {}".format(len(btok), self.bert_token_limit))
+                # print("{} is too long pruning to {}".format(len(btok), self.bert_token_limit))
                 btok = btok[:self.bert_token_limit]
             btok = [CLS] + btok
             bert_batch_before_padding.append(btok)

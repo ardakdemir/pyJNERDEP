@@ -24,3 +24,12 @@ python jointtrainer_multilang.py --model_type DEP  --word_embed_type bert  --wor
 
 
 #sequence trainer example English
+
+python sequence_trainer.py --lang en --eval_interval 100 --batch_size 150 --word_embed_type fastext --sa_train_file ../../datasets/sa_movie_english-train.json  --sa_dev_file ../../datasets/sa_movie_english-dev.json  --sa_test_file ../../datasets/sa_movie_english-test.json
+
+
+python sequence_trainer.py --lang tr --eval_interval 100 --batch_size 150 --word_embed_type mbert --sa_train_file ../../datasets/sa_movie_turkish-train.json  --sa_dev_file ../../datasets/sa_movie_turkish-dev.json  --sa_test_file ../../datasets/sa_movie_turkish-test.json 
+
+
+
+qsub -N sa_2101_1530_r2
