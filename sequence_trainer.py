@@ -125,7 +125,7 @@ def evaluate(model, dataset):
             preds, loss = model.predict(dataset[x])
             preds = preds.detach().cpu().numpy()
             loss = loss.detach().cpu().item()
-            eval_loss += loss.item()
+            eval_loss += loss
             for l, p in zip(labels, preds):
                 total += 1
                 if l == p:
@@ -237,8 +237,8 @@ def train():
                 labels = data_tuple[3]
                 class_logits = seq_classifier(data)
                 loss = seq_classifier.loss(class_logits, labels)
-                total_loss += loss.item()
                 loss.backward()
+                total_loss += loss.detach().cpu().item()
                 seq_classifier.optimizer_step()
                 if i % 100 == 99:
                     aver_loss = total_loss / (i + 1)
