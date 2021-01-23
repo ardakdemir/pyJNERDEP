@@ -182,10 +182,11 @@ def write_results(exp_key, exp_logs, result_path):
 
 
 def hyperparameter_search():
-
-
-def train():
     args = parse_args()
+    
+
+
+def train(args):
     lang = args["lang"]
     model_type = args["word_embed_type"]
     save_folder = args["save_folder"]
@@ -293,4 +294,5 @@ def train():
 
 
 if __name__ == "__main__":
-    train()
+    args = parse_args()
+    train(args)
