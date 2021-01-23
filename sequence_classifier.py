@@ -12,11 +12,20 @@ from gensim.models import Word2Vec
 from transformers import AutoTokenizer, AutoModel, BertForPreTraining, BertForTokenClassification
 from constants import model_name_dict, encoding_map, word2vec_dict, fasttext_dict, word2vec_lens
 
+
 def embedding_initializer(dim, num_labels):
     embed = nn.Embedding(num_labels, dim)
     nn.init.uniform_(embed.weight, -np.sqrt(6 / (dim + num_labels)), np.sqrt(6 / (dim + num_labels)))
     return embed
 
+
+DEFAULT_CONFIG = {"hidden_dim": 128,
+                  "dropout": 0.25,
+                  "lstm_lr": 2e-3,
+                  "class_lr": 0.0015,
+                  "embed_lr": 2e-3,
+                  "bidirectional": True
+                  }
 
 RANDOM_DIM = 300
 
@@ -155,16 +164,17 @@ class MyBertModel(nn.Module):
 
 
 class SequenceClassifier(nn.Module):
-    def __init__(self, lang, word_vocab, model_type, num_cats, device):
+    def __init__(self, lang, word_vocab, model_type, device, num_cats, config={}):
         super(SequenceClassifier, self).__init__()
         self.lang = lang
+        self.config = DEFAULT_CONFIG
+        self.config.update(config)  # Override default config
         self.device = device
         self.word_vocab = word_vocab
         self.vocab_size = len(word_vocab)
-        self.hidden_dim = 128
-        self.bidirectional = True
         self.model_type = model_type
-
+        self.hidden_dim = self.config["hidden_dim"]
+        self.bidirectional = self.config["bidirectional"]
         self.num_cat = num_cats
         self.init_base_model()
 
@@ -173,10 +183,12 @@ class SequenceClassifier(nn.Module):
             self.classifier_input_dim = self.vector_dim
         self.classifier = nn.Linear(self.classifier_input_dim, num_cats)
         self.classifier_optimizer = optim.AdamW([{"params": self.classifier.parameters()}], \
-                                                lr=0.0015, eps=1e-6)
+                                                lr=self.config["class_lr"], eps=1e-6)
         # self.soft = nn.Softmax(dim=1)
+        self.dropout = nn.Dropout(p=self.config["dropout"])
         self.criterion = CrossEntropyLoss()
         # self.criterion = BCEWithLogitsLoss()
+
     def init_bert(self):
         if self.model_type in ["bert_en", "mbert"]:
             print("Initializing {} model".format(self.model_type))
@@ -206,7 +218,7 @@ class SequenceClassifier(nn.Module):
         print("Found {} out of {} words in word2vec for {} ".format(c, len(w2ind), self.lang))
         self.base_model = embed
         self.base_optimizer = optim.AdamW([{"params": self.base_model.parameters(),
-                                            'lr': 2e-3}])
+                                            'lr': self.config["embed_lr"]}])
         self.init_lstm()
 
     def init_fastext(self):
@@ -227,7 +239,7 @@ class SequenceClassifier(nn.Module):
         print("Found {} out of {} words in fastext for {} ".format(c, len(w2ind), self.lang))
         self.base_model = embed
         self.base_optimizer = optim.AdamW([{"params": self.base_model.parameters(),
-                                            'lr': 2e-3}])
+                                            'lr': self.config["embed_lr"]}])
         self.init_lstm()
 
     def init_randominit(self):
@@ -237,13 +249,13 @@ class SequenceClassifier(nn.Module):
         nn.init.uniform_(embed.weight, -np.sqrt(6 / (dim + self.vocab_size)), np.sqrt(6 / (dim + self.vocab_size)))
         self.base_model = embed
         self.base_optimizer = optim.AdamW([{"params": self.base_model.parameters(),
-                                            'lr': 2e-3}])
+                                            'lr': self.config["embed_lr"]}])
         self.init_lstm()
 
     def init_lstm(self):
-        self.lstm = nn.LSTM(self.vector_dim, self.hidden_dim, bidirectional=self.bidirectional)
+        self.lstm = nn.LSTM(self.vector_dim, self.config["hidden_dim"], bidirectional=self.config["bidirectional"])
         self.hidden_optimizer = optim.AdamW([{"params": self.lstm.parameters(),
-                                              'lr': 2e-3}])
+                                              'lr': self.config["lstm_lr"]}])
 
     def init_base_model(self):
         if self.model_type == "word2vec":
@@ -304,5 +316,6 @@ class SequenceClassifier(nn.Module):
             embed_out = self.get_embed_output(input)
             hidden, _ = self.lstm(embed_out)
             hidden_out = hidden[:, 0, :]
+        hidden_out = self.dropout(hidden_out)
         class_logits = self.classifier(hidden_out)
         return class_logits
