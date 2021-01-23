@@ -195,15 +195,19 @@ def hyperparameter_search():
     best_config = {}
     best_log = {}
     for values in product(*hyper_ranges):
-        config = {k: v for k,v in zip(keys, values)}
+        config = {k: v for k, v in zip(keys, values)}
+        print("Hyperparameter search for: {}".format(config))
         args.update(config)
         exp_logs, test_f1, test_acc = train(args)
         if test_acc > best_acc:
             best_acc = test_acc
             best_config = config
             best_log = exp_logs
-    print("\n\n===Hyperparameter Search is finished===\nBest Acc : {} Config: {}".format(best_acc,best_config))
+    print("\n\n===Hyperparameter Search is finished===\nBest Acc : {} Config: {}".format(best_acc, best_config))
     print("\n\nBest Exp log\n{}\n".format(best_log))
+    return best_log, best_config, best_acc
+
+
 def train(args):
     lang = args["lang"]
     model_type = args["word_embed_type"]
@@ -310,13 +314,32 @@ def train(args):
     return exp_logs, best_test_f1, best_test_acc
     # result_path = os.path.join(save_folder, args["sa_result_file"])
     # write_results(exp_key, exp_logs, result_path)
-    # print("Experiment json: {}".format(exp_log))
+    # print("Experiment json: {}".format(exp_logs))
     # exp_save_path = os.path.join(save_folder, exp_file)
     # with open(exp_save_path, "w") as o:
     #     json.dump(exp_logs, o)
 
 
-if __name__ == "__main__":
+def main():
     args = parse_args()
-    hyperparameter_search()
+
+    lang = args["lang"]
+    model_type = args["word_embed_type"]
+    save_folder = args["save_folder"]
+    domain = args["domain"]
+    exp_key = "_".join([domain, lang, model_type])
+    exp_file = args["exp_file"]
+
+
+    best_log, best_config, best_acc = hyperparameter_search()
+
+    result_path = os.path.join(save_folder, args["sa_result_file"])
+    write_results(exp_key, exp_logs, result_path)
+    print("Experiment json: {}".format(exp_log))
+    exp_save_path = os.path.join(save_folder, exp_file)
+    with open(exp_save_path, "w") as o:
+        json.dump(exp_logs, o)
+
+if __name__ == "__main__":
+    main()
     # exp_logs, best_test_f1, best_test_acc = train(args)

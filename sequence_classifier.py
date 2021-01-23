@@ -23,7 +23,7 @@ DEFAULT_CONFIG = {"hidden_dim": 128,
                   "dropout": 0.25,
                   "lstm_lr": 2e-3,
                   "class_lr": 0.0015,
-                  "embed_lr": 2e-3,
+                  "embed_lr": 0.015,
                   "bidirectional": True
                   }
 
