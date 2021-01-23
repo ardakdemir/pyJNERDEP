@@ -170,6 +170,7 @@ class SequenceClassifier(nn.Module):
         self.config = DEFAULT_CONFIG
         self.config.update(config)  # Override default config
         self.device = device
+        self.eval_mode = False
         self.word_vocab = word_vocab
         self.vocab_size = len(word_vocab)
         self.model_type = model_type
@@ -316,6 +317,6 @@ class SequenceClassifier(nn.Module):
             embed_out = self.get_embed_output(input)
             hidden, _ = self.lstm(embed_out)
             hidden_out = hidden[:, 0, :]
-        hidden_out = self.dropout(hidden_out)
+        hidden_out = self.dropout(hidden_out) if not self.eval_mode else hidden_out
         class_logits = self.classifier(hidden_out)
         return class_logits

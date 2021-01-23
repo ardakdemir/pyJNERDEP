@@ -26,6 +26,10 @@ model_name_dict = {"jp": "cl-tohoku/bert-base-japanese",
                    "mbert": "bert-base-multilingual-cased",
                    "bert_en": "bert-base-cased"}
 
+parameter_ranges = {"hidden_dim": [64, 128, 256],
+                    "dropout": [0.20, 0.30, 0.40, 0.50],
+                    "lstm_lr": [2e-3, 1e-3, 5e-2, 1e-2]}
+
 
 def init_tokenizer(lang, model_type):
     if model_type in ["mbert", "bert_en"]:
@@ -183,7 +187,6 @@ def write_results(exp_key, exp_logs, result_path):
 
 def hyperparameter_search():
     args = parse_args()
-    
 
 
 def train(args):
