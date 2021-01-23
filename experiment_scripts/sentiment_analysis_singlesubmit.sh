@@ -1,12 +1,13 @@
 /usr/local/bin/nosh
 
-
 eval_interval=${1}
 batch_size=${2}
 domain=${3}
 l=${4}
-type=${5}
-load_dir=${6}
+lang=${5}
+type=${6}
+load_dir=${7}
+
 exp_suf="$(date +"%m_%d_%H_%M")"
 echo "EXPERIMENT WILL BE STORED IN ${load_dir}"
 #$ -cwd
