@@ -1296,6 +1296,9 @@ class JointTrainer:
             logging.info(
                 "\n\nDEP Results -- pre : {}  rec : {} las-f1 : {}  uas-f1\n\n".format(dep_pre, dep_rec, dep_f1,
                                                                                        uas_f1))
+            print(
+                "\n\nDEP Results -- pre : {}  rec : {} las-f1 : {}  uas-f1\n\n".format(dep_pre, dep_rec, dep_f1,
+                                                                                       uas_f1))
             with open(os.path.join(self.args["save_dir"], self.args["dep_test_result_file"]), "a")  as o:
                 s = self.args['lang'] + "_" + self.args['word_embed_type']
                 s = s + "\t" + "\t".join([str(x) for x in [uas_f1, dep_f1]]) + "\n"

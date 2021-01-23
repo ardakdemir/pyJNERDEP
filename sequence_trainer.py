@@ -237,8 +237,10 @@ def train():
                 labels = data_tuple[3]
                 class_logits = seq_classifier(data)
                 loss = seq_classifier.loss(class_logits, labels)
+
                 loss.backward()
-                total_loss += loss.detach().cpu().item()
+                batch_loss = loss.detach().cpu().item()
+                total_loss += batch_loss
                 seq_classifier.optimizer_step()
                 if i % 100 == 99:
                     aver_loss = total_loss / (i + 1)

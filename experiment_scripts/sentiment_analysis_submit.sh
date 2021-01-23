@@ -11,7 +11,7 @@ echo "EXPERIMENT WILL BE STORED IN ${load_dir}"
 cd ~/parser/final_model
 
 #langs=(czech hungarian japanese english finnish  turkish)
-langs=(turkish)
+langs=("turkish")
 
 #lang_abr=("cs" "hu" "jp" "en" "fi" "tr")
 lang_abr=("tr")
@@ -21,7 +21,7 @@ for i in 0
 do
   lang=${langs[$i]}
   l=${lang_abr[$i]}
-  for j in 0 1
+  for j in 0
   do
     domain=${domains[$j]}
     echo "Language: "${lang}" Domain: "${domain}
