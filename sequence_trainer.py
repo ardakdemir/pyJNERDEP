@@ -193,15 +193,17 @@ def hyperparameter_search():
     hyper_ranges = [parameter_ranges[x] for x in keys]
     best_acc = 0
     best_config = {}
+    best_log = {}
     for values in product(*hyper_ranges):
-        config = {k: v in zip(keys, values)}
+        config = {k: v for k,v in zip(keys, values)}
         args.update(config)
         exp_logs, test_f1, test_acc = train(args)
         if test_acc > best_acc:
             best_acc = test_acc
             best_config = config
+            best_log = exp_logs
     print("\n\n===Hyperparameter Search is finished===\nBest Acc : {} Config: {}".format(best_acc,best_config))
-
+    print("\n\nBest Exp log\n{}\n".format(best_log))
 def train(args):
     lang = args["lang"]
     model_type = args["word_embed_type"]
