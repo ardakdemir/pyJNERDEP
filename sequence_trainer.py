@@ -73,7 +73,6 @@ def parse_args():
 
     parser.add_argument('--lstm_layers', type=int, default=3)
     parser.add_argument('--char_num_layers', type=int, default=1)
-    parser.add_argument('--pretrain_max_vocab', type=int, default=-1)
 
     parser.add_argument('--word_drop', type=float, default=0.3)
     parser.add_argument('--embed_drop', type=float, default=0.3)
@@ -182,6 +181,9 @@ def write_results(exp_key, exp_logs, result_path):
         o.write(s)
 
 
+def hyperparameter_search():
+
+
 def train():
     args = parse_args()
     lang = args["lang"]
@@ -255,7 +257,7 @@ def train():
             if f1 > best_f1:
                 best_model_weights = seq_classifier.state_dict()
                 best_f1 = f1
-                print("Current best model is at epoch: {}")
+                print("Current best model is at epoch: {}".format(e))
 
         end = time.time()
         train_time = round(end - begin)

@@ -164,7 +164,7 @@ class MyBertModel(nn.Module):
 
 
 class SequenceClassifier(nn.Module):
-    def __init__(self, lang, word_vocab, model_type, device, num_cats, config={}):
+    def __init__(self, lang, word_vocab, model_type, num_cats, device, config={}):
         super(SequenceClassifier, self).__init__()
         self.lang = lang
         self.config = DEFAULT_CONFIG
