@@ -201,6 +201,7 @@ def hyperparameter_search():
             best_acc = test_acc
             best_config = config
     print("\n\n===Hyperparameter Search is finished===\nBest Acc : {} Config: {}".format(best_acc,best_config))
+
 def train(args):
     lang = args["lang"]
     model_type = args["word_embed_type"]
@@ -315,4 +316,5 @@ def train(args):
 
 if __name__ == "__main__":
     args = parse_args()
-    exp_logs, best_test_f1, best_test_acc = train(args)
+    hyperparameter_search()
+    # exp_logs, best_test_f1, best_test_acc = train(args)
