@@ -328,17 +328,15 @@ def main():
     save_folder = args["save_folder"]
     domain = args["domain"]
     exp_key = "_".join([domain, lang, model_type])
-    exp_file = args["exp_file"]
-
+    exp_file = "sa_experiment_log_{}.json".format(exp_key)
 
     best_log, best_config, best_acc = hyperparameter_search()
-
     result_path = os.path.join(save_folder, args["sa_result_file"])
-    write_results(exp_key, exp_logs, result_path)
-    print("Experiment json: {}".format(exp_log))
+    write_results(exp_key, best_log, result_path)
+    print("Experiment json: {}".format(best_log))
     exp_save_path = os.path.join(save_folder, exp_file)
     with open(exp_save_path, "w") as o:
-        json.dump(exp_logs, o)
+        json.dump(best_log, o)
 
 if __name__ == "__main__":
     main()
