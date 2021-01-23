@@ -114,7 +114,7 @@ def parse_args():
 
 
 def evaluate(model, dataset):
-    if hasttr(model, eval_mode):
+    if hasattr(model, eval_mode):
         model.eval_mode = True
     dataset.for_eval = True
     tp = 0
