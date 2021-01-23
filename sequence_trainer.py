@@ -12,7 +12,7 @@ import copy
 from transformers import AutoTokenizer, AutoModel, BertForPreTraining, BertForTokenClassification
 from sequence_classifier import SequenceClassifier
 from sareader import SentReader
-
+from itertools import product
 import logging
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -95,7 +95,7 @@ def parse_args():
 
     parser.add_argument('--epochs', type=int, default=10)
     parser.add_argument('--repeat', type=int, default=1)
-    parser.add_argument('--eval_interval', type=int, default=100)
+    parser.add_argument('--eval_interval', type=int, default=-1)
     parser.add_argument('--batch_size', type=int, default=200)
     parser.add_argument('--model_save_name', type=str, default='best_sa_model.pkh', help="File name to save the model")
     parser.add_argument('--save_folder', type=str, default='../sa_savedir', help="Folder to save files")
@@ -114,6 +114,8 @@ def parse_args():
 
 
 def evaluate(model, dataset):
+    if hasttr(model, eval_mode):
+        model.eval_mode = True
     dataset.for_eval = True
     tp = 0
     fp = 0
@@ -187,8 +189,18 @@ def write_results(exp_key, exp_logs, result_path):
 
 def hyperparameter_search():
     args = parse_args()
-
-
+    keys = list(parameter_ranges.keys())
+    hyper_ranges = [parameter_ranges[x] for x in hyper_keys]
+    best_acc = 0
+    best_config = {}
+    for values in product(*hyper_ranges):
+        config = {k: v in zip(keys, values)}
+        args.update(config)
+        exp_logs, test_f1, test_acc = train(args)
+        if test_acc > best_acc:
+            best_acc = test_acc
+            best_config = config
+    print("\n\n===Hyperparameter Search is finished===\nBest Acc : {} Config: {}".format(best_acc,best_config))
 def train(args):
     lang = args["lang"]
     model_type = args["word_embed_type"]
@@ -221,6 +233,8 @@ def train(args):
         datasets[x].label_vocab.w2ind = datasets["train"].label_vocab.w2ind
     word_vocab = datasets["train"].word_vocab
     exp_logs = {}
+    best_test_f1 = 0
+    best_test_acc = 0
     for r in range(repeat):
         seq_classifier = SequenceClassifier(lang, word_vocab, model_type, num_cats, device)
 
@@ -228,6 +242,7 @@ def train(args):
         seq_classifier.to(device)
 
         eval_interval = args["eval_interval"]
+        eval_interval = len(datasets["train"]) if eval_interval == -1 else eval_interval
         epochs = args["epochs"]
         epochs_losses, accs, f1s, losses = [], [], [], []
         best_f1 = 0
@@ -273,6 +288,8 @@ def train(args):
         print("Evaluating on test")
         seq_classifier.load_state_dict(best_model_weights)
         acc, f1, loss = evaluate(seq_classifier, datasets["test"])
+        best_test_f1 = max(f1, best_test_f1)
+        best_test_acc = max(acc, best_test_acc)
         print("\n\n=== Test results === \n Acc:\t{}\nF1\t{}\nLoss\t{}\n\n".format(acc, f1, loss))
         exp_log = {"dev_acc": accs,
                    "dev_f1": f1s,
@@ -287,15 +304,15 @@ def train(args):
                    "test_file": file_map["test"],
                    "train_file": file_map["train"]}
         exp_logs[str(r)] = exp_log
-
-    result_path = os.path.join(save_folder, args["sa_result_file"])
-    write_results(exp_key, exp_logs, result_path)
-    print("Experiment json: {}".format(exp_log))
-    exp_save_path = os.path.join(save_folder, exp_file)
-    with open(exp_save_path, "w") as o:
-        json.dump(exp_logs, o)
+    return exp_logs, best_test_f1, best_test_acc
+    # result_path = os.path.join(save_folder, args["sa_result_file"])
+    # write_results(exp_key, exp_logs, result_path)
+    # print("Experiment json: {}".format(exp_log))
+    # exp_save_path = os.path.join(save_folder, exp_file)
+    # with open(exp_save_path, "w") as o:
+    #     json.dump(exp_logs, o)
 
 
 if __name__ == "__main__":
     args = parse_args()
-    train(args)
+    exp_logs, best_test_f1, best_test_acc = train(args)
