@@ -31,7 +31,7 @@ do
         exp_name=${domain}"_"${lang}"_"${type}"_"${exp_suf}
         exp_file="sa_experiment_log_"${domain}"_"${lang}"_"${type}".json"
         echo $train_path" "${lang}" "${domain}
-        qsub -N exp_name experiment_scripts/sentiment_analysis_singlesubmit.sh ${eval_interval} ${batch_size} ${domain} ${l} ${type} ${load_dir}
+        qsub -N $exp_name experiment_scripts/sentiment_analysis_singlesubmit.sh ${eval_interval} ${batch_size} ${domain} ${l} ${type} ${load_dir}
       done
     fi
   done
