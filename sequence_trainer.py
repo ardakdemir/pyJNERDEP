@@ -190,7 +190,7 @@ def write_results(exp_key, exp_logs, result_path):
 def hyperparameter_search():
     args = parse_args()
     keys = list(parameter_ranges.keys())
-    hyper_ranges = [parameter_ranges[x] for x in hyper_keys]
+    hyper_ranges = [parameter_ranges[x] for x in keys]
     best_acc = 0
     best_config = {}
     for values in product(*hyper_ranges):
