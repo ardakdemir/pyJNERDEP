@@ -26,9 +26,11 @@ model_name_dict = {"jp": "cl-tohoku/bert-base-japanese",
                    "mbert": "bert-base-multilingual-cased",
                    "bert_en": "bert-base-cased"}
 
-parameter_ranges = {"hidden_dim": [64, 128, 256],
-                    "dropout": [0.20, 0.30, 0.40, 0.50],
-                    "lstm_lr": [2e-3, 1e-3, 5e-2, 1e-2]}
+parameter_ranges = {"hidden_dim":[128],
+                    # "hidden_dim": [64, 128, 256],
+                    # "dropout": [0.20, 0.30, 0.40, 0.50],
+                    # "lstm_lr": [2e-3, 1e-3, 5e-2, 1e-2],
+                    "embed_lr":[0.001,0.01,0.002,0.005]}
 
 
 def init_tokenizer(lang, model_type):
@@ -203,6 +205,7 @@ def hyperparameter_search():
             best_acc = test_acc
             best_config = config
             best_log = exp_logs
+            best_log["best_config"] = best_config
     print("\n\n===Hyperparameter Search is finished===\nBest Acc : {} Config: {}".format(best_acc, best_config))
     print("\n\nBest Exp log\n{}\n".format(best_log))
     return best_log, best_config, best_acc

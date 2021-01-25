@@ -20,7 +20,7 @@ qsub -N dep_1801 experiment_scripts/joint_multilang_submit.sh DEP 1 500
 
 
 # CLI DEP example
-python jointtrainer_multilang.py --model_type DEP  --word_embed_type fastext  --word_only --log_file NER_bert_cs_log --lang en --batch_size 100 --epochs 10 --save_dir ../deneme1901_en_bert --repeat 1 --fix_embed
+python jointtrainer_multilang.py --model_type DEP  --word_embed_type fastext   --lang cs --batch_size 100 --epochs 10 --save_dir ../deneme2201_cs_fastext --repeat 1
 
 
 

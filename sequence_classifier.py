@@ -20,8 +20,8 @@ def embedding_initializer(dim, num_labels):
 
 
 DEFAULT_CONFIG = {"hidden_dim": 128,
-                  "dropout": 0.25,
-                  "lstm_lr": 2e-3,
+                  "dropout": 0.3,
+                  "lstm_lr": 0.05,
                   "class_lr": 0.0015,
                   "embed_lr": 0.015,
                   "bidirectional": True
