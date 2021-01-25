@@ -103,7 +103,7 @@ fasttext_dict = {"jp": "../word_vecs/jp/cc.jp.300.bin",
                  "hu": "../word_vecs/hu/fasttext_hu_768.bin",
                  "en": "../word_vecs/en/cc.en.300.bin",
                  "fi": "../word_vecs/fi/fasttext_fi_768.bin",
-                 "cs": "../word_vecs/cs/cc.cs.300.bin"}
+                 "cs": "../word_vecs/cs/fasttext_cs_768.bin"}
 
 word2vec_lens = {"tr": 200,
                  "hu": 300,
@@ -1186,8 +1186,8 @@ class JointTrainer:
                 ner_losses += ner_loss
                 dep_losses += dep_loss
                 if i % 100 == 99 and (not self.args['hyper'] == 1):
-                    logging.info("Average dep loss {} ".format(dep_losses / (i + 1)))
-                    logging.info("Average ner loss {} ".format(ner_losses / (i + 1)))
+                    logging.info("\nAverage dep loss {}\n".format(dep_losses / (i + 1)))
+                    logging.info("Average ner loss {}\n".format(ner_losses / (i + 1)))
 
             logging.info("Results for epoch : {}".format(e + 1))
             self.jointmodel.eval()
