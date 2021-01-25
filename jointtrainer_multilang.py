@@ -848,6 +848,7 @@ class JointTrainer:
         self.nertrainreader = DataReader(ner_train_name, "NER", batch_size=self.args['batch_size'],
                                          tokenizer=self.bert_tokenizer)
         self.deptraindataset = DepDataset(dep_train_name, batch_size=self.args['batch_size'],
+                                          for_eval=True,
                                           tokenizer=self.bert_tokenizer)
         if self.args['mode'] == 'predict':
             self.nervalreader = DataReader(ner_test_name, "NER", batch_size=self.args['batch_size'],
