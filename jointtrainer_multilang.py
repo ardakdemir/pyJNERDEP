@@ -1278,14 +1278,14 @@ class JointTrainer:
         if model_type != "NER":
             logging.info("Loading best weights")
 
-            lstm_weights  = self.jointparser.parserlstm.weight_ih_l0
+            lstm_weights  = self.depparser.parserlstm.weight_ih_l0
             logging.info("Weights before")
             logging.info(lstm_weights)
 
             ## Load
             self.jointmodel.load_state_dict(best_dep_model)
 
-            lstm_weights  = self.jointparser.parserlstm.weight_ih_l0
+            lstm_weights  = self.depparser.parserlstm.weight_ih_l0
             logging.info("Weights after")
             logging.info(lstm_weights)
 
