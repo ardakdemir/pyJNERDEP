@@ -695,7 +695,7 @@ class JointTrainer:
         self.getdatasets()
         print("Ner dataset contains {} batches".format(len(self.nertrainreader)))
         print("Dep dataset contains {}  batches ".format(len(self.deptraindataset)))
-        if self.args['eval_interval'] is None or self.args['eval_interval'] == -1: # -1 denotes use all
+        if self.args['eval_interval'] is None or self.args['eval_interval'] == -1:  # -1 denotes use all
             if self.args['model_type'] not in ['DEP', 'NER']:
                 self.args['eval_interval'] = min(len(self.nertrainreader), len(self.deptraindataset))
             elif self.args['model_type'] == 'DEP':
@@ -848,7 +848,6 @@ class JointTrainer:
         self.nertrainreader = DataReader(ner_train_name, "NER", batch_size=self.args['batch_size'],
                                          tokenizer=self.bert_tokenizer)
         self.deptraindataset = DepDataset(dep_train_name, batch_size=self.args['batch_size'],
-                                          for_eval=True,
                                           tokenizer=self.bert_tokenizer)
         if self.args['mode'] == 'predict':
             self.nervalreader = DataReader(ner_test_name, "NER", batch_size=self.args['batch_size'],
@@ -1170,6 +1169,7 @@ class JointTrainer:
             for param_group in self.jointmodel.base_model.embed_optimizer.param_groups:
                 print("Word embedding learning rates : {}".format(param_group['lr']))
 
+        self.deptraindataset.for_eval = True
         for e in tqdm(range(epoch), desc="Epoch"):
             train_loss = 0
             ner_losses = 0
