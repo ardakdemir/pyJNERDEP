@@ -98,8 +98,6 @@ fasttext_dict = {"jp": "../word_vecs/jp/cc.jp.300.bin",
                  "fi": "../word_vecs/fi/cc.fi.300.bin",
                  "cs": "../word_vecs/cs/cc.cs.300.bin"}
 
-
-
 # fasttext_dict = {"jp": "../word_vecs/jp/cc.jp.300.bin",
 #                  "tr": "../word_vecs/tr/cc.tr.300.bin",
 #                  "hu": "../word_vecs/hu/cc.hu.300.bin",
@@ -697,14 +695,23 @@ class JointTrainer:
         self.getdatasets()
         print("Ner dataset contains {} batches".format(len(self.nertrainreader)))
         print("Dep dataset contains {}  batches ".format(len(self.deptraindataset)))
-        if self.args['eval_interval'] is None:
+        if self.args['eval_interval'] is None or self.args['eval_interval'] == -1: # -1 denotes use all
             if self.args['model_type'] not in ['DEP', 'NER']:
                 self.args['eval_interval'] = min(len(self.nertrainreader), len(self.deptraindataset))
             elif self.args['model_type'] == 'DEP':
                 self.args['eval_interval'] = len(self.deptraindataset)
-
             elif self.args['model_type'] == 'NER':
                 self.args['eval_interval'] = len(self.nertrainreader)
+            print("Eval interval is set to {} ".format(self.args['eval_interval']))
+        else:
+            # Ensure maximum of len(dataset) iterations per epoch
+            if self.args['model_type'] not in ['DEP', 'NER']:
+                self.args['eval_interval'] = min(len(self.nertrainreader), len(self.deptraindataset),
+                                                 self.args['eval_interval'])
+            elif self.args['model_type'] == 'DEP':
+                self.args['eval_interval'] = min(len(self.deptraindataset), self.args['eval_interval'])
+            elif self.args['model_type'] == 'NER':
+                self.args['eval_interval'] = min(len(self.nertrainreader), self.args['eval_interval'])
             print("Eval interval is set to {} ".format(self.args['eval_interval']))
         self.args['ner_cats'] = len(self.nertrainreader.label_voc)
         print("Word vocabulary size  : {}".format(len(self.nertrainreader.word_voc)))
@@ -1162,7 +1169,7 @@ class JointTrainer:
             for param_group in self.jointmodel.base_model.embed_optimizer.param_groups:
                 print("Word embedding learning rates : {}".format(param_group['lr']))
 
-        for e in tqdm(range(epoch),desc="Epoch"):
+        for e in tqdm(range(epoch), desc="Epoch"):
             train_loss = 0
             ner_losses = 0
             dep_losses = 0
@@ -1174,7 +1181,7 @@ class JointTrainer:
             self.nertrainreader.for_eval = False
             self.jointmodel.train()
 
-            for i in tqdm(range(self.args['eval_interval']),desc="Training"):
+            for i in tqdm(range(self.args['eval_interval']), desc="Training"):
                 ner_loss, dep_loss = model_func(i, e)
                 ner_losses += ner_loss
                 dep_losses += dep_loss
@@ -1278,14 +1285,14 @@ class JointTrainer:
         if model_type != "NER":
             logging.info("Loading best weights")
 
-            lstm_weights  = self.jointmodel.depparser.parserlstm.weight_ih_l0
+            lstm_weights = self.jointmodel.depparser.parserlstm.weight_ih_l0
             logging.info("Weights before")
             logging.info(lstm_weights)
 
             ## Load
             self.jointmodel.load_state_dict(best_dep_model)
 
-            lstm_weights  = self.jointmodel.depparser.parserlstm.weight_ih_l0
+            lstm_weights = self.jointmodel.depparser.parserlstm.weight_ih_l0
             logging.info("Weights after")
             logging.info(lstm_weights)
 
@@ -1297,10 +1304,10 @@ class JointTrainer:
                                           "uas_f1": uas_f1}
             logging.info(
                 "\n\nDEP Results -- pre : {}  rec : {} las-f1 : {}  uas-f1: {}\n\n".format(dep_pre, dep_rec, dep_f1,
-                                                                                       uas_f1))
+                                                                                           uas_f1))
             print(
                 "\n\nDEP Results -- pre : {}  rec : {} las-f1 : {}  uas-f1: {}\n\n".format(dep_pre, dep_rec, dep_f1,
-                                                                                       uas_f1))
+                                                                                           uas_f1))
             with open(os.path.join(self.args["save_dir"], self.args["dep_test_result_file"]), "a")  as o:
                 s = self.args['lang'] + "_" + self.args['word_embed_type']
                 s = s + "\t" + "\t".join([str(x) for x in [uas_f1, dep_f1]]) + "\n"
