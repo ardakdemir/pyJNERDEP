@@ -1162,7 +1162,7 @@ class JointTrainer:
             for param_group in self.jointmodel.base_model.embed_optimizer.param_groups:
                 print("Word embedding learning rates : {}".format(param_group['lr']))
 
-        for e in range(epoch):
+        for e in tqdm(range(epoch),desc="Epoch"):
             train_loss = 0
             ner_losses = 0
             dep_losses = 0
@@ -1174,7 +1174,7 @@ class JointTrainer:
             self.nertrainreader.for_eval = False
             self.jointmodel.train()
 
-            for i in tqdm(range(self.args['eval_interval'])):
+            for i in tqdm(range(self.args['eval_interval']),desc="Training"):
                 ner_loss, dep_loss = model_func(i, e)
                 ner_losses += ner_loss
                 dep_losses += dep_loss
