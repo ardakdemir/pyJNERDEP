@@ -98,12 +98,12 @@ fasttext_dict = {"jp": "../word_vecs/jp/cc.jp.300.bin",
                  "fi": "../word_vecs/fi/cc.fi.300.bin",
                  "cs": "../word_vecs/cs/cc.cs.300.bin"}
 
-fasttext_dict = {"jp": "../word_vecs/jp/cc.jp.300.bin",
-                 "tr": "../word_vecs/tr/cc.tr.300.bin",
-                 "hu": "../word_vecs/hu/fasttext_hu_768.bin",
-                 "en": "../word_vecs/en/cc.en.300.bin",
-                 "fi": "../word_vecs/fi/fasttext_fi_768.bin",
-                 "cs": "../word_vecs/cs/fasttext_cs_768.bin"}
+# fasttext_dict = {"jp": "../word_vecs/jp/cc.jp.300.bin",
+#                  "tr": "../word_vecs/tr/cc.tr.300.bin",
+#                  "hu": "../word_vecs/hu/fasttext_hu_768.bin",
+#                  "en": "../word_vecs/en/cc.en.300.bin",
+#                  "fi": "../word_vecs/fi/fasttext_fi_768.bin",
+#                  "cs": "../word_vecs/cs/fasttext_cs_768.bin"}
 
 word2vec_lens = {"tr": 200,
                  "hu": 300,
@@ -505,7 +505,7 @@ class BaseModel(nn.Module):
 
         if self.args['word_embed_type'] in ["fastext", 'word2vec']:
             print("Whole vocab size {}".format(len(self.args['vocab'])))
-            self.w_dim = word2vec_lens[self.lang] if self.args['word_embed_type'] == "word2vec" else 768
+            self.w_dim = word2vec_lens[self.lang] if self.args['word_embed_type'] == "word2vec" else 300
             load_w2v = True if self.args['word_embed_type'] == 'word2vec' else False
             self.word_embeds = get_pretrained_word_embeddings(self.args['vocab'], self.args['lang'],
                                                               self.w_dim, self.args['wordvec_dir'],
