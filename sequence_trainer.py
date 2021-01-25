@@ -204,8 +204,8 @@ def hyperparameter_search():
         if test_acc > best_acc:
             best_acc = test_acc
             best_config = config
+            exp_logs["0"]["config"] = confg
             best_log = exp_logs
-            best_log["best_config"] = best_config
     print("\n\n===Hyperparameter Search is finished===\nBest Acc : {} Config: {}".format(best_acc, best_config))
     print("\n\nBest Exp log\n{}\n".format(best_log))
     return best_log, best_config, best_acc
