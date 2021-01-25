@@ -20,7 +20,10 @@ qsub -N dep_1801 experiment_scripts/joint_multilang_submit.sh DEP 1 500
 
 
 # CLI DEP example
-python jointtrainer_multilang.py --model_type DEP  --word_embed_type fastext   --lang cs --batch_size 100 --epochs 10 --save_dir ../deneme2201_cs_fastext --repeat 1
+python jointtrainer_multilang.py --model_type DEP  --word_embed_type fastext   --lang hu --batch_size 100 --epochs 10 --save_dir ../deneme2501_hu_fastext --repeat 1
+python jointtrainer_multilang.py --model_type DEP  --word_embed_type fastext   --lang fi --batch_size 100 --epochs 20 --save_dir ../deneme_wordonyl_2501_fi_fastext --repeat 1 --word_only
+python jointtrainer_multilang.py --model_type DEP  --word_embed_type fastext   --lang cs --batch_size 100 --epochs 10 --save_dir ../deneme_wordonyl_2501_cs_fastext --repeat 1 --word_only
+python jointtrainer_multilang.py --model_type DEP  --word_embed_type word2vec   --lang fi --batch_size 100 --epochs 10 --save_dir ../deneme_2501_fi_word2vec --repeat 1
 
 
 
@@ -33,7 +36,7 @@ python jointtrainer_multilang.py --model_type DEP  --word_embed_type bert  --wor
 python sequence_trainer.py --lang en --eval_interval 100 --batch_size 150 --word_embed_type fastext --sa_train_file ../../datasets/sa_movie_english-train.json  --sa_dev_file ../../datasets/sa_movie_english-dev.json  --sa_test_file ../../datasets/sa_movie_english-test.json
 
 
-python sequence_trainer.py --lang tr --eval_interval 100 --batch_size 150 --word_embed_type mbert --sa_train_file ../../datasets/sa_movie_turkish-train.json  --sa_dev_file ../../datasets/sa_movie_turkish-dev.json  --sa_test_file ../../datasets/sa_movie_turkish-test.json
+python sequence_trainer.py --lang tr --eval_interval -1 --batch_size 150 --word_embed_type fastext --sa_train_file ../../datasets/sa_movie_turkish-train.json  --sa_dev_file ../../datasets/sa_movie_turkish-dev.json  --sa_test_file ../../datasets/sa_movie_turkish-test.json
 
 
 

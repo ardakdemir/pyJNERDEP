@@ -1186,7 +1186,7 @@ class JointTrainer:
                 ner_losses += ner_loss
                 dep_losses += dep_loss
                 if i % 100 == 99 and (not self.args['hyper'] == 1):
-                    logging.info("\nAverage dep loss {}\n".format(dep_losses / (i + 1)))
+                    logging.info("\nAverage dep loss {}".format(dep_losses / (i + 1)))
                     logging.info("Average ner loss {}\n".format(ner_losses / (i + 1)))
 
             logging.info("Results for epoch : {}".format(e + 1))
