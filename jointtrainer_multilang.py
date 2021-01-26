@@ -601,6 +601,7 @@ class BaseModel(nn.Module):
         if "bert" in type:
             # logging.info("Getting word embedding with {}".format(type))
             batch_bert_ids, batch_seq_ids, bert2toks = word_embed_input
+            print("BERT IDS Shape: {}".format(batch_bert_ids.shape))
             bert_out = self.bert_model(batch_bert_ids, batch_seq_ids)
             # print(bert2toks)
             bert_hiddens = self._get_bert_batch_hidden(bert_out, bert2toks)
