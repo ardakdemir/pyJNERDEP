@@ -381,7 +381,7 @@ def parse_args():
     parser.add_argument('--ner_warmup', type=int, default=-1)
     parser.add_argument('--eval_interval', type=int, default=None)
     parser.add_argument('--max_steps_before_stop', type=int, default=3000)
-    parser.add_argument('--batch_size', type=int, default=500)
+    parser.add_argument('--batch_size', type=int, default=200)
     parser.add_argument('--max_grad_norm', type=float, default=1.0, help='Gradient clipping.')
     parser.add_argument('--max_depgrad_norm', type=float, default=5.0, help='Gradient clipping.')
     parser.add_argument('--log_step', type=int, default=20, help='Print log every k steps.')
@@ -601,7 +601,6 @@ class BaseModel(nn.Module):
         if "bert" in type:
             # logging.info("Getting word embedding with {}".format(type))
             batch_bert_ids, batch_seq_ids, bert2toks = word_embed_input
-            print("BERT IDS Shape: {}".format(batch_bert_ids.shape))
             bert_out = self.bert_model(batch_bert_ids, batch_seq_ids)
             # print(bert2toks)
             bert_hiddens = self._get_bert_batch_hidden(bert_out, bert2toks)
