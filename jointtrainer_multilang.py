@@ -381,7 +381,7 @@ def parse_args():
     parser.add_argument('--ner_warmup', type=int, default=-1)
     parser.add_argument('--eval_interval', type=int, default=None)
     parser.add_argument('--max_steps_before_stop', type=int, default=3000)
-    parser.add_argument('--batch_size', type=int, default=100)
+    parser.add_argument('--batch_size', type=int, default=300)
     parser.add_argument('--max_grad_norm', type=float, default=1.0, help='Gradient clipping.')
     parser.add_argument('--max_depgrad_norm', type=float, default=5.0, help='Gradient clipping.')
     parser.add_argument('--log_step', type=int, default=20, help='Print log every k steps.')
