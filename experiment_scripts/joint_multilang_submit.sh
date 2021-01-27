@@ -4,6 +4,7 @@ repeat=${2}
 eval_interval=${3}
 exp_pref=${4}
 exp_suf="$(date +"%m_%d_%H_%M")"
+epoch=3
 load_dir="../"${exp_pref}"_"${model_type}"_"${exp_suf}"/"
 #load_dir="../model_save_dir_DEP_03_14_21_26/"
 echo "EXPERIMENT WILL BE STORED IN ${load_dir}"
@@ -29,7 +30,7 @@ do
     do
         echo "Running for "${lang}"  "${type}"  pref  "${wvec_pref}
 
-        singularity exec --nv  --writable ~/singularity/pt-cuda-tf-tr-ft python jointtrainer_multilang.py --model_type ${model_type}  --word_embed_type ${type}    --log_file ${model_type}_log_${type}_${lang}_log.txt --lang ${wvec_pref}  --epochs 10 --save_dir $load_dir --repeat ${repeat} --eval_interval ${eval_interval}  
+        singularity exec --nv  --writable ~/singularity/pt-cuda-tf-tr-ft python jointtrainer_multilang.py --model_type ${model_type}  --word_embed_type ${type}    --log_file ${model_type}_log_${type}_${lang}_log.txt --lang ${wvec_pref}  --epochs ${epoch} --save_dir $load_dir --repeat ${repeat} --eval_interval ${eval_interval}
 #        if [ ! ${model_type} == 'NER' ]
 #        then
 #            singularity exec --nv ~/singularity/pt-cuda-tf-ft-gn python jointtrainer_multilang.py --model_type ${model_type}  --word_embed_type ${type}   --log_file ${model_type}_predlog_${type}_${lang} --lang ${wvec_pref} --mode predict --load_path  ${load_dir}${model_type}'_'$type'_'$wvec_pref'_best_dep_model.pkh' --load_model 1 --save_dir ${load_dir} >> ${load_dir}'dep_result_for_'${model_type}'_'${type}'_'${lang}'.txt' --batch_size 100  --word_embed_dim ${word_embed_dim}

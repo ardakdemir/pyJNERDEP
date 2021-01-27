@@ -24,7 +24,15 @@ python jointtrainer_multilang.py --model_type DEP  --word_embed_type fastext   -
 python jointtrainer_multilang.py --model_type DEP  --word_embed_type fastext   --lang fi --batch_size 100 --epochs 20 --save_dir ../deneme_wordonyl_2501_fi_fastext --repeat 1 --word_only
 python jointtrainer_multilang.py --model_type DEP  --word_embed_type fastext   --lang cs --batch_size 100 --epochs 10 --save_dir ../deneme_wordonyl_2501_cs_fastext --repeat 1 --word_only
 python jointtrainer_multilang.py --model_type DEP  --word_embed_type word2vec   --lang fi --batch_size 100 --epochs 10 --save_dir ../deneme_2501_fi_word2vec --repeat 1
+python jointtrainer_multilang.py --model_type DEP  --word_embed_type word2vec   --lang tr --batch_size 100 --epochs 10 --save_dir ../deneme_2501_tr_word2vec --repeat 1
 
+# Run remaining from CLI
+python jointtrainer_multilang.py --model_type DEP  --word_embed_type bert_en   --lang cs  --epochs 10 --save_dir ../dep_withpos_savedir_DEP_01_25_18_23 --repeat 1
+python jointtrainer_multilang.py --model_type DEP  --word_embed_type bert_en   --lang cs  --epochs 5 --save_dir ../dep_wordonly_2501_DEP_01_25_22_54 --repeat 1 --word_only --batch_size 100
+python jointtrainer_multilang.py --model_type DEP  --word_embed_type mbert   --lang cs  --epochs 5 --save_dir ../dep_wordonly_2501_DEP_01_25_22_54 --repeat 1 --word_only --batch_size 100
+
+# run some on cli NER
+python jointtrainer_multilang.py --model_type NER   --word_embed_type bert   --lang jp  --epochs 5 --save_dir ../ner_wordonly_2601_NER_denemee --repeat 1 --word_only --batch_size 300
 
 
 # test cuda oom for english dep
