@@ -31,8 +31,11 @@ python jointtrainer_multilang.py --model_type DEP  --word_embed_type bert_en   -
 python jointtrainer_multilang.py --model_type DEP  --word_embed_type bert_en   --lang cs  --epochs 5 --save_dir ../dep_wordonly_2501_DEP_01_25_22_54 --repeat 1 --word_only --batch_size 100
 python jointtrainer_multilang.py --model_type DEP  --word_embed_type mbert   --lang cs  --epochs 5 --save_dir ../dep_wordonly_2501_DEP_01_25_22_54 --repeat 1 --word_only --batch_size 100
 
-# run some on cli NER
-python jointtrainer_multilang.py --model_type NER   --word_embed_type bert   --lang jp  --epochs 5 --save_dir ../ner_wordonly_2601_NER_denemee --repeat 1 --word_only --batch_size 300
+# run some on cli NER withpos
+python jointtrainer_multilang.py --model_type NER   --word_embed_type random_init   --lang jp  --epochs 5 --save_dir ../ner_withpos_NER_01_26_22_55 --repeat 1 --batch_size 300
+# wordonly
+python jointtrainer_multilang.py --model_type NER   --word_embed_type random_init   --lang jp  --epochs 5 --save_dir ../ner_wordonly_NER_01_26_22_47 --repeat 1 --batch_size 300 --word_only
+
 
 
 # test cuda oom for english dep
