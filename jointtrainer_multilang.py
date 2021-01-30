@@ -898,10 +898,12 @@ class JointTrainer:
             merged_tok = merge_vocabs(self.nertrainreader.word_voc,self.nervalreader.word_voc)
             merged_tok = merge_vocabs(merged_tok,self.nertestreader.word_voc)
             self.nertrainreader.word_voc = merged_tok
+            self.whole_vocab = merged_tok
         elif self.model_type == "DEP":
             merged_tok = merge_vocabs(self.deptraindataset.vocabs['tok_vocab'],self.depvaldataset.vocabs['tok_vocab'])
             merged_tok = merge_vocabs(merged_tok,self.deptestdataset.vocabs['tok_vocab'])
             self.deptraindataset.vocabs['tok_vocab'] = merged_tok
+            self.whole_vocab = merged_tok
 
 
 
