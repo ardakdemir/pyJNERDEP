@@ -607,10 +607,13 @@ class BaseModel(nn.Module):
             bert_hiddens = self.dropout(bert_hiddens)
             return bert_hiddens
         else:
-            word_inds = word_embed_input
-            word_embeds = self.word_embeds(word_inds)
-            word_embeds = self.embed_dropout(word_embeds)
-            # print("Word embeddings shape {}".format(word_embeds.shape))
+            if type == "fastext":
+                x = 1
+            else:
+                word_inds = word_embed_input
+                word_embeds = self.word_embeds(word_inds)
+                word_embeds = self.embed_dropout(word_embeds)
+                # print("Word embeddings shape {}".format(word_embeds.shape))
             return word_embeds
 
     def forward(self, tok_inds, pos_ids, batch_bert_ids, batch_seq_ids, bert2toks, cap_inds, sent_lens):
@@ -680,6 +683,7 @@ class JointTrainer:
         self.lang = self.args['lang']
         self.word_embed_type = self.args["word_embed_type"]
         model_name = model_name_dict[self.lang]
+        self.model_type = self.args['model_type']
         print(self.lang, " ", model_name)
         if self.word_embed_type in ["mbert", "bert_en"]:
             model_name = model_name_dict[self.word_embed_type]
@@ -849,23 +853,18 @@ class JointTrainer:
                                          tokenizer=self.bert_tokenizer)
         self.deptraindataset = DepDataset(dep_train_name, batch_size=self.args['batch_size'],
                                           tokenizer=self.bert_tokenizer)
-        if self.args['mode'] == 'predict':
-            self.nervalreader = DataReader(ner_test_name, "NER", batch_size=self.args['batch_size'],
-                                           tokenizer=self.bert_tokenizer)
-            self.depvaldataset = DepDataset(dep_test_name, batch_size=self.args['batch_size'],
-                                            vocabs=self.deptraindataset.vocabs, for_eval=True,
-                                            tokenizer=self.bert_tokenizer)
-        else:
-            self.nervalreader = DataReader(ner_dev_name, "NER", batch_size=self.args['batch_size'],
-                                           tokenizer=self.bert_tokenizer)
-            self.depvaldataset = DepDataset(dep_dev_name, batch_size=self.args['batch_size'],
-                                            vocabs=self.deptraindataset.vocabs, for_eval=True,
-                                            tokenizer=self.bert_tokenizer)
-            self.nertestreader = DataReader(ner_test_name, "NER", batch_size=self.args['batch_size'],
-                                            tokenizer=self.bert_tokenizer)
-            self.deptestdataset = DepDataset(dep_test_name, batch_size=self.args['batch_size'],
-                                             vocabs=self.deptraindataset.vocabs, for_eval=True,
-                                             tokenizer=self.bert_tokenizer)
+        self.nervalreader = DataReader(ner_dev_name, "NER", batch_size=self.args['batch_size'],
+                                       tokenizer=self.bert_tokenizer)
+        self.depvaldataset = DepDataset(dep_dev_name, batch_size=self.args['batch_size'],
+                                        vocabs=self.deptraindataset.vocabs, for_eval=True,
+                                        tokenizer=self.bert_tokenizer)
+        self.nertestreader = DataReader(ner_test_name, "NER", batch_size=self.args['batch_size'],
+                                        tokenizer=self.bert_tokenizer)
+        self.deptestdataset = DepDataset(dep_test_name, batch_size=self.args['batch_size'],
+                                         vocabs=self.deptraindataset.vocabs, for_eval=True,
+                                         tokenizer=self.bert_tokenizer)
+
+
         # self.nervalreader.label_voc = self.nertrainreader.label_voc
         diff = set(self.nertrainreader.label_voc.w2ind) - set(self.nervalreader.label_voc.w2ind)
         diff = set(self.nervalreader.label_voc.w2ind) - set(self.nertrainreader.label_voc.w2ind)
@@ -887,13 +886,25 @@ class JointTrainer:
         print("NER pos tags")
         print(self.nertrainreader.pos_voc.w2ind)
 
-        merged_pos = merge_vocabs(self.nertrainreader.pos_voc, self.deptraindataset.vocabs['pos_vocab'])
-        merged_tok = merge_vocabs(self.nertrainreader.word_voc, self.deptraindataset.vocabs['tok_vocab'])
-        self.nertrainreader.word_voc = merged_tok
-        self.deptraindataset.vocabs['tok_vocab'] = merged_tok
-        self.nertrainreader.pos_voc = merged_pos
-        self.deptraindataset.vocabs['pos_vocab'] = merged_pos
-        self.whole_vocab = merged_tok
+        if self.model_type not in ["DEP","NER"]:
+            merged_pos = merge_vocabs(self.nertrainreader.pos_voc, self.deptraindataset.vocabs['pos_vocab'])
+            merged_tok = merge_vocabs(self.nertrainreader.word_voc, self.deptraindataset.vocabs['tok_vocab'])
+            self.nertrainreader.word_voc = merged_tok
+            self.deptraindataset.vocabs['tok_vocab'] = merged_tok
+            self.nertrainreader.pos_voc = merged_pos
+            self.deptraindataset.vocabs['pos_vocab'] = merged_pos
+            self.whole_vocab = merged_tok
+        elif self.model_type == "NER":
+            merged_tok = merge_vocabs(self.nertrainreader.word_voc,self.nervalreader.word_voc)
+            merged_tok = merge_vocabs(merged_tok,self.nertestreader.word_voc)
+            self.nertrainreader.word_voc = merged_tok
+        elif self.model_type == "DEP":
+            merged_tok = merge_vocabs(self.deptraindataset.vocabs['tok_vocab'],self.depvaldataset.vocabs['tok_vocab'])
+            merged_tok = merge_vocabs(merged_tok,self.deptestdataset.vocabs['tok_vocab'])
+            self.deptraindataset.vocabs['tok_vocab'] = merged_tok
+
+
+
         print("After merging")
         print("Dependency pos tags ")
         print(self.deptraindataset.vocabs['pos_vocab'].w2ind)
@@ -908,12 +919,12 @@ class JointTrainer:
         self.nervalreader.pos_voc = self.nertrainreader.pos_voc
         self.nervalreader.num_cats = self.nertrainreader.num_cats
 
-        if self.args['mode'] != 'predict':
-            self.deptestdataset.vocabs = self.deptraindataset.vocabs
-            self.nertestreader.word_voc = merged_tok
-            self.nertestreader.label_voc = self.nertrainreader.label_voc
-            self.nertestreader.pos_voc = self.nertrainreader.pos_voc
-            self.nertestreader.num_cats = self.nertrainreader.num_cats
+
+        self.deptestdataset.vocabs = self.deptraindataset.vocabs
+        self.nertestreader.word_voc = merged_tok
+        self.nertestreader.label_voc = self.nertrainreader.label_voc
+        self.nertestreader.pos_voc = self.nertrainreader.pos_voc
+        self.nertestreader.num_cats = self.nertrainreader.num_cats
 
         self.args['vocab_size'] = len(self.nertrainreader.word_voc)
         self.args['pos_vocab_size'] = len(self.deptraindataset.vocabs['pos_vocab'])
