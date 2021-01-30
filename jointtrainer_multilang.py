@@ -607,13 +607,10 @@ class BaseModel(nn.Module):
             bert_hiddens = self.dropout(bert_hiddens)
             return bert_hiddens
         else:
-            if type == "fastext":
-                x = 1
-            else:
-                word_inds = word_embed_input
-                word_embeds = self.word_embeds(word_inds)
-                word_embeds = self.embed_dropout(word_embeds)
-                # print("Word embeddings shape {}".format(word_embeds.shape))
+            word_inds = word_embed_input
+            word_embeds = self.word_embeds(word_inds)
+            word_embeds = self.embed_dropout(word_embeds)
+            # print("Word embeddings shape {}".format(word_embeds.shape))
             return word_embeds
 
     def forward(self, tok_inds, pos_ids, batch_bert_ids, batch_seq_ids, bert2toks, cap_inds, sent_lens):
