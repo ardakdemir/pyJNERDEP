@@ -348,7 +348,6 @@ def main():
 
     result_path = os.path.join(save_folder, args["sa_result_file"])
     write_results(exp_key, exp_logs, result_path)
-    print("Experiment json: {}".format(best_log))
     exp_save_path = os.path.join(save_folder, exp_file)
     with open(exp_save_path, "w") as o:
         json.dump(exp_logs, o)
