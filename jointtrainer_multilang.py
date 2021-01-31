@@ -700,7 +700,6 @@ class JointTrainer:
             if self.args['model_type'] not in ['DEP', 'NER']:
                 self.args['eval_interval'] = min(len(self.nertrainreader), len(self.deptraindataset))
                 max_len = max(len(self.nertrainreader), len(self.deptraindataset))
-
             elif self.args['model_type'] == 'DEP':
                 self.args['eval_interval'] = len(self.deptraindataset)
                 max_len = len(self.deptraindataset)
@@ -709,7 +708,6 @@ class JointTrainer:
                 max_len = self.nertrainreader
             print("Eval interval is set to {} ".format(self.args['eval_interval']))
         else:
-            # Ensure maximum of len(dataset) iterations per epoch
             if self.args['model_type'] not in ['DEP', 'NER']:
                 self.args['eval_interval'] = min(len(self.nertrainreader), len(self.deptraindataset),
                                                  self.args['eval_interval'])
