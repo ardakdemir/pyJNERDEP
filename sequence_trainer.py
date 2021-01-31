@@ -274,6 +274,7 @@ def train(args):
             acc = 0
             seq_classifier.train()
             datasets["train"].for_eval = False #For shuffling the input
+            seq_classifier.eval_mode = False
             for i in tqdm(range(eval_interval), "training"):
                 seq_classifier.zero_grad()
                 data = datasets["train"][i]
