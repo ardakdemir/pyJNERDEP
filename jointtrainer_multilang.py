@@ -933,14 +933,21 @@ class JointTrainer:
         assert self.args['dep_cats'] == self.deptraindataset.num_rels, 'Dependency types do not match'
         assert self.args['pos_vocab_size'] == self.deptraindataset.num_pos, " Pos vocab size do not match "
 
-        print("Training pos vocab : {}".format(self.nertrainreader.pos_voc.w2ind))
-        print("Testing  pos vocab : {}".format(self.nervalreader.pos_voc.w2ind))
+        print("NER Training pos vocab : {}".format(self.nertrainreader.pos_voc.w2ind))
+        print("NER Testing  pos vocab : {}".format(self.nervalreader.pos_voc.w2ind))
 
-        print("Training vocab size : {}".format(len(self.nertrainreader.word_voc)))
-        print("Test vocab size : {}".format(len(self.nervalreader.word_voc)))
+        print("NER Training vocab size : {}".format(len(self.nertrainreader.word_voc)))
+        print("NER Test vocab size : {}".format(len(self.nervalreader.word_voc)))
         diff = set(self.nervalreader.word_voc.w2ind) - set(self.nertrainreader.word_voc.w2ind)
-        print("{} words not in training set ".format(len(diff)))
+        print("NER {} words not in training set ".format(len(diff)))
         self.nervalreader.word_voc.w2ind = self.nertrainreader.word_voc.w2ind
+
+        print("DEP Training vocab size : {}".format(len(self.deptraindataset.vocabs['tok_vocab'].w2ind)))
+        print("DEP Validation vocab size : {}".format(len(self.depvaldataset.vocabs['tok_vocab'].w2ind)))
+        print("DEP Test vocab size : {}".format(len(self.depvaldataset.vocabs['tok_vocab'].w2ind)))
+        diff = set(self.deptraindataset.vocabs['tok_vocab'].w2ind) - set(self.depvaldataset.vocabs['tok_vocab'].w2ind)
+        print("DEP Val  {} words not in training set ".format(len(diff)))
+
 
     def forward(self, batch):
         tokens, bert_batch_after_padding, data = batch

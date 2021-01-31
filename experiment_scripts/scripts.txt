@@ -34,12 +34,13 @@ python jointtrainer_multilang.py --model_type DEP  --word_embed_type mbert   --l
 # run some on cli NER withpos
 python jointtrainer_multilang.py --model_type NER   --word_embed_type random_init   --lang jp  --epochs 5 --save_dir ../ner_withpos_NER_01_26_22_55 --repeat 1 --batch_size 300
 # wordonly
-python jointtrainer_multilang.py --model_type NER   --word_embed_type random_init   --lang jp  --epochs 5 --save_dir ../ner_wordonly_NER_01_26_22_47 --repeat 1 --batch_size 300 --word_only
+python jointtrainer_multilang.py --model_type NER   --word_embed_type fastext   --lang cs  --epochs 5 --save_dir ../ner_newvocab_3001 --repeat 1 --batch_size 300
 
 
 
 # test cuda oom for english dep
 python jointtrainer_multilang.py --model_type DEP  --word_embed_type bert  --word_only --log_file NER_bert_tr_log --lang en --batch_size 100 --epochs 3 --save_dir ../deneme1901_en_bert --repeat 1 --fix_embed
+python jointtrainer_multilang.py --model_type DEP  --word_embed_type fastext  --with_pos --log_file NER_bert_tr_log --lang cs --batch_size 100 --epochs 3 --save_dir ../dep_deneme_3101 --repeat 1 
 
 
 #sequence trainer example English
