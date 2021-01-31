@@ -26,11 +26,11 @@ model_name_dict = {"jp": "cl-tohoku/bert-base-japanese",
                    "mbert": "bert-base-multilingual-cased",
                    "bert_en": "bert-base-cased"}
 
-parameter_ranges = {"hidden_dim":[128],
+parameter_ranges = {"hidden_dim": [128],
                     # "hidden_dim": [64, 128, 256],
                     # "dropout": [0.20, 0.30, 0.40, 0.50],
                     # "lstm_lr": [2e-3, 1e-3, 5e-2, 1e-2],
-                    "embed_lr":[0.001,0.01,0.002,0.005]}
+                    "embed_lr": [0.001, 0.01, 0.002, 0.005]}
 
 
 def init_tokenizer(lang, model_type):
@@ -235,8 +235,18 @@ def train(args):
     datasets = {f: SentReader(file_map[f], batch_size=args["batch_size"], tokenizer=tokenizer) for f in file_map}
     num_cats = len(datasets["train"].label_vocab.w2ind)
 
+    def merge_vocabs(voc1, voc2):
+        for v in voc2.w2ind:
+            if v not in voc1.w2ind:
+                voc1.w2ind[v] = len(voc1.w2ind)
+        return voc1
+
     for k, v in datasets.items():
         print("{} number of batches: {}".format(k, len(v)))
+
+    # Merge vocabs of train-dev-test
+    for x in ["dev", "test"]:
+        datasets["train"].word_vocab = merge_vocabs(datasets["train"].word_vocab, datasets[x].word_vocab)
 
     for x in ["dev", "test"]:
         datasets[x].word_vocab.w2ind = datasets["train"].word_vocab.w2ind
@@ -340,6 +350,7 @@ def main():
     exp_save_path = os.path.join(save_folder, exp_file)
     with open(exp_save_path, "w") as o:
         json.dump(best_log, o)
+
 
 if __name__ == "__main__":
     main()

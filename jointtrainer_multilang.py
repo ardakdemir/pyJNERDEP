@@ -891,13 +891,11 @@ class JointTrainer:
 
             dep_merged_tok = merge_vocabs(self.deptraindataset.vocabs['tok_vocab'],
                                           self.depvaldataset.vocabs['tok_vocab'])
-            dep_merged_tok = merge_vocabs(merged_tok, self.deptestdataset.vocabs['tok_vocab'])
+            dep_merged_tok = merge_vocabs(dep_merged_tok, self.deptestdataset.vocabs['tok_vocab'])
 
             merged_tok = merge_vocabs(ner_merged_tok, dep_merged_tok)
-            self.nertrainreader.word_voc = merged_tok
-
             merged_pos = merge_vocabs(self.nertrainreader.pos_voc, self.deptraindataset.vocabs['pos_vocab'])
-            merged_tok = merge_vocabs(self.nertrainreader.word_voc, self.deptraindataset.vocabs['tok_vocab'])
+
             self.nertrainreader.word_voc = merged_tok
             self.deptraindataset.vocabs['tok_vocab'] = merged_tok
             self.nertrainreader.pos_voc = merged_pos
