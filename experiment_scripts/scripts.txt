@@ -38,13 +38,12 @@ python jointtrainer_multilang.py --model_type NER   --word_embed_type fastext   
 
 
 
-# test cuda oom for english dep
+# dep cli
 python jointtrainer_multilang.py --model_type DEP  --word_embed_type bert  --word_only --log_file NER_bert_tr_log --lang en --batch_size 100 --epochs 3 --save_dir ../deneme1901_en_bert --repeat 1 --fix_embed
-python jointtrainer_multilang.py --model_type DEP  --word_embed_type fastext  --with_pos --log_file NER_bert_tr_log --lang cs --batch_size 300 --epochs 3 --save_dir ../dep_deneme_3101 --repeat 1 
+python jointtrainer_multilang.py --model_type DEP  --word_embed_type fastext   --log_file DEP_log --lang cs --batch_size 100 --epochs 3 --save_dir ../dep_deneme_3101 --repeat 1
 
 
-#sequence trainer example English
-
+# sequence trainer example English
 python sequence_trainer.py --lang en --eval_interval 100 --batch_size 150 --word_embed_type fastext --sa_train_file ../../datasets/sa_movie_english-train.json  --sa_dev_file ../../datasets/sa_movie_english-dev.json  --sa_test_file ../../datasets/sa_movie_english-test.json
 
 
@@ -52,4 +51,5 @@ python sequence_trainer.py --lang tr --eval_interval -1 --batch_size 150 --word_
 
 
 
-qsub -N sa_2101_1530_r2
+# test cuda oom for english dep
+python jointtrainer_multilang.py --model_type FLAT  --word_embed_type fastext   --log_file DEP_log --lang cs --batch_size 100 --epochs 3 --save_dir ../dep_deneme_3101 --repeat 1
