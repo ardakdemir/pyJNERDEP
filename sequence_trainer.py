@@ -313,13 +313,13 @@ def train(args):
         print("Training time: {}".format(train_time))
         print("Evaluating on test")
 
-        before = self.classifier.weight
+        before = seq_classifier.classifier.weight
         print("\nBefore\n{}".format(before))
         seq_classifier.load_state_dict(best_model_weights)
-        after = self.classifier.weight
+        after = seq_classifier.classifier.weight
         print("\nAfter\n{}".format(after))
 
-        
+
         acc, f1, loss = evaluate(seq_classifier, datasets["test"])
         best_test_f1 = max(f1, best_test_f1)
         best_test_acc = max(acc, best_test_acc)
