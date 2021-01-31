@@ -333,6 +333,7 @@ def train(args):
     #     json.dump(exp_logs, o)
 
 
+
 def main():
     args = parse_args()
 
@@ -342,14 +343,15 @@ def main():
     domain = args["domain"]
     exp_key = "_".join([domain, lang, model_type])
     exp_file = "sa_experiment_log_{}.json".format(exp_key)
+    exp_logs, test_f1, test_acc  = train(args)
+    # best_log, best_config, best_acc = hyperparameter_search()
 
-    best_log, best_config, best_acc = hyperparameter_search()
     result_path = os.path.join(save_folder, args["sa_result_file"])
-    write_results(exp_key, best_log, result_path)
+    write_results(exp_key, exp_logs, result_path)
     print("Experiment json: {}".format(best_log))
     exp_save_path = os.path.join(save_folder, exp_file)
     with open(exp_save_path, "w") as o:
-        json.dump(best_log, o)
+        json.dump(exp_logs, o)
 
 
 if __name__ == "__main__":
