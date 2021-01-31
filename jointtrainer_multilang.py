@@ -709,11 +709,16 @@ class JointTrainer:
             if self.args['model_type'] not in ['DEP', 'NER']:
                 self.args['eval_interval'] = min(len(self.nertrainreader), len(self.deptraindataset),
                                                  self.args['eval_interval'])
+                max_len = max(len(self.nertrainreader), len(self.deptraindataset))
             elif self.args['model_type'] == 'DEP':
                 self.args['eval_interval'] = min(len(self.deptraindataset), self.args['eval_interval'])
+                max_len = len(self.deptraindataset)
             elif self.args['model_type'] == 'NER':
                 self.args['eval_interval'] = min(len(self.nertrainreader), self.args['eval_interval'])
+                max_len = self.nertrainreader
+
             print("Eval interval is set to {} ".format(self.args['eval_interval']))
+        self.args["epochs"] = 5 * max_len / self.args["eval_interval"]
         self.args['ner_cats'] = len(self.nertrainreader.label_voc)
         print("Word vocabulary size  : {}".format(len(self.nertrainreader.word_voc)))
         self.args['vocab'] = self.whole_vocab.w2ind
