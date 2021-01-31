@@ -255,6 +255,7 @@ def train(args):
     exp_logs = {}
     best_test_f1 = 0
     best_test_acc = 0
+    min_loss = 1000000
     for r in range(repeat):
         seq_classifier = SequenceClassifier(lang, word_vocab, model_type, num_cats, device)
 
@@ -266,11 +267,13 @@ def train(args):
         epochs = args["epochs"]
         epochs_losses, accs, f1s, losses = [], [], [], []
         best_f1 = 0
+        best_acc = 0
         begin = time.time()
         for e in tqdm(range(epochs), desc="Epoch"):
             total_loss = 0
             acc = 0
             seq_classifier.train()
+            datasets["train"].for_eval = False #For shuffling the input
             for i in tqdm(range(eval_interval), "training"):
                 seq_classifier.zero_grad()
                 data = datasets["train"][i]
@@ -293,9 +296,10 @@ def train(args):
             accs.append(round(acc, 3))
             f1s.append(round(f1, 3))
             losses.append(round(loss, 3))
-            if f1 > best_f1:
+            # if f1 > best_f1:
+            if acc > best_acc:
                 best_model_weights = seq_classifier.state_dict()
-                best_f1 = f1
+                best_acc = acc
                 print("Current best model is at epoch: {}".format(e))
 
         end = time.time()
