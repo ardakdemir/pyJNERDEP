@@ -19,8 +19,8 @@ def embedding_initializer(dim, num_labels):
     return embed
 
 
-DEFAULT_CONFIG = {"hidden_dim": 128,
-                  "dropout": 0.3,
+DEFAULT_CONFIG = {"hidden_dim": 196,
+                  "dropout": 0.4,
                   "lstm_lr": 0.05,
                   "class_lr": 0.0015,
                   "embed_lr": 0.015,
@@ -254,7 +254,7 @@ class SequenceClassifier(nn.Module):
         self.init_lstm()
 
     def init_lstm(self):
-        self.lstm = nn.LSTM(self.vector_dim, self.config["hidden_dim"], bidirectional=self.config["bidirectional"])
+        self.lstm = nn.LSTM(self.vector_dim, self.config["hidden_dim"],num_layers=3, bidirectional=self.config["bidirectional"])
         self.hidden_optimizer = optim.AdamW([{"params": self.lstm.parameters(),
                                               'lr': self.config["lstm_lr"]}])
 
