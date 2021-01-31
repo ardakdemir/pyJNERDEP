@@ -269,6 +269,7 @@ def train(args):
         best_f1 = 0
         best_acc = 0
         begin = time.time()
+        best_model_weights = None
         for e in tqdm(range(epochs), desc="Epoch"):
             total_loss = 0
             acc = 0
@@ -311,7 +312,14 @@ def train(args):
         print("Eval losses ", losses)
         print("Training time: {}".format(train_time))
         print("Evaluating on test")
+
+        before = self.classifier.weight
+        print("\nBefore\n{}".format(before))
         seq_classifier.load_state_dict(best_model_weights)
+        after = self.classifier.weight
+        print("\nAfter\n{}".format(after))
+
+        
         acc, f1, loss = evaluate(seq_classifier, datasets["test"])
         best_test_f1 = max(f1, best_test_f1)
         best_test_acc = max(acc, best_test_acc)
