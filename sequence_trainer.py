@@ -313,6 +313,7 @@ def train(args):
         print("Training time: {}".format(train_time))
         print("Evaluating on test")
 
+
         before = seq_classifier.classifier.weight
         print("\nBefore\n{}".format(before))
         seq_classifier.load_state_dict(best_model_weights)
