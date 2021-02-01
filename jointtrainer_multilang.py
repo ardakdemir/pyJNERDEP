@@ -1180,6 +1180,7 @@ class JointTrainer:
         best_model_nerrec = 0
         best_ner_model = None
         best_dep_model = None
+        best_joint_f1 = 0
         best_ner_epoch = 0
         best_dep_epoch = 0
         ner_patience = 0
@@ -1280,7 +1281,8 @@ class JointTrainer:
                         break
             ner_patience, dep_patience = self.lr_updater(ner_patience, dep_patience)
 
-            if ner_f1 > best_ner_f1 and dep_f1 > best_dep_f1:
+            if ner_f1 + dep_f1 > best_joint_f1:
+                best_joint_f1 = ner_f1 + dep_f1
                 self.save_model(save_name)
             self.jointmodel.train()
 
@@ -1324,7 +1326,7 @@ class JointTrainer:
             logging.info(lstm_weights)
 
             ## Load
-            self.jointmodel.load_state_dict(best_dep_model)
+            self.load_model(save_dep_name)
 
             lstm_weights = self.jointmodel.depparser.parserlstm.weight_ih_l0
             logging.info("Weights after")
@@ -1355,7 +1357,7 @@ class JointTrainer:
                 break
             logging.info("Best ner model")
 
-            self.jointmodel.load_state_dict(best_ner_model)
+            self.load_model(save_ner_name)
             logging.info("Loading best weights")
             logging.info("Weights after")
             for x in self.jointmodel.parameters():
@@ -1385,6 +1387,12 @@ class JointTrainer:
         del arg['device']
         with open(config_path, 'w') as outfile:
             json.dump(arg, outfile)
+
+    def load_model(self, save_name):
+        save_path = os.path.join(self.args['save_dir'], save_name)
+        model_weights = torch.load(save_path)
+        self.jointmodel.load_state_dict(model_weights)
+
 
     def dep_evaluate(self):
         logging.info("Evaluating dependency performance on {}".format(self.depvaldataset.file_name))
