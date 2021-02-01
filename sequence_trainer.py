@@ -13,6 +13,7 @@ from transformers import AutoTokenizer, AutoModel, BertForPreTraining, BertForTo
 from sequence_classifier import SequenceClassifier
 from sareader import SentReader
 from itertools import product
+from functools import reduce
 import logging
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -274,7 +275,7 @@ def train(args):
             total_loss = 0
             acc = 0
             seq_classifier.train()
-            datasets["train"].for_eval = False #For shuffling the input
+            datasets["train"].for_eval = False  # For shuffling the input
             seq_classifier.eval_mode = False
             for i in tqdm(range(eval_interval), "training"):
                 seq_classifier.zero_grad()
@@ -313,13 +314,13 @@ def train(args):
         print("Training time: {}".format(train_time))
         print("Evaluating on test")
 
-
         before = seq_classifier.classifier.weight
-        print("\nBefore\n{}".format(before))
+        # print("\nBefore\n{}".format(before))
         seq_classifier.load_state_dict(best_model_weights)
         after = seq_classifier.classifier.weight
-        print("\nAfter\n{}".format(after))
-
+        diff_count = torch.sum(before != after)
+        print("{}/{} indices differ after loading".format(diff_count,reduce(lambda x,y:x*y, before.size(),1)))
+        # print("\nAfter\n{}".format(after))
 
         acc, f1, loss = evaluate(seq_classifier, datasets["test"])
         best_test_f1 = max(f1, best_test_f1)
@@ -347,7 +348,6 @@ def train(args):
     #     json.dump(exp_logs, o)
 
 
-
 def main():
     args = parse_args()
 
@@ -357,7 +357,7 @@ def main():
     domain = args["domain"]
     exp_key = "_".join([domain, lang, model_type])
     exp_file = "sa_experiment_log_{}.json".format(exp_key)
-    exp_logs, test_f1, test_acc  = train(args)
+    exp_logs, test_f1, test_acc = train(args)
     # best_log, best_config, best_acc = hyperparameter_search()
 
     result_path = os.path.join(save_folder, args["sa_result_file"])

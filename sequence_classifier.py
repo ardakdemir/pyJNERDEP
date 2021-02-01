@@ -20,10 +20,10 @@ def embedding_initializer(dim, num_labels):
 
 
 DEFAULT_CONFIG = {"hidden_dim": 196,
-                  "dropout": 0.4,
-                  "lstm_lr": 0.05,
+                  "dropout": 0.5,
+                  "lstm_lr": 0.001,
                   "class_lr": 0.0015,
-                  "embed_lr": 0.015,
+                  "embed_lr": 0.0015,
                   "num_layers": 3,
                   "bidirectional": True
                   }
@@ -308,7 +308,6 @@ class SequenceClassifier(nn.Module):
         self.classifier_optimizer.step()
         if hasattr(self, "hidden_optimizer"):
             self.hidden_optimizer.step()
-            print("Step for hidden lstm")
 
     def loss(self, class_logits, labels):
         labels = labels.to(self.device)
