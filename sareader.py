@@ -171,7 +171,7 @@ class SentReader():
         tokens = []
         for data in batch:
             sentence = data["text"]
-            toks = [CLS] + sentence.split(" ")
+            toks =  sentence.split(" ")
             label = data["label"]
             labels.append(self.label_vocab.map([label])[0])  # To enforce correct shape
             indices = self.word_vocab.map(toks)
