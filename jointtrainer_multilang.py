@@ -1387,8 +1387,7 @@ class JointTrainer:
     def load_model(self, save_name):
         save_path = os.path.join(self.args['save_dir'], save_name)
         print("Loading model from {}".format(save_path))
-        model_weights = torch.load(save_path)
-        self.jointmodel.load_state_dict(model_weights)
+        self.jointmodel.load_state_dict( torch.load(save_path))
 
     def dep_evaluate(self):
         logging.info("Evaluating dependency performance on {}".format(self.depvaldataset.file_name))
