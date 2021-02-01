@@ -189,8 +189,7 @@ class SequenceClassifier(nn.Module):
         if "bert" in model_type:
             self.classifier_input_dim = self.vector_dim
         self.classifier = nn.Linear(self.classifier_input_dim, num_cats)
-        self.classifier_optimizer = optim.AdamW([{"params": self.classifier.parameters()}], \
-                                                lr=self.config["class_lr"]
+        self.classifier_optimizer = optim.AdamW(self.classifier.parameters(), lr=self.config["class_lr"])
         # self.soft = nn.Softmax(dim=1)
         self.classifier_scheduler = ReduceLROnPlateau(self.classifier_optimizer, 'max', factor=self.config["lr_decay"],
                                                       patience=self.config["lr_patience"])
@@ -227,8 +226,7 @@ class SequenceClassifier(nn.Module):
                 c += 1
         print("Found {} out of {} words in word2vec for {} ".format(c, len(w2ind), self.lang))
         self.base_model = embed
-        self.base_optimizer = optim.AdamW([{"params": self.base_model.parameters(),
-                                            'lr': self.config["embed_lr"]}])
+        self.base_optimizer = optim.AdamW(self.base_model.parameters(), lr=self.config["embed_lr"])
         self.init_lstm()
 
     def init_fastext(self):
@@ -248,8 +246,7 @@ class SequenceClassifier(nn.Module):
             embed.weight.data[ind].copy_(ft_vec)
         print("Found {} out of {} words in fastext for {} ".format(c, len(w2ind), self.lang))
         self.base_model = embed
-        self.base_optimizer = optim.AdamW([{"params": self.base_model.parameters(),
-                                            'lr': self.config["embed_lr"]}])
+        self.base_optimizer = optim.AdamW(self.base_model.parameters(), lr=self.config["embed_lr"])
         self.init_lstm()
 
     def init_randominit(self):
@@ -258,16 +255,14 @@ class SequenceClassifier(nn.Module):
         embed = nn.Embedding(self.vocab_size, self.vector_dim)
         nn.init.uniform_(embed.weight, -np.sqrt(6 / (dim + self.vocab_size)), np.sqrt(6 / (dim + self.vocab_size)))
         self.base_model = embed
-        self.base_optimizer = optim.AdamW([{"params": self.base_model.parameters(),
-                                            'lr': self.config["embed_lr"]}])
+        self.base_optimizer = optim.AdamW(self.base_model.parameters(), lr=self.config["embed_lr"])
         self.init_lstm()
 
     def init_lstm(self):
         self.lstm = nn.LSTM(self.vector_dim, self.config["hidden_dim"], num_layers=self.num_layers,
                             batch_first=True,
                             bidirectional=self.config["bidirectional"])
-        self.hidden_optimizer = optim.AdamW([{"params": self.lstm.parameters(),
-                                              'lr': self.config["lstm_lr"]}])
+        self.hidden_optimizer = optim.AdamW(self.lstm.parameters(), lr=self.config["lstm_lr"])
         self.lstm_scheduler = ReduceLROnPlateau(self.hidden_optimizer, 'max', factor=self.config["lr_decay"],
                                                 patience=self.config["lr_patience"])
 

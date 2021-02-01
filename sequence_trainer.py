@@ -262,6 +262,7 @@ def train(args):
     for r in range(repeat):
         seq_classifier = SequenceClassifier(lang, word_vocab, model_type, num_cats, device)
         bias_before_training = seq_classifier.classifier.bias
+        print("Bias before training: {}".format(bias_before_training))
         seq_classifier.train()
         seq_classifier.to(device)
 
