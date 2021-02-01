@@ -705,7 +705,7 @@ class JointTrainer:
                 max_len = len(self.deptraindataset)
             elif self.args['model_type'] == 'NER':
                 self.args['eval_interval'] = len(self.nertrainreader)
-                max_len = self.nertrainreader
+                max_len = len(self.nertrainreader)
             print("Eval interval is set to {} ".format(self.args['eval_interval']))
         else:
             if self.args['model_type'] not in ['DEP', 'NER']:
@@ -717,7 +717,7 @@ class JointTrainer:
                 max_len = len(self.deptraindataset)
             elif self.args['model_type'] == 'NER':
                 self.args['eval_interval'] = min(len(self.nertrainreader), self.args['eval_interval'])
-                max_len = self.nertrainreader
+                max_len = len(self.nertrainreader)
 
             print("Eval interval is set to {} ".format(self.args['eval_interval']))
         self.args["epochs"] = int(5 * max_len / self.args["eval_interval"])
@@ -1147,7 +1147,6 @@ class JointTrainer:
 
         return ner_loss, dep_loss
 
-
     def pos_train(self):
         x = 1
 
@@ -1392,7 +1391,6 @@ class JointTrainer:
         save_path = os.path.join(self.args['save_dir'], save_name)
         model_weights = torch.load(save_path)
         self.jointmodel.load_state_dict(model_weights)
-
 
     def dep_evaluate(self):
         logging.info("Evaluating dependency performance on {}".format(self.depvaldataset.file_name))
