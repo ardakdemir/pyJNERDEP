@@ -294,10 +294,12 @@ def train(args):
                 if i % 100 == 99:
                     aver_loss = total_loss / (i + 1)
                     print("Average loss at {} steps: {}".format(i + 1, aver_loss))
+
             epochs_losses.append(round(total_loss / eval_interval, 5))
             print("Evaluating the model")
             seq_classifier.eval()
             acc, f1, loss = evaluate(seq_classifier, datasets["dev"])
+            seq_classifier.lr_scheduling(acc)
             accs.append(round(acc, 3))
             f1s.append(round(f1, 3))
             losses.append(round(loss, 3))

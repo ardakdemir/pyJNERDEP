@@ -189,7 +189,7 @@ class SequenceClassifier(nn.Module):
         self.classifier_optimizer = optim.AdamW([{"params": self.classifier.parameters()}], \
                                                 lr=self.config["class_lr"], eps=1e-6)
         # self.soft = nn.Softmax(dim=1)
-        self.classifier_scheduler = ReduceLROnPlateau(self.classifier_optimizer, 'min', patience=5)
+        self.classifier_scheduler = ReduceLROnPlateau(self.classifier_optimizer, 'max', patience=5)
 
         self.dropout = nn.Dropout(p=self.config["dropout"])
         self.criterion = CrossEntropyLoss()
@@ -264,7 +264,7 @@ class SequenceClassifier(nn.Module):
                             bidirectional=self.config["bidirectional"])
         self.hidden_optimizer = optim.AdamW([{"params": self.lstm.parameters(),
                                               'lr': self.config["lstm_lr"]}])
-        self.lstm_scheduler = ReduceLROnPlateau(self.hidden_optimizer, 'min', patience=5)
+        self.lstm_scheduler = ReduceLROnPlateau(self.hidden_optimizer, 'max', patience=5)
 
     def init_base_model(self):
         if self.model_type == "word2vec":
