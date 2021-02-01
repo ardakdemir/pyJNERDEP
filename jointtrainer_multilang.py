@@ -1351,7 +1351,7 @@ class JointTrainer:
         if model_type != "DEP":
             logging.info("Loading best weights")
             logging.info("Weights before")
-            for x in self.jointmodel.parameters():
+            for x in self.jointmodel.nermodel.parameters():
                 print(x)
                 break
             logging.info("Best ner model")
@@ -1359,7 +1359,7 @@ class JointTrainer:
             self.load_model(save_ner_name)
             logging.info("Loading best weights")
             logging.info("Weights after")
-            for x in self.jointmodel.parameters():
+            for x in self.jointmodel.nermodel.parameters():
                 print(x)
                 break
             self.nervalreader = self.nertestreader
