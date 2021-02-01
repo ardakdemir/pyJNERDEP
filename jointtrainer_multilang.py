@@ -940,11 +940,10 @@ class JointTrainer:
         if not self.model_type == "NER":
             self.args['pos_vocab_size'] = len(self.deptraindataset.vocabs['pos_vocab'])
             self.deptraindataset.num_pos = len(self.deptraindataset.vocabs['pos_vocab'])
+
         else:
             self.args['pos_vocab_size'] = len(self.nertrainreader.pos_voc)
         self.args['dep_cats'] = len(self.deptraindataset.vocabs['dep_vocab'])
-        assert self.args['dep_cats'] == self.deptraindataset.num_rels, 'Dependency types do not match'
-        assert self.args['pos_vocab_size'] == self.deptraindataset.num_pos, " Pos vocab size do not match "
 
         print("NER Training pos vocab : {}".format(self.nertrainreader.pos_voc.w2ind))
         print("NER Testing  pos vocab : {}".format(self.nervalreader.pos_voc.w2ind))
