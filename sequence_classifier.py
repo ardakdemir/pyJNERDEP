@@ -298,11 +298,13 @@ class SequenceClassifier(nn.Module):
         if hasattr(self, "hidden_optimizer"):
             self.hidden_optimizer.zero_grad()
 
+
     def optimizer_step(self):
         self.base_optimizer.step()
         self.classifier_optimizer.step()
         if hasattr(self, "hidden_optimizer"):
             self.hidden_optimizer.step()
+            print("Step for hidden lstm")
 
     def loss(self, class_logits, labels):
         labels = labels.to(self.device)
@@ -314,6 +316,8 @@ class SequenceClassifier(nn.Module):
             bert_output = self.get_bert_output(input)
             hidden_out = bert_output[:, 0, :]
         else:
+            print("embedding input shape")
+            print(input)
             embed_out = self.get_embed_output(input)
             hidden, _ = self.lstm(embed_out)
             hidden_out = hidden[:, 0, :]

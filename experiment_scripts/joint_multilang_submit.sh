@@ -25,8 +25,8 @@ do
     wvec_pref=${word_vec_prefs[$i]}
 
 #    for type in bert mbert bert_en fastext word2vec random_init
-#    for type in bert mbert bert_en
-    for type in fastext word2vec random_init
+#    for type in fastext word2vec random_init
+    for type in bert mbert bert_en
     do
         echo "Running for "${lang}"  "${type}"  pref  "${wvec_pref}
 
