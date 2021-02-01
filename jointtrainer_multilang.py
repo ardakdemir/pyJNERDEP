@@ -1354,14 +1354,14 @@ class JointTrainer:
             print(lstm_w)
             logging.info("Best ner model")
 
-            self.load_model(save_ner_name)
+            # self.load_model(save_ner_name)
             logging.info("Weights after")
             lstm_w = self.jointmodel.nermodel.nerlstm.weight_ih_l0
             print(lstm_w)
 
             self.nervalreader = self.nertestreader
             self.nervalreader.for_eval = True
-            print("Frist time")
+            print("First time")
             ner_pre, ner_rec, ner_f1 = self.ner_evaluate()
             experiment_log["ner_test"] = {"pre": ner_pre,
                                           "rec": ner_rec,
