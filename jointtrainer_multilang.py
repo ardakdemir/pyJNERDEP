@@ -937,7 +937,7 @@ class JointTrainer:
         self.nertestreader.num_cats = self.nertrainreader.num_cats
 
         self.args['vocab_size'] = len(self.nertrainreader.word_voc)
-        if not self.model_type == "NER"
+        if not self.model_type == "NER":
             self.args['pos_vocab_size'] = len(self.deptraindataset.vocabs['pos_vocab'])
             self.deptraindataset.num_pos = len(self.deptraindataset.vocabs['pos_vocab'])
         else:
