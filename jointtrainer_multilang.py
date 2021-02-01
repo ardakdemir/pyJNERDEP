@@ -911,7 +911,7 @@ class JointTrainer:
         elif self.model_type == "NER":
             merged_tok = merge_vocabs(self.nertrainreader.word_voc, self.nervalreader.word_voc)
             merged_tok = merge_vocabs(merged_tok, self.nertestreader.word_voc)
-            self.nertrainreader.word_voc = merged_tok
+            self.nertrainreader.word_voc.w2ind = merged_tok.w2ind
             self.whole_vocab = merged_tok
         elif self.model_type == "DEP":
             merged_tok = merge_vocabs(self.deptraindataset.vocabs['tok_vocab'], self.depvaldataset.vocabs['tok_vocab'])
@@ -928,15 +928,15 @@ class JointTrainer:
         print("DEP vocab size {} ".format(len(self.deptraindataset.vocabs['tok_vocab'].w2ind)))
 
         self.depvaldataset.vocabs = self.deptraindataset.vocabs
-        self.nervalreader.word_voc = merged_tok
-        self.nervalreader.label_voc = self.nertrainreader.label_voc
-        self.nervalreader.pos_voc = self.nertrainreader.pos_voc
+        self.nervalreader.word_voc.w2ind = merged_tok.w2ind
+        self.nervalreader.label_voc.w2ind = self.nertrainreader.label_voc.w2ind
+        self.nervalreader.pos_voc.w2ind = self.nertrainreader.pos_voc.w2ind
         self.nervalreader.num_cats = self.nertrainreader.num_cats
 
         self.deptestdataset.vocabs = self.deptraindataset.vocabs
-        self.nertestreader.word_voc = merged_tok
-        self.nertestreader.label_voc = self.nertrainreader.label_voc
-        self.nertestreader.pos_voc = self.nertrainreader.pos_voc
+        self.nertestreader.word_voc.w2ind = merged_tok.w2ind
+        self.nertestreader.label_voc.w2ind = self.nertrainreader.label_voc.w2ind
+        self.nertestreader.pos_voc.w2ind = self.nertrainreader.pos_voc.w2ind
         self.nertestreader.num_cats = self.nertrainreader.num_cats
 
         self.args['vocab_size'] = len(self.nertrainreader.word_voc)
@@ -954,7 +954,7 @@ class JointTrainer:
         print("NER Test vocab size : {}".format(len(self.nervalreader.word_voc)))
         diff = set(self.nervalreader.word_voc.w2ind) - set(self.nertrainreader.word_voc.w2ind)
         print("NER {} words not in training set ".format(len(diff)))
-        self.nervalreader.word_voc.w2ind = self.nertrainreader.word_voc.w2ind
+        # self.nervalreader.word_voc.w2ind = self.nertrainreader.word_voc.w2ind
 
         print("DEP Training vocab size : {}".format(len(self.deptraindataset.vocabs['tok_vocab'].w2ind)))
         print("DEP Validation vocab size : {}".format(len(self.depvaldataset.vocabs['tok_vocab'].w2ind)))
@@ -1359,8 +1359,8 @@ class JointTrainer:
             lstm_w = self.jointmodel.nermodel.nerlstm.weight_ih_l0
             print(lstm_w)
 
-            # self.nervalreader = self.nertestreader
-            # self.nervalreader.for_eval = True
+            self.nervalreader = self.nertestreader
+            self.nervalreader.for_eval = True
             print("First time")
             ner_pre, ner_rec, ner_f1 = self.ner_evaluate()
             experiment_log["ner_test"] = {"pre": ner_pre,
