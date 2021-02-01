@@ -190,7 +190,7 @@ class SequenceClassifier(nn.Module):
             self.classifier_input_dim = self.vector_dim
         self.classifier = nn.Linear(self.classifier_input_dim, num_cats)
         self.classifier_optimizer = optim.AdamW([{"params": self.classifier.parameters()}], \
-                                                lr=self.config["class_lr"], eps=1e-6)
+                                                lr=self.config["class_lr"]
         # self.soft = nn.Softmax(dim=1)
         self.classifier_scheduler = ReduceLROnPlateau(self.classifier_optimizer, 'max', factor=self.config["lr_decay"],
                                                       patience=self.config["lr_patience"])
