@@ -781,6 +781,7 @@ class JointTrainer:
 
         self.nertrainreader.pos_vocab = self.pos_vocab
         self.nervalreader.pos_vocab = self.pos_vocab
+        self.nertestreader.pos_vocab = self.pos_vocab
 
         self.jointmodel.depparser.vocabs = self.deptraindataset.vocabs
         self.jointmodel.to(self.device)
@@ -1350,13 +1351,13 @@ class JointTrainer:
         if model_type != "DEP":
             logging.info("Loading best weights")
             logging.info("Weights before")
-            lstm_w = self.jointmodel.nermodel.nerlstm.weight_ih_l0
+            lstm_w = self.jointmodel.nermodel.crf.emission.weight
             print(lstm_w)
             logging.info("Best ner model")
 
-            # self.load_model(save_ner_name)
+            self.load_model(save_ner_name)
             logging.info("Weights after")
-            lstm_w = self.jointmodel.nermodel.nerlstm.weight_ih_l0
+            lstm_w = self.jointmodel.nermodel.crf.emission.weight
             print(lstm_w)
 
             self.nervalreader = self.nertestreader
@@ -1367,14 +1368,6 @@ class JointTrainer:
                                           "rec": ner_rec,
                                           "f1": ner_f1}
             logging.info("NER Results -- pre : {}  rec : {} f1 : {}  ".format(ner_pre, ner_rec, ner_f1))
-
-            print("Second time")
-            ner_pre, ner_rec, ner_f1 = self.ner_evaluate()
-            experiment_log["ner_test"] = {"pre": ner_pre,
-                                          "rec": ner_rec,
-                                          "f1": ner_f1}
-            logging.info("NER Results -- pre : {}  rec : {} f1 : {}  ".format(ner_pre, ner_rec, ner_f1))
-
 
 
             with open(os.path.join(self.args["save_dir"], self.args["ner_test_result_file"]), "a")  as o:
