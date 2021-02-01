@@ -309,7 +309,7 @@ class SequenceClassifier(nn.Module):
             self.hidden_optimizer.zero_grad()
 
     def lr_scheduling(self, metric):
-        classifier_scheduler.step(metric)
+        self.classifier_scheduler.step(metric)
 
         if hasattr(self, "hidden_optimizer"):
             self.lstm_scheduler.step(metric)
