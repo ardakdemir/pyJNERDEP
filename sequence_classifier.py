@@ -26,7 +26,7 @@ DEFAULT_CONFIG = {"hidden_dim": 196,
                   "class_lr": 0.0015,
                   "embed_lr": 0.0015,
                   "lr_patience": 2,
-                  "lr_decay": 0.5,
+                  "lr_decay": 0.9,
                   "num_layers": 3,
                   "bidirectional": True
                   }
