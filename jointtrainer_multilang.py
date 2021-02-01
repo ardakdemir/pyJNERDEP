@@ -1361,11 +1361,22 @@ class JointTrainer:
 
             self.nervalreader = self.nertestreader
             self.nervalreader.for_eval = True
+            print("Frist time")
             ner_pre, ner_rec, ner_f1 = self.ner_evaluate()
             experiment_log["ner_test"] = {"pre": ner_pre,
                                           "rec": ner_rec,
                                           "f1": ner_f1}
             logging.info("NER Results -- pre : {}  rec : {} f1 : {}  ".format(ner_pre, ner_rec, ner_f1))
+
+            print("Second time")
+            ner_pre, ner_rec, ner_f1 = self.ner_evaluate()
+            experiment_log["ner_test"] = {"pre": ner_pre,
+                                          "rec": ner_rec,
+                                          "f1": ner_f1}
+            logging.info("NER Results -- pre : {}  rec : {} f1 : {}  ".format(ner_pre, ner_rec, ner_f1))
+
+
+
             with open(os.path.join(self.args["save_dir"], self.args["ner_test_result_file"]), "a")  as o:
                 s = self.args['lang'] + "_" + self.args['word_embed_type']
                 s = s + "\t" + "\t".join([str(x) for x in [ner_pre, ner_rec, ner_f1]]) + "\n"
@@ -1375,6 +1386,9 @@ class JointTrainer:
 
     def save_model(self, save_name, weights=True):
         save_name = os.path.join(self.args['save_dir'], save_name)
+        print("Model's state_dict:")
+        for param_tensor in self.jointmodel.state_dict():
+            print(param_tensor, "\t" , self.jointmodel.state_dict()[param_tensor].size())
         if weights:
             logging.info("Saving best model to {}".format(save_name))
             torch.save(self.jointmodel.state_dict(), save_name)
