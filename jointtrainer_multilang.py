@@ -1359,8 +1359,8 @@ class JointTrainer:
             lstm_w = self.jointmodel.nermodel.nerlstm.weight_ih_l0
             print(lstm_w)
 
-            self.nervalreader = self.nertestreader
-            self.nervalreader.for_eval = True
+            # self.nervalreader = self.nertestreader
+            # self.nervalreader.for_eval = True
             print("First time")
             ner_pre, ner_rec, ner_f1 = self.ner_evaluate()
             experiment_log["ner_test"] = {"pre": ner_pre,
