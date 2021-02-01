@@ -2,6 +2,8 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.nn import CrossEntropyLoss, MSELoss, BCEWithLogitsLoss
+from torch.optim.lr_scheduler import ReduceLROnPlateau
+
 import numpy as np
 import time
 import os
