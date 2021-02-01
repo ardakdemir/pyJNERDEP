@@ -261,7 +261,7 @@ def train(args):
 
     for r in range(repeat):
         seq_classifier = SequenceClassifier(lang, word_vocab, model_type, num_cats, device)
-        bias_before_training = seq_classifier.classifier.bias
+        bias_before_training = seq_classifier.classifier.bias.detach().cpu().numpy()
         print("Bias before training: {}".format(bias_before_training))
         seq_classifier.train()
         seq_classifier.to(device)
@@ -321,10 +321,10 @@ def train(args):
         print("Eval losses ", losses)
         print("Training time: {}".format(train_time))
         print("Evaluating on test")
-        bias = seq_classifier.classifier.bias
+        bias = seq_classifier.classifier.bias.detach().cpu().numpy()
         # print("\nBefore\n{}".format(before))
         seq_classifier.load_state_dict(best_model_weights)
-        after = seq_classifier.classifier.bias
+        after = seq_classifier.classifier.bias.detach().cpu().numpy()
         diff_count = torch.sum(bias != after)
         print("{}/{} indices differ after loading".format(diff_count, reduce(lambda x, y: x * y, after.size(), 1)))
         print("Bias before training: {} after training {} after loading {}".format(bias_before_training, bias, after))
