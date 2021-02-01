@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.nn import CrossEntropyLoss, MSELoss
-from torch.optim.lr_scheduler import ReduceLROnPlateau
+    from torch.optim.lr_scheduler import ReduceLROnPlateau
 import numpy as np
 import time
 from tqdm import tqdm
@@ -272,6 +272,7 @@ def train(args):
         best_f1 = 0
         best_acc = 0
         begin = time.time()
+        best_epoch = -1
         best_model_weights = None
         for e in tqdm(range(epochs), desc="Epoch"):
             total_loss = 0
@@ -308,16 +309,19 @@ def train(args):
                 best_model_weights = seq_classifier.state_dict()
                 best_acc = acc
                 print("Current best model is at epoch: {}".format(e))
+                best_epoch = e
 
         end = time.time()
         train_time = round(end - begin)
         print("Epoch train losses ", epochs_losses)
+        print("Best epoch: {}".format(best_epoch))
         print("Accuracies ", accs)
         print("F1s ", f1s)
         print("Eval losses ", losses)
         print("Training time: {}".format(train_time))
         print("Evaluating on test")
-
+        print("Best model weights")
+        print(best_model_weights)
         before = seq_classifier.classifier.weight
         # print("\nBefore\n{}".format(before))
         seq_classifier.load_state_dict(best_model_weights)
