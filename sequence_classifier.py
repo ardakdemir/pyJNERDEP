@@ -192,8 +192,8 @@ class SequenceClassifier(nn.Module):
         self.classifier_optimizer = optim.AdamW([{"params": self.classifier.parameters()}], \
                                                 lr=self.config["class_lr"], eps=1e-6)
         # self.soft = nn.Softmax(dim=1)
-        self.classifier_scheduler = ReduceLROnPlateau(self.classifier_optimizer, factor=self.config["lr_decay"],
-                                                      'max', patience=self.config["lr_patience"])
+        self.classifier_scheduler = ReduceLROnPlateau(self.classifier_optimizer, 'max', factor=self.config["lr_decay"],
+                                                      patience=self.config["lr_patience"])
 
         self.dropout = nn.Dropout(p=self.config["dropout"])
         self.criterion = CrossEntropyLoss()
