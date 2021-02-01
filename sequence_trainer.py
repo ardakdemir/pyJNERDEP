@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.nn import CrossEntropyLoss, MSELoss
+from torch.optim.lr_scheduler import ReduceLROnPlateau
 import numpy as np
 import time
 from tqdm import tqdm
@@ -257,6 +258,7 @@ def train(args):
     best_test_f1 = 0
     best_test_acc = 0
     min_loss = 1000000
+
     for r in range(repeat):
         seq_classifier = SequenceClassifier(lang, word_vocab, model_type, num_cats, device)
 
