@@ -24,6 +24,7 @@ DEFAULT_CONFIG = {"hidden_dim": 196,
                   "lstm_lr": 0.05,
                   "class_lr": 0.0015,
                   "embed_lr": 0.015,
+                  "num_layers": 3,
                   "bidirectional": True
                   }
 
@@ -169,6 +170,7 @@ class SequenceClassifier(nn.Module):
         self.lang = lang
         self.config = DEFAULT_CONFIG
         self.config.update(config)  # Override default config
+
         self.device = device
         self.eval_mode = False
         self.word_vocab = word_vocab
@@ -177,6 +179,7 @@ class SequenceClassifier(nn.Module):
         self.hidden_dim = self.config["hidden_dim"]
         self.bidirectional = self.config["bidirectional"]
         self.num_cat = num_cats
+        self.num_layers = self.config["num_layers"]
         self.init_base_model()
 
         self.classifier_input_dim = 2 * self.hidden_dim if self.bidirectional else self.hidden_dim
@@ -254,7 +257,9 @@ class SequenceClassifier(nn.Module):
         self.init_lstm()
 
     def init_lstm(self):
-        self.lstm = nn.LSTM(self.vector_dim, self.config["hidden_dim"],num_layers=3, bidirectional=self.config["bidirectional"])
+        self.lstm = nn.LSTM(self.vector_dim, self.config["hidden_dim"], num_layers=self.num_layers,
+                            batch_first=True,
+                            bidirectional=self.config["bidirectional"])
         self.hidden_optimizer = optim.AdamW([{"params": self.lstm.parameters(),
                                               'lr': self.config["lstm_lr"]}])
 
@@ -298,7 +303,6 @@ class SequenceClassifier(nn.Module):
         if hasattr(self, "hidden_optimizer"):
             self.hidden_optimizer.zero_grad()
 
-
     def optimizer_step(self):
         self.base_optimizer.step()
         self.classifier_optimizer.step()
@@ -318,7 +322,7 @@ class SequenceClassifier(nn.Module):
         else:
             embed_out = self.get_embed_output(input)
             hidden, _ = self.lstm(embed_out)
-            hidden_out = torch.mean(hidden,dim=1) # Average of all words?
+            hidden_out = torch.mean(hidden, dim=1)  # Average of all words?
         hidden_out = self.dropout(hidden_out) if not self.eval_mode else hidden_out
         class_logits = self.classifier(hidden_out)
         return class_logits
