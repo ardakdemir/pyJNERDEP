@@ -280,6 +280,7 @@ class SequenceClassifier(nn.Module):
     def get_embed_output(self, input):
         tokens, tok_inds, bert_batch_after_padding, data = input
         padded_tok_inds = data[2]
+        print("Token indices: {}".format(padded_tok_inds))
         padded_tok_inds = padded_tok_inds.to(self.device)
         embed_outs = self.base_model(padded_tok_inds)
         return embed_outs
@@ -316,8 +317,6 @@ class SequenceClassifier(nn.Module):
             bert_output = self.get_bert_output(input)
             hidden_out = bert_output[:, 0, :]
         else:
-            print("embedding input shape")
-            print(input)
             embed_out = self.get_embed_output(input)
             hidden, _ = self.lstm(embed_out)
             hidden_out = hidden[:, 0, :]
