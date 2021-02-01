@@ -850,7 +850,7 @@ class JointTrainer:
         dep_dev_name = os.path.join(self.args['data_folder'], "dep_{}_dev.conllu".format(lang))
         dep_test_name = os.path.join(self.args['data_folder'], "dep_{}_test.conllu".format(lang))
         ner_train_name = os.path.join(self.args['data_folder'], "myner_{}-train.txt".format(lang))
-        ner_dev_name = os.path.join(self.args['data_folder'], "myner_{}-dev.txt".format(lang))
+        ner_dev_name = os.path.join(self.args['data_folder'], "myner_{}-test.txt".format(lang))
         ner_test_name = os.path.join(self.args['data_folder'], "myner_{}-test.txt".format(lang))
 
         self.ner_batch_size = 300
