@@ -1147,6 +1147,10 @@ class JointTrainer:
 
         return ner_loss, dep_loss
 
+
+    def pos_train(self):
+        x = 1
+
     def train2(self):
         train_start = time.time()
         logging.info("Training on {} ".format(self.args['device']))

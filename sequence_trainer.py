@@ -326,7 +326,7 @@ def train(args):
         seq_classifier.load_state_dict(best_model_weights)
         after = seq_classifier.classifier.bias.detach().cpu().numpy()
         diff_count = np.sum(bias != after)
-        print("{}/{} indices differ after loading".format(diff_count, reduce(lambda x, y: x * y, after.size, 1)))
+        print("{}/{} indices differ after loading".format(diff_count, after.size))
         print("Bias before training: {} after training {} after loading {}".format(bias_before_training, bias, after))
         # print("\nAfter\n{}".format(after))
 
