@@ -228,7 +228,7 @@ def train(args):
     if not os.path.exists(save_folder):
         os.makedirs(save_folder)
 
-    model_save_path = os.path.join(save_folder,"best_sa_model_weights.pkh")
+    model_save_path = os.path.join(save_folder, "{}_best_sa_model_weights.pkh".format(exp_key))
     tokenizer = init_tokenizer(lang, model_type)
 
     file_map = {"train": args["sa_train_file"],
@@ -309,7 +309,7 @@ def train(args):
             # if f1 > best_f1:
             if acc > best_acc:
                 best_model_weights = seq_classifier.state_dict()
-                torch.save(best_model_weights,model_save_path)
+                torch.save(best_model_weights, model_save_path)
                 best_acc = acc
                 print("Current best model is at epoch: {}".format(e))
                 best_epoch = e
