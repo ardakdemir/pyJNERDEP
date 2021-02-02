@@ -11,15 +11,13 @@ echo "EXPERIMENT WILL BE STORED IN ${load_dir}"
 #$ -cwd
 #$ -l os7,v100=1,s_vmem=100G,mem_req=100G
 
-# langs=(czech turkish  japanese english finnish hungarian)
-# word_vec_prefs=("cs" "tr"  "jp" "en" "fi" "hu" )
+langs=(czech turkish  japanese english finnish hungarian)
+word_vec_prefs=("cs" "tr"  "jp" "en" "fi" "hu" )
 
-langs=(finnish hungarian)
-word_vec_prefs=("fi" "hu")
 
 cd ~/parser/final_model
 
-for i in 0 1
+for i in 0 1 2 3 4 5
 do
 
     lang=${langs[$i]}
