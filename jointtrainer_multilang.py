@@ -1376,9 +1376,6 @@ class JointTrainer:
 
     def save_model(self, save_name, weights=True):
         save_name = os.path.join(self.args['save_dir'], save_name)
-        print("Model's state_dict:")
-        for param_tensor in self.jointmodel.state_dict():
-            print(param_tensor, "\t" , self.jointmodel.state_dict()[param_tensor].size())
         if weights:
             logging.info("Saving best model to {}".format(save_name))
             torch.save(self.jointmodel.state_dict(), save_name)
