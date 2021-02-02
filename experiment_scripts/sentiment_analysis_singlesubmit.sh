@@ -11,7 +11,7 @@ load_dir=${7}
 exp_suf="$(date +"%m_%d_%H_%M")"
 echo "EXPERIMENT WILL BE STORED IN ${load_dir}"
 #$ -cwd
-#$ -l os7,v100=1,s_vmem=100G,mem_req=100G
+#$ -l os7,s_vmem=100G,mem_req=100G
 train_path="../../datasets/sa_"${domain}"_"${lang}"-train.json"
 dev_path="../../datasets/sa_"${domain}"_"${lang}"-dev.json"
 test_path="../../datasets/sa_"${domain}"_"${lang}"-test.json"
