@@ -34,7 +34,7 @@ python jointtrainer_multilang.py --model_type DEP  --word_embed_type mbert   --l
 # run some on cli NER withpos
 python jointtrainer_multilang.py --model_type NER   --word_embed_type random_init   --lang jp  --epochs 5 --save_dir ../ner_withpos_NER_01_26_22_55 --repeat 1 --batch_size 300
 # wordonly
-python jointtrainer_multilang.py --model_type NER   --word_embed_type fastext   --lang cs  --epochs 5 --save_dir ../ner_newvocab_3001 --repeat 1 --batch_size 300
+python jointtrainer_multilang.py --model_type NER   --word_embed_type word2vec   --lang cs  --epochs 2 --save_dir ../ner_loadmodeltest --repeat 1 --batch_size 300
 
 
 
@@ -44,12 +44,13 @@ python jointtrainer_multilang.py --model_type DEP  --word_embed_type fastext   -
 
 
 # sequence trainer example English
-python sequence_trainer.py --lang en --eval_interval 100 --batch_size 150 --word_embed_type fastext --sa_train_file ../../datasets/sa_movie_english-train.json  --sa_dev_file ../../datasets/sa_movie_english-dev.json  --sa_test_file ../../datasets/sa_movie_english-test.json
+python sequence_trainer.py --lang en --eval_interval -1 --batch_size 150 --word_embed_type bert --sa_train_file ../../datasets/sa_movie_english-train.json  --sa_dev_file ../../datasets/sa_movie_english-dev.json  --sa_test_file ../../datasets/sa_movie_english-test.json
+
+## Turkish Movie-Twitter
+python sequence_trainer.py --lang tr --eval_interval -1 --batch_size 150 --word_embed_type mbert --save_folder sa_model_save_dir_02_02_23_16 --sa_train_file ../../datasets/sa_movie_turkish-train.json  --sa_dev_file ../../datasets/sa_movie_turkish-dev.json  --sa_test_file ../../datasets/sa_movie_turkish-test.json
+python sequence_trainer.py --lang tr --eval_interval -1 --batch_size 150 --word_embed_type mbert --sa_train_file ../../datasets/sa_twitter_turkish-train.json  --sa_dev_file ../../datasets/sa_twitter_turkish-dev.json  --sa_test_file ../../datasets/sa_twitter_turkish-test.json
 
 
-python sequence_trainer.py --lang tr --eval_interval -1 --batch_size 150 --word_embed_type fastext --sa_train_file ../../datasets/sa_movie_turkish-train.json  --sa_dev_file ../../datasets/sa_movie_turkish-dev.json  --sa_test_file ../../datasets/sa_movie_turkish-test.json
 
-
-
-# test cuda oom for english dep
-python jointtrainer_multilang.py --model_type FLAT  --word_embed_type fastext   --log_file DEP_log --lang cs --batch_size 100 --epochs 3 --save_dir ../dep_deneme_3101 --repeat 1
+# FLAT architecture
+python jointtrainer_multilang.py --model_type FLAT  --word_embed_type fastext   --log_file FLAT_log --lang tr --save_dir ../flat_deneme_3101
