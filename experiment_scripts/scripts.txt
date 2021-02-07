@@ -40,15 +40,15 @@ python jointtrainer_multilang.py --model_type NER   --word_embed_type word2vec  
 
 # dep cli
 python jointtrainer_multilang.py --model_type DEP  --word_embed_type bert  --word_only --log_file NER_bert_tr_log --lang en --batch_size 100 --epochs 3 --save_dir ../deneme1901_en_bert --repeat 1 --fix_embed
-python jointtrainer_multilang.py --model_type DEP  --word_embed_type fastext   --log_file DEP_log --lang cs --batch_size 100 --epochs 3 --save_dir ../dep_deneme_3101 --repeat 1
+python jointtrainer_multilang.py --model_type NER  --word_embed_type fastext   --log_file DEP_log --lang en -epochs 3 --save_dir ../dep_deneme_3101 --repeat 1
 
 
 # sequence trainer example English
 python sequence_trainer.py --lang en --eval_interval -1 --batch_size 150 --word_embed_type bert --sa_train_file ../../datasets/sa_movie_english-train.json  --sa_dev_file ../../datasets/sa_movie_english-dev.json  --sa_test_file ../../datasets/sa_movie_english-test.json
 
 ## Turkish Movie-Twitter
-python sequence_trainer.py --lang tr --eval_interval -1 --batch_size 150 --word_embed_type mbert --save_folder sa_model_save_dir_02_02_23_16 --sa_train_file ../../datasets/sa_movie_turkish-train.json  --sa_dev_file ../../datasets/sa_movie_turkish-dev.json  --sa_test_file ../../datasets/sa_movie_turkish-test.json
-python sequence_trainer.py --lang tr --eval_interval -1 --batch_size 150 --word_embed_type mbert --sa_train_file ../../datasets/sa_twitter_turkish-train.json  --sa_dev_file ../../datasets/sa_twitter_turkish-dev.json  --sa_test_file ../../datasets/sa_twitter_turkish-test.json
+python sequence_trainer.py --lang tr --eval_interval -1 --batch_size 150 --word_embed_type bert_en --save_folder sa_berten_0602 --sa_train_file ../../datasets/sa_movie_turkish-train.json  --sa_dev_file ../../datasets/sa_movie_turkish-dev.json  --sa_test_file ../../datasets/sa_movie_turkish-test.json
+python sequence_trainer.py --lang tr --eval_interval -1 --batch_size 150 --word_embed_type mbert --save_folder sa_berten_0602 --sa_train_file ../../datasets/sa_twitter_turkish-train.json  --sa_dev_file ../../datasets/sa_twitter_turkish-dev.json  --sa_test_file ../../datasets/sa_twitter_turkish-test.json
 
 
 

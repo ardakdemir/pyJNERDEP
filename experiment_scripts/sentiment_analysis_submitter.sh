@@ -26,7 +26,7 @@ do
     train_path="../../datasets/sa_"${domain}"_"${lang}"-train.json"
     if [ -f ${train_path} ]
     then
-      for type in random_init word2vec fastext bert_en mbert bert
+      for type in random_init word2vec fastext
       do
         exp_name=${domain}"_"${lang}"_"${type}"_"${exp_suf}
         exp_file="sa_experiment_log_"${domain}"_"${lang}"_"${type}".json"
