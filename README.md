@@ -164,12 +164,14 @@ datasets/myner_czech-train.txt
 ## Sentiment Analysis Task
 
 Domains:
-    - twitter
-    - movie
+
+- twitter
+- movie
 
 Languages:
-    - tr: Turkish
-    - en: English
+
+- tr: Turkish
+- en: English
 
 We conducted experiments in three settings: Movie+Twitter for Turkish, and Movie for English.
 
