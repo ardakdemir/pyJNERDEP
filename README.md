@@ -14,7 +14,9 @@ Name mapping for each method :
     - Baseline : random_init
     - Word2Vec : word2vec
     - FastText : fastext
+    - Bert English: bert_en
     - mBERT : mbert
+    - BERT (language specific): bert
 
 Name mapping for each language :
 
@@ -29,7 +31,7 @@ Name mapping for each language :
 
 ## Setup
 
-To ease the work required to for doing the setup, we provide a docker file that contains all the setting for running the source code. The docker image is available under : https://hub.docker.com/r/aakdemir/pytorch-cuda-tensorflow with the version 0.4 or latest.
+To ease the work required for the setup, we provide a docker file that contains all the setting for running the source code. The docker image is available under : https://hub.docker.com/r/aakdemir/pytorch-cuda-tensorflow with the version 0.4 or latest.
 
 ### Using the docker image
 
@@ -94,9 +96,7 @@ Below are some important parameters and their descriptions.
 - --save_dir : denotes the directory to save all the training related files and log files. Important information are logged by default to jointtraining.log file.
 
 
-***Note.*** Use --ner_train_file --ner_test_file --ner_val_file --dep_val_file --dep_train_file --dep_test_file flags to denote the paths to the datasets. Input files must be in specific conll formats. Example data is included  under the example_data directory.
-
-***Note2*** The models require a relatively large memory size and it is not suitable for running the models on many local devices. If you would like to run on your local device be sure to train a smaller version of the models by changing the following parameters :
+***Note*** The models require a relatively large memory size and it is not suitable for running the models on many local devices. If you would like to run on your local device be sure to train a smaller version of the models by changing the following parameters :
 
 --batch_size
 
@@ -159,3 +159,36 @@ In addition to get the unknown-rare frequency analysis, the training files shoul
 ```
 datasets/myner_czech-train.txt
 ```
+
+
+## Sentiment Analysis Task
+
+Domains:
+    - twitter
+    - movie
+
+Languages:
+    - tr: Turkish
+    - en: English
+
+We conducted experiments in three settings: Movie+Twitter for Turkish, and Movie for English.
+
+To run the experiments for the sentiment analysis task use the below examples.
+
+English movie using word2vec:
+```
+python sequence_trainer.py --lang en --eval_interval -1 --batch_size 150 --word_embed_type word2vec --sa_train_file ../../datasets/sa_movie_english-train.json --domain movie   --sa_dev_file ../../datasets/sa_movie_english-dev.json  --sa_test_file ../../datasets/sa_movie_english-test.json
+
+```
+
+Turkish examples:
+
+```
+python sequence_trainer.py --lang tr --eval_interval -1 --batch_size 100 --word_embed_type bert_en --save_folder sa_tr_movie_berten --domain movie --sa_train_file  ../../datasets/sa_movie_turkish-train.json  --sa_dev_file ../../datasets/sa_movie_turkish-dev.json  --sa_test_file ../../datasets/sa_movie_turkish-test.json
+
+python sequence_trainer.py --lang tr --eval_interval -1 --batch_size 150 --word_embed_type mbert --save_folder sa_tr_twitter_mbert --domain twitter --sa_train_file  ../../datasets/sa_twitter_turkish-train.json  --sa_dev_file ../../datasets/sa_twitter_turkish-dev.json  --sa_test_file ../../datasets/sa_twitter_turkish-test.json
+
+```
+
+
+All sentiment analysis results would be stored inside the folder denoted with "--save_folder".
