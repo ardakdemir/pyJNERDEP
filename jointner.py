@@ -16,7 +16,6 @@ from pdb import set_trace
 from crf import CRF, CRFLoss
 import unidecode
 import logging
-from pytorch_transformers import *
 # from jointtrainer import embedding_initializer
 from datareader import DataReader, START_TAG, END_TAG, PAD_IND, START_IND, END_IND
 from hlstm import HighwayLSTM

@@ -3,7 +3,6 @@ import glob
 import pandas as pd
 import torch
 import numpy as np
-from pytorch_transformers import BertTokenizer
 from torch.utils.data import Dataset, DataLoader
 
 

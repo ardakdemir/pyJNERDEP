@@ -11,7 +11,6 @@ import torchvision
 from torch import nn
 from torch.nn.utils.rnn import pack_padded_sequence
 from torch.utils.data import Dataset, DataLoader
-from torchvision import datasets, models, transforms
 from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 import matplotlib.pyplot as plt
 import time
@@ -19,7 +18,6 @@ import os
 import copy
 from pdb import set_trace
 import unidecode
-from pytorch_transformers import *
 
 
 from parser.parsereader import *

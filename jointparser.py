@@ -17,7 +17,6 @@ import os
 import copy
 from pdb import set_trace
 import unidecode
-from pytorch_transformers import *
 
 from hlstm import HighwayLSTM
 from parser.parsereader import *
