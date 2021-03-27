@@ -42,6 +42,7 @@ pillow==6.1
 plotly==4.1.1
 psutil==5.6.3
 fugashi
+ipadic
 ptyprocess==0.6.0
 scikit-image==0.15.0
 scikit-learn==0.21.2
