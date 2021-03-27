@@ -12,7 +12,7 @@ echo "EXPERIMENT WILL BE STORED IN ${load_dir}"
 #$ -l os7,v100=1,s_vmem=100G,mem_req=100G
 
 langs=(czech turkish  japanese english finnish hungarian)
-word_vec_prefs=("cs" "tr"  "jp" "en" "fi" "hu" )
+word_vec_prefs=("cs" "tr"  "jp" "en" "fi" "hu")
 
 
 cd ~/parser/final_model
