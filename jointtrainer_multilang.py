@@ -22,7 +22,6 @@ import pickle
 import torch.nn.functional as F
 import numpy as np
 from tqdm import tqdm
-import torchvision
 from torch.nn.utils import clip_grad_norm_
 from torch.utils.data import Dataset, DataLoader
 from transformers import AutoTokenizer, AutoModel, BertForPreTraining, BertForTokenClassification

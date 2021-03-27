@@ -6,9 +6,7 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
 import numpy as np
-import torchvision
 from torch.utils.data import Dataset, DataLoader
-from torchvision import datasets, models, transforms
 import matplotlib.pyplot as plt
 from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 import time
