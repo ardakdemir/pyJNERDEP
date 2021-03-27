@@ -22,7 +22,6 @@ from tqdm import tqdm
 import torchvision
 from torch.nn.utils import clip_grad_norm_
 from torch.utils.data import Dataset, DataLoader
-from torchvision import datasets, models, transforms
 from parser.parsereader import bert2token, pad_trunc_batch
 import matplotlib.pyplot as plt
 import time
@@ -30,7 +29,6 @@ import os
 import copy
 from pdb import set_trace
 import unidecode
-from pytorch_transformers import *
 from torch import autograd
 from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 from datetime  import date

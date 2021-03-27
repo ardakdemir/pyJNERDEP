@@ -8,7 +8,6 @@ import torch.nn.functional as F
 import numpy as np
 import torchvision
 from torch.utils.data import Dataset, DataLoader
-from torchvision import datasets, models, transforms
 import matplotlib.pyplot as plt
 from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 import time
@@ -18,8 +17,6 @@ from pdb import set_trace
 from crf import CRF, CRFLoss
 import unidecode
 import logging
-from pytorch_transformers import *
-
 from datareader import DataReader, START_TAG, END_TAG, PAD_IND, START_IND, END_IND
 
 
