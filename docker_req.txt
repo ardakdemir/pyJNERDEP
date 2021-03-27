@@ -38,6 +38,7 @@ packaging==20.8
 parso==0.5.1
 pexpect==4.7.0
 pickleshare==0.7.5
+pillow==6.1
 plotly==4.1.1
 psutil==5.6.3
 ptyprocess==0.6.0
