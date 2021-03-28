@@ -777,7 +777,7 @@ class JointTrainer:
             loaded_params = torch.load(load_path, map_location=torch.device('cpu'))
             my_dict = self.jointmodel.state_dict()
             pretrained_dict = {k: v for k, v in loaded_params.items() if
-                               k in self.state_dict() and self.state_dict()[k].size() == v.size()}
+                               k in self.jointmodel.state_dict() and self.jointmodel.state_dict()[k].size() == v.size()}
             print("{} parameter groups will be loaded in total".format(len(pretrained_dict)))
             my_dict.update(pretrained_dict)
             self.jointmodel.load_state_dict(my_dict)
