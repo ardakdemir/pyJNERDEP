@@ -12,7 +12,8 @@ do
   do
     lang=${langs[$i]}
     lang_pref=${lang_prefs[$i]}
-    for type in bert mbert bert_en fastext word2vec random_init
+#    for type in bert mbert bert_en fastext word2vec random_init
+    for type in fastext word2vec
     do
       echo "Running for " ${model_type}"  "${lang}"  "${type}
       python jointtrainer_multilang.py --model_type ${model_type}  --word_embed_type ${type}    --log_file ${model_type}_log_${type}_${lang}_log.txt --lang ${lang_pref}  --epochs ${epoch} --save_dir $save_dir --repeat ${repeat} --eval_interval ${eval_interval}

@@ -201,9 +201,9 @@ def get_pretrained_word_embeddings(w2ind, lang='tr', dim='768', word_vec_root=".
         return embed
     else:
         print("Generating embedding from fasttext model (not .txt file)")
-
         fastext_path = fasttext_dict[lang]
         if not os.path.exists(fastext_path):
+            print("Downloading the fasttext model {}".format(fastext_path))
             fasttext.util.download_model(lang, if_exists='ignore')
             ft = fasttext.load_model('cc.{}.300.bin'.format(lang))
         else:
