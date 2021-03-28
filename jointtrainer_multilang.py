@@ -755,8 +755,13 @@ class JointTrainer:
         assert (self.args['load_model'] == 1), 'Model must be loaded in predict mode'
 
         self.init_models()
-        ner_pre, ner_rec, ner_f1 = self.ner_evaluate()
-        dep_pre, dep_rec, dep_f1, uas_f1 = self.dep_evaluate()
+        if not self.args["model_type"] == "DEP":
+            self.nervalreader = self.nertestreader
+            self.nervalreader.for_eval = True
+            ner_pre, ner_rec, ner_f1 = self.ner_evaluate()
+        if not self.args["model_type"] == "NER":
+            self.depvaldataset = self.deptestdataset
+            dep_pre, dep_rec, dep_f1, uas_f1 = self.dep_evaluate()
 
     def run_training(self):
         self.init_models()
@@ -1252,7 +1257,7 @@ class JointTrainer:
                 if dep_f1 > best_dep_f1:
                     if dep_f1 > self.best_global_dep_f1:
                         print("Saving best dep model to {} ".format(save_dep_name))
-                        self.save_model(save_dep_name)
+                        self.save_model(save_dep_name, self.exp_name)
                         self.best_global_dep_f1 = dep_f1
                         best_dep_model = self.jointmodel.state_dict()
                     best_dep_f1 = dep_f1
@@ -1269,7 +1274,7 @@ class JointTrainer:
                     best_ner_epoch = e + 1
                     if ner_f1 > self.best_global_ner_f1:
                         print("Saving best ner model to {} ".format(save_ner_name))
-                        self.save_model(save_ner_name)
+                        self.save_model(save_ner_name, self.exp_name)
                         self.best_global_ner_f1 = ner_f1
                         best_ner_model = self.jointmodel.state_dict()
                     best_ner_f1 = ner_f1
@@ -1285,7 +1290,7 @@ class JointTrainer:
 
             if ner_f1 + dep_f1 > best_joint_f1:
                 best_joint_f1 = ner_f1 + dep_f1
-                self.save_model(save_name)
+                self.save_model(save_name, self.exp_name)
             self.jointmodel.train()
 
             experiment_log["ner_f1"].append(ner_f1)
@@ -1378,12 +1383,12 @@ class JointTrainer:
 
         return best_ner_f1, best_dep_f1, experiment_log
 
-    def save_model(self, save_name, weights=True):
+    def save_model(self, save_name, exp_name, weights=True):
         save_name = os.path.join(self.args['save_dir'], save_name)
         if weights:
             logging.info("Saving best model to {}".format(save_name))
             torch.save(self.jointmodel.state_dict(), save_name)
-        config_path = os.path.join(self.args['save_dir'], self.args['config_file'])
+        config_path = os.path.join(self.args['save_dir'], "{}_{}".format(exp_name, self.args['config_file']))
         arg = copy.deepcopy(self.args)
         del arg['device']
         with open(config_path, 'w') as outfile:
