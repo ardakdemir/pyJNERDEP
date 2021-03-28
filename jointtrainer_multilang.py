@@ -1197,7 +1197,7 @@ class JointTrainer:
             print("Word embed type {} ".format(self.args['word_embed_type']))
             for param_group in self.jointmodel.base_model.embed_optimizer.param_groups:
                 print("Word embedding learning rates : {}".format(param_group['lr']))
-
+        print("Running for {} epochs and evaluating after {} steps".format(epoch, self.args['eval_interval']))
         for e in tqdm(range(epoch), desc="Epoch"):
             train_loss = 0
             ner_losses = 0
@@ -1363,7 +1363,6 @@ class JointTrainer:
                                           "f1": ner_f1}
             logging.info("NER Results -- pre : {}  rec : {} f1 : {}  ".format(ner_pre, ner_rec, ner_f1))
 
-
             with open(os.path.join(self.args["save_dir"], self.args["ner_test_result_file"]), "a")  as o:
                 s = self.args['lang'] + "_" + self.args['word_embed_type']
                 s = s + "\t" + "\t".join([str(x) for x in [ner_pre, ner_rec, ner_f1]]) + "\n"
@@ -1388,7 +1387,7 @@ class JointTrainer:
         loaded_weights = torch.load(save_path)
         print("Model's state_dict:")
         for param_tensor in loaded_weights:
-            print(param_tensor, "\t" , loaded_weights[param_tensor].size())
+            print(param_tensor, "\t", loaded_weights[param_tensor].size())
         self.jointmodel.load_state_dict(loaded_weights)
 
     def dep_evaluate(self):
@@ -1516,6 +1515,7 @@ def main(args):
             if args['multiple'] == 1:
                 jointtrainer.run_multiple()
             else:
+                print("\n\nSTARTING NEW TRAINING\n\n")
                 experiment_log_name = os.path.join(args["save_dir"],
                                                    "experiment_log_" + args['lang'] + "_" + args[
                                                        'word_embed_type'] + ".json")
