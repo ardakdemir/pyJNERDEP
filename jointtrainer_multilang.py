@@ -774,7 +774,13 @@ class JointTrainer:
             # save_path = os.path.join(self.args['save_dir'],self.args['save_name'])
             logging.info("Model loaded %s" % load_path)
             print("Model will be loaded from {} ".format(load_path))
-            self.jointmodel.load_state_dict(torch.load(load_path))
+            loaded_params = torch.load(load_path, map_location=torch.device('cpu'))
+            my_dict = self.jointmodel.state_dict()
+            pretrained_dict = {k: v for k, v in loaded_params.items() if
+                               k in self.state_dict() and self.state_dict()[k].size() == v.size()}
+            print("{} parameter groups will be loaded in total".format(len(pretrained_dict)))
+            my_dict.update(pretrained_dict)
+            self.jointmodel.load_state_dict(my_dict)
 
         # Important for unmapping!!
         self.jointmodel.depparser.vocabs = self.deptraindataset.vocabs
