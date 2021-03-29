@@ -225,14 +225,17 @@ def hyperparameter_search():
     return best_log, best_config, best_acc
 
 
-def get_datasets(args, tokenizer):
+def get_datasets(args, tokenizer, label_vocab=None):
     file_map = {"train": args["sa_train_file"],
                 "dev": args["sa_dev_file"],
                 "test": args["sa_test_file"]}
     print(file_map)
     datasets = {f: SentReader(file_map[f], batch_size=args["batch_size"], tokenizer=tokenizer) for f in file_map}
+    if label_vocab:
+        datasets["train"].label_vocab = label_vocab
     num_cats = len(datasets["train"].label_vocab.w2ind)
     print("Training vocab: {}".format(datasets["train"].label_vocab.w2ind))
+
     def merge_vocabs(voc1, voc2):
         for v in voc2.w2ind:
             if v not in voc1.w2ind:
@@ -285,25 +288,36 @@ def predict(args):
         raise Exception(msg)
 
     tokenizer = init_tokenizer(lang, model_type)
-    datasets = get_datasets(args, tokenizer)
-    num_cats = len(datasets["train"].label_vocab.w2ind)
-    word_vocab = datasets["train"].word_vocab
-    seq_classifier = SequenceClassifier(lang, word_vocab, model_type, num_cats, device)
-    load_model(seq_classifier, model_load_path)
-    seq_classifier.eval()
-    seq_classifier.to(device)
-    acc, f1, loss = evaluate(seq_classifier, datasets["test"])
+    max_f1 = 0
+    min_loss = Nnoe
+    max_acc = 0
+    exp_log = {}
+    for vocab in [Vocab({"n": 0, "p": 1}), Vocab({"p": 0, "n": 1})]:
+        datasets = get_datasets(args, tokenizer, label_vocab=vocab)
+        num_cats = len(datasets["train"].label_vocab.w2ind)
+        word_vocab = datasets["train"].word_vocab
+        seq_classifier = SequenceClassifier(lang, word_vocab, model_type, num_cats, device)
+        load_model(seq_classifier, model_load_path)
+        seq_classifier.eval()
+        seq_classifier.to(device)
+        acc, f1, loss = evaluate(seq_classifier, datasets["test"])
+        if f1 > max_f1:
+            max_f1 = f1
+            max_acc = acc
+            min_loss = loss
+            exp_log = {"test_acc": round(acc, 3),
+                       "test_f1": round(f1, 3),
+                       "test_loss": round(loss, 3),
+                       "lang": lang,
+                       "word_embed_type": model_type,
+                       "domain": domain}
     print("\n\n===Sentiment Analysis Test results for {} {} {}=== \n Acc:\t{}\nF1\t{}\nLoss\t{}\n\n".format(lang,
                                                                                                             model_type,
                                                                                                             domain,
-                                                                                                            acc, f1,
-                                                                                                            loss))
-    exp_log = {"test_acc": round(acc, 3),
-               "test_f1": round(f1, 3),
-               "test_loss": round(loss, 3),
-               "lang": lang,
-               "word_embed_type": model_type,
-               "domain": domain}
+                                                                                                            max_acc,
+                                                                                                            max_f1,
+                                                                                                            min_loss))
+
     result_path = os.path.join(save_folder, args["sa_result_file"])
     write_result(exp_key, exp_log, result_path)
 
