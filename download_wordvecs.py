@@ -12,10 +12,9 @@ root = "parser/final_model"
 save_folder = "word_vecs"
 if not os.path.exists(save_folder):
     os.makedirs(save_folder)
-for l,p in word2vec.items():
+for l,p in word2vec_dict.items():
     dest = os.path.join(save_folder,l)
     if not os.path.exists(dest):
         os.makedirs(dest)
     cmd = "scp hgc:~/{}/{} {}".format(root,p,dest)
     subprocess.call(cmd,shell=True)
-    
