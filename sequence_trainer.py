@@ -64,6 +64,8 @@ def parse_args():
                         help='validation file for sa')
     parser.add_argument('--sa_test_file', type=str, default='../../datasets/sa_twitter_turkish-test.json',
                         help='test file for sa')
+    parser.add_argument('--sa_dataset_folder', type=str, default='../../datasets',
+                        help='test file for sa')
     parser.add_argument('--sa_output_file', type=str, default="sa_out.txt",
                         help='Output file for named entity recognition')
     parser.add_argument('--domain', type=str, default="movie",
@@ -228,9 +230,12 @@ def hyperparameter_search():
 
 
 def get_datasets(args, tokenizer, label_vocab=None):
-    file_map = {"train": args["sa_train_file"],
-                "dev": args["sa_dev_file"],
-                "test": args["sa_test_file"]}
+    lang = args["lang"]
+    model_type = args["word_embed_type"]
+    dataset_folder = args["sa_dataset_folder"]
+    load_folder = args["load_folder"]
+    domain = args["domain"]
+    file_map = {x:os.path.join(dataset_folder,"sa_{}_{}-{}.json".format(domain,lang,x)) for x in ["train","dev","test"]}
     print(file_map)
     datasets = {f: SentReader(file_map[f], batch_size=args["batch_size"], tokenizer=tokenizer) for f in file_map}
     if label_vocab:
@@ -294,8 +299,9 @@ def predict(args):
     min_loss = None
     max_acc = 0
     exp_log = {}
-    for vocab in [Vocab({"n": 0, "p": 1}), Vocab({"p": 0, "n": 1})]:
-        datasets = get_datasets(args, tokenizer, label_vocab=vocab)
+    # for vocab in [Vocab({"n": 0, "p": 1}), Vocab({"p": 0, "n": 1})]:
+    for vocab in [0]:
+        datasets = get_datasets(args, tokenizer, label_vocab=None)
         num_cats = len(datasets["train"].label_vocab.w2ind)
         word_vocab = datasets["train"].word_vocab
         seq_classifier = SequenceClassifier(lang, word_vocab, model_type, num_cats, device)
