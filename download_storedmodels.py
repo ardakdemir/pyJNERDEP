@@ -18,12 +18,8 @@ names = {"sa": "Sentiment Analysis",
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--sa_train_file', type=str, default='../../datasets/sa_twitter_turkish-train.json',
-                        help='training file for sa')
-    parser.add_argument('--sa_dev_file', type=str, default='../../datasets/sa_twitter_turkish-dev.json',
-                        help='validation file for sa')
-    parser.add_argument('--sa_test_file', type=str, default='../../datasets/sa_twitter_turkish-test.json',
-                        help='test file for sa'
+    parser.add_argument('--key', type=str, default='sa',
+                        help='key for downloading the models')
     args = parser.parse_args()
     return args
 
@@ -58,7 +54,8 @@ def load_download_models(key):
 
 def main():
     args = parse_args()
-
+    key = args.key
+    load_download_models(key)
 
 if __name__ == "__main__":
     main()
