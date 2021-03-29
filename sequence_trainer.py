@@ -16,7 +16,7 @@ from sareader import SentReader
 from itertools import product
 from functools import reduce
 import logging
-from vocaab import Vocab
+from vocab import Vocab
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
