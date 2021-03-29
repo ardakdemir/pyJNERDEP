@@ -205,9 +205,12 @@ def get_pretrained_word_embeddings(w2ind, lang='tr', dim='768', word_vec_root=".
         if not os.path.exists(fastext_path):
             print("Downloading the fasttext model {}...".format(fastext_path))
             fasttext.util.download_model(lang, if_exists='ignore')
-            print("Downloaded the fasttext model {}!\n\n".format(fastext_path))
 
+            print("Downloaded the fasttext model {}!\n\n".format(fastext_path))
+            download_path = 'cc.{}.300.bin'.format(lang)
             ft = fasttext.load_model('cc.{}.300.bin'.format(lang))
+            cmd = "mv {} {}".format(download_path,fastext_path)
+            subprocess.call(cmd,shell=True)
         else:
             ft = fasttext.load_model(fastext_path)
         s = time.time()
