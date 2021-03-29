@@ -755,13 +755,38 @@ class JointTrainer:
         assert (self.args['load_model'] == 1), 'Model must be loaded in predict mode'
 
         self.init_models()
-        if not self.args["model_type"] == "DEP":
+        experiment_log = {}
+        if self.args["model_type"] == "NER":
             self.nervalreader = self.nertestreader
             self.nervalreader.for_eval = True
             ner_pre, ner_rec, ner_f1 = self.ner_evaluate()
-        if not self.args["model_type"] == "NER":
+            experiment_log["ner_test"] = {"pre": ner_pre,
+                                          "rec": ner_rec,
+                                          "f1": ner_f1}
+            logging.info("NER Results -- pre : {}  rec : {} f1 : {}  ".format(ner_pre, ner_rec, ner_f1))
+            with open(os.path.join(self.args["save_dir"], self.args["ner_test_result_file"]), "a")  as o:
+                s = self.args['lang'] + "_" + self.args['word_embed_type']
+                s = s + "\t" + "\t".join([str(x) for x in [ner_pre, ner_rec, ner_f1]]) + "\n"
+                o.write(s)
+        if self.args["model_type"] == "DEP":
             self.depvaldataset = self.deptestdataset
             dep_pre, dep_rec, dep_f1, uas_f1 = self.dep_evaluate()
+            experiment_log["dep_test"] = {"pre": dep_pre,
+                                          "rec": dep_rec,
+                                          "las_f1": dep_f1,
+                                          "uas_f1": uas_f1}
+            logging.info(
+                "\n\nDEP Results -- pre : {}  rec : {} las-f1 : {}  uas-f1: {}\n\n".format(dep_pre, dep_rec, dep_f1,
+                                                                                           uas_f1))
+            print(
+                "\n\nDEP Results -- pre : {}  rec : {} las-f1 : {}  uas-f1: {}\n\n".format(dep_pre, dep_rec, dep_f1,
+                                                                                           uas_f1))
+            with open(os.path.join(self.args["save_dir"], self.args["dep_test_result_file"]), "a")  as o:
+                s = self.args['lang'] + "_" + self.args['word_embed_type']
+                s = s + "\t" + "\t".join([str(x) for x in [uas_f1, dep_f1]]) + "\n"
+                o.write(s)
+        print("Results: {}".format(experiment_log))
+        return experiment_log
 
     def run_training(self):
         self.init_models()
@@ -1522,8 +1547,14 @@ def main(args):
         logging.info(best_params)
     else:
         if args['mode'] == 'predict':
+            experiment_log_name = os.path.join(args["save_dir"],
+                                               "experiment_log_" + args['lang'] + "_" + args[
+                                                   'word_embed_type'] + ".json")
             print("Running in prediction mode ")
-            jointtrainer.predict()
+            exp_log = jointtrainer.predict()
+            print("\n=== Experiments are finished ===\n Storing results to".format(experiment_log_name))
+            with open(experiment_log_name, "w") as o:
+                json.dump(exp_log, o)
         else:
             if args['multiple'] == 1:
                 jointtrainer.run_multiple()

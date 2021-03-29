@@ -6,20 +6,22 @@ import zipdir
 from zipfile import ZipFile
 import argparse
 
-id_model_map = {"sa": "1Yt6MVemyNDlv0bMrjEEgGSjZ7P42bW0t",
-                "ner": "",
-                "dep": "",
-                "flat": ""}
-names = {"sa": "Sentiment Analysis",
-         "ner": "Named Entity Recognition",
-         "dep": "Dependency Parsing",
-         "flat": "Multi-task Learning"}
+id_model_map = {"SA": "1Yt6MVemyNDlv0bMrjEEgGSjZ7P42bW0t",
+                "NER": "",
+                "DEP": "",
+                "FLAT": ""}
+names = {"SA": "Sentiment Analysis",
+         "NER": "Named Entity Recognition",
+         "DEP": "Dependency Parsing",
+         "FLAT": "Multi-task Learning"}
 
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--key', type=str, default='sa',
+    parser.add_argument('--key', type=str, default='SA',
                         help='key for downloading the models')
+    parser.add_argument('--save_folder', type=str, default=None,
+                        help='Destination to save downloaded models')
     args = parser.parse_args()
     return args
 
@@ -35,12 +37,12 @@ def download_link_generator(id):
     return "https://drive.google.com/uc?id={}".format(id)
 
 
-def load_download_models(key):
+def load_download_models(key, save_folder=None):
     id = id_model_map[key]
     print("\n===Downloading trained {} models to replicate the result===\n".format(names[id]))
     link = download_link_generator(id)
     dest = "../{}_models".format(key)
-    unzip_path = "../{}".format(dest)
+    unzip_path = "../{}".format(dest) if not save_folder else save_folder
     if not os.path.exists(unzip_path):
         print("{} not found. Downloading trained models for {}".format(key))
         gdown.download(link, dest)
@@ -55,7 +57,9 @@ def load_download_models(key):
 def main():
     args = parse_args()
     key = args.key
-    load_download_models(key)
+    save_folder = args.save_folder
+    load_download_models(key, save_folder)
+
 
 if __name__ == "__main__":
     main()
