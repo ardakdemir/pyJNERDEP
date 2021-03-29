@@ -485,6 +485,9 @@ def main():
 
     lang = args["lang"]
     model_type = args["word_embed_type"]
+    if model_type == "bert" and lang == "en":
+        args["word_embed_type"] = "bert_en"
+        model_type = "bert_en"
     save_folder = args["save_folder"]
     domain = args["domain"]
     mode = args["mode"]
@@ -504,7 +507,7 @@ def main():
         print("Using trained models to predict...")
         exp_log = predict(args)
         exp_save_path = os.path.join(save_folder, exp_file)
-        print("\n Storing experiment log to ...".format(exp_save_path))
+        print("\n Storing experiment log to {}...".format(exp_save_path))
         with open(exp_save_path, "w") as o:
             json.dump(exp_log, o)
 
