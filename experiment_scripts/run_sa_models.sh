@@ -2,7 +2,7 @@
 
 
 langs=(turkish  english)
-lang_prefs=("tr""en")
+lang_prefs=("tr" "en")
 model_type="sa"
 load_folder="../sa_models"
 save_dir="../"${model_type}"_experiment_results2903"

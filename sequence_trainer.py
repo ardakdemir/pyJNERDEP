@@ -502,8 +502,11 @@ def main():
             json.dump(exp_logs, o)
     elif mode == "predict":
         print("Using trained models to predict...")
-        predict(args)
-
+        exp_log = predict(args)
+        exp_save_path = os.path.join(save_folder, exp_file)
+        print("\n Storing experiment log to ...".format(exp_save_path))
+        with open(exp_save_path, "w") as o:
+            json.dump(exp_log, o)
 
 if __name__ == "__main__":
     main()
