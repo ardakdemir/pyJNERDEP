@@ -232,7 +232,7 @@ def get_datasets(args, tokenizer):
     print(file_map)
     datasets = {f: SentReader(file_map[f], batch_size=args["batch_size"], tokenizer=tokenizer) for f in file_map}
     num_cats = len(datasets["train"].label_vocab.w2ind)
-
+    print("Training vocab: {}".format(datasets["train"].label_vocab.w2ind))
     def merge_vocabs(voc1, voc2):
         for v in voc2.w2ind:
             if v not in voc1.w2ind:
@@ -302,7 +302,6 @@ def predict(args):
                "test_f1": round(f1, 3),
                "test_loss": round(loss, 3),
                "lang": lang,
-               "train_time": train_time,
                "word_embed_type": model_type,
                "domain": domain}
     result_path = os.path.join(save_folder, args["sa_result_file"])
