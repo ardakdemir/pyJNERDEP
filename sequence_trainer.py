@@ -293,8 +293,6 @@ def predict(args):
     seq_classifier.eval()
     seq_classifier.to(device)
     acc, f1, loss = evaluate(seq_classifier, datasets["test"])
-    best_test_f1 = max(f1, best_test_f1)
-    best_test_acc = max(acc, best_test_acc)
     print("\n\n===Sentiment Analysis Test results for {} {} {}=== \n Acc:\t{}\nF1\t{}\nLoss\t{}\n\n".format(lang,
                                                                                                             model_type,
                                                                                                             domain,
