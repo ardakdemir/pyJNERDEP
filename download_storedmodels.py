@@ -39,7 +39,7 @@ def download_link_generator(id):
 
 def load_download_models(key, save_folder=None):
     id = id_model_map[key]
-    print("\n===Downloading trained {} models to replicate the result===\n".format(names[id]))
+    print("\n===Downloading trained {} models to replicate the result===\n".format(names[key]))
     link = download_link_generator(id)
     dest = "../{}_models".format(key)
     unzip_path = "../{}".format(dest) if not save_folder else save_folder
