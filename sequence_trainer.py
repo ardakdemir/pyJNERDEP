@@ -289,7 +289,7 @@ def predict(args):
     num_cats = len(datasets["train"].label_vocab.w2ind)
     word_vocab = datasets["train"].word_vocab
     seq_classifier = SequenceClassifier(lang, word_vocab, model_type, num_cats, device)
-    load_model(seq_classifier, model_save_path)
+    load_model(seq_classifier, model_load_path)
     seq_classifier.eval()
     acc, f1, loss = evaluate(seq_classifier, datasets["test"])
     best_test_f1 = max(f1, best_test_f1)
