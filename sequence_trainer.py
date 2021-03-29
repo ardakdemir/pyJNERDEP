@@ -291,6 +291,7 @@ def predict(args):
     seq_classifier = SequenceClassifier(lang, word_vocab, model_type, num_cats, device)
     load_model(seq_classifier, model_load_path)
     seq_classifier.eval()
+    seq_classifier.to(device)
     acc, f1, loss = evaluate(seq_classifier, datasets["test"])
     best_test_f1 = max(f1, best_test_f1)
     best_test_acc = max(acc, best_test_acc)
