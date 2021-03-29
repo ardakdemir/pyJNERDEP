@@ -46,7 +46,7 @@ def load_download_models(key, save_folder=None):
     unzip_path = "../{}".format(dest) if not save_folder else save_folder
     if not os.path.exists(unzip_path):
         print("{} not found. Downloading trained models for {}".format(unzip_path,key))
-        gdown.download(link, dest)
+        gdown.download(link, dest,quiet=False)
         unzip(dest, unzip_path)
         print("Trained models are stored in {}".format(unzip_path))
         return unzip_path
