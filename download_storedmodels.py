@@ -5,6 +5,7 @@ import tqdm
 import zipdir
 from zipfile import ZipFile
 import argparse
+import os
 
 id_model_map = {"SA": "1Yt6MVemyNDlv0bMrjEEgGSjZ7P42bW0t",
                 "NER": "",
