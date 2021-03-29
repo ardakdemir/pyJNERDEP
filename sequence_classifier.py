@@ -233,6 +233,14 @@ class SequenceClassifier(nn.Module):
         self.vector_dim = 300
         dim = self.vector_dim
         fastext_path = fasttext_dict[self.lang]
+        if not os.path.exists(fastext_path):
+            print("Downloading the fasttext model {}...".format(fastext_path))
+            fasttext.util.download_model(lang, if_exists='ignore')
+
+            print("Downloaded the fasttext model {}!\n\n".format(fastext_path))
+            download_path = 'cc.{}.300.bin'.format(lang)
+            cmd = "mv {} {}".format(download_path, fastext_path)
+            subprocess.call(cmd, shell=True)
         ft = fasttext.load_model(fastext_path)
         embed = nn.Embedding(self.vocab_size, self.vector_dim)
         nn.init.uniform_(embed.weight, -np.sqrt(6 / (dim + self.vocab_size)), np.sqrt(6 / (dim + self.vocab_size)))

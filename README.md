@@ -4,7 +4,26 @@ This repository contains the source code for replicating the experiments in our 
 
 
 
-## Metainfo
+
+## Running on Colab
+
+The easiest way to replicate the results reported on our paper is to use Google Colab.  
+We provide a Colab notebook to replicate the results.
+
+### Data dependencies
+
+In order to run all the experiments without additional effort, the provided Colab notebook downloads all the data required to run the models:
+
+- All datasets used for the experiments.
+- All pretrained word embeddings (e.g., pretrained Word2Vec and FastText embeddings for all languages).
+- All trained models.
+
+If you already have any of these downloaded, you can skip the relevant code-snippets inside the Colab notebook.
+
+### 
+
+
+## Meta info
 
 
 Below are the required information for training new models and replicating the results:
@@ -26,6 +45,8 @@ Name mapping for each language :
     - Czech : cs
     - English : en
     - Japanese : jp
+
+
 
 
 
