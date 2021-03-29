@@ -9,7 +9,7 @@ word2vec_dict = {"jp": "../word_vecs/jp/jp.bin",
                  "cs": "../word_vecs/cs/cs.txt"}
 
 root = "parser/final_model"
-save_folder = "word_vecs"
+save_folder = "../../word_vecs"
 if not os.path.exists(save_folder):
     os.makedirs(save_folder)
 for l,p in word2vec_dict.items():
