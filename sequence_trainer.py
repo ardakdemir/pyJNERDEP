@@ -118,7 +118,7 @@ def parse_args():
     return args
 
 
-def evaluate(model, dataset):
+def evaluate(model, dataset,verbose=False):
     if hasattr(model, "eval_mode"):
         model.eval_mode = True
     dataset.for_eval = True
@@ -161,8 +161,9 @@ def evaluate(model, dataset):
         f1 = (2 * recall * precision) / (precision + recall)
     else:
         f1 = 0
-    print("\n\nTP: {} FP: {} FN: {} TN: {} === Acc: {} === F1: {} === Loss: {}\n\n".format(tp, fp, fn, tn, acc, f1,
-                                                                                           eval_loss))
+    if  verbose:
+        print("\n\nTP: {} FP: {} FN: {} TN: {} === Acc: {} === F1: {} === Loss: {}\n\n".format(tp, fp, fn, tn, acc, f1,
+                                                                                               eval_loss))
     return acc, f1, eval_loss
 
 
@@ -289,7 +290,7 @@ def predict(args):
 
     tokenizer = init_tokenizer(lang, model_type)
     max_f1 = 0
-    min_loss = Nnoe
+    min_loss = None
     max_acc = 0
     exp_log = {}
     for vocab in [Vocab({"n": 0, "p": 1}), Vocab({"p": 0, "n": 1})]:
@@ -300,7 +301,7 @@ def predict(args):
         load_model(seq_classifier, model_load_path)
         seq_classifier.eval()
         seq_classifier.to(device)
-        acc, f1, loss = evaluate(seq_classifier, datasets["test"])
+        acc, f1, loss = evaluate(seq_classifier, datasets["test"],verbose=False)
         if f1 > max_f1:
             max_f1 = f1
             max_acc = acc
