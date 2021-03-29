@@ -3,6 +3,15 @@ import sys
 import gdown
 import tqdm
 import zipdir
+from zipfile import ZipFile
+
+
+def unzip(src, dest):
+    with ZipFile(src, 'r') as zipObj:
+        # Extract all the contents of zip file in different directory
+        zipObj.extractall(dest)
+        print('File is unzipped in {} folder'.format(dest))
+
 
 def download_link_generator(id):
     return "https://drive.google.com/uc?id={}".format(id)
@@ -17,8 +26,19 @@ names = {"sa": "Sentiment Analysis",
          "dep": "Dependency Parsing",
          "flat": "Multi-task Learning"}
 
-id = id_model_map[key]
-print("\n===Downloading trained {} models to replicate the result===\n".format(names[id]))
-link = download_link_generator(id)
-dest = "../{}_models".format(key)
-gdown.download(link, dest)
+
+def load_download_models(key):
+    id = id_model_map[key]
+    print("\n===Downloading trained {} models to replicate the result===\n".format(names[id]))
+    link = download_link_generator(id)
+    dest = "../{}_models".format(key)
+    unzip_path = "../{}".format(dest)
+    if not os.path.exists(unzip_path):
+        print("{} not found. Downloading trained models for {}".format(key))
+        gdown.download(link, dest)
+        unzip(dest, unzip_path)
+        print("Trained models are stored in {}".format(unzip_path))
+        return unzip_path
+    else:
+        print("Models for {} are already downloaded.".format(key))
+        return unzip_path
