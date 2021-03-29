@@ -11,6 +11,7 @@ do
   lang=${langs[$i]}
   lang_pref=${lang_prefs[$i]}
 #    for type in bert mbert bert_en fastext word2vec random_init
+#  for type in bert mbert bert_en fastext word2vec random_init
   for type in bert mbert bert_en fastext word2vec random_init
   do
     echo "Downloading trained Sentiment Analysis models to: "${load_folder}
