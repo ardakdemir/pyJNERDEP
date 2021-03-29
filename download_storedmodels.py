@@ -59,9 +59,9 @@ def main():
     args = parse_args()
     key = args.key
     save_folder = args.save_folder
+    load_download_models(key, save_folder)
     content = os.listdir(save_folder)
     print("Content of the save model folder: {}".format(content))
-    load_download_models(key, save_folder)
 
 
 if __name__ == "__main__":
