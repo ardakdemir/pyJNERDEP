@@ -20,6 +20,7 @@ from vocab import Vocab
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
+lang_dict = {"tr":"turkish","en":"english"}
 model_name_dict = {"jp": "cl-tohoku/bert-base-japanese",
                    "tr": "dbmdz/bert-base-turkish-cased",
                    "hu": "/home/aakdemir/bert_models/hubert",
@@ -235,7 +236,7 @@ def get_datasets(args, tokenizer, label_vocab=None):
     dataset_folder = args["sa_dataset_folder"]
     load_folder = args["load_folder"]
     domain = args["domain"]
-    file_map = {x:os.path.join(dataset_folder,"sa_{}_{}-{}.json".format(domain,lang,x)) for x in ["train","dev","test"]}
+    file_map = {x:os.path.join(dataset_folder,"sa_{}_{}-{}.json".format(domain,lang_dict[lang],x)) for x in ["train","dev","test"]}
     print(file_map)
     datasets = {f: SentReader(file_map[f], batch_size=args["batch_size"], tokenizer=tokenizer) for f in file_map}
     if label_vocab:
