@@ -103,6 +103,7 @@ def parse_args():
     parser.add_argument('--batch_size', type=int, default=200)
     parser.add_argument('--model_save_name', type=str, default='best_sa_model.pkh', help="File name to save the model")
     parser.add_argument('--save_folder', type=str, default='../sa_savedir', help="Folder to save files")
+    parser.add_argument('--load_folder', type=str, default='../sa_models', help="Folder to load  models from")
     parser.add_argument('--exp_file', type=str, default='sa_experiment_log.json', help="File to store exp details")
     parser.add_argument('--load_model', type=int, default=0, help='Binary for loading previous model')
     parser.add_argument('--load_path', type=str, default='best_joint_model.pkh', help="File name to load the model")
@@ -165,6 +166,17 @@ def evaluate(model, dataset):
     return acc, f1, eval_loss
 
 
+def write_result(exp_key, result, result_path):
+    title = "Model\tAccuracy\tF1\n"
+    s = ""
+    if not os.path.exists(result_path):
+        s += title
+    with open(result_path, "a") as o:
+        f1, acc = str(result["test_f1"]), str(result["test_acc"])
+        s += "{}\t{}\t{}\n".format(exp_key, acc, f1)
+        o.write(s)
+
+
 def write_results(exp_key, exp_logs, result_path):
     title = "Model\tMax-Dev-F1\tAvg-Dev-F1\tMax-Dev-Acc\tAvg-Dev-Acc\tMax-Test-F1\tAvg-Test-F1\tMax-Test-Acc\tAvg-Test-Acc\n"
     s = ""
@@ -211,6 +223,90 @@ def hyperparameter_search():
     print("\n\n===Hyperparameter Search is finished===\nBest Acc : {} Config: {}".format(best_acc, best_config))
     print("\n\nBest Exp log\n{}\n".format(best_log))
     return best_log, best_config, best_acc
+
+
+def get_datasets(args, tokenizer):
+    file_map = {"train": args["sa_train_file"],
+                "dev": args["sa_dev_file"],
+                "test": args["sa_test_file"]}
+    print(file_map)
+    datasets = {f: SentReader(file_map[f], batch_size=args["batch_size"], tokenizer=tokenizer) for f in file_map}
+    num_cats = len(datasets["train"].label_vocab.w2ind)
+
+    def merge_vocabs(voc1, voc2):
+        for v in voc2.w2ind:
+            if v not in voc1.w2ind:
+                voc1.w2ind[v] = len(voc1.w2ind)
+        return voc1
+
+    for k, v in datasets.items():
+        print("{} number of batches: {}".format(k, len(v)))
+
+    # Merge vocabs of train-dev-test
+    for x in ["dev", "test"]:
+        datasets["train"].word_vocab = merge_vocabs(datasets["train"].word_vocab, datasets[x].word_vocab)
+
+    for x in ["dev", "test"]:
+        datasets[x].word_vocab.w2ind = datasets["train"].word_vocab.w2ind
+        datasets[x].label_vocab.w2ind = datasets["train"].label_vocab.w2ind
+
+    return datasets
+
+
+def load_model(seq_classifier, model_save_path):
+    loaded_params = torch.load(model_save_path, map_location=seq_classifier.device)
+    my_dict = seq_classifier.state_dict()
+    pretrained_dict = {k: v for k, v in loaded_params.items() if
+                       k in seq_classifier.state_dict() and seq_classifier.state_dict()[k].size() == v.size()}
+    print("{} parameter groups will be loaded in total".format(len(pretrained_dict)))
+    my_dict.update(pretrained_dict)
+    seq_classifier.load_state_dict(my_dict)
+
+
+def predict(args):
+    lang = args["lang"]
+    model_type = args["word_embed_type"]
+    save_folder = args["save_folder"]
+    load_folder = args["load_folder"]
+    domain = args["domain"]
+    exp_key = "_".join([domain, lang, model_type])
+    exp_file = args["exp_file"]
+    repeat = args["repeat"]
+
+    logging.info("Running for  {} {} ".format(lang, model_type))
+    print("Running for  {} {} ".format(lang, model_type))
+
+    if not os.path.exists(save_folder):
+        os.makedirs(save_folder)
+
+    model_load_path = os.path.join(load_folder, "{}_best_sa_model_weights.pkh".format(exp_key))
+    if not os.path.exists(model_load_path):
+        msg = "Model {} must exist in predict mode...".format(model_load_path)
+        raise Exception(msg)
+
+    tokenizer = init_tokenizer(lang, model_type)
+    datasets = get_datasets(args, tokenizer)
+    word_vocab = datasets["train"].word_vocab
+    seq_classifier = SequenceClassifier(lang, word_vocab, model_type, num_cats, device)
+    load_model(seq_classifier, model_save_path)
+    seq_classifier.eval()
+    acc, f1, loss = evaluate(seq_classifier, datasets["test"])
+    best_test_f1 = max(f1, best_test_f1)
+    best_test_acc = max(acc, best_test_acc)
+    print("\n\n===Sentiment Analysis Test results for {} {} {}=== \n Acc:\t{}\nF1\t{}\nLoss\t{}\n\n".format(lang,
+                                                                                                            model_type,
+                                                                                                            domain,
+                                                                                                            acc, f1,
+                                                                                                            loss))
+    exp_log = {"test_acc": round(acc, 3),
+               "test_f1": round(f1, 3),
+               "test_loss": round(loss, 3),
+               "lang": lang,
+               "train_time": train_time,
+               "word_embed_type": model_type,
+               "domain": domain}
+    result_path = os.path.join(save_folder, args["sa_result_file"])
+    write_result(exp_key, exp_log, result_path)
 
 
 def train(args):
@@ -335,7 +431,11 @@ def train(args):
         acc, f1, loss = evaluate(seq_classifier, datasets["test"])
         best_test_f1 = max(f1, best_test_f1)
         best_test_acc = max(acc, best_test_acc)
-        print("\n\n=== Test results === \n Acc:\t{}\nF1\t{}\nLoss\t{}\n\n".format(acc, f1, loss))
+        print("\n\n===Sentiment Analysis Test results for {} {} {}=== \n Acc:\t{}\nF1\t{}\nLoss\t{}\n\n".format(lang,
+                                                                                                                model_type,
+                                                                                                                domain,
+                                                                                                                acc, f1,
+                                                                                                                loss))
         exp_log = {"dev_acc": accs,
                    "dev_f1": f1s,
                    "dev_loss": losses,
@@ -365,16 +465,22 @@ def main():
     model_type = args["word_embed_type"]
     save_folder = args["save_folder"]
     domain = args["domain"]
+    mode = args["mode"]
     exp_key = "_".join([domain, lang, model_type])
     exp_file = "sa_experiment_log_{}.json".format(exp_key)
-    exp_logs, test_f1, test_acc = train(args)
-    # best_log, best_config, best_acc = hyperparameter_search()
+    if mode == "train":
+        print("Training a sequence classifier model...")
+        exp_logs, test_f1, test_acc = train(args)
+        # best_log, best_config, best_acc = hyperparameter_search()
 
-    result_path = os.path.join(save_folder, args["sa_result_file"])
-    write_results(exp_key, exp_logs, result_path)
-    exp_save_path = os.path.join(save_folder, exp_file)
-    with open(exp_save_path, "w") as o:
-        json.dump(exp_logs, o)
+        result_path = os.path.join(save_folder, args["sa_result_file"])
+        write_results(exp_key, exp_logs, result_path)
+        exp_save_path = os.path.join(save_folder, exp_file)
+        with open(exp_save_path, "w") as o:
+            json.dump(exp_logs, o)
+    elif mode == "predict":
+        print("Using trained models to predict...")
+        predict(args)
 
 
 if __name__ == "__main__":
