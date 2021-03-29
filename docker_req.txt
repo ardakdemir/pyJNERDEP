@@ -76,6 +76,7 @@ webencodings==0.5.1
 Werkzeug==0.16.1
 widgetsnbextension==3.5.1
 wrapt==1.12.1
+zipdir
 fugashi
 ipadic
 gdown
