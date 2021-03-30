@@ -242,10 +242,10 @@ class SequenceClassifier(nn.Module):
         fastext_path = fasttext_dict[self.lang]
         if not os.path.exists(fastext_path):
             print("Downloading the fasttext model {}...".format(fastext_path))
-            fasttext.util.download_model(lang, if_exists='ignore')
+            fasttext.util.download_model(self.lang, if_exists='ignore')
 
             print("Downloaded the fasttext model {}!\n\n".format(fastext_path))
-            download_path = 'cc.{}.300.bin'.format(lang)
+            download_path = 'cc.{}.300.bin'.format(self.lang)
             cmd = "mv {} {}".format(download_path, fastext_path)
             subprocess.call(cmd, shell=True)
         ft = fasttext.load_model(fastext_path)

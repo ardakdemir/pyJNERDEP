@@ -488,6 +488,7 @@ def main():
     if model_type == "bert" and lang == "en":
         args["word_embed_type"] = "bert_en"
         model_type = "bert_en"
+        return
     save_folder = args["save_folder"]
     domain = args["domain"]
     mode = args["mode"]
