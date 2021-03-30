@@ -7,8 +7,8 @@ from zipfile import ZipFile
 import argparse
 import os
 
-id_model_map = {"SA": {"twitter_turkish": "",
-                       "movie_turkish": "",
+id_model_map = {"SA": {"twitter_turkish": "10mOwZGp4-NTo9K_bJkE2KlWa4HUudW07",
+                       "movie_turkish": "1IoQhYijlWVlK0vHnVUn0e1ohwahePO7R",
                        "movie_english": "1t2XgkbfxGPjvThEg-wkO_ejTOlikIzv7"},
                 "NER": {"bert": "",
                         "mbert": "",
