@@ -6,17 +6,17 @@ lang_prefs=("cs" "tr"  "jp" "en" "fi" "hu")
 for model_type in NER
 do
   save_dir="../"$model_type"_experiment_results"
-  for i in 0 1 2 3 4 5
+  for type in fastext
   do
-    lang=${langs[$i]}
-    lang_pref=${lang_prefs[$i]}
+    model_folder="../"${model_type}"_"${type}"_models"
+    echo "Downloading the stored models to: "$model_folder
+    lower_model="$(echo $model_type | tr '[A-Z]' '[a-z]')"
+    python download_storedmodels.py --model_type ${model_type} --word_type ${type} --save_folder ${model_folder}
 #    for type in bert mbert bert_en fastext word2vec random_init
-    for type in fastext
+    for i in 0 1 2 3 4 5
     do
-      model_folder="../"${model_type}"_"${type}"_models"
-      echo "Downloading the stored models to: "$model_folder
-      lower_model="$(echo $model_type | tr '[A-Z]' '[a-z]')"
-      python download_storedmodels.py --key ${model_type} --save_folder ${model_folder}
+      lang=${langs[$i]}
+      lang_pref=${lang_prefs[$i]}
       load_path=$model_folder"/"${model_type}"_"${type}"_"${lang}"_best_"$lower_model"_model.pkh"
       echo "Running for " ${model_type}"  "${lang}"  "${type}
       echo "Model will be loaded from: "$load_path

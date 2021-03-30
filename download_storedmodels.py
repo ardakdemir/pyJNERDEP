@@ -24,23 +24,21 @@ id_model_map = {"SA": {"twitter_turkish": "",
                         "random_init": "",
                         "word2vec": ""
                         },
-                "FLAT": {
-                    "NER": {"bert": "",
-                            "mbert": "",
-                            "bert_en": "",
-                            "fastext": "",
-                            "random_init": "",
-                            "word2vec": ""
-                            },
-                    "DEP": {"bert": "",
-                            "mbert": "",
-                            "bert_en": "",
-                            "fastext": "",
-                            "random_init": "",
-                            "word2vec": ""
-                            }
-                }}
-
+                "FLAT_NER": {"bert": "",
+                             "mbert": "",
+                             "bert_en": "",
+                             "fastext": "",
+                             "random_init": "",
+                             "word2vec": ""
+                             },
+                "FLAT_DEP": {"bert": "",
+                             "mbert": "",
+                             "bert_en": "",
+                             "fastext": "",
+                             "random_init": "",
+                             "word2vec": ""
+                             }
+                }
 
 names = {"SA": "Sentiment Analysis",
          "NER": "Named Entity Recognition",
@@ -64,7 +62,9 @@ def drive_download_w2v(lang, save_path):
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--key', type=str, default='SA',
+    parser.add_argument('--model_type', type=str, default='NER',
+                        help='key for downloading the models')
+    parser.add_argument('--word_type', type=str, default='fastext',
                         help='key for downloading the models')
     parser.add_argument('--save_folder', type=str, default=None,
                         help='Destination to save downloaded models')
@@ -102,7 +102,8 @@ def load_download_models(key, save_folder=None):
 
 def main():
     args = parse_args()
-    key = args.key
+    model_type = args.model_type
+    word_type = args.word_type
     save_folder = args.save_folder
     load_download_models(key, save_folder)
     content = os.listdir(save_folder)
