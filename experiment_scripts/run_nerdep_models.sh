@@ -2,14 +2,16 @@
 
 langs=(czech turkish  japanese english finnish hungarian)
 lang_prefs=("cs" "tr"  "jp" "en" "fi" "hu")
-for model_type in NER DEP FLAT
+#for model_type in NER DEP FLAT
+for model_type in NER
 do
   save_dir="../"$model_type"_experiment_results"
   for i in 0 1 2 3 4 5
   do
     lang=${langs[$i]}
     lang_pref=${lang_prefs[$i]}
-    for type in bert mbert bert_en fastext word2vec random_init
+#    for type in bert mbert bert_en fastext word2vec random_init
+    for type in fastext
     do
       model_folder="../"${model_type}"_"${type}"_models"
       echo "Downloading the stored models to: "$model_folder

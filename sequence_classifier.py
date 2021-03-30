@@ -12,7 +12,7 @@ import fasttext.util
 from gensim.models import Word2Vec
 from transformers import AutoTokenizer, AutoModel, BertForPreTraining, BertForTokenClassification
 from constants import model_name_dict, encoding_map, word2vec_dict, fasttext_dict, word2vec_lens
-
+from download_storedmodels import drive_download_w2v
 
 def embedding_initializer(dim, num_labels):
     embed = nn.Embedding(num_labels, dim)
@@ -58,6 +58,7 @@ fasttext_dict = {"jp": "../word_vecs/jp/cc.jp.300.bin",
                  "fi": "../word_vecs/fi/cc.fi.300.bin",
                  "cs": "../word_vecs/cs/cc.cs.300.bin"}
 
+
 word2vec_lens = {"tr": 200,
                  "hu": 300,
                  "fi": 300,
@@ -78,6 +79,12 @@ def load_bert_model(lang):
 
 def load_word2vec(lang):
     model_name = word2vec_dict[lang]
+    if not os.path.exists(model_name):
+        print("{} not found... Downloading the Word2Vec model from drive".format(model_name))
+        root = os.path.split(model_name)[0]
+        if not os.path.exists(root):
+            os.makedirs(root)
+        drive_download_w2v(lang, model_name)
     if lang == "cs" or lang == "en":
         model = MyWord2Vec(model_name, lang)
     else:

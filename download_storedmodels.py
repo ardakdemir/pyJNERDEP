@@ -7,14 +7,59 @@ from zipfile import ZipFile
 import argparse
 import os
 
-id_model_map = {"SA": "1Yt6MVemyNDlv0bMrjEEgGSjZ7P42bW0t",
-                "NER": "",
-                "DEP": "",
-                "FLAT": ""}
+id_model_map = {"SA": {"twitter_turkish": "",
+                       "movie_turkish": "",
+                       "movie_english": ""},
+                "NER": {"bert": "",
+                        "mbert": "",
+                        "bert_en": "",
+                        "fastext": "1JWHSHDmTxsZoYwkc6_K8Wz76JSUmJVhA",
+                        "random_init": "",
+                        "word2vec": ""
+                        },
+                "DEP": {"bert": "",
+                        "mbert": "",
+                        "bert_en": "",
+                        "fastext": "",
+                        "random_init": "",
+                        "word2vec": ""
+                        },
+                "FLAT": {
+                    "NER": {"bert": "",
+                            "mbert": "",
+                            "bert_en": "",
+                            "fastext": "",
+                            "random_init": "",
+                            "word2vec": ""
+                            },
+                    "DEP": {"bert": "",
+                            "mbert": "",
+                            "bert_en": "",
+                            "fastext": "",
+                            "random_init": "",
+                            "word2vec": ""
+                            }
+                }}
+
+
 names = {"SA": "Sentiment Analysis",
          "NER": "Named Entity Recognition",
          "DEP": "Dependency Parsing",
          "FLAT": "Multi-task Learning"}
+
+word2vec_driveIds = {"jp": "1dYISBXsgK3yR6mw-LRGfjGrcN3aVme2q",
+                     "tr": "14WH-amhKXn4ayqi2lugUSIoS7b8q0U9H",
+                     "hu": "1dmEC0-7Zkmc4p9OmTIw3JKMJ7aNyGYIt",
+                     "en": "1avdWgjq138lrfJnIZVRpa9EaLJrU4HVj",
+                     "fi": "1wtqAc4FZ6wl4w4_kSozWbDjgUUV22Fjr",
+                     "cs": "1ibFwJ6B01Kpm6k6qdI1cJ64wLyaJy-s3"}
+
+
+def drive_download_w2v(lang, save_path):
+    id = word2vec_driveIds[lang]
+    link = download_link_generator(id)
+    gdown.download(link, save_path, quiet=False)
+    return save_path
 
 
 def parse_args():
@@ -45,8 +90,8 @@ def load_download_models(key, save_folder=None):
     dest = "../{}_models".format(key)
     unzip_path = "../{}".format(dest) if not save_folder else save_folder
     if not os.path.exists(unzip_path):
-        print("{} not found. Downloading trained models for {}".format(unzip_path,key))
-        gdown.download(link, dest,quiet=False)
+        print("{} not found. Downloading trained models for {}".format(unzip_path, key))
+        gdown.download(link, dest, quiet=False)
         unzip(dest, unzip_path)
         print("Trained models are stored in {}".format(unzip_path))
         return unzip_path

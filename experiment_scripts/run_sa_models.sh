@@ -4,7 +4,7 @@
 langs=(turkish  english)
 lang_prefs=("tr" "en")
 model_type="sa"
-load_folder="../sa_models"
+load_folder="../SA_models"
 save_dir=${1}
 for i in 0 1
 do
