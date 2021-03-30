@@ -20,5 +20,5 @@ python download_storedmodels.py --model_type SA --word_type ${exp_key} --save_fo
 for type in bert mbert bert_en fastext word2vec random_init
 do
   echo "Running for " ${model_type}"  "${lang}"  "${type}
-  python sequence_trainer.py --mode predict  --word_embed_type ${type}  --lang ${lang_pref}  --save_folder $save_dir --load_folder ${load_folder}
+  python sequence_trainer.py --mode predict  --word_embed_type ${type}  --lang ${lang_pref}  --save_folder $save_dir --load_folder ${model_folder}
 done
