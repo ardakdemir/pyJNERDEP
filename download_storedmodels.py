@@ -9,7 +9,7 @@ import os
 
 id_model_map = {"SA": {"twitter_turkish": "",
                        "movie_turkish": "",
-                       "movie_english": ""},
+                       "movie_english": "1t2XgkbfxGPjvThEg-wkO_ejTOlikIzv7"},
                 "NER": {"bert": "",
                         "mbert": "",
                         "bert_en": "",
@@ -43,7 +43,8 @@ id_model_map = {"SA": {"twitter_turkish": "",
 names = {"SA": "Sentiment Analysis",
          "NER": "Named Entity Recognition",
          "DEP": "Dependency Parsing",
-         "FLAT": "Multi-task Learning"}
+         "FLAT_DEP": "Multi-task Learning DEP",
+         "FLAT_NER": "Multi-task Learning NER"}
 
 word2vec_driveIds = {"jp": "1dYISBXsgK3yR6mw-LRGfjGrcN3aVme2q",
                      "tr": "14WH-amhKXn4ayqi2lugUSIoS7b8q0U9H",
@@ -83,20 +84,20 @@ def download_link_generator(id):
     return "https://drive.google.com/uc?id={}".format(id)
 
 
-def load_download_models(key, save_folder=None):
-    id = id_model_map[key]
-    print("\n===Downloading trained {} models to replicate the result===\n".format(names[key]))
+def load_download_models(model_type, word_type, save_folder=None):
+    id = id_model_map[model_type][word_type]
+    print("\n===Downloading trained {} models to replicate the result===\n".format(names[model_type]))
     link = download_link_generator(id)
-    dest = "../{}_models".format(key)
+    dest = "../{}_{}_models".format(model_type, word_type)
     unzip_path = "../{}".format(dest) if not save_folder else save_folder
     if not os.path.exists(unzip_path):
-        print("{} not found. Downloading trained models for {}".format(unzip_path, key))
+        print("{} not found. Downloading trained models for {} {}".format(unzip_path, model_type, word_type))
         gdown.download(link, dest, quiet=False)
         unzip(dest, unzip_path)
         print("Trained models are stored in {}".format(unzip_path))
         return unzip_path
     else:
-        print("Models for {} are already downloaded.".format(key))
+        print("Models for {} {} are already downloaded.".format(model_type, word_type))
         return unzip_path
 
 
@@ -105,7 +106,7 @@ def main():
     model_type = args.model_type
     word_type = args.word_type
     save_folder = args.save_folder
-    load_download_models(key, save_folder)
+    load_download_models(model_type, word_type, save_folder)
     content = os.listdir(save_folder)
     print("Content of the save model folder: {}".format(content))
 

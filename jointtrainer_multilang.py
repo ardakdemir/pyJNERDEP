@@ -118,6 +118,12 @@ def embedding_initializer(dim, num_labels):
 
 def load_word2vec(lang):
     model_name = word2vec_dict[lang]
+    if not os.path.exists(model_name):
+        print("{} not found... Downloading the Word2Vec model from drive".format(model_name))
+        root = os.path.split(model_name)[0]
+        if not os.path.exists(root):
+            os.makedirs(root)
+        drive_download_w2v(lang, model_name)
     if lang == "cs" or lang == "en":
         model = MyWord2Vec(model_name, lang)
     else:
