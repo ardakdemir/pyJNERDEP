@@ -8,6 +8,7 @@ import time
 import os
 import copy
 import fasttext
+import tqdm
 import fasttext.util
 from gensim.models import Word2Vec
 from transformers import AutoTokenizer, AutoModel, BertForPreTraining, BertForTokenClassification
@@ -127,7 +128,7 @@ class MyWord2Vec():
             wv = {}
             my_len = 0
             c = 0
-            for l in f:  # s
+            for l in tqdm.tqdm(f,desc="Word2Vec loading"):  # s
                 s = l.split(" ")
                 if len(s) < 2:
                     continue
