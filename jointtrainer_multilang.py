@@ -183,7 +183,7 @@ class MyWord2Vec():
         return vocab, wv, length
 
 
-def get_pretrained_word_embeddings(w2ind, lang='tr', dim='768', word_vec_root="../word_vecs", load_w2v=False):
+def get_pretrained_word_embeddings(w2ind, lang='tr', dim='768', word_vec_root="../word_vecs", load_w2v=False,load_model=False):
     vocab_size = len(w2ind)
     # load_path = embedding_path+"_cached.pk"
     print("Getting pretrained embeddings with dim:{}".format(dim))
@@ -192,68 +192,61 @@ def get_pretrained_word_embeddings(w2ind, lang='tr', dim='768', word_vec_root=".
     pretrained_type = 'fastext' if not load_w2v else 'word2vec'
     if pretrained_type == 'word2vec':
         word_vec_path = os.path.join(word_vec_root, lang, "w2v_{}_{}".format(lang, dim))
-        gensim_model = load_word2vec(lang)
+
         # word_vec_path = os.path.join(word_vec_root,lang,"{}.{}.tsv".format(lang,dim))
         embed = nn.Embedding(vocab_size, dim)
         nn.init.uniform_(embed.weight, -np.sqrt(6 / (dim + vocab_size)), np.sqrt(6 / (dim + vocab_size)))
         c = 0
-        for word in list(w2ind.keys()):
-            if word in gensim_model.wv.vocab:
-                ind = w2ind[word]
-                vec = gensim_model.wv[word]
-                embed.weight.data[ind].copy_(torch.tensor(vec, requires_grad=True))
-                c += 1
-        print("Found {} out of {} words in word2vec for {} ".format(c, len(w2ind), lang))
+        if not load_model:
+            print("Reading raw word2vec vectors")
+            gensim_model = load_word2vec(lang)
+            for word in list(w2ind.keys()):
+                if word in gensim_model.wv.vocab:
+                    ind = w2ind[word]
+                    vec = gensim_model.wv[word]
+                    embed.weight.data[ind].copy_(torch.tensor(vec, requires_grad=True))
+                    c += 1
+            print("Found {} out of {} words in word2vec for {} ".format(c, len(w2ind), lang))
         return embed
     else:
         print("Generating embedding from fasttext model (not .txt file)")
         fastext_path = fasttext_dict[lang]
-        if not os.path.exists(fastext_path):
-            print("Downloading the fasttext model {}...".format(fastext_path))
-            fasttext.util.download_model(lang, if_exists='ignore')
-
-            print("Downloaded the fasttext model {}!\n\n".format(fastext_path))
-            download_path = 'cc.{}.300.bin'.format(lang)
-            ft = fasttext.load_model('cc.{}.300.bin'.format(lang))
-            cmd = "mv {} {}".format(download_path,fastext_path)
-            subprocess.call(cmd,shell=True)
-        else:
-            ft = fasttext.load_model(fastext_path)
-        s = time.time()
-        # embeddings = open(embedding_path,encoding='utf-8').read().strip().split("\n")
-        # print("First line of embeddings")
-        # print(embeddings[0])
-        # print("Number of words in embeddings {} ".format(len(embeddings)))
-        # if len(embeddings[0].split())==2:## with header
-        #    embeddings = embeddings[1:]
-        # dim = len(embeddings[0].split())-1 ## embedding dimension
-        # emb_dict = {l.split()[0]: [float(x) for x in l.split()[1:] ] for l in embeddings[:-1]} ## last index problematic
-        # e = time.time()
-        # print("Read all embeddings in {} seconds".format(round(e-s,4)))
-        # print("Saving embedding dictionary to {}".format(load_path))
-
-        # pickle.dump(emb_dict,open(load_path,'wb'))
-        c = 0
         embed = nn.Embedding(vocab_size, dim)
         nn.init.uniform_(embed.weight, -np.sqrt(6 / (dim + vocab_size)), np.sqrt(6 / (dim + vocab_size)))
-        vocab = list(w2ind.keys())
-        first_word = vocab[0]
-        first_word_ind = w2ind[first_word]
-        first_word_weights = embed.weight.data[first_word_ind]
-        logging.info("Weights of the first word before")
-        logging.info(first_word_weights)
-        for word in vocab:
-            c += 1
-            ind = w2ind[word]
-            vec = ft.get_word_vector(word)
-            ft_vec = torch.tensor(vec, requires_grad=True)
-            embed.weight.data[ind].copy_(ft_vec)
-        print("Initialized {} out of {} words from fastext".format(c, vocab_size))
-        first_word_weights = embed.weight.data[first_word_ind]
-        logging.info("Weights of the first word after")
-        logging.info(first_word_weights)
-        end = time.time()
-        print("Word embeddings initialized in {} seconds ".format(round(end - start, 4)))
+        if not load_model:
+            print("Loading raw fastext vectors")
+            if not os.path.exists(fastext_path):
+                print("Downloading the fasttext model {}...".format(fastext_path))
+                fasttext.util.download_model(lang, if_exists='ignore')
+
+                print("Downloaded the fasttext model {}!\n\n".format(fastext_path))
+                download_path = 'cc.{}.300.bin'.format(lang)
+                ft = fasttext.load_model('cc.{}.300.bin'.format(lang))
+                cmd = "mv {} {}".format(download_path,fastext_path)
+                subprocess.call(cmd,shell=True)
+            else:
+                ft = fasttext.load_model(fastext_path)
+            s = time.time()
+            c = 0
+
+            vocab = list(w2ind.keys())
+            first_word = vocab[0]
+            first_word_ind = w2ind[first_word]
+            first_word_weights = embed.weight.data[first_word_ind]
+            logging.info("Weights of the first word before")
+            logging.info(first_word_weights)
+            for word in vocab:
+                c += 1
+                ind = w2ind[word]
+                vec = ft.get_word_vector(word)
+                ft_vec = torch.tensor(vec, requires_grad=True)
+                embed.weight.data[ind].copy_(ft_vec)
+            print("Initialized {} out of {} words from fastext".format(c, vocab_size))
+            first_word_weights = embed.weight.data[first_word_ind]
+            logging.info("Weights of the first word after")
+            logging.info(first_word_weights)
+            end = time.time()
+            print("Word embeddings initialized in {} seconds ".format(round(end - start, 4)))
     return embed
 
 
@@ -328,6 +321,8 @@ def parse_args():
                         help='Output file name in conll bio format')
     parser.add_argument('--config_file', type=str, default='config.json', help='Output file name in conll bio format')
     parser.add_argument('--mode', default='train', choices=['train', 'predict'])
+    parser.add_argument('--eval_mode', default='BOTH', choices=['BOTH', 'NER',"DEP"])
+
     parser.add_argument('--load_config', default=0, type=int)
     parser.add_argument('--lang', default='tr', type=str, help='Language', choices=['en', 'jp', 'tr', 'cs', 'fi', 'hu'])
     parser.add_argument('--shorthand', type=str, help="Treebank shorthand")
@@ -517,7 +512,8 @@ class BaseModel(nn.Module):
             load_w2v = True if self.args['word_embed_type'] == 'word2vec' else False
             self.word_embeds = get_pretrained_word_embeddings(self.args['vocab'], self.args['lang'],
                                                               self.w_dim, self.args['wordvec_dir'],
-                                                              load_w2v=load_w2v)
+                                                              load_w2v=load_w2v,
+                                                              load_model=self.args["load_model"]==1)
 
             print("Initialized word embeddings from {}".format(self.args['word_embed_type']))
             self.w_dim = len(self.word_embeds.weight[0])
@@ -765,7 +761,7 @@ class JointTrainer:
 
         self.init_models()
         experiment_log = {}
-        if self.args["model_type"] == "NER":
+        if self.args["eval_mode"] == "ALL" or self.args["eval_mode"]  == "NER":
             self.nervalreader = self.nertestreader
             self.nervalreader.for_eval = True
             ner_pre, ner_rec, ner_f1 = self.ner_evaluate()
@@ -777,7 +773,7 @@ class JointTrainer:
                 s = self.args['lang'] + "_" + self.args['word_embed_type']
                 s = s + "\t" + "\t".join([str(x) for x in [ner_pre, ner_rec, ner_f1]]) + "\n"
                 o.write(s)
-        if self.args["model_type"] == "DEP":
+        if self.args["eval_mode"] == "ALL" or self.args["eval_mode"]  == "DEP":
             self.depvaldataset = self.deptestdataset
             dep_pre, dep_rec, dep_f1, uas_f1 = self.dep_evaluate()
             experiment_log["dep_test"] = {"pre": dep_pre,

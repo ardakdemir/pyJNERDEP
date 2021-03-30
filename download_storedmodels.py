@@ -10,12 +10,12 @@ import os
 id_model_map = {"SA": {"twitter_turkish": "10mOwZGp4-NTo9K_bJkE2KlWa4HUudW07",
                        "movie_turkish": "1IoQhYijlWVlK0vHnVUn0e1ohwahePO7R",
                        "movie_english": "1t2XgkbfxGPjvThEg-wkO_ejTOlikIzv7"},
-                "NER": {"bert": "",
+                "NER": {"bert": "1M9-JWPL535IIDUSoDNDpMRzTex8tBbN7",
                         "mbert": "",
                         "bert_en": "",
                         "fastext": "1JWHSHDmTxsZoYwkc6_K8Wz76JSUmJVhA",
                         "random_init": "",
-                        "word2vec": ""
+                        "word2vec": "1E5jGGlhbevjSg-oprf_e0vU2y89_zhHJ"
                         },
                 "DEP": {"bert": "",
                         "mbert": "",
