@@ -176,12 +176,12 @@ class MyBertModel(nn.Module):
 
 
 class SequenceClassifier(nn.Module):
-    def __init__(self, lang, word_vocab, model_type, num_cats, device, config={}):
+    def __init__(self, lang, word_vocab, model_type, num_cats, device,config={},load_model = False):
         super(SequenceClassifier, self).__init__()
         self.lang = lang
         self.config = DEFAULT_CONFIG
         self.config.update(config)  # Override default config
-
+        self.load_model = load_model # If load do not read word2vec or fastext!
         self.device = device
         self.eval_mode = False
         self.word_vocab = word_vocab
@@ -221,18 +221,20 @@ class SequenceClassifier(nn.Module):
     def init_word2vec(self):
         self.vector_dim = word2vec_lens[self.lang]
         dim = self.vector_dim
-        gensim_model = load_word2vec(self.lang)
         embed = nn.Embedding(self.vocab_size, self.vector_dim)
         nn.init.uniform_(embed.weight, -np.sqrt(6 / (dim + self.vocab_size)), np.sqrt(6 / (dim + self.vocab_size)))
-        w2ind = self.word_vocab.w2ind
-        c = 0
-        for word in list(w2ind.keys()):
-            if word in gensim_model.wv.vocab:
-                ind = w2ind[word]
-                vec = gensim_model.wv[word]
-                embed.weight.data[ind].copy_(torch.tensor(vec, requires_grad=True))
-                c += 1
-        print("Found {} out of {} words in word2vec for {} ".format(c, len(w2ind), self.lang))
+        if not self.load_model:
+            print("Loading Word2Vec vectors from scratch")
+            gensim_model = load_word2vec(self.lang)
+            w2ind = self.word_vocab.w2ind
+            c = 0
+            for word in list(w2ind.keys()):
+                if word in gensim_model.wv.vocab:
+                    ind = w2ind[word]
+                    vec = gensim_model.wv[word]
+                    embed.weight.data[ind].copy_(torch.tensor(vec, requires_grad=True))
+                    c += 1
+            print("Found {} out of {} words in word2vec for {} ".format(c, len(w2ind), self.lang))
         self.base_model = embed
         self.base_optimizer = optim.AdamW(self.base_model.parameters(), lr=self.config["embed_lr"])
         self.init_lstm()
@@ -240,27 +242,30 @@ class SequenceClassifier(nn.Module):
     def init_fastext(self):
         self.vector_dim = 300
         dim = self.vector_dim
-        fastext_path = fasttext_dict[self.lang]
-        if not os.path.exists(fastext_path):
-            print("Downloading the fasttext model {}...".format(fastext_path))
-            fasttext.util.download_model(self.lang, if_exists='ignore')
-
-            print("Downloaded the fasttext model {}!\n\n".format(fastext_path))
-            download_path = 'cc.{}.300.bin'.format(self.lang)
-            cmd = "mv {} {}".format(download_path, fastext_path)
-            subprocess.call(cmd, shell=True)
-        ft = fasttext.load_model(fastext_path)
         embed = nn.Embedding(self.vocab_size, self.vector_dim)
         nn.init.uniform_(embed.weight, -np.sqrt(6 / (dim + self.vocab_size)), np.sqrt(6 / (dim + self.vocab_size)))
-        w2ind = self.word_vocab.w2ind
-        c = 0
-        for word in w2ind:
-            c += 1
-            ind = w2ind[word]
-            vec = ft.get_word_vector(word)
-            ft_vec = torch.tensor(vec, requires_grad=True)
-            embed.weight.data[ind].copy_(ft_vec)
-        print("Found {} out of {} words in fastext for {} ".format(c, len(w2ind), self.lang))
+        if not self.load_model:
+            print("Loading fastext vectors from scratch")
+            fastext_path = fasttext_dict[self.lang]
+            if not os.path.exists(fastext_path):
+                print("Downloading the fasttext model {}...".format(fastext_path))
+                fasttext.util.download_model(self.lang, if_exists='ignore')
+
+                print("Downloaded the fasttext model {}!\n\n".format(fastext_path))
+                download_path = 'cc.{}.300.bin'.format(self.lang)
+                cmd = "mv {} {}".format(download_path, fastext_path)
+                subprocess.call(cmd, shell=True)
+            ft = fasttext.load_model(fastext_path)
+
+            w2ind = self.word_vocab.w2ind
+            c = 0
+            for word in w2ind:
+                c += 1
+                ind = w2ind[word]
+                vec = ft.get_word_vector(word)
+                ft_vec = torch.tensor(vec, requires_grad=True)
+                embed.weight.data[ind].copy_(ft_vec)
+            print("Found {} out of {} words in fastext for {} ".format(c, len(w2ind), self.lang))
         self.base_model = embed
         self.base_optimizer = optim.AdamW(self.base_model.parameters(), lr=self.config["embed_lr"])
         self.init_lstm()

@@ -20,7 +20,7 @@ from vocab import Vocab
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-lang_dict = {"tr":"turkish","en":"english"}
+lang_dict = {"tr": "turkish", "en": "english"}
 model_name_dict = {"jp": "cl-tohoku/bert-base-japanese",
                    "tr": "dbmdz/bert-base-turkish-cased",
                    "hu": "/home/aakdemir/bert_models/hubert",
@@ -122,7 +122,7 @@ def parse_args():
     return args
 
 
-def evaluate(model, dataset,verbose=False):
+def evaluate(model, dataset, verbose=False):
     if hasattr(model, "eval_mode"):
         model.eval_mode = True
     dataset.for_eval = True
@@ -165,7 +165,7 @@ def evaluate(model, dataset,verbose=False):
         f1 = (2 * recall * precision) / (precision + recall)
     else:
         f1 = 0
-    if  verbose:
+    if verbose:
         print("\n\nTP: {} FP: {} FN: {} TN: {} === Acc: {} === F1: {} === Loss: {}\n\n".format(tp, fp, fn, tn, acc, f1,
                                                                                                eval_loss))
     return acc, f1, eval_loss
@@ -236,7 +236,8 @@ def get_datasets(args, tokenizer, label_vocab=None):
     dataset_folder = args["sa_dataset_folder"]
     load_folder = args["load_folder"]
     domain = args["domain"]
-    file_map = {x:os.path.join(dataset_folder,"sa_{}_{}-{}.json".format(domain,lang_dict[lang],x)) for x in ["train","dev","test"]}
+    file_map = {x: os.path.join(dataset_folder, "sa_{}_{}-{}.json".format(domain, lang_dict[lang], x)) for x in
+                ["train", "dev", "test"]}
     print(file_map)
     datasets = {f: SentReader(file_map[f], batch_size=args["batch_size"], tokenizer=tokenizer) for f in file_map}
     if label_vocab:
@@ -305,11 +306,11 @@ def predict(args):
         datasets = get_datasets(args, tokenizer, label_vocab=None)
         num_cats = len(datasets["train"].label_vocab.w2ind)
         word_vocab = datasets["train"].word_vocab
-        seq_classifier = SequenceClassifier(lang, word_vocab, model_type, num_cats, device)
+        seq_classifier = SequenceClassifier(lang, word_vocab, model_type, num_cats, device, load_model=True)
         load_model(seq_classifier, model_load_path)
         seq_classifier.eval()
         seq_classifier.to(device)
-        acc, f1, loss = evaluate(seq_classifier, datasets["test"],verbose=False)
+        acc, f1, loss = evaluate(seq_classifier, datasets["test"], verbose=False)
         if f1 > max_f1:
             max_f1 = f1
             max_acc = acc
@@ -511,6 +512,7 @@ def main():
         print("\n Storing experiment log to {}...".format(exp_save_path))
         with open(exp_save_path, "w") as o:
             json.dump(exp_log, o)
+
 
 if __name__ == "__main__":
     main()
