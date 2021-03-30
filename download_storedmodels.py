@@ -88,8 +88,8 @@ def load_download_models(model_type, word_type, save_folder=None):
     id = id_model_map[model_type][word_type]
     print("\n===Downloading trained {} models to replicate the result===\n".format(names[model_type]))
     link = download_link_generator(id)
-    dest = "../{}_{}_models".format(model_type, word_type)
-    unzip_path = "../{}".format(dest) if not save_folder else save_folder
+    dest = "../{}_{}_models.zip".format(model_type, word_type)
+    unzip_path = "../{}".format(os.path.split(dest)[-1].split(".")[0]) if not save_folder else save_folder
     if not os.path.exists(unzip_path):
         print("{} not found. Downloading trained models for {} {}".format(unzip_path, model_type, word_type))
         gdown.download(link, dest, quiet=False)
