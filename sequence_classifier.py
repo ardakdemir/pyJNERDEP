@@ -13,7 +13,7 @@ from gensim.models import Word2Vec
 from transformers import AutoTokenizer, AutoModel, BertForPreTraining, BertForTokenClassification
 from constants import model_name_dict, encoding_map, word2vec_dict, fasttext_dict, word2vec_lens
 from download_storedmodels import drive_download_w2v
-
+import subprocess
 def embedding_initializer(dim, num_labels):
     embed = nn.Embedding(num_labels, dim)
     nn.init.uniform_(embed.weight, -np.sqrt(6 / (dim + num_labels)), np.sqrt(6 / (dim + num_labels)))

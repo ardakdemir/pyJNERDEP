@@ -55,6 +55,7 @@ word2vec_driveIds = {"jp": "1dYISBXsgK3yR6mw-LRGfjGrcN3aVme2q",
 
 
 def drive_download_w2v(lang, save_path):
+    print("\nDownloading word2Vec model for {} to {}".format(lang,save_path))
     id = word2vec_driveIds[lang]
     link = download_link_generator(id)
     gdown.download(link, save_path, quiet=False)
