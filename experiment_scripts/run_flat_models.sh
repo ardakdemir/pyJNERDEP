@@ -14,7 +14,8 @@ lang_prefs=("jp"  "hu")
 model_name="FLAT"
 
 
-for i in 0 1 2 3 4 5
+#for i in 0 1 2 3 4 5
+for i in 0 1 
 do
   lang=${langs[$i]}
   lang_pref=${lang_prefs[$i]}
