@@ -461,12 +461,14 @@ class BertModelforJoint(nn.Module):
             if not self.load_model == 1:
                 model = BertForPreTraining.from_pretrained(model_name, from_tf=True, output_hidden_states=True)
             else:
-                model = BertForPreTraining(output_hidden_states=True)
+                config = BertConfig()
+                model = BertForPreTraining(config,output_hidden_states=True)
         else:
             if not self.load_model == 1:
                 model = BertForTokenClassification.from_pretrained(model_name)
             else:
-                model = BertForTokenClassification()
+                config = BertConfig()
+                model = BertForTokenClassification(config)
             model.classifier = nn.Identity()
         return model
 

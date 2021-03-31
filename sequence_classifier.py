@@ -11,7 +11,7 @@ import fasttext
 import tqdm
 import fasttext.util
 from gensim.models import Word2Vec
-from transformers import AutoTokenizer, AutoModel, BertForPreTraining, BertForTokenClassification
+from transformers import AutoTokenizer, AutoModel, BertForPreTraining, BertForTokenClassification,BertConfig
 from constants import model_name_dict, encoding_map, word2vec_dict, fasttext_dict, word2vec_lens
 from download_storedmodels import drive_download_w2v
 import subprocess
@@ -152,7 +152,7 @@ class MyBertModel(nn.Module):
         super(MyBertModel, self).__init__()
         self.load_model = load_model
         self.lang = lang
-        
+
         self.model = self.load_bert_model(lang)
 
 
@@ -164,13 +164,14 @@ class MyBertModel(nn.Module):
             if not self.load_model:
                 model = BertForPreTraining.from_pretrained(model_name, from_tf=True, output_hidden_states=True)
             else: #Don't load
-                model = BertForPreTraining(output_hidden_states=True)
-
+                config = BertConfig()
+                model = BertForPreTraining(conig,output_hidden_states=True)
         else:
             if not self.load_model:
                 model = BertForTokenClassification.from_pretrained(model_name)
             else:
-                model = BertForTokenClassification()
+                config = BertConfig()
+                model = BertForTokenClassification(config)
             model.classifier = nn.Identity()
         return model
 
