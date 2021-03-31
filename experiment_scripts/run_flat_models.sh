@@ -4,18 +4,18 @@ model_folder=${1}
 task_name=${2}
 save_folder=${3}
 
-#langs=(czech turkish  japanese english finnish hungarian)
-#lang_prefs=("cs" "tr"  "jp" "en" "fi" "hu")
+langs=(czech turkish english finnish hungarian)
+lang_prefs=("cs" "tr" "en" "fi" "hu")
 
 
-langs=(japanese  hungarian)
-lang_prefs=("jp"  "hu")
+#langs=(japanese  hungarian)
+#lang_prefs=("jp"  "hu")
 
 model_name="FLAT"
 
 
 #for i in 0 1 2 3 4 5
-for i in 0 1 
+for i in 0 1 2 3 4
 do
   lang=${langs[$i]}
   lang_pref=${lang_prefs[$i]}
