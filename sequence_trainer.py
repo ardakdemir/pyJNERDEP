@@ -330,7 +330,7 @@ def predict(args):
 
     result_path = os.path.join(save_folder, args["sa_result_file"])
     write_result(exp_key, exp_log, result_path)
-
+    return exp_log
 
 def train(args):
     lang = args["lang"]
