@@ -390,6 +390,8 @@ def parse_args():
     parser.add_argument('--max_depgrad_norm', type=float, default=5.0, help='Gradient clipping.')
     parser.add_argument('--log_step', type=int, default=20, help='Print log every k steps.')
     parser.add_argument('--save_dir', type=str, default='../model_save_dir', help='Root dir for saving models.')
+    parser.add_argument('--hubert_path', type=str, default='../bert_models/hubert', help='Path to hubert model')
+
     parser.add_argument('--save_name', type=str, default='best_joint_model.pkh', help="File name to save the model")
     parser.add_argument('--save_ner_name', type=str, default='best_ner_model.pkh', help="File name to save the model")
     parser.add_argument('--save_dep_name', type=str, default='best_dep_model.pkh', help="File name to save the model")
@@ -439,6 +441,7 @@ class JointModel(nn.Module):
 def load_bert_model(lang):
     model_name = model_name_dict[lang]
     if lang == "hu":
+
         model = BertForPreTraining.from_pretrained(model_name, from_tf=True)
         return model
     else:
@@ -459,6 +462,7 @@ class BertModelforJoint(nn.Module):
         model_name = model_name_dict[lang]
         if lang == "hu":
             if not self.load_model == 1:
+                model_name = self.hubert_path
                 model = BertForPreTraining.from_pretrained(model_name, from_tf=True, output_hidden_states=True)
             else:
                 config = BertConfig.from_pretrained("hubert", output_hidden_states=True)

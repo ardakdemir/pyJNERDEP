@@ -7,7 +7,7 @@ This repository contains the source code for replicating the experiments in our 
 
 ## Running on Colab
 
-The easiest way to replicate the results reported on our paper is to use Google Colab.  
+The easiest way to replicate the results and train new models is to use Google Colab.  
 We provide a Colab notebook to replicate the results.
 
 ### Data dependencies
@@ -15,12 +15,13 @@ We provide a Colab notebook to replicate the results.
 In order to run all the experiments without additional effort, the provided Colab notebook downloads all the data required to run the models:
 
 - All datasets used for the experiments.
-- All pretrained word embeddings (e.g., pretrained Word2Vec and FastText embeddings for all languages).
-- All trained models.
+- All pretrained word embeddings (e.g., pretrained Word2Vec and FastText embeddings for all languages). (required for training only)
+- All trained models. (required for testing only)
 
-If you already have any of these downloaded, you can skip the relevant code-snippets inside the Colab notebook.
+If you already have any of these downloaded, you can skip the steps inside the Colab notebook.  
+Please follow the instructions inside the Colab notebook and make sure to change the variable values accordingly.
 
-### 
+- Datasets are by default under "../../datasets"
 
 
 ## Meta info

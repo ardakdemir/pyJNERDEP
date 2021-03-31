@@ -11,7 +11,7 @@ lang_prefs=("cs" "tr" "en" "fi" "hu")
 #langs=(japanese  hungarian)
 #lang_prefs=("jp"  "hu")
 
-model_name="FLAT"
+model_name=${task_name}
 
 
 #for i in 0 1 2 3 4 5
