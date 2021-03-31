@@ -19,8 +19,8 @@ for i in 0 1 2 3 4
 do
   lang=${langs[$i]}
   lang_pref=${lang_prefs[$i]}
-#    for type in bert mbert bert_en fastext word2vec random_init
-  for type in fastext word2vec
+#  for type in fastext word2vec
+  for type in bert mbert bert_en fastext word2vec random_init
   do
     echo "Running for " ${model_type}"  "${lang}"  "${type}
     #load_path = os.path.join(model_folder,"{}_{}_{}_best_{}_model.pkh".format(task,word_type,l_p,task_lower))
