@@ -150,9 +150,12 @@ class MyBertModel(nn.Module):
 
     def __init__(self, lang,load_model):
         super(MyBertModel, self).__init__()
-        self.model = self.load_bert_model(lang)
-        self.lang = lang
         self.load_model = load_model
+        self.lang = lang
+        
+        self.model = self.load_bert_model(lang)
+
+
         # base model for generating bert output
 
     def load_bert_model(self, lang):
