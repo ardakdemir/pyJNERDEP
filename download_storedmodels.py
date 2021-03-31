@@ -106,7 +106,7 @@ def download_by_id():
     args = parse_args()
     id = args.id
     link = download_link_generator(id)
-    gdown.download(link, "_downloaded".format(id), quiet=False)
+    gdown.download(link, "{}_downloaded".format(id), quiet=False)
 
 def main():
     args = parse_args()
@@ -114,10 +114,10 @@ def main():
     word_type = args.word_type
     save_folder = args.save_folder
 
-    download_by_id()
-    # load_download_models(model_type, word_type, save_folder)
-    # content = os.listdir(save_folder)
-    # print("Content of the save model folder: {}".format(content))
+    # download_by_id()
+    load_download_models(model_type, word_type, save_folder)
+    content = os.listdir(save_folder)
+    print("Content of the save model folder: {}".format(content))
 
 
 if __name__ == "__main__":

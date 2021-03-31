@@ -1,7 +1,7 @@
 from transformers import AutoTokenizer
 import numpy as np
 import torch
-from experiment_scripts.sequence_classifier import SequenceClassifier
+from sequence_classifier import SequenceClassifier
 from sareader import SentReader
 
 sent_dict = {"tr": "Fakat, temel gündem maddesi değişmiyordu: Türkiye.",

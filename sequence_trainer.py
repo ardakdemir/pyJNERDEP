@@ -6,7 +6,7 @@ import argparse
 import json
 import os
 from transformers import AutoTokenizer
-from experiment_scripts.sequence_classifier import SequenceClassifier
+from sequence_classifier import SequenceClassifier
 from sareader import SentReader
 from itertools import product
 import logging
