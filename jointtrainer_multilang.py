@@ -24,7 +24,7 @@ import numpy as np
 from tqdm import tqdm
 from torch.nn.utils import clip_grad_norm_
 from torch.utils.data import Dataset, DataLoader
-from transformers import AutoTokenizer, AutoModel, BertForPreTraining, BertForTokenClassification
+from transformers import AutoTokenizer, AutoModel, BertForPreTraining, BertForTokenClassification, BertConfig
 from parser.parsereader import bert2token, pad_trunc_batch
 import matplotlib.pyplot as plt
 import time
