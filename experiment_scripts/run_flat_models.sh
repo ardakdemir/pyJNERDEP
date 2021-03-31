@@ -21,6 +21,6 @@ do
     lower_task="$(echo $task_name | tr '[A-Z]' '[a-z]')"
     load_path=$model_folder"/"${model_name}"_"${type}"_"${lang_pref}"_best_"${lower_task}"_model.pkh"
     echo "Loading model from: "${load_path}
-    python jointtrainer_multilang.py --model_type ${model_name} --eval_mode ${task_name} --mode "predict" --word_embed_type ${type}   --lang ${lang_pref}  --save_dir $save_dir --load_model 1 --load_path $load_path
+    python jointtrainer_multilang.py --model_type ${model_name} --eval_mode ${task_name} --mode "predict" --word_embed_type ${type}   --lang ${lang_pref}  --save_dir $save_folder --load_model 1 --load_path $load_path
   done
 done
