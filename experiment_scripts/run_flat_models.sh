@@ -4,8 +4,13 @@ model_folder=${1}
 task_name=${2}
 save_folder=${3}
 
-langs=(czech turkish  japanese english finnish hungarian)
-lang_prefs=("cs" "tr"  "jp" "en" "fi" "hu")
+#langs=(czech turkish  japanese english finnish hungarian)
+#lang_prefs=("cs" "tr"  "jp" "en" "fi" "hu")
+
+
+langs=(japanese  hungarian)
+lang_prefs=("jp"  "hu")
+
 model_name="FLAT"
 
 
