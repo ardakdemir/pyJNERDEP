@@ -15,6 +15,8 @@ from transformers import AutoTokenizer, AutoModel, BertForPreTraining, BertForTo
 from constants import model_name_dict, encoding_map, word2vec_dict, fasttext_dict, word2vec_lens
 from download_storedmodels import drive_download_w2v
 import subprocess
+
+
 def embedding_initializer(dim, num_labels):
     embed = nn.Embedding(num_labels, dim)
     nn.init.uniform_(embed.weight, -np.sqrt(6 / (dim + num_labels)), np.sqrt(6 / (dim + num_labels)))
@@ -58,7 +60,6 @@ fasttext_dict = {"jp": "../word_vecs/jp/cc.jp.300.bin",
                  "en": "../word_vecs/en/cc.en.300.bin",
                  "fi": "../word_vecs/fi/cc.fi.300.bin",
                  "cs": "../word_vecs/cs/cc.cs.300.bin"}
-
 
 word2vec_lens = {"tr": 200,
                  "hu": 300,
@@ -128,7 +129,7 @@ class MyWord2Vec():
             wv = {}
             my_len = 0
             c = 0
-            for l in tqdm.tqdm(f,desc="Word2Vec loading"):  # s
+            for l in tqdm.tqdm(f, desc="Word2Vec loading"):  # s
                 s = l.split(" ")
                 if len(s) < 2:
                     continue
@@ -147,18 +148,26 @@ class MyWord2Vec():
 
 class MyBertModel(nn.Module):
 
-    def __init__(self, lang):
+    def __init__(self, lang,load_model):
         super(MyBertModel, self).__init__()
         self.model = self.load_bert_model(lang)
         self.lang = lang
+        self.load_model = load_model
         # base model for generating bert output
 
     def load_bert_model(self, lang):
         model_name = model_name_dict[lang]
         if lang == "hu":
-            model = BertForPreTraining.from_pretrained(model_name, from_tf=True, output_hidden_states=True)
+            if not self.load_model:
+                model = BertForPreTraining.from_pretrained(model_name, from_tf=True, output_hidden_states=True)
+            else: #Don't load
+                model = BertForPreTraining(output_hidden_states=True)
+
         else:
-            model = BertForTokenClassification.from_pretrained(model_name)
+            if not self.load_model:
+                model = BertForTokenClassification.from_pretrained(model_name)
+            else:
+                model = BertForTokenClassification()
             model.classifier = nn.Identity()
         return model
 
@@ -176,12 +185,12 @@ class MyBertModel(nn.Module):
 
 
 class SequenceClassifier(nn.Module):
-    def __init__(self, lang, word_vocab, model_type, num_cats, device,config={},load_model = False):
+    def __init__(self, lang, word_vocab, model_type, num_cats, device, config={}, load_model=False):
         super(SequenceClassifier, self).__init__()
         self.lang = lang
         self.config = DEFAULT_CONFIG
         self.config.update(config)  # Override default config
-        self.load_model = load_model # If load do not read word2vec or fastext!
+        self.load_model = load_model  # If load do not read word2vec or fastext!
         self.device = device
         self.eval_mode = False
         self.word_vocab = word_vocab
@@ -209,10 +218,10 @@ class SequenceClassifier(nn.Module):
     def init_bert(self):
         if self.model_type in ["bert_en", "mbert"]:
             print("Initializing {} model".format(self.model_type))
-            self.base_model = MyBertModel(self.model_type)
+            self.base_model = MyBertModel(self.model_type, self.load_model)
         else:
             print("Initializing lang specific bert model")
-            self.base_model = MyBertModel(self.lang)
+            self.base_model = MyBertModel(self.lang, self.load_model)
         self.vector_dim = 768
         bert_optimizer = optim.AdamW(self.base_model.parameters(),
                                      lr=2e-5)

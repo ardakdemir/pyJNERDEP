@@ -183,7 +183,8 @@ class MyWord2Vec():
         return vocab, wv, length
 
 
-def get_pretrained_word_embeddings(w2ind, lang='tr', dim='768', word_vec_root="../word_vecs", load_w2v=False,load_model=False):
+def get_pretrained_word_embeddings(w2ind, lang='tr', dim='768', word_vec_root="../word_vecs", load_w2v=False,
+                                   load_model=False):
     vocab_size = len(w2ind)
     # load_path = embedding_path+"_cached.pk"
     print("Getting pretrained embeddings with dim:{}".format(dim))
@@ -222,8 +223,8 @@ def get_pretrained_word_embeddings(w2ind, lang='tr', dim='768', word_vec_root=".
                 print("Downloaded the fasttext model {}!\n\n".format(fastext_path))
                 download_path = 'cc.{}.300.bin'.format(lang)
                 ft = fasttext.load_model('cc.{}.300.bin'.format(lang))
-                cmd = "mv {} {}".format(download_path,fastext_path)
-                subprocess.call(cmd,shell=True)
+                cmd = "mv {} {}".format(download_path, fastext_path)
+                subprocess.call(cmd, shell=True)
             else:
                 ft = fasttext.load_model(fastext_path)
             s = time.time()
@@ -321,7 +322,7 @@ def parse_args():
                         help='Output file name in conll bio format')
     parser.add_argument('--config_file', type=str, default='config.json', help='Output file name in conll bio format')
     parser.add_argument('--mode', default='train', choices=['train', 'predict'])
-    parser.add_argument('--eval_mode', default='BOTH', choices=['BOTH', 'NER',"DEP"])
+    parser.add_argument('--eval_mode', default='BOTH', choices=['BOTH', 'NER', "DEP"])
 
     parser.add_argument('--load_config', default=0, type=int)
     parser.add_argument('--lang', default='tr', type=str, help='Language', choices=['en', 'jp', 'tr', 'cs', 'fi', 'hu'])
@@ -447,8 +448,9 @@ def load_bert_model(lang):
 
 class BertModelforJoint(nn.Module):
 
-    def __init__(self, lang):
+    def __init__(self, lang,args):
         super(BertModelforJoint, self).__init__()
+        self.load_model = args.load_model
         self.model = self.load_bert_model(lang)
         self.lang = lang
         # base model for generating bert output
@@ -456,9 +458,15 @@ class BertModelforJoint(nn.Module):
     def load_bert_model(self, lang):
         model_name = model_name_dict[lang]
         if lang == "hu":
-            model = BertForPreTraining.from_pretrained(model_name, from_tf=True, output_hidden_states=True)
+            if not self.load_model == 1:
+                model = BertForPreTraining.from_pretrained(model_name, from_tf=True, output_hidden_states=True)
+            else:
+                model = BertForPreTraining(output_hidden_states=True)
         else:
-            model = BertForTokenClassification.from_pretrained(model_name)
+            if not self.load_model == 1:
+                model = BertForTokenClassification.from_pretrained(model_name)
+            else:
+                model = BertForTokenClassification()
             model.classifier = nn.Identity()
         return model
 
@@ -484,11 +492,11 @@ class BaseModel(nn.Module):
         # self.bert_model = BertModel.from_pretrained('bert-base-cased', output_hidden_states=True)
         self.embed_type = args["word_embed_type"]
         if self.embed_type not in ["bert_en", "mbert"]:
-            self.bert_model = BertModelforJoint(args["lang"])
+            self.bert_model = BertModelforJoint(args["lang"], args)
             self.bert_model.model.resize_token_embeddings(len(tokenizer))
         else:
             logging.info("Using {} bert mode model ".format(self.embed_type))
-            self.bert_model = BertModelforJoint(self.embed_type)
+            self.bert_model = BertModelforJoint(self.embed_type, args)
             self.bert_model.model.resize_token_embeddings(len(tokenizer))
         self.w_dim = 768
         # self.vocab_size = args['vocab_size']
@@ -513,7 +521,7 @@ class BaseModel(nn.Module):
             self.word_embeds = get_pretrained_word_embeddings(self.args['vocab'], self.args['lang'],
                                                               self.w_dim, self.args['wordvec_dir'],
                                                               load_w2v=load_w2v,
-                                                              load_model=self.args["load_model"]==1)
+                                                              load_model=self.args["load_model"] == 1)
 
             print("Initialized word embeddings from {}".format(self.args['word_embed_type']))
             self.w_dim = len(self.word_embeds.weight[0])
@@ -761,7 +769,7 @@ class JointTrainer:
 
         self.init_models()
         experiment_log = {}
-        if self.args["eval_mode"] == "ALL" or self.args["eval_mode"]  == "NER":
+        if self.args["eval_mode"] == "ALL" or self.args["eval_mode"] == "NER":
             self.nervalreader = self.nertestreader
             self.nervalreader.for_eval = True
             ner_pre, ner_rec, ner_f1 = self.ner_evaluate()
@@ -773,7 +781,7 @@ class JointTrainer:
                 s = self.args['lang'] + "_" + self.args['word_embed_type']
                 s = s + "\t" + "\t".join([str(x) for x in [ner_pre, ner_rec, ner_f1]]) + "\n"
                 o.write(s)
-        if self.args["eval_mode"] == "ALL" or self.args["eval_mode"]  == "DEP":
+        if self.args["eval_mode"] == "ALL" or self.args["eval_mode"] == "DEP":
             self.depvaldataset = self.deptestdataset
             dep_pre, dep_rec, dep_f1, uas_f1 = self.dep_evaluate()
             experiment_log["dep_test"] = {"pre": dep_pre,
