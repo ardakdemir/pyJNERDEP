@@ -1,56 +1,18 @@
-python jointtrainer_multilang.py --model_type DEP  --word_embed_type word2vec  --word_only --log_file DEP_word2vec_en --lang en --batch_size 300 --epochs 3 --save_dir ../deneme1301
 
+#NER DEP model examples
+# Turkish mBERT word-only DEP
+python jointtrainer_multilang.py --model_type DEP  --word_embed_type mbert  --word_only  --lang tr --batch_size 300 --epochs 3 --save_dir ../tr_wordonly_bert
 
-# mBERT!
-python jointtrainer_multilang.py --model_type NER  --word_embed_type bert_en  --word_only --log_file NER_bert_en_tr_log --lang tr --batch_size 300 --epochs 3 --save_dir ../deneme1301_tr
+#Finnish fastext NER
+python jointtrainer_multilang.py --model_type NER  --word_embed_type fastext  --lang fi --batch_size 300 --epochs 3 --save_dir ../deneme1701_fi_fastext
 
-#fastext
-python jointtrainer_multilang.py --model_type NER  --word_embed_type fastext  --word_only --log_file NER_fastext_tr_log --lang tr --batch_size 300 --epochs 3 --save_dir ../deneme1701_tr_fastext --repeat 1
-
-# fastext fixed
-python jointtrainer_multilang.py --model_type NER  --word_embed_type fastext  --word_only --log_file NER_fastext_tr_log --lang tr --batch_size 300 --epochs 3 --save_dir ../deneme1901_tr_fastext --repeat 1 --fix_embed
-
-
-#test jooint model loading
-python test/test_jointmodel.py --lang tr --word_embed_type fastext --load_path ../model_save_dir_NER_01_13_22_34/NER_fastext_tr_best_ner_model.pkh --word_only
-
-
-##qsub multilang with repeat and eval_interval!!
-qsub -N dep_1801 experiment_scripts/joint_multilang_submit.sh DEP 1 500
-
-
-# CLI DEP example
-python jointtrainer_multilang.py --model_type DEP  --word_embed_type fastext   --lang hu --batch_size 100 --epochs 10 --save_dir ../deneme2501_hu_fastext --repeat 1
-python jointtrainer_multilang.py --model_type DEP  --word_embed_type fastext   --lang fi --batch_size 100 --epochs 20 --save_dir ../deneme_wordonyl_2501_fi_fastext --repeat 1 --word_only
-python jointtrainer_multilang.py --model_type DEP  --word_embed_type fastext   --lang cs --batch_size 100 --epochs 10 --save_dir ../deneme_wordonyl_2501_cs_fastext --repeat 1 --word_only
-python jointtrainer_multilang.py --model_type DEP  --word_embed_type word2vec   --lang fi --batch_size 100 --epochs 10 --save_dir ../deneme_2501_fi_word2vec --repeat 1
-python jointtrainer_multilang.py --model_type DEP  --word_embed_type word2vec   --lang tr --batch_size 100 --epochs 10 --save_dir ../deneme_2501_tr_word2vec --repeat 1
-
-# Run remaining from CLI
-python jointtrainer_multilang.py --model_type DEP  --word_embed_type bert_en   --lang cs  --epochs 10 --save_dir ../dep_withpos_savedir_DEP_01_25_18_23 --repeat 1
-python jointtrainer_multilang.py --model_type DEP  --word_embed_type bert_en   --lang cs  --epochs 5 --save_dir ../dep_wordonly_2501_DEP_01_25_22_54 --repeat 1 --word_only --batch_size 100
-python jointtrainer_multilang.py --model_type DEP  --word_embed_type mbert   --lang cs  --epochs 5 --save_dir ../dep_wordonly_2501_DEP_01_25_22_54 --repeat 1 --word_only --batch_size 100
-
-# run some on cli NER withpos
-python jointtrainer_multilang.py --model_type NER   --word_embed_type random_init   --lang jp  --epochs 5 --save_dir ../ner_withpos_NER_01_26_22_55 --repeat 1 --batch_size 300
-# wordonly
-python jointtrainer_multilang.py --model_type NER   --word_embed_type word2vec   --lang cs  --epochs 2 --save_dir ../ner_loadmodeltest --repeat 1 --batch_size 300
+# Hungarian word2vec FLAT
+python jointtrainer_multilang.py --model_type FLAT  --word_embed_type word2vec   --lang hu  --save_dir ../deneme2501_hu_fastext --repeat 1
 
 
 
-# dep cli
-python jointtrainer_multilang.py --model_type DEP  --word_embed_type bert  --word_only --log_file NER_bert_tr_log --lang en --batch_size 100 --epochs 3 --save_dir ../deneme1901_en_bert --repeat 1 --fix_embed
-python jointtrainer_multilang.py --model_type NER  --word_embed_type fastext   --log_file DEP_log --lang en -epochs 3 --save_dir ../dep_deneme_3101 --repeat 1
-
-
-# sequence trainer example English
-python sequence_trainer.py --lang en --eval_interval -1 --batch_size 150 --word_embed_type bert --sa_train_file ../../datasets/sa_movie_english-train.json --domain movie  --sa_dev_file ../../datasets/sa_movie_english-dev.json  --sa_test_file ../../datasets/sa_movie_english-test.json
-
+#SA
 ## Turkish Movie-Twitter
 python sequence_trainer.py --lang tr --eval_interval -1 --batch_size 100 --word_embed_type bert_en --save_folder sa_tr_movie_berten --domain movie --sa_train_file  ../../datasets/sa_movie_turkish-train.json  --sa_dev_file ../../datasets/sa_movie_turkish-dev.json  --sa_test_file ../../datasets/sa_movie_turkish-test.json
 python sequence_trainer.py --lang tr --eval_interval -1 --batch_size 150 --word_embed_type mbert --save_folder sa_tr_twitter_mbert --domain twitter --sa_train_file  ../../datasets/sa_twitter_turkish-train.json  --sa_dev_file ../../datasets/sa_twitter_turkish-dev.json  --sa_test_file ../../datasets/sa_twitter_turkish-test.json
 
-
-
-# FLAT architecture
-python jointtrainer_multilang.py --model_type FLAT  --word_embed_type fastext   --log_file FLAT_log --lang tr --save_dir ../flat_deneme_3101

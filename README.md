@@ -8,7 +8,8 @@ This repository contains the source code for replicating the experiments in our 
 ## Running on Colab
 
 The easiest way to replicate the results and train new models is to use Google Colab.  
-We provide a Colab notebook to replicate the results.
+We provide a Colab notebook to replicate the results: "DLA_Submission_Notebook.ipynb".  
+
 
 ### Data dependencies
 
