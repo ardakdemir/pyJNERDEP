@@ -69,15 +69,6 @@ word2vec_lens = {"tr": 200,
                  "jp": 300}
 
 
-def load_bert_model(lang):
-    model_name = model_name_dict[lang]
-    if lang == "hu":
-        model = BertForPreTraining.from_pretrained(model_name, from_tf=True)
-        return model
-    else:
-        model = AutoModel.from_pretrained(model_name)
-        return model
-
 
 def load_word2vec(lang):
     model_name = word2vec_dict[lang]

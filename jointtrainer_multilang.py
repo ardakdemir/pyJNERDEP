@@ -450,7 +450,7 @@ class BertModelforJoint(nn.Module):
 
     def __init__(self, lang,args):
         super(BertModelforJoint, self).__init__()
-        self.load_model = args.load_model
+        self.load_model = args["load_model"]
         self.model = self.load_bert_model(lang)
         self.lang = lang
         # base model for generating bert output
