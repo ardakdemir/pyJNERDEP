@@ -1,14 +1,7 @@
-from transformers import AutoTokenizer, AutoModel, BertForPreTraining, BertForTokenClassification
-import io
-import argparse
-import torch.nn as nn
+from transformers import AutoTokenizer
 import numpy as np
 import torch
-from gensim.models import Word2Vec
-import os
-import fasttext as ft
-import fasttext.util
-from sequence_classifier import SequenceClassifier
+from experiment_scripts.sequence_classifier import SequenceClassifier
 from sareader import SentReader
 
 sent_dict = {"tr": "Fakat, temel gündem maddesi değişmiyordu: Türkiye.",

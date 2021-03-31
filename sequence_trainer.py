@@ -1,22 +1,15 @@
 import torch
-import torch.nn as nn
-import torch.optim as optim
-from torch.nn import CrossEntropyLoss, MSELoss
-from torch.optim.lr_scheduler import ReduceLROnPlateau
 import numpy as np
 import time
 from tqdm import tqdm
 import argparse
 import json
 import os
-import copy
-from transformers import AutoTokenizer, AutoModel, BertForPreTraining, BertForTokenClassification
-from sequence_classifier import SequenceClassifier
+from transformers import AutoTokenizer
+from experiment_scripts.sequence_classifier import SequenceClassifier
 from sareader import SentReader
 from itertools import product
-from functools import reduce
 import logging
-from vocab import Vocab
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
